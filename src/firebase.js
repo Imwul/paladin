@@ -4,12 +4,12 @@ import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Default mock/empty configuration fallback
 const defaultFirebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCBiEh_2YmbU9W_isONi2FugkTzDIYJ0mE",
+  authDomain: "skogsduvasbookshop.firebaseapp.com",
+  projectId: "skogsduvasbookshop",
+  storageBucket: "skogsduvasbookshop.firebasestorage.app",
+  messagingSenderId: "1051912666392",
+  appId: "1:1051912666392:web:effb955c211c174b26326d"
 };
 
 /**
