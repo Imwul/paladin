@@ -367,6 +367,9 @@ body {
   color: var(--color-ink);
   font-family: var(--font-korean);
   letter-spacing: -0.05em;
+}
+
+.form-group-row .form-label {
   white-space: nowrap !important;
   flex-shrink: 0;
 }
@@ -384,6 +387,10 @@ body {
   font-size: 1.25rem !important;
   letter-spacing: -0.05em !important;
   transition: border-bottom-color 0.2s !important;
+  width: auto;
+}
+
+.form-group-row .form-input {
   flex: 1;
 }
 

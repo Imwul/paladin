@@ -301,7 +301,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 arr[0] = e.target.value;
                 handleInputChange('personal', 'features', arr);
               }}
-              placeholder="1. e.g. Scar on left cheek" 
+              placeholder="1. 예: 왼쪽 뺨의 흉터" 
             />
             <input 
               type="text" 
@@ -313,7 +313,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 arr[1] = e.target.value;
                 handleInputChange('personal', 'features', arr);
               }}
-              placeholder="2. e.g. Piercing blue eyes" 
+              placeholder="2. 예: 날카로운 벽안" 
             />
             <input 
               type="text" 
@@ -325,7 +325,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 arr[2] = e.target.value;
                 handleInputChange('personal', 'features', arr);
               }}
-              placeholder="3. e.g. Tall and slender frame" 
+              placeholder="3. 예: 크고 날씬한 체형" 
             />
           </div>
 
@@ -333,13 +333,13 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="sheet-ribbon">
             <h3>기본 모험 기술</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             {commonSkills.map(skill => (
-              <div key={skill.key} className="sheet-line-item">
-                <span className="form-label" style={{ fontSize: '1.02rem' }}>{skill.label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div key={skill.key} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
+                <span className="form-label" style={{ fontSize: '1.15rem', color: 'var(--color-ink)' }}>{skill.label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                   <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                  <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
                 </div>
               </div>
             ))}
@@ -349,13 +349,13 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="sheet-ribbon">
             <h3>기사 & 궁정 예법 기술</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {courtlySkills.map(skill => (
-              <div key={skill.key} className="sheet-line-item">
-                <span className="form-label" style={{ fontSize: '1.02rem' }}>{skill.label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div key={skill.key} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
+                <span className="form-label" style={{ fontSize: '1.15rem', color: 'var(--color-ink)' }}>{skill.label}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                   <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                  <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
                 </div>
               </div>
             ))}
@@ -372,7 +372,7 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ fontSize: '1.8rem', color: 'var(--color-crimson)', marginBottom: '8px' }}>❖</div>
               <div style={{ fontStyle: 'italic' }}>가문의 문장</div>
               <div style={{ fontSize: '0.72rem', marginTop: '5px', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>
-                {character?.family?.name || "Ardennes"}
+                {character?.family?.name || "아르덴 (Ardennes)"}
               </div>
             </div>
           </div>
@@ -422,44 +422,44 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="sheet-ribbon">
             <h3>종자 및 전투마</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', border: '1px dashed var(--color-gold)', padding: '12px', backgroundColor: 'rgba(195, 161, 101, 0.02)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginBottom: '20px', border: '1.5px dashed var(--color-gold)', padding: '16px', backgroundColor: 'rgba(195, 161, 101, 0.03)', borderRadius: '3px' }}>
             {/* Squire Sub-header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '4px', marginBottom: '4px' }}>
-              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>종자 (Squire)</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '4px' }}>
+              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)', fontSize: '1.15rem' }}>종자 (Squire)</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <div className="form-group-row" style={{ flex: 2 }}>
-                <span className="form-label" style={{ fontSize: '0.95rem' }}>이름:</span>
-                <input type="text" className="form-input" style={{ fontSize: '1rem' }} value={character?.squire?.name || ""} onChange={e => handleInputChange('squire', 'name', e.target.value)} />
+            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+              <div className="form-group-row" style={{ flex: '2 1 150px' }}>
+                <span className="form-label" style={{ fontSize: '1.05rem' }}>이름:</span>
+                <input type="text" className="form-input" style={{ fontSize: '1.15rem' }} value={character?.squire?.name || ""} onChange={e => handleInputChange('squire', 'name', e.target.value)} />
               </div>
-              <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label" style={{ fontSize: '0.95rem' }}>나이:</span>
-                <input type="number" className="form-input" style={{ fontSize: '1rem', textAlign: 'center' }} value={character?.squire?.age || 0} onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
+              <div className="form-group-row" style={{ flex: '1 1 80px' }}>
+                <span className="form-label" style={{ fontSize: '1.05rem' }}>나이:</span>
+                <input type="number" className="form-input" style={{ fontSize: '1.15rem', textAlign: 'center' }} value={character?.squire?.age || 0} onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
               </div>
             </div>
             
             {/* Horse Sub-header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '4px', marginTop: '8px', marginBottom: '4px' }}>
-              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>전투마 (Charger)</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '6px', marginTop: '10px', marginBottom: '4px' }}>
+              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)', fontSize: '1.15rem' }}>전투마 (Charger)</span>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label" style={{ fontSize: '0.95rem' }}>체력 (HP):</span>
-                <input type="number" className="form-input" style={{ fontSize: '1rem', textAlign: 'center' }} value={character?.horses?.warhorse?.hp || 0} onChange={e => {
+            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+              <div className="form-group-row" style={{ flex: '1 1 90px' }}>
+                <span className="form-label" style={{ fontSize: '1.05rem' }}>체력(HP):</span>
+                <input type="number" className="form-input" style={{ fontSize: '1.15rem', textAlign: 'center' }} value={character?.horses?.warhorse?.hp || 0} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
                 }} />
               </div>
-              <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label" style={{ fontSize: '0.95rem' }}>방어력 (Armor):</span>
-                <input type="number" className="form-input" style={{ fontSize: '1rem', textAlign: 'center' }} value={character?.horses?.warhorse?.armor || 0} onChange={e => {
+              <div className="form-group-row" style={{ flex: '1 1 90px' }}>
+                <span className="form-label" style={{ fontSize: '1.05rem' }}>방어력:</span>
+                <input type="number" className="form-input" style={{ fontSize: '1.15rem', textAlign: 'center' }} value={character?.horses?.warhorse?.armor || 0} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
                 }} />
               </div>
-              <div className="form-group-row" style={{ flex: 1.2 }}>
-                <span className="form-label" style={{ fontSize: '0.95rem' }}>피해량 (Damage):</span>
-                <input type="text" className="form-input" style={{ fontSize: '1rem', textAlign: 'center' }} value={character?.horses?.warhorse?.damage || ""} onChange={e => {
+              <div className="form-group-row" style={{ flex: '1.2 1 110px' }}>
+                <span className="form-label" style={{ fontSize: '1.05rem' }}>피해량:</span>
+                <input type="text" className="form-input" style={{ fontSize: '1.15rem', textAlign: 'center' }} value={character?.horses?.warhorse?.damage || ""} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), damage: e.target.value };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
                 }} />
@@ -507,26 +507,26 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="sheet-ribbon">
             <h3>전투 기술</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '15px' }}>
-            <div className="sheet-line-item">
-              <span className="form-label">전술 (Battle)</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            <div className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
+              <span className="form-label" style={{ fontSize: '1.15rem' }}>전술 (Battle)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
+                <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
               </div>
             </div>
-            <div className="sheet-line-item">
-              <span className="form-label">공성 (Siege)</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
+              <span className="form-label" style={{ fontSize: '1.15rem' }}>공성 (Siege)</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                 <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
+                <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
               </div>
             </div>
           </div>
 
           {/* Sub Section: Melee Weapons */}
-          <div style={{ borderLeft: '2.5px solid var(--color-crimson)', paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.05rem' }}>무기 및 전투 기술</span>
+          <div style={{ borderLeft: '3px solid var(--color-crimson)', paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '1.05rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.05rem' }}>무기 및 전투 기술</span>
             
             {["sword", "lance", "axe", "spear", "dagger", "bludgeon", "unarmed"].map(weaponKey => {
               const label = weaponKey === "sword" ? "검" :
@@ -537,11 +537,11 @@ export default function CharacterSheet({ character, setCharacter }) {
                             weaponKey === "bludgeon" ? "둔기" :
                             "맨손 격투";
               return (
-                <div key={weaponKey} className="sheet-line-item">
-                  <span className="form-label" style={{ fontSize: '1rem' }}>{label}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div key={weaponKey} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
+                  <span className="form-label" style={{ fontSize: '1.1rem' }}>{label}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
                     <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[weaponKey] || false} onChange={e => handleInputChange('skillsChecked', weaponKey, e.target.checked)} />
-                    <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
+                    <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
                   </div>
                 </div>
               );
