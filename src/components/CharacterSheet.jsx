@@ -82,48 +82,48 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   // 13 Opposing Traits with official rulebook symbols
   const traitList = [
-    { key1: "chaste", label1: "Chaste (정숙)", key2: "lustful", label2: "Lustful (음탕)", sym: "✝ ♥" },
-    { key1: "energetic", label1: "Energetic (열정)", key2: "lazy", label2: "Lazy (나태)", sym: "⦿" },
-    { key1: "forgiving", label1: "Forgiving (관용)", key2: "vengeful", label2: "Vengeful (복수)", sym: "✝ ♥" },
-    { key1: "generous", label1: "Generous (관대)", key2: "selfish", label2: "Selfish (이기)", sym: "⦿ ♥" },
-    { key1: "honest", label1: "Honest (정직)", key2: "deceitful", label2: "Deceitful (기만)", sym: "⦿ ♥" },
-    { key1: "just", label1: "Just (정의)", key2: "arbitrary", label2: "Arbitrary (독단)", sym: "⦿" },
-    { key1: "merciful", label1: "Merciful (자비)", key2: "cruel", label2: "Cruel (잔혹)", sym: "⦿ ✝" },
-    { key1: "modest", label1: "Modest (겸손)", key2: "proud", label2: "Proud (오만)", sym: "⦿ ✝" },
-    { key1: "pious", label1: "Pious (경건)", key2: "worldly", label2: "Worldly (세속)", sym: "✝ ⦿" },
-    { key1: "prudent", label1: "Prudent (신중)", key2: "reckless", label2: "Reckless (무모)", sym: "♥" },
-    { key1: "temperate", label1: "Temperate (절제)", key2: "indulgent", label2: "Indulgent (방종)", sym: "✝" },
-    { key1: "trusting", label1: "Trusting (신뢰)", key2: "suspicious", label2: "Suspicious (의심)", sym: "✝ ♥" },
-    { key1: "valorous", label1: "Valorous (용맹)", key2: "cowardly", label2: "Cowardly (겁쟁이)", sym: "⦿" }
+    { key1: "chaste", label1: "정숙", key2: "lustful", label2: "음탕", sym: "✝ ♥" },
+    { key1: "energetic", label1: "열정", key2: "lazy", label2: "나태", sym: "⦿" },
+    { key1: "forgiving", label1: "관용", key2: "vengeful", label2: "복수", sym: "✝ ♥" },
+    { key1: "generous", label1: "관대", key2: "selfish", label2: "이기", sym: "⦿ ♥" },
+    { key1: "honest", label1: "정직", key2: "deceitful", label2: "기만", sym: "⦿ ♥" },
+    { key1: "just", label1: "정의", key2: "arbitrary", label2: "독단", sym: "⦿" },
+    { key1: "merciful", label1: "자비", key2: "cruel", label2: "잔혹", sym: "⦿ ✝" },
+    { key1: "modest", label1: "겸손", key2: "proud", label2: "오만", sym: "⦿ ✝" },
+    { key1: "pious", label1: "경건", key2: "worldly", label2: "세속", sym: "✝ ⦿" },
+    { key1: "prudent", label1: "신중", key2: "reckless", label2: "무모", sym: "♥" },
+    { key1: "temperate", label1: "절제", key2: "indulgent", label2: "방종", sym: "✝" },
+    { key1: "trusting", label1: "신뢰", key2: "suspicious", label2: "의심", sym: "✝ ♥" },
+    { key1: "valorous", label1: "용맹", key2: "cowardly", label2: "겁쟁이", sym: "⦿" }
   ];
 
   const commonSkills = [
-    { key: "awareness", label: "Awareness (경계)" },
-    { key: "chirurgery", label: "Chirurgery (의술)" },
-    { key: "faerieLore", label: "Faerie Lore (요정 전설)" },
-    { key: "firstAid", label: "First Aid (응급처치)" },
-    { key: "folkLore", label: "Folk Lore (민간 전설)" },
-    { key: "horsemanship", label: "Horsemanship (마술)" },
-    { key: "hunting", label: "Hunting (수렵)" },
-    { key: "industry", label: "Industry (근면)" },
-    { key: "recognize", label: "Recognize (신분 식별)" },
-    { key: "religion", label: "Religion (종교 지식)" },
-    { key: "stewardship", label: "Stewardship (영지 관리)" },
-    { key: "swimming", label: "Swimming (수영)" }
+    { key: "awareness", label: "경계" },
+    { key: "chirurgery", label: "의술" },
+    { key: "faerieLore", label: "요정 전설" },
+    { key: "firstAid", label: "응급처치" },
+    { key: "folkLore", label: "민간 전설" },
+    { key: "horsemanship", label: "마술" },
+    { key: "hunting", label: "수렵" },
+    { key: "industry", label: "근면" },
+    { key: "recognize", label: "신분 식별" },
+    { key: "religion", label: "종교 지식" },
+    { key: "stewardship", label: "영지 관리" },
+    { key: "swimming", label: "수영" }
   ];
 
   const courtlySkills = [
-    { key: "courtesy", label: "Courtesy (예의)" },
-    { key: "dancing", label: "Dancing (무용)" },
-    { key: "eloquence", label: "Eloquence (웅변)" },
-    { key: "falconry", label: "Falconry (매사냥)" },
-    { key: "gaming", label: "Gaming (유희)" },
-    { key: "heraldry", label: "Heraldry (문장학)" },
-    { key: "intrigue", label: "Intrigue (음모)" },
-    { key: "playInstruments", label: "Play Instruments (악기 연주)" },
-    { key: "readingWriting", label: "Reading & Writing (독서 및 집필)" },
-    { key: "romance", label: "Romance (로맨스)" },
-    { key: "singing", label: "Singing (가창)" }
+    { key: "courtesy", label: "예의" },
+    { key: "dancing", label: "무용" },
+    { key: "eloquence", label: "웅변" },
+    { key: "falconry", label: "매사냥" },
+    { key: "gaming", label: "유희" },
+    { key: "heraldry", label: "문장학" },
+    { key: "intrigue", label: "음모" },
+    { key: "playInstruments", label: "악기 연주" },
+    { key: "readingWriting", label: "독서 및 집필" },
+    { key: "romance", label: "로맨스" },
+    { key: "singing", label: "가창" }
   ];
 
   return (
@@ -137,59 +137,59 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Section: Personal Data */}
           <div className="sheet-ribbon">
-            <h3>Personal Data</h3>
+            <h3>기사 인적 사항</h3>
           </div>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             <div className="form-group-row">
-              <span className="form-label">Name:</span>
+              <span className="form-label">기사 이름:</span>
               <input type="text" className="form-input" value={character?.personal?.name || ""} onChange={e => handleInputChange('personal', 'name', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Age:</span>
+                <span className="form-label">나이:</span>
                 <input type="number" className="form-input" value={character?.personal?.age || 0} onChange={e => handleInputChange('personal', 'age', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group-row" style={{ flex: 2 }}>
-                <span className="form-label">Son Number:</span>
+                <span className="form-label">자녀 서열:</span>
                 <input type="text" className="form-input" value={character?.personal?.sonNumber || ""} onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)} />
               </div>
             </div>
             <div className="form-group-row">
-              <span className="form-label">Blessing:</span>
+              <span className="form-label">성스러운 축복:</span>
               <input type="text" className="form-input" value={character?.personal?.blessing || ""} onChange={e => handleInputChange('personal', 'blessing', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Homeland:</span>
+                <span className="form-label">고향/출신지:</span>
                 <input type="text" className="form-input" value={character?.personal?.homeland || ""} onChange={e => handleInputChange('personal', 'homeland', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Home:</span>
+                <span className="form-label">영지/거처:</span>
                 <input type="text" className="form-input" value={character?.personal?.home || ""} onChange={e => handleInputChange('personal', 'home', e.target.value)} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Culture:</span>
+                <span className="form-label">문화권:</span>
                 <input type="text" className="form-input" value={character?.personal?.culture || ""} onChange={e => handleInputChange('personal', 'culture', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Lineage:</span>
+                <span className="form-label">가문/혈통:</span>
                 <input type="text" className="form-input" value={character?.personal?.lineage || ""} onChange={e => handleInputChange('personal', 'lineage', e.target.value)} />
               </div>
             </div>
             <div className="form-group-row">
-              <span className="form-label">Liege Lord:</span>
+              <span className="form-label">섬기는 주군:</span>
               <input type="text" className="form-input" value={character?.personal?.liegeLord || ""} onChange={e => handleInputChange('personal', 'liegeLord', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Father's Class:</span>
+                <span className="form-label">부친의 계급:</span>
                 <input type="text" className="form-input" value={character?.personal?.fathersClass || ""} onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label">Personal Class:</span>
+                <span className="form-label">기사의 신분:</span>
                 <input type="text" className="form-input" value={character?.personal?.personalClass || ""} onChange={e => handleInputChange('personal', 'personalClass', e.target.value)} />
               </div>
             </div>
@@ -197,17 +197,17 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Personality Traits */}
           <div className="sheet-ribbon">
-            <h3>Personality Traits</h3>
+            <h3>성향 및 도덕률</h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <div style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', lineHeight: '1.4', marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: isChivalrousActive ? 'var(--color-crimson)' : 'inherit', fontWeight: isChivalrousActive ? 'bold' : 'normal' }}>
-                <span>⦿ Chivalrous (기사도) [합산 {chivalrousTraitsTotal}/90]:</span>
+                <span>⦿ 기사도 보너스 [합산 {chivalrousTraitsTotal}/90]:</span>
                 <span>{isChivalrousActive ? '★ 활성 (+3 아머)' : '비활성'}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: isReligiousActive ? 'var(--color-crimson)' : 'inherit', fontWeight: isReligiousActive ? 'bold' : 'normal' }}>
-                <span>✝ Religious (신앙) [합산 {religiousTraitsTotal}/90]:</span>
+                <span>✝ 신앙심 보너스 [합산 {religiousTraitsTotal}/90]:</span>
                 <span>{isReligiousActive ? '★ 활성 (+5 기도)' : '비활성'}</span>
               </div>
             </div>
@@ -236,51 +236,51 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Section: Attributes */}
           <div className="sheet-ribbon">
-            <h3>Attributes</h3>
+            <h3>주요 능력치</h3>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>SIZ:</span>
+              <span className="form-label" style={{ fontWeight: 'bold' }}>체구 (SIZ):</span>
               <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
                 <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.siz || 0} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
-                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(Knockdown {knockdown})</span>
+                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(넉다운 기준 {knockdown})</span>
               </div>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>DEX:</span>
+              <span className="form-label" style={{ fontWeight: 'bold' }}>민첩 (DEX):</span>
               <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.dex || 0} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>STR:</span>
+              <span className="form-label" style={{ fontWeight: 'bold' }}>근력 (STR):</span>
               <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.str || 0} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>CON:</span>
+              <span className="form-label" style={{ fontWeight: 'bold' }}>체질 (CON):</span>
               <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
                 <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.con || 0} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
-                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(Major Wound {majorWound})</span>
+                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(중상 기준 {majorWound})</span>
               </div>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>APP:</span>
+              <span className="form-label" style={{ fontWeight: 'bold' }}>외모 (APP):</span>
               <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.app || 0} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
             </div>
             <div style={{ borderTop: '1px dashed var(--color-gold-light)', marginTop: '10px', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div className="sheet-line-item">
-                <span className="form-label">Damage [(STR+SIZ)/6]:</span>
+                <span className="form-label">기본 피해량 [(STR+SIZ)/6]:</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedDamage}d6</strong>
               </div>
               <div className="sheet-line-item">
-                <span className="form-label">Healing Rate [(STR+CON)/10]:</span>
+                <span className="form-label">자연 치유력 [(STR+CON)/10]:</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedHealing}</strong>
               </div>
               <div className="sheet-line-item">
-                <span className="form-label">Movement Rate [(STR+DEX)/10]:</span>
+                <span className="form-label">이동 속도 [(STR+DEX)/10]:</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedMove}</strong>
               </div>
               <div className="sheet-line-item" style={{ borderTop: '1.5px solid var(--color-crimson)', paddingTop: '4px' }}>
-                <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold' }}>Total Hit Points (SIZ+CON):</span>
+                <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold' }}>최대 체력 (SIZ+CON):</span>
                 <strong style={{ fontFamily: 'var(--font-english)', color: 'var(--color-crimson)', fontSize: '1.1rem' }}>{maxHP}</strong>
               </div>
             </div>
@@ -288,7 +288,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Distinctive Features */}
           <div className="sheet-ribbon">
-            <h3>Distinctive Features</h3>
+            <h3>외형적 특징</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             <input 
@@ -331,7 +331,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Skills (COMMON) */}
           <div className="sheet-ribbon">
-            <h3>Skills - Common</h3>
+            <h3>기본 모험 기술</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
             {commonSkills.map(skill => (
@@ -347,7 +347,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Skills (COURTLY) */}
           <div className="sheet-ribbon">
-            <h3>Skills - Courtly</h3>
+            <h3>기사 & 궁정 예법 기술</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {courtlySkills.map(skill => (
@@ -370,7 +370,7 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="shield-container">
             <div className="shield-text">
               <div style={{ fontSize: '1.8rem', color: 'var(--color-crimson)', marginBottom: '8px' }}>❖</div>
-              <div style={{ fontStyle: 'italic' }}>Family Coat of Arms</div>
+              <div style={{ fontStyle: 'italic' }}>가문의 문장</div>
               <div style={{ fontSize: '0.72rem', marginTop: '5px', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>
                 {character?.family?.name || "Ardennes"}
               </div>
@@ -379,31 +379,31 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Glory */}
           <div className="sheet-ribbon">
-            <h3>Glory</h3>
+            <h3>영예 (Glory)</h3>
           </div>
           <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
             <div className="form-group-row" style={{ flex: 1 }}>
-              <span className="form-label">This Game:</span>
+              <span className="form-label">이번 세션:</span>
               <input type="number" className="form-input" style={{ textAlign: 'center' }} value={character?.gear?.gloryThisGame || 0} onChange={e => handleInputChange('gear', 'gloryThisGame', parseInt(e.target.value) || 0)} />
             </div>
             <div className="form-group-row" style={{ flex: 1.2 }}>
-              <span className="form-label">Total:</span>
+              <span className="form-label">누적 총합:</span>
               <input type="number" className="form-input" style={{ textAlign: 'center', fontWeight: 'bold', color: 'var(--color-crimson)' }} value={character?.gear?.gloryTotal || 0} onChange={e => handleInputChange('gear', 'gloryTotal', parseInt(e.target.value) || 0)} />
             </div>
           </div>
 
           {/* Section: Passions */}
           <div className="sheet-ribbon">
-            <h3>Passions</h3>
+            <h3>기사의 열망 (Passions)</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
             {[
-              { key: "loyaltyLiege", label: "Loyalty (주군에 대한 충성)", defaultVal: 15 },
-              { key: "loveFamily", label: "Love (가족에 대한 사랑)", defaultVal: 15 },
-              { key: "hospitality", label: "Hospitality (손대접/환대)", defaultVal: 15 },
-              { key: "honor", label: "Honor (기사의 명예)", defaultVal: 16 },
-              { key: "hateSarasens", label: "Hate (이교도에 대한 증오)", defaultVal: 12 },
-              { key: "loveGod", label: "Love (신에 대한 사랑)", defaultVal: 15 }
+              { key: "loyaltyLiege", label: "주군에 대한 충성", defaultVal: 15 },
+              { key: "loveFamily", label: "가족에 대한 사랑", defaultVal: 15 },
+              { key: "hospitality", label: "손대접 및 환대", defaultVal: 15 },
+              { key: "honor", label: "기사의 명예", defaultVal: 16 },
+              { key: "hateSarasens", label: "이교도에 대한 증오", defaultVal: 12 },
+              { key: "loveGod", label: "신에 대한 사랑", defaultVal: 15 }
             ].map(passion => (
               <div key={passion.key} className="sheet-line-item">
                 <span className="form-label" style={{ fontSize: '0.92rem' }}>{passion.label}</span>
@@ -420,7 +420,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Squire & Horses */}
           <div className="sheet-ribbon">
-            <h3>Squire & Horses</h3>
+            <h3>종자 및 전투마</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', border: '1px dashed var(--color-gold)', padding: '12px', backgroundColor: 'rgba(195, 161, 101, 0.02)' }}>
             {/* Squire Sub-header */}
@@ -444,21 +444,21 @@ export default function CharacterSheet({ character, setCharacter }) {
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label" style={{ fontSize: '0.85rem' }}>체력(HP):</span>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>체력 (HP):</span>
                 <input type="number" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.hp || 0} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
                 }} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
-                <span className="form-label" style={{ fontSize: '0.85rem' }}>아머:</span>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>방어력 (Armor):</span>
                 <input type="number" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.armor || 0} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
                 }} />
               </div>
               <div className="form-group-row" style={{ flex: 1.2 }}>
-                <span className="form-label" style={{ fontSize: '0.85rem' }}>피해량:</span>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>피해량 (Damage):</span>
                 <input type="text" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.damage || ""} onChange={e => {
                   const updatedWarhorse = { ...(character?.horses?.warhorse || {}), damage: e.target.value };
                   handleInputChange('horses', 'warhorse', updatedWarhorse);
@@ -469,13 +469,13 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Current Hit Points */}
           <div className="sheet-ribbon">
-            <h3>Current Hit Points</h3>
+            <h3>현재 체력</h3>
           </div>
           <div style={{ border: '2px solid var(--color-crimson)', padding: '15px', position: 'relative', marginBottom: '20px', backgroundColor: 'rgba(144, 27, 27, 0.01)' }}>
             
             {/* BIG current hp entry */}
             <div className="form-group-row" style={{ marginBottom: '15px' }}>
-              <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem' }}>Current HP:</span>
+              <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem' }}>현재 HP:</span>
               <input type="number" className="form-input" style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '2.5px solid var(--color-crimson)' }} value={character?.attributes?.currentHp || 0} max={maxHP} onChange={e => handleInputChange('attributes', 'currentHp', Math.min(maxHP, parseInt(e.target.value) || 0))} />
             </div>
 
@@ -483,40 +483,40 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.75 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
-                <span>3/4 HP [ {Math.round(maxHP * 0.75)} ]</span>
-                <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>-5 to Actions</span>
+                <span>체력 3/4 [ {Math.round(maxHP * 0.75)} ]</span>
+                <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>모든 판정 -5</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.5 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
-                <span>1/2 HP [ {Math.round(maxHP * 0.5)} ]</span>
-                <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>-10 to Actions</span>
+                <span>체력 1/2 [ {Math.round(maxHP * 0.5)} ]</span>
+                <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>모든 판정 -10</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.25 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
-                <span>1/4 HP [ {Math.round(maxHP * 0.25)} ]</span>
-                <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', marginLeft: 'auto' }}>Unconscious</span>
+                <span>체력 1/4 [ {Math.round(maxHP * 0.25)} ]</span>
+                <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', marginLeft: 'auto' }}>의식 불명</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-crimson)', fontWeight: 'bold', opacity: (character?.attributes?.currentHp || 0) <= 0 ? 1 : 0.3 }}>
                 <span className="trait-icon">✝</span>
-                <span>Chirurgery Needed! (사망위험)</span>
+                <span>치료 요망! (사망 위험)</span>
               </div>
             </div>
           </div>
 
           {/* Section: Combat Skills */}
           <div className="sheet-ribbon">
-            <h3>Combat Skills</h3>
+            <h3>전투 기술</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '15px' }}>
             <div className="sheet-line-item">
-              <span className="form-label">Battle (전술)</span>
+              <span className="form-label">전술 (Battle)</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
                 <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
               </div>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label">Siege (공성)</span>
+              <span className="form-label">공성 (Siege)</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
                 <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
@@ -526,16 +526,16 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Sub Section: Melee Weapons */}
           <div style={{ borderLeft: '2.5px solid var(--color-crimson)', paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.05rem' }}>Melee Weapons (근접 무기)</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.05rem' }}>무기 및 전투법 (Weapons)</span>
             
             {["sword", "lance", "axe", "spear", "dagger", "bludgeon", "unarmed"].map(weaponKey => {
-              const label = weaponKey === "sword" ? "Sword (검)" :
-                            weaponKey === "lance" ? "Lance (마창)" :
-                            weaponKey === "axe" ? "Axe (도끼)" :
-                            weaponKey === "spear" ? "Spear & Polearm (창)" :
-                            weaponKey === "dagger" ? "Dagger (단검)" :
-                            weaponKey === "bludgeon" ? "Bludgeon (둔기)" :
-                            "Unarmed (맨손)";
+              const label = weaponKey === "sword" ? "검 (Sword)" :
+                            weaponKey === "lance" ? "마창 (Lance)" :
+                            weaponKey === "axe" ? "도끼 (Axe)" :
+                            weaponKey === "spear" ? "창 & 폴암 (Spear)" :
+                            weaponKey === "dagger" ? "단검 (Dagger)" :
+                            weaponKey === "bludgeon" ? "둔기 (Bludgeon)" :
+                            "맨손 격투 (Unarmed)";
               return (
                 <div key={weaponKey} className="sheet-line-item">
                   <span className="form-label" style={{ fontSize: '0.9rem' }}>{label}</span>
