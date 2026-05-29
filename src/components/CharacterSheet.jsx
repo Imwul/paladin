@@ -526,16 +526,16 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Sub Section: Melee Weapons */}
           <div style={{ borderLeft: '2.5px solid var(--color-crimson)', paddingLeft: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.05rem' }}>무기 및 전투법 (Weapons)</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px', letterSpacing: '0.05rem' }}>무기 및 전투 기술</span>
             
             {["sword", "lance", "axe", "spear", "dagger", "bludgeon", "unarmed"].map(weaponKey => {
-              const label = weaponKey === "sword" ? "검 (Sword)" :
-                            weaponKey === "lance" ? "마창 (Lance)" :
-                            weaponKey === "axe" ? "도끼 (Axe)" :
-                            weaponKey === "spear" ? "창 & 폴암 (Spear)" :
-                            weaponKey === "dagger" ? "단검 (Dagger)" :
-                            weaponKey === "bludgeon" ? "둔기 (Bludgeon)" :
-                            "맨손 격투 (Unarmed)";
+              const label = weaponKey === "sword" ? "검" :
+                            weaponKey === "lance" ? "마창" :
+                            weaponKey === "axe" ? "도끼" :
+                            weaponKey === "spear" ? "창 & 폴암" :
+                            weaponKey === "dagger" ? "단검" :
+                            weaponKey === "bludgeon" ? "둔기" :
+                            "맨손 격투";
               return (
                 <div key={weaponKey} className="sheet-line-item">
                   <span className="form-label" style={{ fontSize: '0.9rem' }}>{label}</span>
