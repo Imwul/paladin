@@ -1,4 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Eulyoo1945:wght@400;600&display=swap');
+/* Import English font Cinzel from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&display=swap');
+
+/* Import Eulyoo 1945 directly from jsdelivr CDN (noonnu) as it is not hosted on Google Fonts */
+@font-face {
+  font-family: 'Eulyoo 1945';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2102-01@1.0/Eulyoo1945-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eulyoo 1945';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2102-01@1.0/Eulyoo1945-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   /* Elegant medieval manuscript color palette */
@@ -38,19 +56,19 @@
 }
 
 body {
-  background-color: #171412; /* Deep dark surrounding background */
+  background-color: var(--color-parchment); /* Unified parchment tone for full-screen feel */
   color: var(--color-ink);
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   letter-spacing: -0.04em; /* Strict Korean -4% letter spacing */
   line-height: 1.6;
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 20px 10px;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* App container - looks like an opened ancient tome */
+/* App container - Restructured to span 100% of viewport width and height */
 .app-container {
   background-color: var(--color-parchment);
   background-image: radial-gradient(rgba(179, 143, 67, 0.04) 1px, transparent 0),
@@ -58,13 +76,14 @@ body {
   background-size: 12px 12px;
   background-position: 0 0, 6px 6px;
   width: 100%;
-  max-width: 1280px;
-  min-height: 90vh;
-  margin: 0 auto;
-  border-radius: 4px;
-  border: 8px double var(--color-gold-dark);
-  box-shadow: var(--shadow-medieval);
-  position: relative;
+  max-width: 100vw; /* Spans 100% viewport width! */
+  min-height: 100vh; /* Spans 100% viewport height! */
+  margin: 0;
+  padding: 0;
+  border-radius: 0; /* Flat edges for full-screen tome look */
+  border: none;
+  border-top: 8px solid var(--color-gold-dark); /* Elegant gold top border bar */
+  box-shadow: none;
   display: flex;
   flex-direction: column;
 }
@@ -72,7 +91,7 @@ body {
 /* Medieval header decor */
 .header-decor {
   border-bottom: 3px double var(--color-gold-dark);
-  padding: 25px 20px;
+  padding: 20px 25px;
   text-align: center;
   position: relative;
   background-color: rgba(179, 143, 67, 0.03);
@@ -86,7 +105,7 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .header-decor p.subtitle {
@@ -104,20 +123,20 @@ body {
   justify-content: center;
   background-color: var(--color-parchment-dark);
   border-bottom: 2px solid var(--color-gold-dark);
-  gap: 2px;
-  padding: 5px 10px 0 10px;
+  gap: 4px;
+  padding: 8px 15px 0 15px;
 }
 
 .tab-btn {
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   font-size: 1.05rem;
   font-weight: 600;
-  padding: 10px 18px;
+  padding: 12px 24px; /* Slightly wider tabs for full-screen layout */
   background-color: rgba(179, 143, 67, 0.08);
   border: 1px solid var(--color-gold-dark);
   border-bottom: none;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
   color: var(--color-ink-light);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -138,7 +157,7 @@ body {
   color: var(--color-crimson);
   border-top: 3px solid var(--color-crimson);
   border-bottom: 1px solid var(--color-parchment);
-  padding-bottom: 11px;
+  padding-bottom: 13px;
   z-index: 2;
 }
 
@@ -146,13 +165,13 @@ body {
 .tutorial-banner {
   background-color: rgba(107, 102, 95, 0.06);
   border-bottom: 1px dashed var(--color-gold);
-  padding: 12px 20px;
+  padding: 15px 30px;
   font-size: 0.88rem;
   color: var(--color-grey);
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .tutorial-banner p {
@@ -171,9 +190,10 @@ body {
 /* Layout views */
 .main-content {
   flex: 1;
-  padding: 25px;
+  padding: 30px; /* Spacious padding for wide screens */
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 /* Card layout */
@@ -181,9 +201,10 @@ body {
   background-color: var(--color-parchment);
   border: 1px solid var(--color-gold-light);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-  padding: 20px;
+  padding: 25px;
   margin-bottom: 20px;
   position: relative;
+  width: 100%;
 }
 
 .medieval-card::before {
@@ -200,10 +221,10 @@ body {
 .card-title {
   font-family: 'Cinzel', serif;
   color: var(--color-crimson);
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   border-bottom: 1px solid var(--color-gold-light);
-  padding-bottom: 8px;
-  margin-bottom: 15px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -212,26 +233,26 @@ body {
 /* Form Styles */
 .medieval-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Wider fields for large display screens */
+  gap: 20px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
 }
 
 .form-label {
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 600;
   color: var(--color-ink-light);
 }
 
 .form-input {
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
-  font-size: 1rem;
-  padding: 8px 12px;
+  font-size: 1.02rem;
+  padding: 10px 14px;
   background-color: rgba(255, 255, 255, 0.6);
   border: 1px solid var(--color-gold-light);
   border-radius: 2px;
@@ -252,7 +273,7 @@ body {
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   font-weight: 600;
   font-size: 0.95rem;
-  padding: 8px 16px;
+  padding: 10px 20px;
   background-color: var(--color-parchment-dark);
   border: 1px solid var(--color-gold-dark);
   color: var(--color-ink);
@@ -307,8 +328,8 @@ body {
 /* Interactive elements */
 .exp-checkbox {
   appearance: none;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border: 1px solid var(--color-crimson);
   border-radius: 50%;
   cursor: pointer;
@@ -326,7 +347,7 @@ body {
 .exp-checkbox:checked::after {
   content: '✓';
   color: white;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: bold;
 }
 
@@ -346,14 +367,17 @@ body {
     padding: 0;
   }
   .app-container {
-    border-width: 3px;
+    border-top-width: 4px;
     min-height: 100vh;
   }
   .tab-btn {
-    padding: 8px 12px;
+    padding: 10px 14px;
     font-size: 0.95rem;
   }
   .main-content {
     padding: 15px;
+  }
+  .tutorial-banner {
+    padding: 12px 15px;
   }
 }
