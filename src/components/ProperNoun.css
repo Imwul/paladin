@@ -6,17 +6,17 @@
 }
 
 .proper-noun-en {
-  font-family: var(--font-english);
+  font-family: var(--font-korean) !important;
   font-weight: 400;
-  letter-spacing: 0.02em;
+  letter-spacing: -0.05em !important;
   white-space: nowrap;
   display: inline;
 }
 
 .proper-noun-ko {
-  font-family: var(--font-korean);
+  font-family: var(--font-korean) !important;
   font-weight: 400;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.05em !important;
   white-space: nowrap;
   display: inline;
 }

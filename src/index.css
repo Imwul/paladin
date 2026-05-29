@@ -43,17 +43,25 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-korean) !important; /* Ensure custom font for all elements */
-  font-variant-numeric: tabular-nums; /* Tabular numbers */
-  font-feature-settings: "tnum"; /* Numeric font features */
-  letter-spacing: -0.05em; /* Apply -5% spacing to numbers */
+  font-variant-numeric: tabular-nums !important; /* Tabular numbers */
+  font-feature-settings: "tnum" !important; /* Numeric font features */
+  letter-spacing: -0.05em !important; /* Apply -5% spacing to numbers globally */
+}
+
+/* Force override browser-specific user agent styles for input elements */
+input, textarea, button, select, input[type="number"], input[type="text"] {
+  font-family: 'Eulyoo 1945', serif !important;
+  letter-spacing: -0.05em !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" !important;
 }
 
 body {
   background-color: #e5ded0; /* Slightly darker surrounding margin paper */
   color: var(--color-ink);
-  font-family: 'Eulyoo 1945', serif;
+  font-family: 'Eulyoo 1945', serif !important;
   font-size: 18.5px; /* Increased base body font size for superb legibility */
-  letter-spacing: -0.05em; /* Strict Korean -5% letter spacing */
+  letter-spacing: -0.05em !important; /* Strict Korean -5% letter spacing */
   line-height: 1.65; /* Slightly relaxed line height for better eye comfort */
   width: 100%;
   min-height: 100vh;

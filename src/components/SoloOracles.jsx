@@ -139,7 +139,7 @@ export default function SoloOracles({ setCharacter }) {
             {d20Result && (
               <div style={{ border: '1px solid var(--color-gold)', backgroundColor: 'rgba(179,143,67,0.03)', padding: '15px', borderRadius: '4px', textAlign: 'center' }}>
                 <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>주사위 눈</span>
-                <div style={{ fontSize: '3rem', fontWeight: 'bold', fontFamily: 'var(--font-english)', color: rollResolution?.color || 'inherit', margin: '-10px 0' }}>
+                <div style={{ fontSize: '3rem', fontWeight: 'bold', color: rollResolution?.color || 'inherit', margin: '-10px 0' }}>
                   {d20Result}
                 </div>
                 {rollResolution && (
@@ -180,13 +180,13 @@ export default function SoloOracles({ setCharacter }) {
                 <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>각 주사위의 눈</span>
                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', margin: '10px 0', flexWrap: 'wrap' }}>
                   {d6Results.map((r, i) => (
-                    <span key={i} style={{ border: '1px solid var(--color-ink)', padding: '4px 10px', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#fff', fontFamily: 'var(--font-english)' }}>
+                    <span key={i} style={{ border: '1px solid var(--color-ink)', padding: '4px 10px', fontSize: '1.2rem', fontWeight: 'bold', backgroundColor: '#fff' }}>
                       {r}
                     </span>
                   ))}
                 </div>
                 <div style={{ fontSize: '1rem', fontWeight: 'bold' }}>
-                  최종 피해 합계: <span style={{ color: 'var(--color-crimson)', fontSize: '1.4rem', fontFamily: 'var(--font-english)' }}>{d6Sum}</span>
+                  최종 피해 합계: <span style={{ color: 'var(--color-crimson)', fontSize: '1.4rem' }}>{d6Sum}</span>
                 </div>
               </div>
             )}

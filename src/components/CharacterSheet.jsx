@@ -224,11 +224,11 @@ export default function CharacterSheet({ character, setCharacter }) {
                 borderBottom: '1px solid rgba(195,161,101,0.12)'
               }}>
                 {/* Symbol */}
-                <span style={{ fontFamily: 'var(--font-english)', fontSize: '1.4rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
+                <span style={{ fontSize: '1.4rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
                   {trait.sym}
                 </span>
                 {/* Left label */}
-                <span style={{ fontSize: '1.15rem', fontWeight: '600', color: 'var(--color-ink)', letterSpacing: '-0.04em' }}>{trait.label1}</span>
+                <span style={{ fontSize: '1.15rem', fontWeight: '600', color: 'var(--color-ink)' }}>{trait.label1}</span>
                 {/* Left value */}
                 <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
                 {/* Divider */}
@@ -236,7 +236,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 {/* Right value */}
                 <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
                 {/* Right label */}
-                <span style={{ fontSize: '1.1rem', fontWeight: '500', color: 'var(--color-ink-light)', width: '68px', textAlign: 'right', letterSpacing: '-0.04em' }}>{trait.label2}</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: '500', color: 'var(--color-ink-light)', width: '68px', textAlign: 'right' }}>{trait.label2}</span>
               </div>
             ))}
           </div>
@@ -280,19 +280,19 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div style={{ borderTop: '1px dashed var(--color-gold-light)', marginTop: '10px', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div className="sheet-line-item">
                 <span className="form-label">기본 피해량 [(STR+SIZ)/6]:</span>
-                <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedDamage}d6</strong>
+                <strong>{calculatedDamage}d6</strong>
               </div>
               <div className="sheet-line-item">
                 <span className="form-label">자연 치유력 [(STR+CON)/10]:</span>
-                <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedHealing}</strong>
+                <strong>{calculatedHealing}</strong>
               </div>
               <div className="sheet-line-item">
                 <span className="form-label">이동 속도 [(STR+DEX)/10]:</span>
-                <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedMove}</strong>
+                <strong>{calculatedMove}</strong>
               </div>
               <div className="sheet-line-item" style={{ borderTop: '1.5px solid var(--color-crimson)', paddingTop: '4px' }}>
                 <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold' }}>최대 체력 (SIZ+CON):</span>
-                <strong style={{ fontFamily: 'var(--font-english)', color: 'var(--color-crimson)', fontSize: '1.1rem' }}>{maxHP}</strong>
+                <strong style={{ color: 'var(--color-crimson)', fontSize: '1.1rem' }}>{maxHP}</strong>
               </div>
             </div>
           </div>

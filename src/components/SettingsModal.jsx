@@ -92,7 +92,7 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
         
         {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--color-gold)', paddingBottom: '10px', marginBottom: '20px' }}>
-          <h3 style={{ fontFamily: 'var(--font-english)', color: 'var(--color-crimson)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h3 style={{ color: 'var(--color-crimson)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Settings size={20} /> 설정 및 데이터 백업
           </h3>
           <button className="modal-close-btn" onClick={onClose}>

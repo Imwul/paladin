@@ -112,14 +112,14 @@ export default function FamilyWinter({ character, setCharacter }) {
       {/* Sub tabs */}
       <div style={{ display: 'flex', gap: '15px', margin: '20px 0', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '10px' }}>
         <button 
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-english)', fontSize: '1.1rem', fontWeight: activeSubTab === 'family' ? 'bold' : 'normal', color: activeSubTab === 'family' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: activeSubTab === 'family' ? 'bold' : 'normal', color: activeSubTab === 'family' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
           onClick={() => setActiveSubTab('family')}
         >
           가문 정보 시트
         </button>
         <span style={{ color: 'var(--color-gold-light)' }}>|</span>
         <button 
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-english)', fontSize: '1.1rem', fontWeight: activeSubTab === 'winter' ? 'bold' : 'normal', color: activeSubTab === 'winter' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', fontWeight: activeSubTab === 'winter' ? 'bold' : 'normal', color: activeSubTab === 'winter' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
           onClick={() => setActiveSubTab('winter')}
         >
           겨울 단계 정산 헬퍼 (7단계)
@@ -178,7 +178,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           {/* Main Step wizard */}
           <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px' }}>
-              <h3 style={{ fontFamily: 'var(--font-english)', color: 'var(--color-crimson)' }}>
+              <h3 style={{ color: 'var(--color-crimson)' }}>
                 {winterStep}단계 / 총 7단계: {
                   winterStep === 1 ? "1. 모험 정리 및 최종 기록" :
                   winterStep === 2 ? "2. 사용한 기술 성장 판정 (d20)" :
