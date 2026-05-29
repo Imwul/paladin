@@ -7,7 +7,8 @@
 
 .proper-noun-en {
   font-family: var(--font-english);
-  font-weight: 600;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   display: inline;
 }
@@ -36,7 +37,7 @@
 }
 
 .proper-noun-bracket-open {
-  margin-left: 2px;
+  margin-left: 0;
 }
 
 .proper-noun-bracket-close {

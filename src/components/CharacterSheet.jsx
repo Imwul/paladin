@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProperNoun from './ProperNoun';
-import { Sparkles, Heart } from 'lucide-react';
 
 export default function CharacterSheet({ character, setCharacter }) {
   // Input change helper
@@ -8,7 +7,10 @@ export default function CharacterSheet({ character, setCharacter }) {
     setCharacter(prev => {
       const updated = { ...prev };
       if (category) {
-        updated[category] = { ...updated[category], [field]: value };
+        updated[category] = { 
+          ...updated[category], 
+          [field]: value 
+        };
       } else {
         updated[field] = value;
       }
@@ -21,22 +23,25 @@ export default function CharacterSheet({ character, setCharacter }) {
     const numValue = Math.min(20, Math.max(0, parseInt(value) || 0));
     const oppositeValue = 20 - numValue;
 
-    setCharacter(prev => ({
-      ...prev,
-      traits: {
-        ...prev.traits,
-        [traitName]: numValue,
-        [oppositeName]: oppositeValue
-      }
-    }));
+    setCharacter(prev => {
+      const updatedTraits = { 
+        ...(prev?.traits || {}), 
+        [traitName]: numValue, 
+        [oppositeName]: oppositeValue 
+      };
+      return {
+        ...prev,
+        traits: updatedTraits
+      };
+    });
   };
 
-  // Core calculated stats
-  const str = parseInt(character.attributes.str) || 0;
-  const siz = parseInt(character.attributes.siz) || 0;
-  const dex = parseInt(character.attributes.dex) || 0;
-  const con = parseInt(character.attributes.con) || 0;
-  const app = parseInt(character.attributes.app) || 0;
+  // Safe Core calculated stats with optional chaining and fallbacks
+  const str = parseInt(character?.attributes?.str) || 0;
+  const siz = parseInt(character?.attributes?.siz) || 0;
+  const dex = parseInt(character?.attributes?.dex) || 0;
+  const con = parseInt(character?.attributes?.con) || 0;
+  const app = parseInt(character?.attributes?.app) || 0;
 
   const calculatedDamage = Math.floor((str + siz) / 6);
   const calculatedHealing = Math.round((str + con) / 10);
@@ -45,38 +50,37 @@ export default function CharacterSheet({ character, setCharacter }) {
   const knockdown = siz;
   const majorWound = con;
 
-  // Chivalrous / Religious / Romantic Bonus checks
+  // Safe Chivalrous / Religious / Romantic Bonus checks
   const chivalrousTraitsTotal = 
-    (character.traits.chaste || 0) +
-    (character.traits.forgiving || 0) +
-    (character.traits.generous || 0) +
-    (character.traits.honest || 0) +
-    (character.traits.prudent || 0) +
-    (character.traits.trusting || 0) +
-    (character.traits.valorous || 0);
-  const honorVal = parseInt(character.passions.honor) || 0;
+    (character?.traits?.chaste || 0) +
+    (character?.traits?.forgiving || 0) +
+    (character?.traits?.generous || 0) +
+    (character?.traits?.honest || 0) +
+    (character?.traits?.prudent || 0) +
+    (character?.traits?.trusting || 0) +
+    (character?.traits?.valorous || 0);
+  const honorVal = parseInt(character?.passions?.honor) || 0;
   const isChivalrousActive = chivalrousTraitsTotal >= 90 && honorVal >= 16;
 
   const religiousTraitsTotal =
-    (character.traits.chaste || 0) +
-    (character.traits.forgiving || 0) +
-    (character.traits.merciful || 0) +
-    (character.traits.modest || 0) +
-    (character.traits.pious || 0);
-  const loveGodVal = parseInt(character.passions.loveGod) || 0;
+    (character?.traits?.chaste || 0) +
+    (character?.traits?.forgiving || 0) +
+    (character?.traits?.merciful || 0) +
+    (character?.traits?.modest || 0) +
+    (character?.traits?.pious || 0);
+  const loveGodVal = parseInt(character?.passions?.loveGod) || 0;
   const isReligiousActive = religiousTraitsTotal >= 90 && loveGodVal >= 16;
 
   const romanticTraitsTotal =
-    (character.traits.generous || 0) +
-    (character.traits.honest || 0) +
-    (character.traits.just || 0) +
-    (character.traits.merciful || 0) +
-    (character.traits.modest || 0) +
-    (character.traits.trusting || 0);
+    (character?.traits?.generous || 0) +
+    (character?.traits?.honest || 0) +
+    (character?.traits?.just || 0) +
+    (character?.traits?.merciful || 0) +
+    (character?.traits?.modest || 0) +
+    (character?.traits?.trusting || 0);
   const isRomanticActive = romanticTraitsTotal >= 90;
 
-  // 13 Opposing Traits with official rulebook symbols:
-  // ⦿ (Chivalrous), ✝ (Religious), ♥ (Romantic)
+  // 13 Opposing Traits with official rulebook symbols
   const traitList = [
     { key1: "chaste", label1: "Chaste (정숙)", key2: "lustful", label2: "Lustful (음탕)", sym: "✝ ♥" },
     { key1: "energetic", label1: "Energetic (열정)", key2: "lazy", label2: "Lazy (나태)", sym: "⦿" },
@@ -86,6 +90,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     { key1: "just", label1: "Just (정의)", key2: "arbitrary", label2: "Arbitrary (독단)", sym: "⦿" },
     { key1: "merciful", label1: "Merciful (자비)", key2: "cruel", label2: "Cruel (잔혹)", sym: "⦿ ✝" },
     { key1: "modest", label1: "Modest (겸손)", key2: "proud", label2: "Proud (오만)", sym: "⦿ ✝" },
+    { key1: "pious", label1: "Pious (경건)", key2: "worldly", label2: "Worldly (세속)", sym: "✝ ⦿" },
     { key1: "prudent", label1: "Prudent (신중)", key2: "reckless", label2: "Reckless (무모)", sym: "♥" },
     { key1: "temperate", label1: "Temperate (절제)", key2: "indulgent", label2: "Indulgent (방종)", sym: "✝" },
     { key1: "trusting", label1: "Trusting (신뢰)", key2: "suspicious", label2: "Suspicious (의심)", sym: "✝ ♥" },
@@ -138,54 +143,54 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
             <div className="form-group-row">
               <span className="form-label">Name:</span>
-              <input type="text" className="form-input" value={character.personal.name} onChange={e => handleInputChange('personal', 'name', e.target.value)} />
+              <input type="text" className="form-input" value={character?.personal?.name || ""} onChange={e => handleInputChange('personal', 'name', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Age:</span>
-                <input type="number" className="form-input" value={character.personal.age} onChange={e => handleInputChange('personal', 'age', parseInt(e.target.value) || 0)} />
+                <input type="number" className="form-input" value={character?.personal?.age || 0} onChange={e => handleInputChange('personal', 'age', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group-row" style={{ flex: 2 }}>
                 <span className="form-label">Son Number:</span>
-                <input type="text" className="form-input" value={character.personal.sonNumber} onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.sonNumber || ""} onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)} />
               </div>
             </div>
             <div className="form-group-row">
               <span className="form-label">Blessing:</span>
-              <input type="text" className="form-input" value={character.personal.blessing} onChange={e => handleInputChange('personal', 'blessing', e.target.value)} />
+              <input type="text" className="form-input" value={character?.personal?.blessing || ""} onChange={e => handleInputChange('personal', 'blessing', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Homeland:</span>
-                <input type="text" className="form-input" value={character.personal.homeland} onChange={e => handleInputChange('personal', 'homeland', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.homeland || ""} onChange={e => handleInputChange('personal', 'homeland', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Home:</span>
-                <input type="text" className="form-input" value={character.personal.home} onChange={e => handleInputChange('personal', 'home', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.home || ""} onChange={e => handleInputChange('personal', 'home', e.target.value)} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Culture:</span>
-                <input type="text" className="form-input" value={character.personal.culture} onChange={e => handleInputChange('personal', 'culture', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.culture || ""} onChange={e => handleInputChange('personal', 'culture', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Lineage:</span>
-                <input type="text" className="form-input" value={character.personal.lineage} onChange={e => handleInputChange('personal', 'lineage', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.lineage || ""} onChange={e => handleInputChange('personal', 'lineage', e.target.value)} />
               </div>
             </div>
             <div className="form-group-row">
               <span className="form-label">Liege Lord:</span>
-              <input type="text" className="form-input" value={character.personal.liegeLord} onChange={e => handleInputChange('personal', 'liegeLord', e.target.value)} />
+              <input type="text" className="form-input" value={character?.personal?.liegeLord || ""} onChange={e => handleInputChange('personal', 'liegeLord', e.target.value)} />
             </div>
             <div style={{ display: 'flex', gap: '15px' }}>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Father's Class:</span>
-                <input type="text" className="form-input" value={character.personal.fathersClass} onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.fathersClass || ""} onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)} />
               </div>
               <div className="form-group-row" style={{ flex: 1 }}>
                 <span className="form-label">Personal Class:</span>
-                <input type="text" className="form-input" value={character.personal.personalClass} onChange={e => handleInputChange('personal', 'personalClass', e.target.value)} />
+                <input type="text" className="form-input" value={character?.personal?.personalClass || ""} onChange={e => handleInputChange('personal', 'personalClass', e.target.value)} />
               </div>
             </div>
           </div>
@@ -196,7 +201,6 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {/* Chivalrous/Religious indicators */}
             <div style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', lineHeight: '1.4', marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: isChivalrousActive ? 'var(--color-crimson)' : 'inherit', fontWeight: isChivalrousActive ? 'bold' : 'normal' }}>
                 <span>⦿ Chivalrous (기사도) [합산 {chivalrousTraitsTotal}/90]:</span>
@@ -217,9 +221,9 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <span className="form-label" style={{ fontSize: '0.92rem' }}>{trait.label1}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomColor: 'var(--color-gold)' }} value={character.traits[trait.key1]} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
+                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomColor: 'var(--color-gold)' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
                   <span style={{ color: 'var(--color-grey-light)' }}>/</span>
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomColor: 'var(--color-gold)' }} value={character.traits[trait.key2]} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
+                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomColor: 'var(--color-gold)' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
                   <span className="form-label" style={{ fontSize: '0.92rem', width: '90px', textAlign: 'right' }}>{trait.label2}</span>
                 </div>
               </div>
@@ -239,28 +243,28 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div className="sheet-line-item">
               <span className="form-label" style={{ fontWeight: 'bold' }}>SIZ:</span>
               <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
-                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character.attributes.siz} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
+                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.siz || 0} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
                 <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(Knockdown {knockdown})</span>
               </div>
             </div>
             <div className="sheet-line-item">
               <span className="form-label" style={{ fontWeight: 'bold' }}>DEX:</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character.attributes.dex} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
+              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.dex || 0} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
             </div>
             <div className="sheet-line-item">
               <span className="form-label" style={{ fontWeight: 'bold' }}>STR:</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character.attributes.str} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
+              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.str || 0} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
             </div>
             <div className="sheet-line-item">
               <span className="form-label" style={{ fontWeight: 'bold' }}>CON:</span>
               <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
-                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character.attributes.con} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
+                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.con || 0} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
                 <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.85rem', color: 'var(--color-grey)' }}>(Major Wound {majorWound})</span>
               </div>
             </div>
             <div className="sheet-line-item">
               <span className="form-label" style={{ fontWeight: 'bold' }}>APP:</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character.attributes.app} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
+              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.app || 0} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
             </div>
             <div style={{ borderTop: '1px dashed var(--color-gold-light)', marginTop: '10px', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div className="sheet-line-item">
@@ -287,9 +291,42 @@ export default function CharacterSheet({ character, setCharacter }) {
             <h3>Distinctive Features</h3>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-            <input type="text" className="form-input" style={{ borderBottomStyle: 'dotted' }} placeholder="1. e.g. Scar on left cheek" />
-            <input type="text" className="form-input" style={{ borderBottomStyle: 'dotted' }} placeholder="2. e.g. Piercing blue eyes" />
-            <input type="text" className="form-input" style={{ borderBottomStyle: 'dotted' }} placeholder="3. e.g. Tall and slender frame" />
+            <input 
+              type="text" 
+              className="form-input" 
+              style={{ borderBottomStyle: 'dotted' }} 
+              value={character?.personal?.features?.[0] || ""} 
+              onChange={e => {
+                const arr = [...(character?.personal?.features || ["", "", ""])];
+                arr[0] = e.target.value;
+                handleInputChange('personal', 'features', arr);
+              }}
+              placeholder="1. e.g. Scar on left cheek" 
+            />
+            <input 
+              type="text" 
+              className="form-input" 
+              style={{ borderBottomStyle: 'dotted' }} 
+              value={character?.personal?.features?.[1] || ""} 
+              onChange={e => {
+                const arr = [...(character?.personal?.features || ["", "", ""])];
+                arr[1] = e.target.value;
+                handleInputChange('personal', 'features', arr);
+              }}
+              placeholder="2. e.g. Piercing blue eyes" 
+            />
+            <input 
+              type="text" 
+              className="form-input" 
+              style={{ borderBottomStyle: 'dotted' }} 
+              value={character?.personal?.features?.[2] || ""} 
+              onChange={e => {
+                const arr = [...(character?.personal?.features || ["", "", ""])];
+                arr[2] = e.target.value;
+                handleInputChange('personal', 'features', arr);
+              }}
+              placeholder="3. e.g. Tall and slender frame" 
+            />
           </div>
 
           {/* Section: Skills (COMMON) */}
@@ -301,8 +338,8 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div key={skill.key} className="sheet-line-item">
                 <span className="form-label" style={{ fontSize: '0.92rem' }}>{skill.label}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input type="checkbox" className="exp-checkbox" checked={character.skillsChecked[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character.skills[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                  <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
+                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
                 </div>
               </div>
             ))}
@@ -317,8 +354,8 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div key={skill.key} className="sheet-line-item">
                 <span className="form-label" style={{ fontSize: '0.92rem' }}>{skill.label}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input type="checkbox" className="exp-checkbox" checked={character.skillsChecked[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character.skills[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                  <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
+                  <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
                 </div>
               </div>
             ))}
@@ -335,7 +372,7 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ fontSize: '1.8rem', color: 'var(--color-crimson)', marginBottom: '8px' }}>❖</div>
               <div style={{ fontStyle: 'italic' }}>Family Coat of Arms</div>
               <div style={{ fontSize: '0.72rem', marginTop: '5px', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>
-                {character.family.name || "Ardennes"}
+                {character?.family?.name || "Ardennes"}
               </div>
             </div>
           </div>
@@ -347,11 +384,86 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
             <div className="form-group-row" style={{ flex: 1 }}>
               <span className="form-label">This Game:</span>
-              <input type="number" className="form-input" style={{ textAlign: 'center' }} value={character.gear.gloryThisGame} onChange={e => handleInputChange('gear', 'gloryThisGame', parseInt(e.target.value) || 0)} />
+              <input type="number" className="form-input" style={{ textAlign: 'center' }} value={character?.gear?.gloryThisGame || 0} onChange={e => handleInputChange('gear', 'gloryThisGame', parseInt(e.target.value) || 0)} />
             </div>
             <div className="form-group-row" style={{ flex: 1.2 }}>
               <span className="form-label">Total:</span>
-              <input type="number" className="form-input" style={{ textAlign: 'center', fontWeight: 'bold', color: 'var(--color-crimson)' }} value={character.gear.gloryTotal} onChange={e => handleInputChange('gear', 'gloryTotal', parseInt(e.target.value) || 0)} />
+              <input type="number" className="form-input" style={{ textAlign: 'center', fontWeight: 'bold', color: 'var(--color-crimson)' }} value={character?.gear?.gloryTotal || 0} onChange={e => handleInputChange('gear', 'gloryTotal', parseInt(e.target.value) || 0)} />
+            </div>
+          </div>
+
+          {/* Section: Passions */}
+          <div className="sheet-ribbon">
+            <h3>Passions</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
+            {[
+              { key: "loyaltyLiege", label: "Loyalty (주군에 대한 충성)", defaultVal: 15 },
+              { key: "loveFamily", label: "Love (가족에 대한 사랑)", defaultVal: 15 },
+              { key: "hospitality", label: "Hospitality (손대접/환대)", defaultVal: 15 },
+              { key: "honor", label: "Honor (기사의 명예)", defaultVal: 16 },
+              { key: "hateSarasens", label: "Hate (이교도에 대한 증오)", defaultVal: 12 },
+              { key: "loveGod", label: "Love (신에 대한 사랑)", defaultVal: 15 }
+            ].map(passion => (
+              <div key={passion.key} className="sheet-line-item">
+                <span className="form-label" style={{ fontSize: '0.92rem' }}>{passion.label}</span>
+                <input 
+                  type="number" 
+                  className="form-input" 
+                  style={{ width: '50px', textAlign: 'center', borderBottomStyle: 'dotted' }} 
+                  value={character?.passions?.[passion.key] !== undefined ? character?.passions?.[passion.key] : passion.defaultVal} 
+                  onChange={e => handleInputChange('passions', passion.key, parseInt(e.target.value) || 0)} 
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Section: Squire & Horses */}
+          <div className="sheet-ribbon">
+            <h3>Squire & Horses</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px', border: '1px dashed var(--color-gold)', padding: '12px', backgroundColor: 'rgba(195, 161, 101, 0.02)' }}>
+            {/* Squire Sub-header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '4px', marginBottom: '4px' }}>
+              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>종자 (Squire)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <div className="form-group-row" style={{ flex: 2 }}>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>이름:</span>
+                <input type="text" className="form-input" style={{ fontSize: '0.9rem' }} value={character?.squire?.name || ""} onChange={e => handleInputChange('squire', 'name', e.target.value)} />
+              </div>
+              <div className="form-group-row" style={{ flex: 1 }}>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>나이:</span>
+                <input type="number" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.squire?.age || 0} onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
+              </div>
+            </div>
+            
+            {/* Horse Sub-header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '4px', marginTop: '8px', marginBottom: '4px' }}>
+              <span className="form-label" style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>전투마 (Charger)</span>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <div className="form-group-row" style={{ flex: 1 }}>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>체력(HP):</span>
+                <input type="number" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.hp || 0} onChange={e => {
+                  const updatedWarhorse = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
+                  handleInputChange('horses', 'warhorse', updatedWarhorse);
+                }} />
+              </div>
+              <div className="form-group-row" style={{ flex: 1 }}>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>아머:</span>
+                <input type="number" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.armor || 0} onChange={e => {
+                  const updatedWarhorse = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
+                  handleInputChange('horses', 'warhorse', updatedWarhorse);
+                }} />
+              </div>
+              <div className="form-group-row" style={{ flex: 1.2 }}>
+                <span className="form-label" style={{ fontSize: '0.85rem' }}>피해량:</span>
+                <input type="text" className="form-input" style={{ fontSize: '0.9rem', textAlign: 'center' }} value={character?.horses?.warhorse?.damage || ""} onChange={e => {
+                  const updatedWarhorse = { ...(character?.horses?.warhorse || {}), damage: e.target.value };
+                  handleInputChange('horses', 'warhorse', updatedWarhorse);
+                }} />
+              </div>
             </div>
           </div>
 
@@ -364,27 +476,27 @@ export default function CharacterSheet({ character, setCharacter }) {
             {/* BIG current hp entry */}
             <div className="form-group-row" style={{ marginBottom: '15px' }}>
               <span className="form-label" style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem' }}>Current HP:</span>
-              <input type="number" className="form-input" style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '2.5px solid var(--color-crimson) !important' }} value={character.attributes.currentHp} max={maxHP} onChange={e => handleInputChange('attributes', 'currentHp', Math.min(maxHP, parseInt(e.target.value) || 0))} />
+              <input type="number" className="form-input" style={{ textAlign: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '2.5px solid var(--color-crimson)' }} value={character?.attributes?.currentHp || 0} max={maxHP} onChange={e => handleInputChange('attributes', 'currentHp', Math.min(maxHP, parseInt(e.target.value) || 0))} />
             </div>
 
             {/* Wound Status list */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: character.attributes.currentHp <= maxHP * 0.75 ? 1 : 0.4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.75 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
                 <span>3/4 HP [ {Math.round(maxHP * 0.75)} ]</span>
                 <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>-5 to Actions</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: character.attributes.currentHp <= maxHP * 0.5 ? 1 : 0.4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.5 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
                 <span>1/2 HP [ {Math.round(maxHP * 0.5)} ]</span>
                 <span style={{ color: 'var(--color-grey)', marginLeft: 'auto' }}>-10 to Actions</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: character.attributes.currentHp <= maxHP * 0.25 ? 1 : 0.4 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: (character?.attributes?.currentHp || 0) <= maxHP * 0.25 ? 1 : 0.4 }}>
                 <span className="trait-icon">⦿</span>
                 <span>1/4 HP [ {Math.round(maxHP * 0.25)} ]</span>
                 <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', marginLeft: 'auto' }}>Unconscious</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-crimson)', fontWeight: 'bold', opacity: character.attributes.currentHp <= 0 ? 1 : 0.3 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-crimson)', fontWeight: 'bold', opacity: (character?.attributes?.currentHp || 0) <= 0 ? 1 : 0.3 }}>
                 <span className="trait-icon">✝</span>
                 <span>Chirurgery Needed! (사망위험)</span>
               </div>
@@ -399,15 +511,15 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div className="sheet-line-item">
               <span className="form-label">Battle (전술)</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input type="checkbox" className="exp-checkbox" checked={character.skillsChecked.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character.skills.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
+                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
+                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
               </div>
             </div>
             <div className="sheet-line-item">
               <span className="form-label">Siege (공성)</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input type="checkbox" className="exp-checkbox" checked={character.skillsChecked.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character.skills.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
+                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
+                <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
               </div>
             </div>
           </div>
@@ -428,8 +540,8 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <div key={weaponKey} className="sheet-line-item">
                   <span className="form-label" style={{ fontSize: '0.9rem' }}>{label}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <input type="checkbox" className="exp-checkbox" checked={character.skillsChecked[weaponKey] || false} onChange={e => handleInputChange('skillsChecked', weaponKey, e.target.checked)} />
-                    <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character.skills[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
+                    <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[weaponKey] || false} onChange={e => handleInputChange('skillsChecked', weaponKey, e.target.checked)} />
+                    <input type="number" className="form-input" style={{ width: '40px', textAlign: 'center', borderBottomStyle: 'dotted' }} value={character?.skills?.[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
                   </div>
                 </div>
               );

@@ -23,7 +23,8 @@ const initialCharacterState = {
     lineage: "Ardennes",
     liegeLord: "Charlemagne",
     fathersClass: "Vassal Knight",
-    personalClass: "Knight"
+    personalClass: "Knight",
+    features: ["Scar on left cheek", "Piercing blue eyes", "Tall and slender frame"]
   },
   attributes: {
     siz: 14,
@@ -103,7 +104,38 @@ const initialCharacterState = {
       text: "올해 페팽 왕께서 서거하시고 제국이 분할되었습니다. 나는 네모 공작 앞에서 기사 서약을 맺고 젊은 샤를마뉴 대제께 충성을 맹세했습니다. 다가오는 봄의 원정을 준비합니다.",
       updatedAt: new Date().toISOString()
     }
+  },
+  passions: {
+    loyaltyLiege: 15,
+    loveFamily: 15,
+    hospitality: 15,
+    honor: 16,
+    hateSarasens: 12,
+    loveGod: 15
   }
+};
+
+const mergeWithDefault = (data) => {
+  if (!data || typeof data !== 'object') return initialCharacterState;
+  return {
+    ...initialCharacterState,
+    ...data,
+    personal: { ...initialCharacterState.personal, ...data.personal },
+    attributes: { ...initialCharacterState.attributes, ...data.attributes },
+    traits: { ...initialCharacterState.traits, ...data.traits },
+    skills: { ...initialCharacterState.skills, ...data.skills },
+    skillsChecked: { ...initialCharacterState.skillsChecked, ...data.skillsChecked },
+    squire: { ...initialCharacterState.squire, ...data.squire },
+    horses: { 
+      ...initialCharacterState.horses, 
+      ...data.horses,
+      warhorse: { ...initialCharacterState.horses?.warhorse, ...data.horses?.warhorse }
+    },
+    gear: { ...initialCharacterState.gear, ...data.gear },
+    family: { ...initialCharacterState.family, ...data.family },
+    journal: { ...initialCharacterState.journal, ...data.journal },
+    passions: { ...initialCharacterState.passions, ...data.passions }
+  };
 };
 
 export default function App() {
@@ -112,15 +144,25 @@ export default function App() {
   const [firebaseStatus, setFirebaseStatus] = useState('UNCONFIGURED');
   const [user, setUser] = useState(null);
 
-  const [character, setCharacter] = useState(() => {
+  const [rawCharacter, setRawCharacter] = useState(() => {
     try {
       const saved = localStorage.getItem('paladin_companion_data');
-      return saved ? JSON.parse(saved) : initialCharacterState;
+      if (!saved) return initialCharacterState;
+      const parsed = JSON.parse(saved);
+      return mergeWithDefault(parsed);
     } catch (e) {
       console.warn("Failed to parse saved state, loading template:", e);
       return initialCharacterState;
     }
   });
+
+  const character = rawCharacter;
+  const setCharacter = (newData) => {
+    setRawCharacter(prev => {
+      const resolved = typeof newData === 'function' ? newData(prev) : newData;
+      return mergeWithDefault(resolved);
+    });
+  };
 
   // Load custom config and handle Firebase Auth state
   useEffect(() => {
@@ -273,7 +315,7 @@ export default function App() {
           <Shield size={16} /> 가문 & 겨울 정산
         </button>
         <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> 연대기 & 일지
+          <Compass size={16} /> 역사 연대기 & 일지
         </button>
         <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
           <Sparkles size={16} /> 솔로 오라클
