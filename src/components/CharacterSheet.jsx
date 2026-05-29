@@ -217,14 +217,14 @@ export default function CharacterSheet({ character, setCharacter }) {
             {traitList.map(trait => (
               <div key={trait.key1} style={{
                 display: 'grid',
-                gridTemplateColumns: '28px 1fr auto auto auto auto',
+                gridTemplateColumns: '42px 1fr auto auto auto auto',
                 alignItems: 'center',
                 gap: '4px',
                 padding: '4px 0',
                 borderBottom: '1px solid rgba(195,161,101,0.12)'
               }}>
                 {/* Symbol */}
-                <span style={{ fontFamily: 'var(--font-english)', fontSize: '0.85rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
+                <span style={{ fontFamily: 'var(--font-english)', fontSize: '1.4rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
                   {trait.sym}
                 </span>
                 {/* Left label */}

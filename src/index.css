@@ -42,7 +42,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: var(--font-sans) !important; /* Ensure custom font for all elements */
+  font-family: var(--font-korean) !important; /* Ensure custom font for all elements */
   font-variant-numeric: tabular-nums; /* Tabular numbers */
   font-feature-settings: "tnum"; /* Numeric font features */
   letter-spacing: -0.05em; /* Apply -5% spacing to numbers */
