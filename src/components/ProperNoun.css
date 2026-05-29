@@ -1,0 +1,52 @@
+.proper-noun {
+  display: inline;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: keep-all;
+}
+
+.proper-noun-en {
+  font-family: var(--font-english);
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.proper-noun-ko {
+  font-family: var(--font-korean);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.proper-noun-slash {
+  font-family: var(--font-korean);
+  margin: 0 4px;
+  color: var(--color-gold);
+  display: inline-block;
+}
+
+.proper-noun-bracket-open,
+.proper-noun-bracket-close {
+  font-family: var(--font-korean);
+  color: var(--color-ink-light);
+  opacity: 0.7;
+  display: inline-block;
+}
+
+.proper-noun-bracket-open {
+  margin-left: 2px;
+}
+
+.proper-noun-bracket-close {
+  margin-right: 2px;
+}
+
+.proper-noun-wrap-container {
+  display: inline;
+}
+
+.proper-noun-inline-container {
+  display: inline;
+}
