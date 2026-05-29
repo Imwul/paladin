@@ -65,7 +65,7 @@ export function getFirebaseServices() {
 
     const saveToCloud = async (userId, data) => {
       if (!db) return;
-      const userDocRef = doc(db, 'paladin_companion_data', userId);
+      const userDocRef = doc(db, 'saves', userId);
       await setDoc(userDocRef, {
         characterData: data,
         updatedAt: new Date().toISOString()
@@ -74,7 +74,7 @@ export function getFirebaseServices() {
 
     const loadFromCloud = async (userId) => {
       if (!db) return null;
-      const userDocRef = doc(db, 'paladin_companion_data', userId);
+      const userDocRef = doc(db, 'saves', userId);
       const snapshot = await getDoc(userDocRef);
       if (snapshot.exists()) {
         return snapshot.data().characterData;
