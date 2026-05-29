@@ -25,18 +25,18 @@ export default function Dashboard({ setActiveTab }) {
           <p style={{ marginBottom: '12px' }}>
             성스러운 전사로서 전설적인 영웅담을 시작하려면 다음 단계를 따르세요:
           </p>
-          <ol style={{ paddingLeft: '20px', marginBottom: '15px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <ol style={{ paddingLeft: '20px', marginBottom: '15px', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '1.08rem' }}>
             <li>
               <strong>기사 시트</strong> 탭으로 이동하여 캐릭터를 생성합니다. 능력치(체구, 민첩 등)를 입력하면 피해량, 치유력, 체력 등이 자동으로 계산됩니다!
             </li>
             <li>
-              <strong>역사 연대기 & 일지</strong> 탭으로 이동하여 시작 연도인 <ProperNoun en="768 AD" ko="768년" />을 선택하고, 역사적 배경을 읽은 뒤 <strong>일지 작성</strong>을 클릭해 첫 모험을 기록해 보세요.
+              <strong>역사 연대기 &amp; 일지</strong> 탭으로 이동하여 시작 연도인 <ProperNoun en="768 AD" ko="768년" />을 선택하고, 역사적 배경을 읽은 뒤 <strong>일지 작성</strong>을 클릭해 첫 모험을 기록해 보세요.
             </li>
             <li>
               모험 도중 판정이 필요하거나 무작위 만남을 처리하고 싶을 때는 <strong>솔로 오라클</strong> 탭에서 주사위를 굴리거나 조우 가이드를 확인하세요.
             </li>
             <li>
-              1년의 모험이 끝나면 <strong>가문 & 겨울 정산</strong> 탭으로 이동하여 나이를 먹고, 사용한 기술을 단련하며, 가문의 사건을 굴려 다음 해의 모험을 준비합니다.
+              1년의 모험이 끝나면 <strong>가문 &amp; 겨울 정산</strong> 탭으로 이동하여 나이를 먹고, 사용한 기술을 단련하며, 가문의 사건을 굴려 다음 해의 모험을 준비합니다.
             </li>
           </ol>
           <button 
@@ -56,7 +56,7 @@ export default function Dashboard({ setActiveTab }) {
           <p style={{ fontStyle: 'italic', color: 'var(--color-ink-light)', marginBottom: '15px' }}>
             진정한 성기사는 명예와 신앙을 수호해야 합니다. 다음 대립 성향들을 갈고닦아 보너스를 획득하세요:
           </p>
-          <ul style={{ listStyleType: 'square', paddingLeft: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', fontSize: '1.02rem' }}>
+          <ul style={{ listStyleType: 'square', paddingLeft: '20px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '1.1rem' }}>
             <li><strong>정숙</strong> / 음탕</li>
             <li><strong>열정</strong> / 나태</li>
             <li><strong>관용</strong> / 복수</li>
@@ -79,13 +79,13 @@ export default function Dashboard({ setActiveTab }) {
         <h3 className="card-title">
           <span><Compass size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />핵심 게임 시스템 소개</span>
         </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', fontSize: '1.02rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', fontSize: '1.08rem' }}>
           <div>
-            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '5px', fontWeight: '600' }}>행동 판정 (d20 룰)</h4>
+            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '8px', fontWeight: '700', fontSize: '1.1rem' }}>행동 판정 (d20 룰)</h4>
             <p style={{ color: 'var(--color-ink-light)' }}>
               모든 행동은 20면체 주사위(<strong>d20</strong>)를 굴려서 판정합니다. 주사위 결과 값을 본인의 기술이나 성향 수치와 비교합니다:
             </p>
-            <ul style={{ paddingLeft: '15px', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <ul style={{ paddingLeft: '15px', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
               <li><strong>기술 수치와 일치:</strong> 대성공 - 피해 2배 등 극적인 효과</li>
               <li><strong>기술 수치 미만:</strong> 성공 - 안전하게 행동 완수</li>
               <li><strong>기술 수치 초과:</strong> 실패 - 뜻을 이루지 못함</li>
@@ -93,17 +93,17 @@ export default function Dashboard({ setActiveTab }) {
             </ul>
           </div>
           <div>
-            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '5px', fontWeight: '600' }}>대립 성향의 특징</h4>
+            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '8px', fontWeight: '700', fontSize: '1.1rem' }}>대립 성향의 특징</h4>
             <p style={{ color: 'var(--color-ink-light)' }}>
-              기사의 성격과 신조는 13쌍의 대립하는 성향으로 나타나며, 마주보는 두 성향의 합은 **언제나 20**입니다. 
+              기사의 성격과 신조는 13쌍의 대립하는 성향으로 나타나며, 마주보는 두 성향의 합은 <strong>언제나 20</strong>입니다. 
               예를 들어 정숙 수치를 12로 올리면, 반대되는 성향인 음탕 수치는 자동으로 8로 낮아집니다.
             </p>
           </div>
           <div>
-            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '5px', fontWeight: '600' }}>기사도 & 신앙 보너스</h4>
+            <h4 style={{ color: 'var(--color-crimson)', marginBottom: '8px', fontWeight: '700', fontSize: '1.1rem' }}>기사도 &amp; 신앙 보너스</h4>
             <p style={{ color: 'var(--color-ink-light)' }}>
               기사의 명예로운 행보는 기사도/종교 보너스로 이어집니다. 
-              기사도 성향들(정숙, 관용, 관대, 정직, 신중, 신뢰, 용맹)의 합이 **90점 이상**이고 명예 수치가 **16점 이상**이 되면 **기사도 보너스(피해 면역 +3 천연 아머)**가 상시 활성화됩니다!
+              기사도 성향들(정숙, 관용, 관대, 정직, 신중, 신뢰, 용맹)의 합이 <strong>90점 이상</strong>이고 명예 수치가 <strong>16점 이상</strong>이 되면 <strong>기사도 보너스(피해 면역 +3 천연 아머)</strong>가 상시 활성화됩니다!
             </p>
           </div>
         </div>

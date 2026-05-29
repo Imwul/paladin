@@ -200,35 +200,45 @@ export default function CharacterSheet({ character, setCharacter }) {
             <h3>성향 및 도덕률</h3>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={{ fontSize: '1.1rem', color: 'var(--color-ink)', lineHeight: '1.6', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '8px', padding: '12px', backgroundColor: 'rgba(144, 27, 27, 0.03)', border: '1.5px double var(--color-gold-light)', borderRadius: '3px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: isChivalrousActive ? 'var(--color-crimson)' : 'var(--color-ink-light)', fontWeight: isChivalrousActive ? '800' : '500', fontSize: '1.15rem' }}>
-                <span>⦿ 기사도 보너스 [합산 {chivalrousTraitsTotal}/90]:</span>
-                <span style={{ color: isChivalrousActive ? 'var(--color-crimson)' : 'var(--color-grey)' }}>{isChivalrousActive ? '★ 활성 (+3 아머)' : '비활성'}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: isReligiousActive ? 'var(--color-crimson)' : 'var(--color-ink-light)', fontWeight: isReligiousActive ? '800' : '500', fontSize: '1.15rem', borderTop: '1px dashed var(--color-gold-light)', paddingTop: '6px' }}>
-                <span>✝ 신앙심 보너스 [합산 {religiousTraitsTotal}/90]:</span>
-                <span style={{ color: isReligiousActive ? 'var(--color-crimson)' : 'var(--color-grey)' }}>{isReligiousActive ? '★ 활성 (+5 기도)' : '비활성'}</span>
-              </div>
+          {/* Bonus status indicators */}
+          <div style={{ fontSize: '1.05rem', color: 'var(--color-ink)', lineHeight: '1.5', marginBottom: '12px', display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 14px', backgroundColor: 'rgba(144, 27, 27, 0.04)', border: '1px solid var(--color-gold-light)', borderRadius: '2px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: isChivalrousActive ? 'var(--color-crimson)' : 'var(--color-ink-light)', fontWeight: isChivalrousActive ? '800' : '500' }}>
+              <span style={{ fontSize: '1.08rem' }}>⚆ 기사도 보너스 [{chivalrousTraitsTotal}/90]:</span>
+              <span style={{ color: isChivalrousActive ? 'var(--color-crimson)' : 'var(--color-grey)', fontWeight: 'bold' }}>{isChivalrousActive ? '★ 활성 (+3 아머)' : '비활성'}</span>
             </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: isReligiousActive ? 'var(--color-crimson)' : 'var(--color-ink-light)', fontWeight: isReligiousActive ? '800' : '500', borderTop: '1px dashed var(--color-gold-light)', paddingTop: '5px' }}>
+              <span style={{ fontSize: '1.08rem' }}>✝ 신앙심 보너스 [{religiousTraitsTotal}/90]:</span>
+              <span style={{ color: isReligiousActive ? 'var(--color-crimson)' : 'var(--color-grey)', fontWeight: 'bold' }}>{isReligiousActive ? '★ 활성 (+5 기도)' : '비활성'}</span>
+            </div>
+          </div>
 
+          {/* Traits list — official sheet style */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             {traitList.map(trait => (
-              <div key={trait.key1} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px', borderBottom: '1px solid rgba(144, 27, 27, 0.03)', paddingBottom: '4px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
-                  <span className="trait-icon" style={{ fontFamily: 'var(--font-english)', fontSize: '1.1rem', width: '36px', color: 'var(--color-crimson)', fontWeight: 'bold', display: 'inline-block' }}>
-                    {trait.sym}
-                  </span>
-                  <span className="form-label" style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--color-ink)' }}>{trait.label1}</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <input type="number" className="form-input" style={{ width: '52px', height: '36px', fontSize: '1.35rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
-                  <span style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '1.2rem' }}>/</span>
-                  <input type="number" className="form-input" style={{ width: '52px', height: '36px', fontSize: '1.35rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
-                  <span className="form-label" style={{ fontSize: '1.25rem', fontWeight: '600', color: 'var(--color-ink)', width: '95px', textAlign: 'right' }}>{trait.label2}</span>
-                </div>
+              <div key={trait.key1} style={{
+                display: 'grid',
+                gridTemplateColumns: '28px 1fr auto auto auto auto',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 0',
+                borderBottom: '1px solid rgba(195,161,101,0.12)'
+              }}>
+                {/* Symbol */}
+                <span style={{ fontFamily: 'var(--font-english)', fontSize: '0.85rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
+                  {trait.sym}
+                </span>
+                {/* Left label */}
+                <span style={{ fontSize: '1.15rem', fontWeight: '600', color: 'var(--color-ink)', letterSpacing: '-0.04em' }}>{trait.label1}</span>
+                {/* Left value */}
+                <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
+                {/* Divider */}
+                <span style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '1.1rem', padding: '0 2px' }}>/</span>
+                {/* Right value */}
+                <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
+                {/* Right label */}
+                <span style={{ fontSize: '1.1rem', fontWeight: '500', color: 'var(--color-ink-light)', width: '68px', textAlign: 'right', letterSpacing: '-0.04em' }}>{trait.label2}</span>
               </div>
             ))}
-          </div>
         </div>
 
         {/* COLUMN 2: Attributes, Distinctive Features & Skills */}
@@ -331,36 +341,45 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Section: Skills (COMMON) */}
           <div className="sheet-ribbon">
-            <h3>기본 모험 기술</h3>
+            <h3>기본 모험 기술 — COMMON</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginBottom: '16px' }}>
             {commonSkills.map(skill => (
-              <div key={skill.key} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
-                <span className="form-label" style={{ fontSize: '1.15rem', color: 'var(--color-ink)' }}>{skill.label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                  <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
-                </div>
+              <div key={skill.key} style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto auto',
+                alignItems: 'center',
+                gap: '8px',
+                borderBottom: '1px solid rgba(195,161,101,0.18)',
+                padding: '5px 0'
+              }}>
+                <span className="form-label" style={{ fontSize: '1.12rem', color: 'var(--color-ink)' }}>{skill.label}</span>
+                <input type="number" className="form-input" style={{ width: '48px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'solid', borderBottomColor: 'var(--color-crimson)', fontWeight: '600' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
               </div>
             ))}
           </div>
 
           {/* Section: Skills (COURTLY) */}
           <div className="sheet-ribbon">
-            <h3>기사 & 궁정 예법 기술</h3>
+            <h3>궁정 예법 기술 — COURTLY</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
             {courtlySkills.map(skill => (
-              <div key={skill.key} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
-                <span className="form-label" style={{ fontSize: '1.15rem', color: 'var(--color-ink)' }}>{skill.label}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                  <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-                  <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
-                </div>
+              <div key={skill.key} style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr auto auto',
+                alignItems: 'center',
+                gap: '8px',
+                borderBottom: '1px solid rgba(195,161,101,0.18)',
+                padding: '5px 0'
+              }}>
+                <span className="form-label" style={{ fontSize: '1.12rem', color: 'var(--color-ink)' }}>{skill.label}</span>
+                <input type="number" className="form-input" style={{ width: '48px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'solid', borderBottomColor: 'var(--color-crimson)', fontWeight: '600' }} value={character?.skills?.[skill.key] || 0} onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[skill.key] || false} onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
               </div>
             ))}
           </div>
-
         </div>
 
         {/* COLUMN 3: Shield, Glory, Current Hit Points & Combat Skills */}
@@ -405,8 +424,9 @@ export default function CharacterSheet({ character, setCharacter }) {
               { key: "hateSarasens", label: "이교도에 대한 증오", defaultVal: 12 },
               { key: "loveGod", label: "신에 대한 사랑", defaultVal: 15 }
             ].map(passion => (
-              <div key={passion.key} className="sheet-line-item">
-                <span className="form-label" style={{ fontSize: '1.02rem' }}>{passion.label}</span>
+              <div key={passion.key} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input type="checkbox" className="exp-checkbox" checked={character?.passionsChecked?.[passion.key] || false} onChange={e => handleInputChange('passionsChecked', passion.key, e.target.checked)} />
+                <span className="form-label" style={{ fontSize: '1.02rem', flex: 1 }}>{passion.label}</span>
                 <input 
                   type="number" 
                   className="form-input" 
@@ -507,42 +527,58 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="sheet-ribbon">
             <h3>전투 기술</h3>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
-            <div className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
-              <span className="form-label" style={{ fontSize: '1.15rem' }}>전술 (Battle)</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
-              </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', marginBottom: '20px' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr auto auto',
+              alignItems: 'center',
+              gap: '8px',
+              borderBottom: '1px solid rgba(195,161,101,0.18)',
+              padding: '5px 0'
+            }}>
+              <span className="form-label" style={{ fontSize: '1.12rem' }}>전술 (Battle)</span>
+              <input type="number" className="form-input" style={{ width: '48px', textAlign: 'center', fontSize: '1.2rem', borderBottomColor: 'var(--color-crimson)', fontWeight: '600' }} value={character?.skills?.battle || 0} onChange={e => handleInputChange('skills', 'battle', parseInt(e.target.value) || 0)} />
+              <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.battle || false} onChange={e => handleInputChange('skillsChecked', 'battle', e.target.checked)} />
             </div>
-            <div className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
-              <span className="form-label" style={{ fontSize: '1.15rem' }}>공성 (Siege)</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
-                <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
-              </div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr auto auto',
+              alignItems: 'center',
+              gap: '8px',
+              borderBottom: '1px solid rgba(195,161,101,0.18)',
+              padding: '5px 0'
+            }}>
+              <span className="form-label" style={{ fontSize: '1.12rem' }}>공성 (Siege)</span>
+              <input type="number" className="form-input" style={{ width: '48px', textAlign: 'center', fontSize: '1.2rem', borderBottomColor: 'var(--color-crimson)', fontWeight: '600' }} value={character?.skills?.siege || 0} onChange={e => handleInputChange('skills', 'siege', parseInt(e.target.value) || 0)} />
+              <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.siege || false} onChange={e => handleInputChange('skillsChecked', 'siege', e.target.checked)} />
             </div>
           </div>
 
           {/* Sub Section: Melee Weapons */}
-          <div style={{ borderLeft: '3px solid var(--color-crimson)', paddingLeft: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '1.05rem', color: 'var(--color-crimson)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '6px', letterSpacing: '0.05rem' }}>무기 및 전투 기술</span>
-            
+          <div className="sheet-ribbon" style={{ marginTop: '0' }}>
+            <h3>무기 및 전투 기술</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
             {["sword", "lance", "axe", "spear", "dagger", "bludgeon", "unarmed"].map(weaponKey => {
               const label = weaponKey === "sword" ? "검" :
                             weaponKey === "lance" ? "마창" :
                             weaponKey === "axe" ? "도끼" :
-                            weaponKey === "spear" ? "창 & 폴암" :
+                            weaponKey === "spear" ? "창 / 폴암" :
                             weaponKey === "dagger" ? "단검" :
                             weaponKey === "bludgeon" ? "둔기" :
                             "맨손 격투";
               return (
-                <div key={weaponKey} className="sheet-line-item" style={{ borderBottom: '1px dotted rgba(195,161,101,0.15)', paddingBottom: '4px' }}>
-                  <span className="form-label" style={{ fontSize: '1.1rem' }}>{label}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                    <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[weaponKey] || false} onChange={e => handleInputChange('skillsChecked', weaponKey, e.target.checked)} />
-                    <input type="number" className="form-input" style={{ width: '45px', textAlign: 'center', fontSize: '1.2rem', borderBottomStyle: 'dotted' }} value={character?.skills?.[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
-                  </div>
+                <div key={weaponKey} style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr auto auto',
+                  alignItems: 'center',
+                  gap: '8px',
+                  borderBottom: '1px solid rgba(195,161,101,0.18)',
+                  padding: '5px 0'
+                }}>
+                  <span className="form-label" style={{ fontSize: '1.12rem' }}>{label}</span>
+                  <input type="number" className="form-input" style={{ width: '48px', textAlign: 'center', fontSize: '1.2rem', borderBottomColor: 'var(--color-crimson)', fontWeight: '600' }} value={character?.skills?.[weaponKey] || 0} onChange={e => handleInputChange('skills', weaponKey, parseInt(e.target.value) || 0)} />
+                  <input type="checkbox" className="exp-checkbox" checked={character?.skillsChecked?.[weaponKey] || false} onChange={e => handleInputChange('skillsChecked', weaponKey, e.target.checked)} />
                 </div>
               );
             })}

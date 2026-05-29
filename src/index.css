@@ -123,25 +123,26 @@ body {
 }
 
 .auth-badge {
-  padding: 6px 12px;
+  padding: 5px 12px;
   border-radius: 2px;
-  font-size: 0.95rem;
+  font-size: 1.0rem;
   font-weight: bold;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-family: var(--font-korean);
   letter-spacing: -0.05em;
+  height: 36px;
 }
 
 .auth-badge.unconfigured {
-  background-color: rgba(124, 114, 103, 0.1);
+  background-color: rgba(107, 96, 83, 0.08);
   border: 1px solid var(--color-grey);
   color: var(--color-grey);
 }
 
 .auth-badge.offline {
-  background-color: rgba(124, 114, 103, 0.2);
+  background-color: rgba(107, 96, 83, 0.12);
   border: 1px solid var(--color-ink-light);
   color: var(--color-ink-light);
 }
@@ -197,17 +198,18 @@ body {
   z-index: 2;
 }
 
-/* Tutorial Text Style (Small gray text placed above tabs/views) */
+/* Tutorial Text Style */
 .tutorial-banner {
-  background-color: rgba(144, 27, 27, 0.02);
-  border-bottom: 1px dashed var(--color-crimson);
-  padding: 15px 30px;
-  font-size: 1.05rem;
-  color: var(--color-grey);
+  background-color: rgba(144, 27, 27, 0.04);
+  border-bottom: 1px solid var(--color-gold-light);
+  border-top: 1px solid var(--color-gold-light);
+  padding: 14px 22px;
+  font-size: 1.08rem;
+  color: var(--color-ink-light);
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .tutorial-banner p {
@@ -215,54 +217,57 @@ body {
 }
 
 .tutorial-banner-title {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-crimson);
   font-family: var(--font-gothic);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   text-transform: uppercase;
-  margin-bottom: 2px;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
 }
 
 /* Layout views */
 .main-content {
   flex: 1;
-  padding: 30px;
+  padding: 24px 30px;
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-/* Card layout - Transformed into the official sheet borderless section panels */
+/* Card layout - with subtle border for visual separation */
 .medieval-card {
-  background-color: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 10px;
-  margin-bottom: 25px;
+  background-color: rgba(255,255,255,0.35);
+  border: 1px solid var(--color-gold-light);
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  padding: 20px 22px;
+  margin-bottom: 20px;
   position: relative;
   width: 100%;
+  border-radius: 2px;
 }
 
 .medieval-card::before {
-  display: none; /* Removed boxed overlays */
+  display: none;
 }
 
 /* Authentic Crimson Ribbon Header from the official Character Sheet */
 .card-title {
   font-family: var(--font-gothic);
   color: var(--color-crimson);
-  font-size: 1.65rem;
+  font-size: 1.4rem;
   font-weight: 700;
   text-align: center;
   justify-content: center;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   border: none;
-  padding: 6px 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-gold-light);
   position: relative;
 }
 
@@ -285,70 +290,83 @@ body {
   background: linear-gradient(to left, transparent, var(--color-crimson));
 }
 
-/* Section Header Ribbons with Double Crimson Border lines */
+/* Section Header Ribbons — matching official crimson background style */
 .sheet-ribbon {
-  border-top: 2px solid var(--color-crimson);
-  border-bottom: 2px solid var(--color-crimson);
-  padding: 6px 0;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--color-crimson) 0%, #7b1212 100%);
+  border-top: 2px solid var(--color-gold);
+  border-bottom: 2px solid var(--color-gold);
+  padding: 6px 28px;
+  margin-top: 12px;
+  margin-bottom: 14px;
   text-align: center;
   position: relative;
+  box-shadow: 0 1px 4px rgba(144, 27, 27, 0.18);
 }
 
 .sheet-ribbon h3 {
   font-family: var(--font-gothic);
-  color: var(--color-crimson);
-  font-size: 1.65rem;
+  color: #fff;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
 }
 
 .sheet-ribbon::before,
 .sheet-ribbon::after {
-  content: '❖'; /* Gothic cross icon */
-  color: var(--color-crimson);
-  font-size: 0.8rem;
+  content: '❖';
+  color: var(--color-gold);
+  font-size: 0.7rem;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  opacity: 0.9;
 }
 
-.sheet-ribbon::before { left: 15px; }
-.sheet-ribbon::after { right: 15px; }
+.sheet-ribbon::before { left: 8px; }
+.sheet-ribbon::after { right: 8px; }
 
 /* 3-Column Layout matching the official sheet */
 .official-sheet-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 35px;
+  gap: 40px;
   width: 100%;
+  align-items: start;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .official-sheet-grid {
-    grid-template-columns: 1fr; /* Stack vertically on tablet/mobile */
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .official-sheet-grid {
+    grid-template-columns: 1fr;
     gap: 20px;
   }
 }
 
-/* Form Styles - Completely updated to the elegant "underlined input" style */
+/* Form Styles */
 .medieval-form-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
 .form-group-row {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .form-group-row label {
@@ -367,6 +385,7 @@ body {
   color: var(--color-ink);
   font-family: var(--font-korean);
   letter-spacing: -0.05em;
+  line-height: 1.4;
 }
 
 .form-group-row .form-label {
@@ -380,7 +399,7 @@ body {
   border-bottom: 1.5px solid var(--color-grey) !important;
   background-color: transparent !important;
   border-radius: 0 !important;
-  padding: 2px 5px !important;
+  padding: 4px 6px !important;
   color: var(--color-ink) !important;
   outline: none !important;
   font-family: 'Eulyoo 1945', serif !important;
@@ -388,6 +407,8 @@ body {
   letter-spacing: -0.05em !important;
   transition: border-bottom-color 0.2s !important;
   width: auto;
+  min-height: 36px;
+  line-height: 1.4;
 }
 
 .form-group-row .form-input {
@@ -396,7 +417,7 @@ body {
 
 .form-input:focus {
   border-bottom-color: var(--color-crimson) !important;
-  background-color: rgba(144, 27, 27, 0.015) !important;
+  background-color: rgba(144, 27, 27, 0.02) !important;
 }
 
 /* Gothic Shield Outline Box */
@@ -490,36 +511,51 @@ body {
 /* List group style for attributes / skills lines */
 .sheet-line-item {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  gap: 8px;
+}
+
+.sheet-line-item .form-label {
+  flex: 1;
+  line-height: 1.35;
 }
 
 /* Interactive elements */
 .exp-checkbox {
   appearance: none;
-  width: 14px;
-  height: 14px;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
   border: 1.5px solid var(--color-crimson);
-  border-radius: 2px; /* Square checkboxes from the official sheet */
+  border-radius: 2px;
   cursor: pointer;
   outline: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.18s;
+  background-color: transparent;
+}
+
+.exp-checkbox:hover {
+  background-color: rgba(144, 27, 27, 0.08);
 }
 
 .exp-checkbox:checked {
   background-color: var(--color-crimson);
+  border-color: var(--color-crimson);
 }
 
 .exp-checkbox:checked::after {
   content: '✓';
   color: white;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bold;
+  line-height: 1;
 }
 
 /* Animations */
