@@ -239,6 +239,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <span style={{ fontSize: '1.1rem', fontWeight: '500', color: 'var(--color-ink-light)', width: '68px', textAlign: 'right', letterSpacing: '-0.04em' }}>{trait.label2}</span>
               </div>
             ))}
+          </div>
         </div>
 
         {/* COLUMN 2: Attributes, Distinctive Features & Skills */}
