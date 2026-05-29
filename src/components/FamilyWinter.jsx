@@ -133,27 +133,27 @@ export default function FamilyWinter({ character, setCharacter }) {
           <div className="medieval-form-grid">
             <div className="form-group">
               <label className="form-label">가문 성씨 (Family Name)</label>
-              <input type="text" className="form-input" value={character.family.name} onChange={e => handleFamilyChange('name', e.target.value)} placeholder="예: Ardennes" />
+              <input type="text" className="form-input" value={character.family.name} onChange={e => handleFamilyChange('name', e.target.value)} placeholder="예: 아르덴 (Ardennes)" />
             </div>
             <div className="form-group">
               <label className="form-label">가문 가언 / 신조 (Motto)</label>
-              <input type="text" className="form-input" value={character.family.motto} onChange={e => handleFamilyChange('motto', e.target.value)} placeholder="예: Honor and Faith" />
+              <input type="text" className="form-input" value={character.family.motto} onChange={e => handleFamilyChange('motto', e.target.value)} placeholder="예: 명예와 신조 (Honor and Faith)" />
             </div>
             <div className="form-group" style={{ gridColumn: 'span 2' }}>
               <label className="form-label">전투 함성 (Battle Cry)</label>
-              <input type="text" className="form-input" value={character.family.battleCry} onChange={e => handleFamilyChange('battleCry', e.target.value)} placeholder="예: Montjoie Saint-Denis!" />
+              <input type="text" className="form-input" value={character.family.battleCry} onChange={e => handleFamilyChange('battleCry', e.target.value)} placeholder="예: 몽주아 생드니! (Montjoie Saint-Denis!)" />
             </div>
             <div className="form-group">
               <label className="form-label">가문 시조 (Founding Ancestor)</label>
-              <input type="text" className="form-input" value={character.family.ancestor} onChange={e => handleFamilyChange('ancestor', e.target.value)} />
+              <input type="text" className="form-input" value={character.family.ancestor} onChange={e => handleFamilyChange('ancestor', e.target.value)} placeholder="예: 고드프루아 경 (Sir Godefroy)" />
             </div>
             <div className="form-group">
               <label className="form-label">영지 / 고향 (Home Country)</label>
-              <input type="text" className="form-input" value={character.family.homeCountry} onChange={e => handleFamilyChange('homeCountry', e.target.value)} placeholder="Aquitaine" />
+              <input type="text" className="form-input" value={character.family.homeCountry} onChange={e => handleFamilyChange('homeCountry', e.target.value)} placeholder="예: 아키텐 (Aquitaine)" />
             </div>
             <div className="form-group">
               <label className="form-label">수호 성인 (Patron Saint)</label>
-              <input type="text" className="form-input" value={character.family.patronSaint} onChange={e => handleFamilyChange('patronSaint', e.target.value)} placeholder="St. Denis" />
+              <input type="text" className="form-input" value={character.family.patronSaint} onChange={e => handleFamilyChange('patronSaint', e.target.value)} placeholder="예: 성 데니스 (St. Denis)" />
             </div>
             <div className="form-group">
               <label className="form-label">가문 누적 명예 (Honor)</label>

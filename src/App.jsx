@@ -13,18 +13,18 @@ import './components/SettingsModal.css';
 // Initial state template representing the full blank Knight Character Sheet & Linage
 const initialCharacterState = {
   personal: {
-    name: "Sir Roland",
+    name: "롤랑 경 (Sir Roland)",
     age: 21,
     sonNumber: "첫째",
-    blessing: "Holy Aura",
-    homeland: "Francia",
-    home: "Aachen",
-    culture: "Frankish",
-    lineage: "Ardennes",
-    liegeLord: "Charlemagne",
-    fathersClass: "Vassal Knight",
-    personalClass: "Knight",
-    features: ["Scar on left cheek", "Piercing blue eyes", "Tall and slender frame"]
+    blessing: "성스러운 아우라 (Holy Aura)",
+    homeland: "프랑크 왕국 (Francia)",
+    home: "아헨 (Aachen)",
+    culture: "프랑크 (Frankish)",
+    lineage: "아르덴 (Ardennes)",
+    liegeLord: "샤를마뉴 대제 (Charlemagne)",
+    fathersClass: "봉신 기사 (Vassal Knight)",
+    personalClass: "기사 (Knight)",
+    features: ["왼쪽 뺨의 흉터", "날카로운 벽안", "크고 날씬한 체형"]
   },
   attributes: {
     siz: 14,
@@ -60,44 +60,44 @@ const initialCharacterState = {
   },
   skillsChecked: {}, 
   squire: {
-    name: "Pierre",
+    name: "피에르 (Pierre)",
     age: 14,
     siz: 10, dex: 10, str: 10, con: 10,
     firstAid: 8, horsemanship: 9, weapon: 8
   },
   horses: {
     warhorse: {
-      type: "Charger",
-      breed: "Frankish",
+      type: "돌격마 (Charger)",
+      breed: "프랑크 (Frankish)",
       damage: "4d6",
       move: 8,
       armor: 5,
       hp: 30
     },
-    other2: "Palfrey Riding Horse",
+    other2: "경량마 (Palfrey)",
     other3: "",
     other4: "",
     other5: ""
   },
   gear: {
-    armorShield: "Chainmail (10 Points) + Shield (+3)",
-    clothing: "£2 Courtyard Tunic",
-    personalGear: "Wooden crucifix, whetstone, linen roll",
-    homePossessions: "Chest of grain, two spare swords, tapestry of ancestor",
+    armorShield: "사슬갑옷 (10점) + 방패 (+3)",
+    clothing: "£2 상당의 궁정 튜닉",
+    personalGear: "나무 십자가, 숫돌, 리넨 천 뭉치",
+    homePossessions: "곡물 상자, 여분의 검 두 자루, 조상의 태피스트리",
     cash: 5,
     gloryThisGame: 100,
     gloryTotal: 1200
   },
   family: {
-    name: "Ardennes",
-    motto: "Honor and Faith (명예와 신조)",
-    battleCry: "Montjoie Saint-Denis! (몽주아 생 드니!)",
-    ancestor: "Sir Godefroy",
-    homeCountry: "Francia",
-    patronSaint: "St. Denis",
+    name: "아르덴 (Ardennes)",
+    motto: "명예와 신조 (Honor and Faith)",
+    battleCry: "몽주아 생드니! (Montjoie Saint-Denis!)",
+    ancestor: "고드프루아 경 (Sir Godefroy)",
+    homeCountry: "프랑크 왕국 (Francia)",
+    patronSaint: "성 데니스 (St. Denis)",
     honor: 16,
-    allies: "House of Monglane",
-    enemies: "House of Mayence (The Traitors)"
+    allies: "몽글란 가문 (House of Monglane)",
+    enemies: "마옌스 가문 (반역자 무리)"
   },
   journal: {
     768: {
@@ -250,6 +250,24 @@ export default function App() {
     }
   };
 
+  const handleCloudLoad = async () => {
+    if (!user) return;
+    const services = getFirebaseServices();
+    try {
+      const cloudData = await services.loadFromCloud(user.uid);
+      if (cloudData) {
+        if (window.confirm("클라우드 서버에서 백업 데이터를 가져와 현재 로컬 시트와 일지 정보를 모두 덮어쓰시겠습니까?")) {
+          setCharacter(cloudData);
+          alert("성공적으로 클라우드 백업 데이터를 가져와 복원하였습니다!");
+        }
+      } else {
+        alert("저장된 클라우드 백업 데이터를 찾을 수 없습니다.");
+      }
+    } catch (error) {
+      alert(`클라우드 가져오기 실패: ${error.message}`);
+    }
+  };
+
   return (
     <div className="app-container">
       
@@ -267,38 +285,183 @@ export default function App() {
         {/* Global Authentication Bar */}
         <div className="auth-bar">
           {firebaseStatus === 'UNCONFIGURED' ? (
-            <span className="auth-badge unconfigured">
-              <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#992222', marginRight: '4px' }}></span>
+            <span className="auth-badge unconfigured" style={{
+              backgroundColor: '#f9fafb',
+              border: '1px solid #e5e7eb',
+              color: '#9ca3af',
+              borderRadius: '12px',
+              padding: '6px 14px',
+              fontSize: '0.9rem',
+              fontWeight: 'bold',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              height: '38px'
+            }}>
+              <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#9ca3af' }}></span>
               미설정 (로컬 저장)
             </span>
           ) : firebaseStatus === 'CONFIGURED_OFFLINE' ? (
             <>
-              <span className="auth-badge offline">
-                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#6b665f', marginRight: '4px' }}></span>
+              <span className="auth-badge offline" style={{ 
+                backgroundColor: '#f3f4f6', 
+                border: '1px solid #d1d5db', 
+                color: '#4b5563', 
+                borderRadius: '12px',
+                padding: '6px 14px',
+                fontSize: '0.9rem',
+                fontWeight: 'bold',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                height: '38px'
+              }}>
+                <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#6b7280' }}></span>
                 오프라인 (미연동)
               </span>
-              <button className="btn-medieval" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={handleGoogleLogin}>
-                <LogIn size={14} style={{ marginRight: '4px' }} /> 구글 로그인
+              <button 
+                style={{ 
+                  backgroundColor: '#ffffff', 
+                  border: '1px solid #1f2937', 
+                  color: '#1f2937', 
+                  borderRadius: '10px',
+                  padding: '6px 16px',
+                  fontSize: '0.95rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  height: '38px',
+                  transition: 'all 0.2s',
+                  fontFamily: 'var(--font-korean)'
+                }} 
+                onClick={handleGoogleLogin}
+                onMouseOver={e => { e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
+                onMouseOut={e => { e.currentTarget.style.backgroundColor = '#ffffff'; }}
+              >
+                <LogIn size={15} /> 구글 로그인
               </button>
             </>
           ) : (
             <>
-              <span className="auth-badge online" style={{ backgroundColor: '#e8f5e9', border: '1px solid #2e7d32', color: '#2e7d32' }}>
-                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#2e7d32', marginRight: '4px' }}></span>
-                동기화 중 ({user?.displayName || "이준형"})
+              {/* CLOUD SYNC (이준형) Badge */}
+              <span className="auth-badge online" style={{ 
+                backgroundColor: '#f1f3f1', 
+                border: '1px solid #e2e8f0', 
+                color: '#111827', 
+                borderRadius: '12px',
+                padding: '6px 14px',
+                fontSize: '0.9rem',
+                fontWeight: 'bold',
+                fontFamily: 'var(--font-english)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                height: '38px'
+              }}>
+                <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
+                CLOUD SYNC ({user?.displayName || "이준형"})
               </span>
-              <button className="btn-medieval btn-medieval-primary" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={handleCloudSave}>
-                <Cloud size={14} style={{ marginRight: '4px' }} /> 클라우드 백업
+
+              {/* 올리기 (Upload) Button */}
+              <button 
+                onClick={handleCloudSave}
+                style={{ 
+                  backgroundColor: '#123524', 
+                  border: '1px solid #123524', 
+                  color: '#ffffff', 
+                  borderRadius: '10px',
+                  padding: '6px 16px',
+                  fontSize: '0.95rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  height: '38px',
+                  transition: 'all 0.2s',
+                  fontFamily: 'var(--font-korean)'
+                }}
+                onMouseOver={e => { e.currentTarget.style.backgroundColor = '#0e291b'; }}
+                onMouseOut={e => { e.currentTarget.style.backgroundColor = '#123524'; }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>📬</span> 올리기
               </button>
-              <button className="btn-medieval" style={{ padding: '6px 12px', fontSize: '0.85rem', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }} onClick={handleLogout}>
-                <LogOut size={14} style={{ marginRight: '4px' }} /> 로그아웃
+
+              {/* 가져오기 (Download) Button */}
+              <button 
+                onClick={handleCloudLoad}
+                style={{ 
+                  backgroundColor: '#f3f4f6', 
+                  border: '1px solid #1f2937', 
+                  color: '#1f2937', 
+                  borderRadius: '10px',
+                  padding: '6px 16px',
+                  fontSize: '0.95rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  height: '38px',
+                  transition: 'all 0.2s',
+                  fontFamily: 'var(--font-korean)'
+                }}
+                onMouseOver={e => { e.currentTarget.style.backgroundColor = '#e5e7eb'; }}
+                onMouseOut={e => { e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
+              >
+                <span style={{ fontSize: '1.1rem' }}>📫</span> 가져오기
+              </button>
+
+              {/* 로그아웃 (Logout) Button */}
+              <button 
+                onClick={handleLogout}
+                style={{ 
+                  backgroundColor: '#fff5f5', 
+                  border: '1px solid #fca5a5', 
+                  color: '#ef4444', 
+                  borderRadius: '10px',
+                  padding: '6px 16px',
+                  fontSize: '0.95rem',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  height: '38px',
+                  transition: 'all 0.2s',
+                  fontFamily: 'var(--font-korean)'
+                }}
+                onMouseOver={e => { e.currentTarget.style.backgroundColor = '#fee2e2'; }}
+                onMouseOut={e => { e.currentTarget.style.backgroundColor = '#fff5f5'; }}
+              >
+                로그아웃
               </button>
             </>
           )}
 
           {/* Settings gear icon always open to allow configuration */}
-          <button className="btn-medieval" style={{ padding: '6px 10px' }} onClick={() => setIsSettingsOpen(true)}>
-            <Settings size={16} />
+          <button 
+            style={{ 
+              backgroundColor: '#ffffff', 
+              border: '1px solid #1f2937', 
+              color: '#1f2937', 
+              borderRadius: '10px',
+              padding: '6px 10px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '38px',
+              width: '38px',
+              transition: 'all 0.2s'
+            }} 
+            onClick={() => setIsSettingsOpen(true)}
+            onMouseOver={e => { e.currentTarget.style.backgroundColor = '#f3f4f6'; }}
+            onMouseOut={e => { e.currentTarget.style.backgroundColor = '#ffffff'; }}
+          >
+            <Settings size={18} />
           </button>
         </div>
       </div>

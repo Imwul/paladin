@@ -1,220 +1,220 @@
 /**
  * Chronology data for the Paladin Companion (768 AD - 814 AD).
- * Key events are populated with proper noun translations following the "English(한글)" pattern.
+ * Fully localized in Korean for immersive storytelling.
  */
 export const chronologyData = [
   {
     year: 768,
-    title: "The Birth of a Reign (제국의 탄생)",
-    summary: "King Pepin the Short(페팽) dies. The realm is divided between his sons Charlemagne(샤를마뉴) and Carloman(카를로망). Diss dissident nobles like Duke Waifer(와이페르) are suppressed in Aquitaine(아키텐).",
-    details: "King Pepin(페팽)’s death creates a dual kingship. Charlemagne(샤를마뉴) rules the north and west from Noyon(누아용), while Carloman(카를로망) rules the south and east from Soissons(수아송). Tensions immediately simmer between the brothers as Waifer(와이페르)’s remaining loyalists stir trouble in Aquitaine(아키텐).",
+    title: "제국의 탄생 (The Birth of a Reign)",
+    summary: "피핀 단신왕이 사망합니다. 프랑크 왕국은 그의 아들들인 샤를마뉴와 카를로망에게 분할됩니다. 아키텐에서는 와이페르 공작의 세력을 따르는 반란 영주들이 진압됩니다.",
+    details: "피핀 왕의 서거로 공동 왕정이 시작됩니다. 샤를마뉴는 누아용을 중심으로 북부와 서부를 지배하며, 카를로망은 수아송을 중심으로 남부와 동부를 통치합니다. 와이페르 공작의 잔존 세력들이 아키텐에서 소요를 일으키자 두 형제 기사 사이에 미묘한 긴장감이 감돌기 시작합니다.",
     events: [
-      { type: "War", text: "Aquitaine Campaign: Charlemagne(샤를마뉴) begins building the fortress of Fronsac(프롱삭) to pacify the rebellious Aquitainians(아키텐인)." },
-      { type: "Court", text: "The brothers are crowned separately, showcasing the division in Frankish(프랑크) unity." }
+      { type: "War", text: "아키텐 원정: 샤를마뉴는 아키텐의 반역 세력을 진압하기 위해 프롱삭 요새를 건설하기 시작합니다." },
+      { type: "Court", text: "형제는 각자 대관식을 치르며 프랑크 제국의 단합된 전선에 분열을 노출시킵니다." }
     ]
   },
   {
     year: 769,
-    title: "Aquitainian Rebellion (아키텐의 반란)",
-    summary: "The old rebel Waifer(와이페르)'s father, Hunald II(위날드 2세), leads a final revolt in Aquitaine(아키텐). Charlemagne(샤를마뉴) marches south alone after Carloman(카를로망) refuses to help.",
-    details: "Hunald II(위날드 2세) attempts to reclaim the duchy but finds little support. Charlemagne(샤를마뉴) hunts him down, forcing Lupo II(루포 2세), Duke of Gascony(가스코뉴), to surrender Hunald II(위날드 2세) and swear loyalty to the Frankish(프랑크) throne.",
+    title: "아키텐의 반란 (Aquitainian Rebellion)",
+    summary: "과거 반역을 주도했던 와이페르의 부친 위날드 2세가 아키텐에서 최후의 봉기를 일으킵니다. 카를로망이 지원을 거부하자, 샤를마뉴는 홀로 남하하여 원정길에 오릅니다.",
+    details: "위날드 2세가 아키텐 공국을 탈환하려 시도했으나 지지를 얻지 못합니다. 샤를마뉴는 그를 끝까지 추격하였고, 가스코뉴의 루포 2세 공작은 위날드 2세를 양도하며 프랑크 왕좌에 충성을 서약합니다.",
     events: [
-      { type: "War", text: "Solo campaign by Charlemagne(샤를마뉴) in Aquitaine(아키텐). Lupo II(루포 2세) yields the rebels." },
-      { type: "Intrigue", text: "The rift between Charlemagne(샤를마뉴) and Carloman(카를로망) widens significantly due to Carloman(카를로망)'s refusal of military aid." }
+      { type: "War", text: "샤를마뉴의 독단적인 아키텐 영토 소탕 작전. 루포 2세가 반역자 신병을 인도합니다." },
+      { type: "Intrigue", text: "카를로망의 군사 지원 거절로 인해 샤를마뉴와 카를로망 형제 사이의 균열이 걷잡을 수 없이 깊어집니다." }
     ]
   },
   {
     year: 770,
-    title: "Lombard Matchmaking (롬바르드와의 정략결혼)",
-    summary: "Queen Mother Bertrada(베르트라다) travels to Italy(이탈리아) and brokers an alliance. Charlemagne(샤를마뉴) marries Desiderata(데시데라타), daughter of King Desiderius(데시데리우스) of the Lombards(롬바르드).",
-    details: "The marriage is meant to bring peace but angers Pope Stephen III(스테파노 3세), who fears Lombard(롬바르드) encirclement. The alliance is temporary and highly unstable.",
+    title: "롬바르드와의 정략결혼 (Lombard Matchmaking)",
+    summary: "대비 베르트라다가 이탈리아로 직접 여정을 떠나 정략결혼 동맹을 성사시킵니다. 샤를마뉴는 롬바르드의 왕 데시데리우스의 딸인 데시데라타와 백년가약을 맺습니다.",
+    details: "이 정략결혼은 평화를 보장하기 위함이었으나, 롬바르드 왕국에 포위당할 것을 염려한 교황 스테파노 3세의 심기를 거스릅니다. 이 동맹은 극히 불안정하고 한시적이었습니다.",
     events: [
-      { type: "Court", text: "Charlemagne(샤를마뉴) marries Desiderata(데시데라타) in a grand court assembly." },
-      { type: "Intrigue", text: "Gerberga(게르베르가) marries Carloman(카를로망) to balance the geopolitical scale." }
+      { type: "Court", text: "샤를마뉴는 성대하게 소집된 궁정 의회에서 데시데라타와 결혼식을 올립니다." },
+      { type: "Intrigue", text: "지정학적 힘의 균형을 맞추기 위해 게르베르가가 카를로망과 혼인합니다." }
     ]
   },
   {
     year: 771,
-    title: "Sole Ruler of the Franks (프랑크의 유일한 군주)",
-    summary: "King Carloman(카를로망) dies unexpectedly. Charlemagne(샤를마뉴) acts swiftly to annex his brother’s lands, forcing Carloman(카를로망)’s widow Gerberga(게르베르가) to flee to Pavia(파비아).",
-    details: "Carloman(카를로망) dies at Samoussy(사무시). Charlemagne(샤를마뉴) immediately gathers Carloman(카를로망)’s barons, including Abbot Fulrad(풀라드) and Count Bernard(베르나르), securing their oaths. Gerberga(게르베르가) flees to Italy(이탈리아) seeking refuge with King Desiderius(데시데리우스). Charlemagne(샤를마뉴) repudiates Desiderata(데시데라타) and marries Hildegard(힐데가르트) of Swabia(슈바벤).",
+    title: "프랑크의 유일한 군주 (Sole Ruler of the Franks)",
+    summary: "카를로망 왕이 예상치 못하게 서거합니다. 샤를마뉴는 신속히 대처하여 형제의 영토를 병합하고, 카를로망의 미망인 게르베르가는 파비아로 망명길에 오릅니다.",
+    details: "카를로망이 사무시에서 급사합니다. 샤를마뉴는 풀라드 대수도원장과 베르나르 백작을 비롯한 형제의 가신 바론들을 신속히 소집하여 충성 서약을 받아냅니다. 게르베르가는 아이들과 함께 데시데리우스 왕의 가호를 구하며 이탈리아로 피신합니다. 샤를마뉴는 데시데라타와의 파경을 선언하고 슈바벤의 힐데가르트와 혼인합니다.",
     events: [
-      { type: "Court", text: "Charlemagne(샤를마뉴) crowned sole King of the Franks(프랑크) at Corbie(코르비)." },
-      { type: "Intrigue", text: "Desiderata(데시데라타) is sent back to Lombardy(롬바르디아) in disgrace, triggering a blood feud." }
+      { type: "Court", text: "샤를마뉴가 코르비에서 프랑크 제국의 단독 군주로 추대되어 왕관을 씁니다." },
+      { type: "Intrigue", text: "데시데라타는 롬바르디아로 굴욕적으로 송환되었으며, 이는 훗날 거대한 피의 혈투의 도화선이 됩니다." }
     ]
   },
   {
     year: 772,
-    title: "The Saxon Wars Begin (작센 전쟁의 포문)",
-    summary: "Charlemagne(샤를마뉴) launches a retaliatory campaign against the pagan Saxons(작센). The sacred pillar Irminsul(이르민술) is destroyed, sparking decades of blood-drenched warfare.",
-    details: "Responding to Saxon(작센) raids on the church at Deventer(데벤터르), Charlemagne(샤를마뉴) leads the host to Eresburg(에레스부르크) and marches to the deep forests where the pagan Irminsul(이르민술) pillar stands. He destroys the idol and distributes its massive treasury of gold and silver to his knights.",
+    title: "작센 전쟁의 포문 (The Saxon Wars Begin)",
+    summary: "샤를마뉴는 이교도 작센족에 대한 대대적인 보복 캠페인을 시작합니다. 이교도들의 성물인 이르민술 거대 신목 기둥이 파괴되며, 향후 수십 년에 걸친 피비린내 나는 전쟁이 열립니다.",
+    details: "데벤터르 교회에 대한 작센족의 침략 보복으로 샤를마뉴는 성기사들을 소집해 에레스부르크로 출정합니다. 이교의 성물인 이르민술 기둥이 서 있는 깊은 숲 속으로 진격하여 우상을 무너뜨리고, 그곳에 비축된 막대한 황금과 은화 보물을 기사들에게 분배합니다.",
     events: [
-      { type: "War", text: "Destruction of the Irminsul(이르민술). Eresburg(에레스부르크) falls to the Franks(프랑크)." },
-      { type: "Lore", text: "Widukind(위두킨트) emerges as the fierce chieftain rallying the Westphalian(베스트팔렌) Saxons(작센)." }
+      { type: "War", text: "이르민술 파괴. 에레스부르크 요새가 프랑크 성기사들의 손에 함락됩니다." },
+      { type: "Lore", text: "위두킨트가 베스트팔렌 작센족을 결집하는 냉혹한 지도자로 역사 전면에 등장합니다." }
     ]
   },
   {
     year: 773,
-    title: "The Siege of Pavia (파비아 공성전)",
-    summary: "Pope Hadrian I(하드리아노 1세) calls for aid. Charlemagne(샤를마뉴) invades Italy(이탈리아) to confront King Desiderius(데시데리우스), initiating the Siege of Pavia(파비아).",
-    details: "Desiderius(데시데리우스) demands that the Pope crown Gerberga(게르베르가)’s sons as kings. Charlemagne(샤를마뉴) gathers his hosts at Geneva(제네바), crosses the Alps(알프스) via the Cenis(스니) pass, and breaks the Lombard(롬바르드) defenses at the Clusa(클루사). The main army lays siege to Pavia(파비아), while a detachment blockades Verona(베로나).",
+    title: "파비아 공성전 (The Siege of Pavia)",
+    summary: "교황 하드리아노 1세가 구원 요청을 보냅니다. 샤를마뉴는 데시데리우스 왕과 전면 대결을 선포하고 이탈리아로 진격하여 파비아 공성전의 서막을 올립니다.",
+    details: "데시데리우스는 교황에게 게르베르가의 아들들을 왕으로 책봉하라고 핍박합니다. 샤를마뉴는 제네바에 성기사 대군을 집결시키고 알프스 스니 고개를 넘어 클루사에서 롬바르드군 전선에 파멸을 선사합니다. 주력군은 파비아를 포위하고, 별동대는 베로나를 봉쇄합니다.",
     events: [
-      { type: "War", text: "Lombard Campaign: Battle of the Clusa. Ogier the Dane(오지에) breaks out from the Lombard(롬바르드) ranks to return to Charlemagne(샤를마뉴)." },
-      { type: "Intrigue", text: "Bradamant(브라다만테) is knighted at court after proving her immense valor in the skirmishes." }
+      { type: "War", text: "롬바르드 전역: 클루사의 결투. 덴마크인 오지에가 롬바르드군 전선을 뚫고 탈출하여 샤를마뉴에게 귀환합니다." },
+      { type: "Intrigue", text: "브라다만테가 전투에서 가공할 만한 무공을 증명한 후 어전에서 정식 기사 작위를 수여받습니다." }
     ]
   },
   {
     year: 774,
-    title: "Lombardy Conquered (롬바르디아의 함락)",
-    summary: "Pavia(파비아) falls. Desiderius(데시데리우스) is deposed. Charlemagne(샤를마뉴) crowns himself King of the Lombards(롬바르드), cementing Frankish(프랑크) dominance over Italy(이탈리아).",
-    details: "During Easter, Charlemagne(샤를마뉴) visits Rome(로마) to confirm the Donation of Pepin. Pavia(파비아) surrenders due to plague. Desiderius(데시데리우스) is exiled to the monastery of Corbie(코르비). Charlemagne(샤를마뉴) assumes the iron crown. Saxons(작센) take advantage of his absence to recapture Eresburg(에레스부르크).",
+    title: "롬바르디아의 함락 (Lombardy Conquered)",
+    summary: "파비아가 무너지고 데시데리우스 왕이 왕좌를 박탈당합니다. 샤를마뉴는 직접 롬바르드 국왕을 겸임하며 이탈리아 전역에 프랑크 제국의 철권 지배를 천명합니다.",
+    details: "부활절 기간 중 샤를마뉴는 로마를 방문하여 피핀의 기증을 재확인합니다. 파비아 성안에 역병이 창궐하며 도성은 항복합니다. 데시데리우스는 코르비 수도원으로 유배 길에 오르고 샤를마뉴는 철왕관을 머리에 얹습니다. 이 틈을 타 작센족은 에레스부르크를 탈환하는 이중 기습을 가합니다.",
     events: [
-      { type: "Court", text: "Charlemagne(샤를마뉴) crowned King of the Lombards(롬바르드)." },
-      { type: "War", text: "Saxon reprisal: The pagan Saxons(작센) burn the monastery at Fritzlar(프리츠라르)." }
+      { type: "Court", text: "샤를마뉴가 롬바르드 왕국의 공식 군주로 대관합니다." },
+      { type: "War", text: "작센의 역습: 분노한 이교도 작센족이 프리츠라르의 수도원을 방화합니다." }
     ]
   },
   {
     year: 775,
-    title: "The Great Saxon Reprisal (작센의 재격돌)",
-    summary: "Charlemagne(샤를마뉴) leads three columns into Saxony(작센), capturing Sigiburg(시기부르크) and Brunisberg(브루니스베르크). Widukind(위두킨트) mounts guerrilla defenses.",
-    details: "The Frankish(프랑크) army marches into Eastphalia(오스트팔렌) and Engria(엔그리아). Though Charlemagne(샤를마뉴) achieves several tactical victories, Widukind(위두킨트)'s Westphalians(베스트팔렌인) launch devastating counter-ambushes, killing many Frankish(프랑크) rearguard knights.",
+    title: "작센의 재격돌 (The Great Saxon Reprisal)",
+    summary: "샤를마뉴는 작센 영토로 세 개의 원정 종대를 투입하여 시기부르크와 브루니스베르크를 함락시킵니다. 작센의 위두킨트는 게릴라전으로 끈질기게 저항합니다.",
+    details: "프랑크 대군이 오스트팔렌과 엔그리아로 진격합니다. 샤를마뉴는 전술적 대승을 거두었으나, 위두킨트의 베스트팔렌 전사들은 매복 습격을 감행하여 퇴각하던 프랑크 후방 기사들을 대거 학살합니다.",
     events: [
-      { type: "War", text: "Capture of Sigiburg(시기부르크). Widukind(위두킨트) wages a hit-and-run shadow war." },
-      { type: "Lore", text: "The legendary events of Orlando Innamorato(올란도 인나모라토) commence, with Astolfo(아스톨포) and Renaud(르노) pursuing the exotic princess Angelica(안젤리카) in the Ardennes(아르덴) forest." }
+      { type: "War", text: "시기부르크 요새 함락. 위두킨트는 어둠 속에 숨어 게릴라 그림자 전쟁을 개시합니다." },
+      { type: "Lore", text: "아스톨포와 르노가 아르덴 숲에서 신비로운 타타르 왕녀 안젤리카를 쫓는 전설적인 궁정 서사시 이야기들이 막을 올립니다." }
     ]
   },
   {
     year: 776,
-    title: "Rebellion in Friuli (프리울리의 반란)",
-    summary: "Duke Hrodgaud(로드가우트) of Friuli(프리울리) rebels in Italy(이탈리아). Charlemagne(샤를마뉴) rushes south, kills the duke in battle, and installs Frankish(프랑크) counts.",
-    details: "The Lombard(롬바르드) nobility attempts a coup while Charlemagne(샤를마뉴) is busy in the north. The lightning response of the Frankish(프랑크) king crushes the rebellion instantly. Hrodgaud(로드가우트) is slain, and cities like Treviso(트레비소) are heavily garrisoned.",
+    title: "프리울리의 반란 (Rebellion in Friuli)",
+    summary: "이탈리아의 프리울리 공작 로드가우트가 반역을 꾀합니다. 샤를마뉴는 단숨에 남하하여 전장에서 공작을 척살하고 영지를 수복하여 프랑크 직할 백작들을 수립합니다.",
+    details: "샤를마뉴가 북방 작센에서 피를 흘리는 틈을 타 롬바르드 귀족들이 쿠데타를 모의합니다. 그러나 샤를마뉴의 번개 같은 진격 앞에 반란 세력은 궤멸됩니다. 로드가우트는 단칼에 베어졌고, 트레비소를 비롯한 이탈리아 요충지마다 철저한 경비 수비대가 주둔하게 됩니다.",
     events: [
-      { type: "War", text: "Friuli Campaign: Siege and fall of Treviso(트레비소)." },
-      { type: "Court", text: "Establishment of Frankish(프랑크) counts across Northern Italy(이탈리아) to secure the borders." }
+      { type: "War", text: "프리울리 토벌: 트레비소 공성전과 도성의 함락." },
+      { type: "Court", text: "이탈리아 국경 요새화를 위해 북부 이탈리아 전역에 프랑크 직속 영지 백작들을 전진 배치합니다." }
     ]
   },
   {
     year: 777,
-    title: "The Assembly of Paderborn (파더보른 의회)",
-    summary: "A massive assembly is held in Saxony(작센). Many Saxons(작센) are baptized. Saracen(사라센) governors from Spain(스페인) arrive seeking an alliance against the Caliph of Cordoba(코르도바).",
-    details: "At Paderborn(파더보른), Charlemagne(샤를마뉴) showcases the submission of Saxony(작센). Widukind(위두킨트), however, refuses to attend and flees to the court of King Sigfred(지그프리드) of Denmark(덴마크). Governors Sulaiman al-Arabi(술라이만 알 아라비) of Barcelona(바르셀로나) offer to yield their strongholds to Charlemagne(샤를마뉴) in exchange for protection.",
+    title: "파더보른 의회 (The Assembly of Paderborn)",
+    summary: "작센 한가운데에서 사상 최대 규모의 대의회가 소집됩니다. 수많은 작센 세례자가 주님을 영접합니다. 에스파냐 영토의 사라센 총독들은 코르도바의 칼리프에 대항하기 위해 프랑크 동맹을 구걸합니다.",
+    details: "파더보른의 도성에서 샤를마뉴는 영광스럽게 작센의 복종을 대내외에 선포합니다. 그러나 굴복하지 않은 유일한 지도자 위두킨트는 덴마크 국왕 지그프리드의 궁정으로 피신하여 세력을 도모합니다. 바르셀로나의 총독 술라이만 알 아라비는 보호를 받는 대가로 사라고사 도성을 헌납하겠다는 제안을 내놓습니다.",
     events: [
-      { type: "Court", text: "First imperial-style assembly in Saxony(작센) at Karlsburg(카를스부르크/파더보른)." },
-      { type: "Intrigue", text: "Planning the Spanish Campaign. Roland(롤랑) advocates strongly for a holy crusade." }
+      { type: "Court", text: "카를스부르크(파더보른)에서 열린 작센 최초의 제국 공식 궁정 총회." },
+      { type: "Intrigue", text: "에스파냐 원정 모의. 성기사 롤랑은 이교도 소탕을 위한 성전 참여를 강력히 천명합니다." }
     ]
   },
   {
     year: 778,
-    title: "The Disaster of Roncevaux Pass (론세스바예스 전투)",
-    summary: "The Spanish Expedition ends in tragedy. The army fails to capture Saragossa(사라고사). On the retreat, the Basque(바스크) tribes ambush the rearguard, killing Roland(롤랑) and many Paladins.",
-    details: "Charlemagne(샤를마뉴) enters Spain(스페인) via the Pyrenees(피레네). Saragossa(사라고사) refuses to open its gates, and Suleiman(술레이만) is taken hostage but rescued by his sons. While retreating, Charlemagne(샤를마뉴) razes Pamplona(팜플로나) to secure the borders. In retaliation, the Basques(바스크인), joined by Saracens(사라센인), ambush the rearguard in the narrow Roncevaux Pass(론세스바예스). Count Roland(롤랑), Sir Oliver(올리비에), and Archbishop Turpin(튀르팽) perish in the epic battle.",
+    title: "론세스바예스 전투 (The Disaster of Roncevaux Pass)",
+    summary: "에스파냐 원정길은 비극적인 참사로 마감됩니다. 사라고사 함락에 실패하고 퇴각하는 길에 피레네 산맥의 바스크 부족들이 습격을 감행하여 성기사 롤랑과 수많은 원정대가 비장하게 전사합니다.",
+    details: "샤를마뉴는 피레네 산맥을 넘어 에스파냐 땅을 밟습니다. 그러나 사라고사는 성문을 꼭 굳게 닫고 항전합니다. 샤를마뉴는 국경 안전을 위해 팜플로나 성벽을 파괴하고 퇴각길에 오릅니다. 이에 복수하기 위해 이교도 세력과 결탁한 바스크 부족들은 좁고 험난한 론세스바예스 고개에서 프랑크의 후방 부대를 덮칩니다. 명장 롤랑 백작과 현명한 기사 올리비에, 그리고 튀르팽 대주도원장이 이 처절한 결전 속에서 장엄한 순교를 맞이합니다.",
     events: [
-      { type: "War", text: "Battle of Roncevaux Pass(론세스바예스): The legendary sacrifice of Roland(롤랑) and the blowing of the Olifant(올리판트) horn." },
-      { type: "Lore", text: "Charlemagne(샤를마뉴) executes the traitor Ganelon(가늘롱) in Paris(파리) after a judicial duel fought by Thierry(티에리) and Pinabel(피나벨)." }
+      { type: "War", text: "론세스바예스 전투: 성기사 롤랑의 마지막 연주와 성스러운 나팔 올리판트의 장엄한 메아리." },
+      { type: "Lore", text: "샤를마뉴는 파리 왕궁으로 귀환하여 성기사 결투를 통해 롤랑을 배신한 가늘롱을 참수형으로 사법 처단합니다." }
     ]
   },
   {
     year: 779,
-    title: "Saxon Fire and Tears (작센의 불길)",
-    summary: "Widukind(위두킨트) returns, burning settlements down to the Rhine(라인). Charlemagne(샤를마뉴) retaliates with utter ruthlessness, winning the battle of Bocholt(보홀트).",
-    details: "With Roland(롤랑) gone, the Saxons(작센) sense weakness. Widukind(위두킨트) leads Westphalian(베스트팔렌) and Eastphalian(오스트팔렌) warbands. Charlemagne(샤를마뉴) defeats them at Bocholt(보홀트) and marches through Westphalia(베스트팔렌), securing hostages and demanding tribute.",
+    title: "작센의 불길 (Saxon Fire and Tears)",
+    summary: "위두킨트가 돌아와 라인강 국경까지 불바다로 만듭니다. 노한 샤를마뉴는 자비 없는 냉혹함으로 맞섰으며 보홀트 전투에서 대승을 거둡니다.",
+    details: "용장 롤랑의 죽음을 틈타 작센인들이 기세를 올립니다. 위두킨트는 베스트팔렌과 오스트팔렌의 전사들을 규합해 습격을 감행합니다. 샤를마뉴는 보홀트 전역에서 적들의 전선을 분쇄하고 작센 전역을 파괴하며 인질과 세금을 갈취합니다.",
     events: [
-      { type: "War", text: "Battle of Bocholt: A decisive Frankish(프랑크) victory against the Saxon(작센) coaliton." }
+      { type: "War", text: "보홀트 전투: 작센 연합전선을 무너뜨린 프랑크 제국의 철저한 기병 승리." }
     ]
   },
   {
     year: 780,
-    title: "The Consolidation of Borders (국경의 안정)",
-    summary: "Charlemagne(샤를마뉴) organizes the administration of Saxony(작센) into missionary districts and crowns his young sons in Rome(로마) to secure succession.",
-    details: "Charlemagne(샤를마뉴) establishes the Saxon(작센) capitulary, forbidding pagan practices under pain of death. He also arranges for Pope Hadrian(하드리아노) to crown Pepin(페팽) as King of Italy(이탈리아) and Louis(루이) as King of Aquitaine(아키텐).",
+    title: "국경의 안정 (The Consolidation of Borders)",
+    summary: "샤를마뉴는 작센 영토에 기독교 선교 행정구를 설치하고, 왕위 계승을 확고히 다지기 위해 로마에서 그의 어린 아들들에게 금빛 왕관을 수여합니다.",
+    details: "샤를마뉴는 작센 법령을 선포하여 기독교를 거부하고 이교의 악습을 지속하는 자는 즉각 극형에 처하도록 규정합니다. 또한 교황 하드리아노를 통해 페팽을 이탈리아 왕으로, 경건왕 루이를 아키텐 왕으로 옹립하여 가문의 제위 기틀을 단단히 굳힙니다.",
     events: [
-      { type: "Court", text: "Coronation of Louis the Pious(경건왕 루이) and Pepin of Italy(이탈리아의 페팽) in Rome(로마)." },
-      { type: "Lore", text: "Renaud de Montauban(르노) returns to court but faces bitter disputes over family holdings, ultimately leading to his self-imposed exile." }
+      { type: "Court", text: "로마 성당에서 거행된 경건왕 루이와 이탈리아 왕 페팽의 영광스러운 왕관 책봉식." },
+      { type: "Lore", text: "몽토방의 르노가 왕궁으로 귀환하였으나 영지 소유권을 둘러싼 격렬한 불화 끝에 스스로 기사의 유랑 방랑길을 선택합니다." }
     ]
   },
   {
     year: 782,
-    title: "The Bloody Verdict of Verden (베르덴의 피빛 심판)",
-    summary: "Widukind(위두킨트) crushes a Frankish(프랑크) force at Süntel(륀텔). In a rage, Charlemagne(샤를마뉴) executes 4,500 Saxon(작센) rebels at the Massacre of Verden(베르덴).",
-    details: "While Charlemagne(샤를마뉴) is away, his generals are routed by Widukind(위두킨트) at the Süntel(쉬륀텔) hills. Enraged by the betrayal of the baptized Saxons(작센), Charlemagne(샤를마뉴) gathers the host at Verden(베르덴), demands the surrender of the rebel leaders, and orders the execution of 4,500 Saxon(작센) prisoners. Widukind(위두킨트) escapes back to Denmark(덴마크).",
+    title: "베르덴의 피빛 심판 (The Bloody Verdict of Verden)",
+    summary: "위두킨트가 륀텔 언덕에서 프랑크 군세를 물리칩니다. 격노한 샤를마뉴는 베르덴에서 사로잡은 작센인 반역자 4,500명의 참수형을 명하는 핏빛 심판을 내립니다.",
+    details: "샤를마뉴가 부재중인 틈을 타 프랑크 제국 장수들이 륀텔 언덕에서 위두킨트의 군세에 무참히 패배합니다. 세례를 약속해 놓고 배반한 이교도들의 비열함에 진노한 황제는 베르덴에 대군을 집결시키고 4,500명의 작센 포로들을 몰살시킵니다. 반란 수괴 위두킨트는 다시금 덴마크로 야반도주합니다.",
     events: [
-      { type: "War", text: "Battle of Süntel (Frankish defeat) and the subsequent Massacre of Verden(베르덴)." },
-      { type: "Lore", text: "The Capitulatio de partibus Saxoniae is strictly enforced, banning pagan burials and feasts." }
+      { type: "War", text: "륀텔 전투에서의 뼈아픈 참패와 이어진 베르덴의 핏빛 대학살 사건." },
+      { type: "Lore", text: "작센 법령이 최고 수준으로 강화되어 이교의 밤샘 축제나 장례 관습이 엄격히 금지됩니다." }
     ]
   },
   {
     year: 785,
-    title: "The Surrender of Widukind (위두킨트의 굴복)",
-    summary: "Widukind(위두킨트) recognizes the futility of resistance. He surrenders at Attigny(아티니) and accepts Christian baptism, ending the first phase of the Saxon Wars.",
-    details: "Charlemagne(샤를마뉴) wages winter campaigns, hunting Widukind(위두킨트) down. The chieftain agrees to negotiate. At Attigny(아티니), Widukind(위두킨트) and his brother-in-law Abbio(아비오) are baptized, with Charlemagne(샤를마뉴) serving as their godfather. A brief, blessed era of peace descends upon the empire.",
+    title: "위두킨트의 굴복 (The Surrender of Widukind)",
+    summary: "작센의 수장 위두킨트가 저항의 덧없음을 마주합니다. 그는 아티니 왕궁으로 나아와 무릎을 꿇고 세례를 청하였으며, 작센 전쟁의 참혹했던 1막이 막을 내립니다.",
+    details: "샤를마뉴는 피비린내 나는 겨울 전역을 멈추지 않고 위두킨트를 추적합니다. 지친 추장은 드디어 백기를 듭니다. 아티니 대궐에서 위두킨트와 그의 처남 아비오는 기독교 세례를 받았으며, 샤를마뉴 대제 스스로 대부를 자청합니다. 제국에 짧고 달콤한 평화가 찾아옵니다.",
     events: [
-      { type: "Court", text: "Baptism of Widukind(위두킨트) at Attigny(아티니). The Pope declares a universal feast of thanksgiving." }
+      { type: "Court", text: "아티니 왕궁에서 행해진 역사적인 위두킨트의 개종식. 교황은 전 유럽 교회가 감사의 성찬을 올리도록 선포합니다." }
     ]
   },
   {
     year: 788,
-    title: "The Annexation of Bavaria (바이에른의 병합)",
-    summary: "Duke Tassilo III(타실로 3세) of Bavaria(바이에른) is accused of treason and deposed. Bavaria(바이에른) is officially incorporated into the Frankish(프랑크) kingdom.",
-    details: "Tassilo III(타실로 3세), a cousin of Charlemagne(샤를마뉴), is accused of breaking his oaths and conspiring with the pagan Avars(아바르). He is forced to abdicate at the assembly of Ingelheim(잉겔하임) and sent to a monastery. Bavaria(바이에른)’s independence is brought to an end.",
+    title: "바이에른의 병합 (The Annexation of Bavaria)",
+    summary: "바이에른 공작 타실로 3세가 반역 및 적전 도주 혐의로 몰락합니다. 바이에른 영지는 공식적으로 프랑크 제국의 직할 영토로 합병됩니다.",
+    details: "샤를마뉴의 이종사촌인 타실로 3세는 이교도 아바르족과 밀통하고 왕국을 배신한 혐의로 탄핵당합니다. 잉겔하임 법정에서 퇴위를 강요당한 공작은 삭발을 당하고 수도원으로 영구 추방되었으며, 바이에른의 독립 국가 지위는 영원히 소멸됩니다.",
     events: [
-      { type: "Intrigue", text: "Trial and deposition of Duke Tassilo III(타실로 3세) at Ingelheim(잉겔하임)." }
+      { type: "Intrigue", text: "잉겔하임 의회에서 진행된 바이에른 타실로 3세 공작에 대한 엄격한 종교 사법 재판." }
     ]
   },
   {
     year: 791,
-    title: "The Campaign Against the Avars (아바르 원정)",
-    summary: "Charlemagne(샤를마뉴) launches a massive three-pronged offensive against the nomadic Avars(아바르) along the Danube(다뉴브) river.",
-    details: "The Avars(아바르), a powerful steppic horde, have raided borders for years. Charlemagne(샤를마뉴) leads the main Frankish(프랑크) host, while his son Pepin(페팽) invades from Italy(이탈리아). Disease decimates the Frankish(프랑크) horses, forcing a temporary retreat, but the Avar(아바르) defenses are critically breached.",
+    title: "아바르 원정 (The Campaign Against the Avars)",
+    summary: "샤를마뉴는 다뉴브 강 국경을 약탈하는 기마 유목민 아바르족을 격멸하기 위해 세 개의 강력한 철기 원정대를 출정시킵니다.",
+    details: "야만적인 아바르족은 오랫동안 제국의 변경 지대를 약탈해 왔습니다. 샤를마뉴는 주력 철기 기병대를 이끌고, 아들 페팽은 이탈리아에서 동시에 협공을 가합니다. 갑작스러운 역병으로 수많은 군마를 잃어 원정이 잠시 지체되었으나, 아바르족의 철통같은 방어 보루는 회복 불능으로 붕괴됩니다.",
     events: [
-      { type: "War", text: "Avar Crusade: Charlemagne(샤를마뉴) marches through the Enns(엔스) borderland." }
+      { type: "War", text: "아바르 십자군: 앙스 국경 지대를 지나 적들의 심장부로 돌격하는 프랑크 성기사 대열." }
     ]
   },
   {
     year: 796,
-    title: "The Looting of the Avar Ring (아바르 궁성의 약탈)",
-    summary: "Margrave Eric of Friuli(에리크) and King Pepin(페팽) sack the great Avar Ring(아바르 링). The immense accumulated treasures of the steppes are brought to Aachen(아헨).",
-    details: "An Avar(아바르) civil war weakens the horde. Eric of Friuli(에리크) leads the vanguard and penetrates the Avar Ring(아바르 링) - a giant circular series of fortifications. They capture the hoard. The gold, jewels, and silks are sent to Aachen(아헨) in fifteen massive wagons, forever altering the economy of Western Europe(유럽).",
+    title: "아바르 궁성의 약탈 (The Looting of the Avar Ring)",
+    summary: "프리울리 변경백 에리크와 이탈리아 국왕 페팽이 아바르족의 요새 링을 함락시킵니다. 약탈해 모은 막대한 전리품과 황금이 아헨 왕궁으로 끝없이 쏟아져 들어옵니다.",
+    details: "아바르 내부의 권력 암투로 적들의 지휘 체계가 붕괴됩니다. 변경백 에리크가 이끄는 선봉 철기대가 9겹의 요새로 감싸인 적들의 요새 '링'을 뚫고 들어가 보물 창고를 차지합니다. 황금과 보석, 비단이 실린 마차 15대가 아헨 궁성으로 입성하였으며, 이로 인해 서유럽 전역의 화폐 유통 질서가 요동치게 됩니다.",
     events: [
-      { type: "War", text: "Sack of the Ring. The power of the Avar Khaganate(아바르 카간국) is broken forever." },
-      { type: "Court", text: "Charlemagne(샤를마뉴) builds his permanent palace and Cathedral at Aachen(아헨)." }
+      { type: "War", text: "아바르 링 파괴. 강력했던 아바르 제국의 기세는 역사 속으로 완전히 흩어집니다." },
+      { type: "Court", text: "샤를마뉴가 아헨을 제국의 영구 도읍으로 선포하고 장엄한 아헨 대성당 건설을 개시합니다." }
     ]
   },
   {
     year: 800,
-    title: "The Imperial Coronation (신성로마제국 황제 대관식)",
-    summary: "On Christmas Day, Pope Leo III(레오 3세) crowns Charlemagne(샤를마뉴) as Holy Roman Emperor in St. Peter's Basilica(성베드로 성당) in Rome(로마).",
-    details: "Having traveled to Rome(로마) to investigate and clear Pope Leo III(레오 3세) of false charges brought by roman conspirators, Charlemagne(샤를마뉴) attends Christmas mass. As he kneels before the altar, the Pope places the golden crown on his head. The crowd chants: 'To Charles, the most pious Augustus, crowned by God, great and peace-giving Emperor, life and victory!'",
+    title: "신성로마제국 황제 대관식 (The Imperial Coronation)",
+    summary: "크리스마스 날 아침, 성 베드로 대성당에서 교황 레오 3세는 샤를마뉴의 머리에 황제의 황금 왕관을 씌우며 신성로마제국 황제의 영광을 널리 선포합니다.",
+    details: "로마 귀족들의 배신으로 고통받던 교황 레오 3세를 보호하고 그에 대한 무고함을 해명해 주기 위해 몸소 로마로 행차했던 샤를마뉴가 크리스마스 미사에 경건히 참석합니다. 그가 제단 앞에 한쪽 무릎을 꿇은 순간, 교황이 묵묵히 다가와 황금 황관을 수여합니다. 모인 만백성이 일제히 찬양합니다. '하느님으로부터 제관을 받으신 위대하고 평화를 사랑하는 로마인의 황제, 카롤루스 대제께 영광과 승리가 함께 하기를!'",
     events: [
-      { type: "Court", text: "Imperial Coronation of Charlemagne(샤를마뉴) in Rome(로마)." },
-      { type: "Lore", text: "The legendary Order of Paladins(성기사단) reaches its zenith of prestige and glory." }
+      { type: "Court", text: "로마 성당에서 치러진 카롤루스 대제의 역사적인 신성로마제국 초대 황제 대관 대례식." },
+      { type: "Lore", text: "신성한 12성기사단의 명성과 영예가 사상 최고의 절정에 오르게 됩니다." }
     ]
   },
   {
     year: 804,
-    title: "The Final Saxon Peace (작센과의 최종 평화)",
-    summary: "The Saxon Wars end. Charlemagne(샤를마뉴) signs the Treaty of Salz(살츠), finalizing terms and deporting the last stubborn Wigmodian(위그모디아) rebels.",
-    details: "After 32 years of campaigns, the final treaty is signed. The Saxons(작센) are granted equal status under the law with the Franks(프랑크), provided they remain baptized Christians. Charlemagne(샤를마뉴) deports remaining dissident clans to the interior of the empire, replacing them with loyal Obotrite(오보트리트) allies.",
+    title: "작센과의 최종 평화 (The Final Saxon Peace)",
+    summary: "길고 처절했던 작센 전쟁이 종식됩니다. 샤를마뉴 황제는 살츠 조약을 조인하고 끝까지 반란을 획책하던 위그모디아의 작센 세력을 제국 내부로 완전히 추방합니다.",
+    details: "무려 32년에 달했던 잔혹한 전쟁이 마침내 종지부를 찍습니다. 작센인들은 프랑크인들과 법적으로 동등한 권리를 인정받는 대가로 전원 진실한 주님의 세례를 받기로 맹세합니다. 잔존 반역 씨족들은 제국 깊숙이 이주시켰으며, 그 비어 있는 변경 방어선에는 동맹인 오보트리트 부족을 정착시킵니다.",
     events: [
-      { type: "Court", text: "Treaty of Salz(살츠): Universal reconciliation between Saxon(작센) and Frankish(프랑크) lineages." }
+      { type: "Court", text: "살츠 조약 체결: 작센과 프랑크 혈통 사이의 역사적인 영구 대화해와 평화 조약 성사." }
     ]
   },
   {
     year: 810,
-    title: "The Threat from the North (북방의 덴마크 위협)",
-    summary: "King Godfred(고드프리드) of Denmark(덴마크) launches a giant fleet to attack the Frisian(프리지아) coast. Queen Luitgard(루이트가르트) and Charlemagne's legendary warhorse die.",
-    details: "Godfred(고드프리드) builds the Danevirke(단네비르케) wall and challenges the Emperor. Charlemagne(샤를마뉴) prepares a massive expedition, but before a great battle takes place, Godfred(고드프리드) is assassinated by one of his own housecarls. The Danish threat recedes, but Charlemagne(샤를마뉴) mourns the loss of his wife Luitgard(루이트가르트) and his favorite warhorse.",
+    title: "북방의 덴마크 위협 (The Threat from the North)",
+    summary: "덴마크 국왕 고드프리드가 거대한 해군 전함을 거느리고 프리지아 국경을 침공합니다. 황후 루이트가르트와 황제의 애마가 서거하는 슬픔이 겹칩니다.",
+    details: "고드프리드는 단네비르케 장벽을 쌓고 프랑크 황제에게 정면 도전을 감행합니다. 황제는 친정을 단행하기 위해 성기사 대군을 동원했으나, 결전 직전 고드프리드 왕이 자신의 심복에게 피살당하는 급변 사태가 일어납니다. 북방의 군사적 먹구름은 일단 걷혔으나, 황제는 자애로웠던 황후 루이트가르트와 전쟁터를 누빈 최고의 애마를 잃고 깊은 우수에 잠깁니다.",
     events: [
-      { type: "War", text: "Danish war mobilization. Mobilizing a fleet along the Elbe(엘베) river." }
+      { type: "War", text: "덴마크 격퇴를 위한 황제의 대군 징집령. 엘베 강 물줄기를 따라 프랑크 전함들이 배치됩니다." }
     ]
   },
   {
     year: 814,
-    title: "The Death of the Emperor (황제의 서거)",
-    summary: "Emperor Charlemagne(샤를마뉴) dies of pleurisy at Aachen(아헨) at the age of 72. His son Louis the Pious(경건왕 루이) inherits the imperial crown.",
-    details: "Charlemagne(샤를마뉴) falls ill in January after bathing. He is buried in the Palace Chapel of Aachen(아헨) on the very day of his death. A golden sun set over the Frankish Empire(프랑크 제국), but his legends, his code of honor, and the exploits of his paladins will live on for a thousand years.",
+    title: "황제의 서거 (The Death of the Emperor)",
+    summary: "제국의 태양 카롤루스 황제가 72세를 일기로 아헨 왕궁에서 늑막염으로 붕괴합니다. 그의 경건한 아들 루이가 대통을 이어받아 황제의 관을 머리에 얹습니다.",
+    details: "엄동설한에 목욕을 다녀온 후 고열에 시달리던 샤를마뉴 황제가 1월의 차가운 새벽에 눈을 감습니다. 황제는 서거한 바로 그날 아헨 궁정 예배당 지하 묘역에 깊이 안장됩니다. 영광스러웠던 프랑크 대제국의 하늘 위로 붉은 석양이 지지만, 카롤루스 황제와 성기사들이 이 대지 위에 새긴 기사도의 신조와 찬란한 영웅 서사시는 천 년 동안 만인의 가슴속에 살아 숨 쉴 것입니다.",
     events: [
-      { type: "Court", text: "Burial of Charlemagne(샤를마뉴) in the Aachen Cathedral(아헨 대성당)." },
-      { type: "Lore", text: "End of the legendary Companion. The lineage is passed to the sons." }
+      { type: "Court", text: "아헨 대성당 지하 궁묘에 안치되는 로마인의 군주 샤를마뉴." },
+      { type: "Lore", text: "역사 연대기의 대단원. 영광스러웠던 성기사 전설의 마침표. 그 불멸의 기사도는 아들들과 후손들에게 면면히 승계됩니다." }
     ]
   }
 ];

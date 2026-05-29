@@ -78,7 +78,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
             <button 
               key={item.year} 
               className={`btn-medieval ${selectedYear === item.year ? 'btn-medieval-primary' : ''}`}
-              style={{ padding: '8px 16px', minWidth: '80px', flexShrink: 0, fontSize: '1.05rem', fontFamily: 'var(--font-english)' }}
+              style={{ padding: '8px 16px', minWidth: '80px', flexShrink: 0, fontSize: '1.15rem', fontFamily: 'var(--font-english)' }}
               onClick={() => handleYearChange(item.year)}
             >
               {item.year}
@@ -91,11 +91,11 @@ export default function ChronologyJournal({ character, setCharacter }) {
         
         {/* LORE PANEL */}
         <div className="medieval-card" style={{ display: 'flex', flexDirection: 'column' }}>
-          <h3 className="card-title" style={{ fontFamily: 'var(--font-english)', fontSize: '1.25rem' }}>
+          <h3 className="card-title" style={{ fontFamily: 'var(--font-english)', fontSize: '1.35rem' }}>
             <span><BookOpen size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} />{selectedYear}년 역사적 배경</span>
           </h3>
           
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '0.94rem', lineHeight: '1.6' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '15px', fontSize: '1.05rem', lineHeight: '1.6' }}>
             <div style={{ borderLeft: '3px solid var(--color-gold)', paddingLeft: '12px', fontStyle: 'italic', color: 'var(--color-ink-light)', fontWeight: 'bold' }}>
               {currentHistory.title}
             </div>
@@ -105,17 +105,17 @@ export default function ChronologyJournal({ character, setCharacter }) {
             </div>
 
             <div>
-              <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '4px', textTransform: 'uppercase' }}>정사 및 세부 야사</h4>
+              <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '1rem', marginBottom: '4px', textTransform: 'uppercase' }}>정사 및 세부 야사</h4>
               <p style={{ color: 'var(--color-ink-light)' }}>{currentHistory.details}</p>
             </div>
 
             {currentHistory.events && currentHistory.events.length > 0 && (
               <div>
-                <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '6px', textTransform: 'uppercase' }}>주요 전황 및 궁정 뉴스</h4>
+                <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1rem', marginBottom: '6px', textTransform: 'uppercase' }}>주요 전황 및 궁정 뉴스</h4>
                 <ul style={{ display: 'flex', flexDirection: 'column', gap: '6px', paddingLeft: '15px' }}>
                   {currentHistory.events.map((ev, idx) => (
-                    <li key={idx} style={{ fontSize: '0.9rem' }}>
-                      <strong style={{ color: 'var(--color-gold-dark)', fontFamily: 'var(--font-english)', fontSize: '0.82rem', textTransform: 'uppercase', marginRight: '6px' }}>
+                    <li key={idx} style={{ fontSize: '1rem' }}>
+                      <strong style={{ color: 'var(--color-gold-dark)', fontFamily: 'var(--font-english)', fontSize: '0.92rem', textTransform: 'uppercase', marginRight: '6px' }}>
                         [{ev.type === 'War' ? '전투' : ev.type === 'Court' ? '어전회의' : ev.type === 'Intrigue' ? '계략/음모' : '비화'}]
                       </strong>
                       {ev.text}
@@ -136,20 +136,20 @@ export default function ChronologyJournal({ character, setCharacter }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', flex: 1 }}>
             {existingJournal ? (
               <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid var(--color-gold-light)', padding: '15px', borderRadius: '2px', position: 'relative' }}>
-                <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '40px', fontFamily: 'var(--font-korean)' }}>
+                <p style={{ whiteSpace: 'pre-wrap', fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '40px', fontFamily: 'var(--font-korean)' }}>
                   {existingJournal.text}
                 </p>
                 <div style={{ display: 'flex', gap: '10px', position: 'absolute', bottom: '10px', right: '10px' }}>
                   <button 
                     className="btn-medieval" 
-                    style={{ padding: '4px 8px', fontSize: '0.78rem' }}
+                    style={{ padding: '4px 8px', fontSize: '0.88rem' }}
                     onClick={() => setJournalInput(existingJournal.text)}
                   >
                     일지 수정
                   </button>
                   <button 
                     className="btn-medieval" 
-                    style={{ padding: '4px 8px', fontSize: '0.78rem', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}
+                    style={{ padding: '4px 8px', fontSize: '0.88rem', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}
                     onClick={deleteJournalEntry}
                   >
                     <Trash2 size={12} /> 기록 소각
@@ -157,7 +157,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
                 </div>
               </div>
             ) : (
-              <div style={{ color: 'var(--color-grey)', fontStyle: 'italic', fontSize: '0.9rem', textAlign: 'center', padding: '20px 0' }}>
+              <div style={{ color: 'var(--color-grey)', fontStyle: 'italic', fontSize: '1rem', textAlign: 'center', padding: '20px 0' }}>
                 {selectedYear}년도에는 아직 작성된 기사의 모험담이 없습니다. 아래에 올해 있었던 치열한 성전을 적어 보세요!
               </div>
             )}
@@ -166,7 +166,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
               <label className="form-label">기사의 역사 일기장 작성</label>
               <textarea 
                 className="form-input" 
-                style={{ flex: 1, resize: 'none', fontFamily: 'var(--font-korean)', fontSize: '0.95rem' }} 
+                style={{ flex: 1, resize: 'none', fontFamily: 'var(--font-korean)', fontSize: '1.05rem' }} 
                 value={journalInput} 
                 onChange={e => setJournalInput(e.target.value)}
                 placeholder="여기에 모험 일기를 적어보세요... 예: 짙은 안개 속에서 피레네 산맥을 넘었다. 뒤쪽에서 바스크인들과 이교도들의 추격 함성이 메아리쳤고, 롤랑 님은 그의 올리판트 뿔나팔을 장대하게 불었다..."

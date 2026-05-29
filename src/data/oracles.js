@@ -5,82 +5,83 @@
 
 export const rollGrades = {
   CRITICAL: {
-    title: "Critical Success (대성공)",
-    desc: "Roll matches your Skill/Trait value exactly. The action is accomplished with glorious, cinematic style. If in combat, damage is doubled.",
+    title: "대성공",
+    desc: "주사위 눈이 기술/성향 점수와 완벽히 일치하거나 1이 나왔습니다. 극적인 대성공을 거두며, 전투 중이라면 피해량이 2배가 됩니다.",
     color: "#2e7d32"
   },
   SUCCESS: {
-    title: "Success (성공)",
-    desc: "Roll is less than your Skill/Trait value. You accomplish what you set out to do safely.",
+    title: "성공",
+    desc: "주사위 눈이 기술/성향 점수보다 작게 나왔습니다. 의도한 행동을 안전하고 완벽하게 완수해냅니다.",
     color: "#1b5e20"
   },
   FAILURE: {
-    title: "Failure (실패)",
-    desc: "Roll is greater than your Skill/Trait value. You fail to achieve your goal, but do not suffer major catastrophe.",
+    title: "실패",
+    desc: "주사위 눈이 기술/성향 점수보다 크게 나왔습니다. 목표를 이루지 못했으나, 치명적인 재앙은 피했습니다.",
     color: "#6b665f"
   },
   FUMBLE: {
-    title: "Fumble (대실패)",
-    desc: "Roll is exactly 20 (or 20 when skill is <= 20). You fail spectacularly, potentially dropping weapons, breaking tools, or suffering severe social embarrassment.",
+    title: "대실패",
+    desc: "주사위 눈이 자연수 20이 나왔습니다. 도구 파손, 마상 낙마, 극심한 사회적 망신 등 뼈아픈 악재를 겪습니다.",
     color: "#992222"
   }
 };
 
 export const soloScenariosRef = [
   {
-    name: "Crossroad Encounters (교차로에서의 조우)",
-    desc: "When traveling, roll d20 on the Crossroad table. Encounters vary from hermits requesting first aid to rival knights demanding a joust of honor.",
+    name: "교차로 방랑 조우 규칙",
+    desc: "길을 가다가 우연히 마주친 인물이나 사건을 결정합니다. 솔로 오라클 탭에서 d20을 굴려 결과를 확인하세요.",
     flow: [
-      "1-5: A weary pilgrim seeking food or First Aid.",
-      "6-10: A local peasant complaining of brigand activities.",
-      "11-15: A wandering Squire(종자) carrying letters of romance.",
-      "16-19: A Knight(기사) guarding a bridge, demanding a joust.",
-      "20: A Faerie(요정) castle appears, promising magic or tests of virtue."
+      "1-5: 치료나 식량을 구걸하는 피로에 지친 순례자 조우",
+      "6-10: 도적들의 행패를 고발하며 도움을 요청하는 영지 농민 조우",
+      "11-15: 연애 편지를 전달하는 방랑 종자 조우",
+      "16-19: 다리를 지키며 명예로운 마상 시합을 요구하는 라이벌 기사 조우",
+      "20: 기사로서의 도덕과 명예를 시험하는 신비로운 요정의 성 출현"
     ]
   },
   {
-    name: "The Joust (마상 창시합)",
-    desc: "Standard rules for challenging another knight. Resolve using Horsemanship and Lance skills.",
+    name: "마상 창시합 (Joust) 판정 흐름",
+    desc: "라이벌 기사와 명예를 겨루는 마상 창시합의 판정 방식입니다.",
     flow: [
-      "1. Both knights roll Lance(마창) vs Lance.",
-      "2. Compare outcomes: Critical vs Success, etc.",
-      "3. Suffer Damage based on enemy lance. Check SIZ(크기) for Knockdown(낙마) if damage exceeds your Knockdown value.",
-      "4. Unhorsed knights must continue on foot using Sword(검) or yield."
+      "1. 두 기사 모두 마창(Lance) 기술로 d20 주사위를 굴립니다.",
+      "2. 판정 결과를 대조합니다: 대성공 vs 성공, 성공 vs 실패 등",
+      "3. 승리한 쪽의 피해 주사위를 굴려 상대에게 대미지를 줍니다.",
+      "4. 피해량이 상대의 크기(SIZ)를 초과하면 상대는 낙마합니다.",
+      "5. 낙마한 기사는 항복하거나 검(Sword)을 뽑아 들고 지상전을 이어갑니다."
     ]
   },
   {
-    name: "The Feud (가문의 복수극)",
-    desc: "Your family's honor is threatened. Gather your kin, execute search rolls, and confront the enemy lineage.",
+    name: "가문의 불화 및 피의 복수극",
+    desc: "가문의 명예가 훼손되었을 때 친족을 모아 라이벌 가문에게 복수하는 규칙입니다.",
     flow: [
-      "1. Exhort Your Kin: Roll Love [Family] to recruit lineage men.",
-      "2. Reconnaissance: Roll Hunting or Awareness to track your rival.",
-      "3. Confrontation: Demanding Honor restitution or fighting a skirmish."
+      "1. 친족 소집: 가족에 대한 사랑 성향을 굴려 가문 기사들을 소집합니다.",
+      "2. 추적: 수렵(Hunting)이나 경계(Awareness)를 굴려 라이벌의 행방을 쫓습니다.",
+      "3. 대면: 명예로운 배상을 요구하거나 정면으로 무력 결투를 벌입니다."
     ]
   },
   {
-    name: "The Forest (깊은 숲에서의 미로)",
-    desc: "Venturing into dense forests like Ardennes(아르덴). Roll to avoid getting lost.",
+    name: "아르덴 숲 헤매기",
+    desc: "아르덴 숲과 같이 깊고 마법이 깃든 숲으로 진입했을 때의 조난 판정입니다.",
     flow: [
-      "1. Roll Hunting or Faerie Lore to navigate.",
-      "2. If fail: Suffer 1d6 days of travel delay and roll on the Forest Encounter Table.",
-      "3. If fumble: Enter the enchanted realm, losing track of years."
+      "1. 길 찾기: 수렵(Hunting)이나 요정 전설(Faerie Lore)을 굴려 길을 찾습니다.",
+      "2. 실패 시: 이동이 1d6일 지연되며 숲 무작위 만남 표를 굴려 진행합니다.",
+      "3. 대실패 시: 시간의 흐름을 잃어버리는 마법에 걸려 몇 년간 실종됩니다."
     ]
   },
   {
-    name: "Romance (로맨스와 구애)",
-    desc: "Pursuing a lady or lover in courts. Controlled by Courtly Skills, Traits (Chaste vs Lustful), and Amor Passion.",
+    name: "사랑의 구애 및 로맨스 단계",
+    desc: "궁정에서 귀부인이나 정인의 마음을 사로잡기 위한 연애 판정입니다.",
     flow: [
-      "1. Passionate Declaration: Roll Eloquence or Singig to impress.",
-      "2. The Essai (시련): The lady demands a quest (e.g., defeating a giant).",
-      "3. Consummation: Roll Amor to forge a lifelong bond."
+      "1. 사랑의 고백: 웅변(Eloquence)이나 가창(Singing)을 굴려 매력을 뽐냅니다.",
+      "2. 시련의 극복 (Essai): 상대방이 요구하는 영웅적인 퀘스트를 수행합니다.",
+      "3. 영원한 사랑: 사랑(Amor) 성향을 굴려 평생의 연인으로 맺어집니다."
     ]
   }
 ];
 
 export const yesNoOracle = [
-  { roll: "1-2", result: "No, and... (아니오, 그리고 설상가상으로...)", desc: "The answer is negative, and a negative twist occurs." },
-  { roll: "3-8", result: "No (아니오)", desc: "The answer is simply negative." },
-  { roll: "9-12", result: "Maybe / Yes with a catch (아마도 / 조건부 예)", desc: "The answer is ambiguous or requires a sacrifice/stipulation." },
-  { roll: "13-18", result: "Yes (예)", desc: "The answer is simply affirmative." },
-  { roll: "19-20", result: "Yes, and... (예, 그리고 금상첨화로...)", desc: "The answer is highly affirmative, and a positive bonus occurs." }
+  { roll: "1-2", result: "아니오 (설상가상으로...)", desc: "질문에 대한 답변이 부정적이며, 추가적인 최악의 악재나 장애물이 발생합니다." },
+  { roll: "3-8", result: "아니오", desc: "질문에 대한 답변이 부정적입니다." },
+  { roll: "9-12", result: "아마도 (조건부 예)", desc: "답변이 모호하거나 특정한 대가/조건을 치러야만 긍정적으로 작용합니다." },
+  { roll: "13-18", result: "예", desc: "질문에 대한 답변이 긍정적입니다." },
+  { roll: "19-20", result: "예 (금상첨화로...)", desc: "질문에 대한 답변이 매우 긍정적이며, 추가적인 행운이나 혜택이 뒤따릅니다." }
 ];
