@@ -52,8 +52,7 @@ export default function ProperNoun({ en, ko }) {
       <span ref={enRef} className="proper-noun-en">{en}</span>
       {isWrapped ? (
         <span className="proper-noun-wrap-container">
-          <span className="proper-noun-slash">/</span>
-          <span ref={koRef} className="proper-noun-ko">{ko}</span>
+          <span ref={koRef} className="proper-noun-ko" style={{ display: 'block' }}>{ko}</span>
         </span>
       ) : (
         <span className="proper-noun-inline-container">

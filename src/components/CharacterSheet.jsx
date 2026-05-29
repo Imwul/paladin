@@ -82,57 +82,57 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   // Skill checklist categories
   const commonSkills = [
-    { key: "awareness", label: "Awareness (경계)" },
-    { key: "chirurgery", label: "Chirurgery (의술)" },
-    { key: "faerieLore", label: "Faerie Lore (요정 전설)" },
-    { key: "firstAid", label: "First Aid (응급처치)" },
-    { key: "folkLore", label: "Folk Lore (민간 전설)" },
-    { key: "horsemanship", label: "Horsemanship (마술)" },
-    { key: "hunting", label: "Hunting (수렵)" },
-    { key: "industry", label: "Industry (근면)" },
-    { key: "recognize", label: "Recognize (신분 식별)" },
-    { key: "religion", label: "Religion (종교)" },
-    { key: "stewardship", label: "Stewardship (영지 관리)" },
-    { key: "swimming", label: "Swimming (수영)" }
+    { key: "awareness", label: "경계 (Awareness)" },
+    { key: "chirurgery", label: "의술 (Chirurgery)" },
+    { key: "faerieLore", label: "요정 전설 (Faerie Lore)" },
+    { key: "firstAid", label: "응급처치 (First Aid)" },
+    { key: "folkLore", label: "민간 전설 (Folk Lore)" },
+    { key: "horsemanship", label: "마술 (Horsemanship)" },
+    { key: "hunting", label: "수렵 (Hunting)" },
+    { key: "industry", label: "근면 (Industry)" },
+    { key: "recognize", label: "신분 식별 (Recognize)" },
+    { key: "religion", label: "종교 지식 (Religion)" },
+    { key: "stewardship", label: "영지 관리 (Stewardship)" },
+    { key: "swimming", label: "수영 (Swimming)" }
   ];
 
   const courtlySkills = [
-    { key: "courtesy", label: "Courtesy (예의)" },
-    { key: "dancing", label: "Dancing (무용)" },
-    { key: "eloquence", label: "Eloquence (웅변)" },
-    { key: "falconry", label: "Falconry (매사냥)" },
-    { key: "gaming", label: "Gaming (유희)" },
-    { key: "heraldry", label: "Heraldry (문장학)" },
-    { key: "intrigue", label: "Intrigue (음모)" },
-    { key: "playInstruments", label: "Play Instruments (악기 연주)" },
-    { key: "readingWriting", label: "Reading & Writing (독서 및 집필)" },
-    { key: "romance", label: "Romance (로맨스)" },
-    { key: "singing", label: "Singing (가창)" }
+    { key: "courtesy", label: "예의 (Courtesy)" },
+    { key: "dancing", label: "무용 (Dancing)" },
+    { key: "eloquence", label: "웅변 (Eloquence)" },
+    { key: "falconry", label: "매사냥 (Falconry)" },
+    { key: "gaming", label: "유희 (Gaming)" },
+    { key: "heraldry", label: "문장학 (Heraldry)" },
+    { key: "intrigue", label: "음모 (Intrigue)" },
+    { key: "playInstruments", label: "악기 연주 (Play Instruments)" },
+    { key: "readingWriting", label: "독서 및 집필 (Reading & Writing)" },
+    { key: "romance", label: "로맨스 (Romance)" },
+    { key: "singing", label: "가창 (Singing)" }
   ];
 
   const combatSkills = [
-    { key: "battle", label: "Battle (전술)" },
-    { key: "siege", label: "Siege (공성전)" },
-    { key: "axe", label: "Axe (도끼)" },
-    { key: "bludgeon", label: "Bludgeon (둔기)" },
-    { key: "dagger", label: "Dagger (단검)" },
-    { key: "spear", label: "Spear & Polearm (창 및 폴암)" },
-    { key: "sword", label: "Sword (검)" },
-    { key: "unarmed", label: "Unarmed (맨손 격투)" },
-    { key: "lance", label: "Lance (마창)" },
-    { key: "bow", label: "Bow (활)" },
-    { key: "crossbow", label: "Crossbow (쇠뇌)" },
-    { key: "thrownWeapon", label: "Thrown Weapon (투척 무기)" }
+    { key: "battle", label: "전술 (Battle)" },
+    { key: "siege", label: "공성전 (Siege)" },
+    { key: "axe", label: "도끼 (Axe)" },
+    { key: "bludgeon", label: "둔기 (Bludgeon)" },
+    { key: "dagger", label: "단검 (Dagger)" },
+    { key: "spear", label: "창 & 폴암 (Spear & Polearm)" },
+    { key: "sword", label: "검 (Sword)" },
+    { key: "unarmed", label: "맨손 격투 (Unarmed)" },
+    { key: "lance", label: "마창 (Lance)" },
+    { key: "bow", label: "활 (Bow)" },
+    { key: "crossbow", label: "쇠뇌 (Crossbow)" },
+    { key: "thrownWeapon", label: "투척 무기 (Thrown Weapon)" }
   ];
 
   return (
     <div className="view-animate">
       <div className="tutorial-banner">
         <div>
-          <h4 className="tutorial-banner-title">Knight Character Sheet Tutorial (기사 시트 설명)</h4>
+          <h4 className="tutorial-banner-title">기사 캐릭터 시트 도움말</h4>
           <p>
-            This is your Knight's character sheet. Changing your core attributes automatically recalculates combat stats like damage and maximum hit points. 
-            Opposing Traits (such as Chaste/Lustful) always sum to 20. Mark the experience checkbox (circle) next to any skill you successfully used in adventure to test for improvement during the Winter Phase!
+            기사의 능력치와 기술을 기록하는 곳입니다. 근력(STR)이나 크기(SIZ) 등을 고치면 대미지와 최대 체력이 실시간으로 자동 계산됩니다. 
+            마주보는 대립 성향들은 합이 항상 20이므로 하나를 고치면 반대쪽이 자동으로 맞춰집니다. 모험 중 성공적으로 사용한 기술은 이름 옆의 둥근 체크박스(경험치)를 선택해 두면, 겨울 정산 단계에서 능력 성장을 판정할 수 있습니다.
           </p>
         </div>
       </div>
@@ -140,72 +140,72 @@ export default function CharacterSheet({ character, setCharacter }) {
       {/* Sheet Navigation Section tabs */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '20px 0' }}>
         <button className={`btn-medieval ${activeSection === 'personal' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('personal')}>
-          <User size={16} /> Personal Data
+          <User size={16} /> 신상 정보
         </button>
         <button className={`btn-medieval ${activeSection === 'attributes' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('attributes')}>
-          <Activity size={16} /> Attributes & HP
+          <Activity size={16} /> 능력치 & 체력
         </button>
         <button className={`btn-medieval ${activeSection === 'traits' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('traits')}>
-          <Award size={16} /> Traits & Passions
+          <Award size={16} /> 성향 & 열망
         </button>
         <button className={`btn-medieval ${activeSection === 'skills' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('skills')}>
-          <Swords size={16} /> Skills
+          <Swords size={16} /> 기술 목록
         </button>
         <button className={`btn-medieval ${activeSection === 'squire' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('squire')}>
-          <Users size={16} /> Squire & Horses
+          <Users size={16} /> 종자 & 마필
         </button>
         <button className={`btn-medieval ${activeSection === 'gear' ? 'btn-medieval-primary' : ''}`} onClick={() => setActiveSection('gear')}>
-          <Shield size={16} /> Gear & Wealth
+          <Shield size={16} /> 소지품 & 장비
         </button>
       </div>
 
       {/* 1. PERSONAL DATA SECTION */}
       {activeSection === 'personal' && (
         <div className="medieval-card view-animate">
-          <h3 className="card-title">Personal Data (인적 사양)</h3>
+          <h3 className="card-title">인적 사양 및 개인 기록</h3>
           <div className="medieval-form-grid">
             <div className="form-group">
-              <label className="form-label">Name (이름)</label>
-              <input type="text" className="form-input" value={character.personal.name} onChange={e => handleInputChange('personal', 'name', e.target.value)} placeholder="e.g. Roland" />
+              <label className="form-label">기사 이름 (Name)</label>
+              <input type="text" className="form-input" value={character.personal.name} onChange={e => handleInputChange('personal', 'name', e.target.value)} placeholder="예: Roland" />
             </div>
             <div className="form-group">
-              <label className="form-label">Age (나이)</label>
+              <label className="form-label">나이 (Age)</label>
               <input type="number" className="form-input" value={character.personal.age} onChange={e => handleInputChange('personal', 'age', parseInt(e.target.value) || 0)} />
             </div>
             <div className="form-group">
-              <label className="form-label">Son Number (몇째 아들)</label>
-              <input type="text" className="form-input" value={character.personal.sonNumber} onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)} />
+              <label className="form-label">출생 순서 (Son Number)</label>
+              <input type="text" className="form-input" value={character.personal.sonNumber} onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)} placeholder="첫째" />
             </div>
             <div className="form-group">
-              <label className="form-label">Blessing (축복)</label>
+              <label className="form-label">성스러운 축복 (Blessing)</label>
               <input type="text" className="form-input" value={character.personal.blessing} onChange={e => handleInputChange('personal', 'blessing', e.target.value)} placeholder="Divine Grace" />
             </div>
             <div className="form-group">
-              <label className="form-label">Homeland (모국)</label>
+              <label className="form-label">출신국 (Homeland)</label>
               <input type="text" className="form-input" value={character.personal.homeland} onChange={e => handleInputChange('personal', 'homeland', e.target.value)} placeholder="Francia" />
             </div>
             <div className="form-group">
-              <label className="form-label">Home (영지/고향)</label>
-              <input type="text" className="form-input" value={character.personal.home} onChange={e => handleInputChange('personal', 'home', e.target.value)} />
+              <label className="form-label">봉토 / 고향 (Home)</label>
+              <input type="text" className="form-input" value={character.personal.home} onChange={e => handleInputChange('personal', 'home', e.target.value)} placeholder="Aachen" />
             </div>
             <div className="form-group">
-              <label className="form-label">Culture (문화권)</label>
+              <label className="form-label">문화권 (Culture)</label>
               <input type="text" className="form-input" value={character.personal.culture} onChange={e => handleInputChange('personal', 'culture', e.target.value)} placeholder="Frankish" />
             </div>
             <div className="form-group">
-              <label className="form-label">Lineage (가문 명칭)</label>
-              <input type="text" className="form-input" value={character.personal.lineage} onChange={e => handleInputChange('personal', 'lineage', e.target.value)} />
+              <label className="form-label">혈통 / 가문명 (Lineage)</label>
+              <input type="text" className="form-input" value={character.personal.lineage} onChange={e => handleInputChange('personal', 'lineage', e.target.value)} placeholder="Ardennes" />
             </div>
             <div className="form-group">
-              <label className="form-label">Liege Lord (주군)</label>
+              <label className="form-label">주군 (Liege Lord)</label>
               <input type="text" className="form-input" value={character.personal.liegeLord} onChange={e => handleInputChange('personal', 'liegeLord', e.target.value)} placeholder="Charlemagne" />
             </div>
             <div className="form-group">
-              <label className="form-label">Father's Class (부친 계급)</label>
-              <input type="text" className="form-input" value={character.personal.fathersClass} onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)} placeholder="Knight" />
+              <label className="form-label">부친의 신분 (Father's Class)</label>
+              <input type="text" className="form-input" value={character.personal.fathersClass} onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)} placeholder="Vassal Knight" />
             </div>
             <div className="form-group">
-              <label className="form-label">Personal Class (기사 계급)</label>
+              <label className="form-label">현재 신분 계급 (Personal Class)</label>
               <input type="text" className="form-input" value={character.personal.personalClass} onChange={e => handleInputChange('personal', 'personalClass', e.target.value)} placeholder="Vassal Knight" />
             </div>
           </div>
@@ -217,14 +217,14 @@ export default function CharacterSheet({ character, setCharacter }) {
         <div className="view-animate" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
           {/* Attributes input */}
           <div className="medieval-card">
-            <h3 className="card-title">Core Attributes (기본 능력치)</h3>
+            <h3 className="card-title">기본 능력치</h3>
             <div className="medieval-form-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
               <div className="form-group">
-                <label className="form-label">SIZ (크기)</label>
+                <label className="form-label">SIZ (신체 크기)</label>
                 <input type="number" className="form-input" value={character.attributes.siz} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">DEX (민첩)</label>
+                <label className="form-label">DEX (민첩성)</label>
                 <input type="number" className="form-input" value={character.attributes.dex} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
@@ -232,11 +232,11 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <input type="number" className="form-input" value={character.attributes.str} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">CON (체질)</label>
+                <label className="form-label">CON (건강/체질)</label>
                 <input type="number" className="form-input" value={character.attributes.con} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">APP (외모)</label>
+                <label className="form-label">APP (용모/친화)</label>
                 <input type="number" className="form-input" value={character.attributes.app} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
               </div>
             </div>
@@ -244,30 +244,30 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Auto-Calculated Battle Stats */}
           <div className="medieval-card">
-            <h3 className="card-title">Calculated Stats (자동 계산 수치)</h3>
+            <h3 className="card-title">자동 계산 전투 수치</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Damage (무기 피해량):</span>
+                <span className="form-label">무기 대미지 (Damage):</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedDamage}d6</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Healing Rate (치유 가속):</span>
+                <span className="form-label">자연 치유력 (Healing Rate):</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedHealing}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Movement Rate (이동 속도):</span>
+                <span className="form-label">이동 속도 (Movement Rate):</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{calculatedMove}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Knockdown (낙마 한계):</span>
+                <span className="form-label">낙마 한계치 (Knockdown):</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{knockdown} HP</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Major Wound (중상 한계):</span>
+                <span className="form-label">중상 한계치 (Major Wound):</span>
                 <strong style={{ fontFamily: 'var(--font-english)' }}>{majorWound} HP</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '6px' }}>
-                <span className="form-label">Maximum Hit Points (최대 체력):</span>
+                <span className="form-label">최대 체력 (Total HP):</span>
                 <strong style={{ fontFamily: 'var(--font-english)', color: 'var(--color-crimson)' }}>{maxHP} HP</strong>
               </div>
             </div>
@@ -275,10 +275,10 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Current HP Tracker */}
           <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
-            <h3 className="card-title">Hit Points Tracker & Wounds (체력 상황판)</h3>
+            <h3 className="card-title">실시간 기사 체력 상황판</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center' }}>
               <div className="form-group" style={{ minWidth: '150px' }}>
-                <label className="form-label">Current HP (현재 체력)</label>
+                <label className="form-label">현재 체력 (Current HP)</label>
                 <input 
                   type="number" 
                   className="form-input" 
@@ -293,25 +293,25 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ flex: 1, display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 {character.attributes.currentHp <= 0 ? (
                   <span style={{ backgroundColor: 'var(--color-ink)', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                    DEAD / DYING (사망 또는 위독)
+                    전사 / 빈사 상태
                   </span>
                 ) : character.attributes.currentHp <= maxHP / 4 ? (
                   <span style={{ backgroundColor: 'var(--color-crimson)', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                    UNCONSCIOUS (의식 상실 - HP 1/4 이하)
+                    의식 불명 (HP 1/4 이하)
                   </span>
                 ) : character.attributes.currentHp <= maxHP / 2 ? (
                   <span style={{ backgroundColor: 'var(--color-gold-dark)', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                    WOUNDED (행동 제약 - HP 1/2 이하)
+                    부상 상태 (HP 1/2 이하)
                   </span>
                 ) : (
                   <span style={{ backgroundColor: 'var(--color-success)', color: '#fff', padding: '6px 12px', borderRadius: '4px', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                    HEALTHY (양호)
+                    건강함
                   </span>
                 )}
                 
                 {character.attributes.currentHp < maxHP && (
                   <button className="btn-medieval" onClick={() => handleInputChange('attributes', 'currentHp', Math.min(maxHP, character.attributes.currentHp + calculatedHealing))}>
-                    Apply Heal (+{calculatedHealing} HP)
+                    자연 치유력 적용 (+{calculatedHealing} HP)
                   </button>
                 )}
               </div>
@@ -326,20 +326,20 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Opposing Traits Card */}
           <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
-            <h3 className="card-title">Personality Traits (성향 수치 - 합산 20)</h3>
+            <h3 className="card-title">대립 성향 (Personality Traits - 마주보는 쌍의 합은 20)</h3>
             
             {/* Chivalrous / Religious status badges */}
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap' }}>
               <div style={{ border: `1px solid ${isChivalrousActive ? 'var(--color-crimson)' : '#ccc'}`, backgroundColor: isChivalrousActive ? 'var(--color-crimson-light)' : 'transparent', padding: '8px 12px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Sparkles size={16} color={isChivalrousActive ? 'var(--color-crimson)' : '#666'} />
                 <span style={{ fontSize: '0.88rem', fontWeight: 'bold', color: isChivalrousActive ? 'var(--color-crimson)' : '#666' }}>
-                  Chivalry Bonus (기사도 보너스): {chivalrousTraitsTotal}/90 {isChivalrousActive ? 'ACTIVE (+3 Natural Armor)' : 'INACTIVE'}
+                  기사도 보너스 (Chivalry): {chivalrousTraitsTotal}/90 {isChivalrousActive ? '★ 활성화 (아머 +3)' : '비활성'}
                 </span>
               </div>
               <div style={{ border: `1px solid ${isReligiousActive ? 'var(--color-crimson)' : '#ccc'}`, backgroundColor: isReligiousActive ? 'var(--color-crimson-light)' : 'transparent', padding: '8px 12px', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Sparkles size={16} color={isReligiousActive ? 'var(--color-crimson)' : '#666'} />
                 <span style={{ fontSize: '0.88rem', fontWeight: 'bold', color: isReligiousActive ? 'var(--color-crimson)' : '#666' }}>
-                  Religious Bonus (종교 보너스): {religiousTraitsTotal}/90 {isReligiousActive ? 'ACTIVE (+5 Prayers)' : 'INACTIVE'}
+                  성스러운 신앙 보너스 (Religious): {religiousTraitsTotal}/90 {isReligiousActive ? '★ 활성화 (기도 +5)' : '비활성'}
                 </span>
               </div>
             </div>
@@ -350,69 +350,69 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Chaste (정숙)
+                    <Heart size={12} color="var(--color-crimson)" /> 정숙 (Chaste)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.chaste} onChange={e => handleTraitChange('chaste', 'lustful', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.lustful} onChange={e => handleTraitChange('lustful', 'chaste', e.target.value)} />
-                    <span className="form-label">Lustful (음탕)</span>
+                    <span className="form-label">음탕 (Lustful)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="form-label">Energetic (열정)</span>
+                  <span className="form-label">열정 (Energetic)</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.energetic} onChange={e => handleTraitChange('energetic', 'lazy', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.lazy} onChange={e => handleTraitChange('lazy', 'energetic', e.target.value)} />
-                    <span className="form-label">Lazy (나태)</span>
+                    <span className="form-label">나태 (Lazy)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Forgiving (관용)
+                    <Heart size={12} color="var(--color-crimson)" /> 관용 (Forgiving)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.forgiving} onChange={e => handleTraitChange('forgiving', 'vengeful', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.vengeful} onChange={e => handleTraitChange('vengeful', 'forgiving', e.target.value)} />
-                    <span className="form-label">Vengeful (복수)</span>
+                    <span className="form-label">복수 (Vengeful)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Generous (관대)
+                    <Heart size={12} color="var(--color-crimson)" /> 관대 (Generous)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.generous} onChange={e => handleTraitChange('generous', 'selfish', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.selfish} onChange={e => handleTraitChange('selfish', 'generous', e.target.value)} />
-                    <span className="form-label">Selfish (이기)</span>
+                    <span className="form-label">이기 (Selfish)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Honest (정직)
+                    <Heart size={12} color="var(--color-crimson)" /> 정직 (Honest)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.honest} onChange={e => handleTraitChange('honest', 'deceitful', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.deceitful} onChange={e => handleTraitChange('deceitful', 'honest', e.target.value)} />
-                    <span className="form-label">Deceitful (기만)</span>
+                    <span className="form-label">기만 (Deceitful)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="form-label">Just (정의)</span>
+                  <span className="form-label">정의 (Just)</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.just} onChange={e => handleTraitChange('just', 'arbitrary', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.arbitrary} onChange={e => handleTraitChange('arbitrary', 'just', e.target.value)} />
-                    <span className="form-label">Arbitrary (독단)</span>
+                    <span className="form-label">독단 (Arbitrary)</span>
                   </div>
                 </div>
               </div>
@@ -420,80 +420,80 @@ export default function CharacterSheet({ character, setCharacter }) {
               {/* Right Column Traits */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="form-label">Merciful (자비)</span>
+                  <span className="form-label">자비 (Merciful)</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.merciful} onChange={e => handleTraitChange('merciful', 'cruel', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.cruel} onChange={e => handleTraitChange('cruel', 'merciful', e.target.value)} />
-                    <span className="form-label">Cruel (잔혹)</span>
+                    <span className="form-label">잔혹 (Cruel)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="form-label">Modest (겸손)</span>
+                  <span className="form-label">겸손 (Modest)</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.modest} onChange={e => handleTraitChange('modest', 'proud', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.proud} onChange={e => handleTraitChange('proud', 'modest', e.target.value)} />
-                    <span className="form-label">Proud (오만)</span>
+                    <span className="form-label">오만 (Proud)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Pious (경건)
+                    <Heart size={12} color="var(--color-crimson)" /> 경건 (Pious)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.pious} onChange={e => handleTraitChange('pious', 'worldly', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.worldly} onChange={e => handleTraitChange('worldly', 'pious', e.target.value)} />
-                    <span className="form-label">Worldly (세속)</span>
+                    <span className="form-label">세속 (Worldly)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Prudent (신중)
+                    <Heart size={12} color="var(--color-crimson)" /> 신중 (Prudent)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.prudent} onChange={e => handleTraitChange('prudent', 'reckless', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.reckless} onChange={e => handleTraitChange('reckless', 'prudent', e.target.value)} />
-                    <span className="form-label">Reckless (무모)</span>
+                    <span className="form-label">무모 (Reckless)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span className="form-label">Temperate (절제)</span>
+                  <span className="form-label">절제 (Temperate)</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.temperate} onChange={e => handleTraitChange('temperate', 'indulgent', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.indulgent} onChange={e => handleTraitChange('indulgent', 'temperate', e.target.value)} />
-                    <span className="form-label">Indulgent (방종)</span>
+                    <span className="form-label">방종 (Indulgent)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Trusting (신뢰)
+                    <Heart size={12} color="var(--color-crimson)" /> 신뢰 (Trusting)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.trusting} onChange={e => handleTraitChange('trusting', 'suspicious', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.suspicious} onChange={e => handleTraitChange('suspicious', 'trusting', e.target.value)} />
-                    <span className="form-label">Suspicious (의심)</span>
+                    <span className="form-label">의심 (Suspicious)</span>
                   </div>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span className="form-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                    <Heart size={12} color="var(--color-crimson)" /> Valorous (용맹)
+                    <Heart size={12} color="var(--color-crimson)" /> 용맹 (Valorous)
                   </span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.valorous} onChange={e => handleTraitChange('valorous', 'cowardly', e.target.value)} />
                     <span style={{ color: 'var(--color-grey)' }}>/</span>
                     <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character.traits.cowardly} onChange={e => handleTraitChange('cowardly', 'valorous', e.target.value)} />
-                    <span className="form-label">Cowardly (겁쟁이)</span>
+                    <span className="form-label">겁쟁이 (Cowardly)</span>
                   </div>
                 </div>
               </div>
@@ -502,26 +502,26 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Passions Card */}
           <div className="medieval-card">
-            <h3 className="card-title">Passions (기사의 열망)</h3>
+            <h3 className="card-title">기사의 열망 (Passions)</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div className="form-group">
-                <label className="form-label"><ProperNoun en="Love [Charlemagne]" ko="충성심 [샤를마뉴 대제]" /></label>
+                <label className="form-label"><ProperNoun en="Love [Charlemagne]" ko="주군 충성심 [샤를마뉴]" /></label>
                 <input type="number" className="form-input" value={character.passions.loveCharlemagne} onChange={e => handleInputChange('passions', 'loveCharlemagne', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Honor (명예)</label>
+                <label className="form-label">기사의 명예 (Honor)</label>
                 <input type="number" className="form-input" value={character.passions.honor} onChange={e => handleInputChange('passions', 'honor', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Love [Family] (가족애)</label>
+                <label className="form-label">가문 충성도 (Love [Family])</label>
                 <input type="number" className="form-input" value={character.passions.loveFamily} onChange={e => handleInputChange('passions', 'loveFamily', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Love [God] (신앙심)</label>
+                <label className="form-label">신을 향한 사랑 (Love [God])</label>
                 <input type="number" className="form-input" value={character.passions.loveGod} onChange={e => handleInputChange('passions', 'loveGod', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Amor (사랑/연정)</label>
+                <label className="form-label">연정 / 연인 (Amor)</label>
                 <input type="number" className="form-input" value={character.passions.amor} onChange={e => handleInputChange('passions', 'amor', parseInt(e.target.value) || 0)} />
               </div>
             </div>
@@ -529,26 +529,26 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Standings Card */}
           <div className="medieval-card">
-            <h3 className="card-title">Social Standings (평판 및 소속)</h3>
+            <h3 className="card-title">사회적 평판 (Standings)</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div className="form-group">
-                <label className="form-label"><ProperNoun en="Charlemagne" ko="샤를마뉴 궁정 내 평판" /></label>
+                <label className="form-label"><ProperNoun en="Charlemagne" ko="샤를마뉴 궁정 내 위상" /></label>
                 <input type="number" className="form-input" value={character.standings.charlemagne} onChange={e => handleInputChange('standings', 'charlemagne', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Lord (지역 주군 평판)</label>
+                <label className="form-label">영지 내 주군 평판 (Lord)</label>
                 <input type="number" className="form-input" value={character.standings.lord} onChange={e => handleInputChange('standings', 'lord', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Family (가문 명망)</label>
+                <label className="form-label">친족간 평판 (Family)</label>
                 <input type="number" className="form-input" value={character.standings.family} onChange={e => handleInputChange('standings', 'family', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Church (교회 영향력)</label>
+                <label className="form-label">교회 영향력 (Church)</label>
                 <input type="number" className="form-input" value={character.standings.church} onChange={e => handleInputChange('standings', 'church', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Commoners (백성들의 평판)</label>
+                <label className="form-label">민중 지지도 (Commoners)</label>
                 <input type="number" className="form-input" value={character.standings.commoners} onChange={e => handleInputChange('standings', 'commoners', parseInt(e.target.value) || 0)} />
               </div>
             </div>
@@ -563,7 +563,7 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Common Skills */}
           <div className="medieval-card">
-            <h3 className="card-title">Common Skills (일반 기술)</h3>
+            <h3 className="card-title">일반 기술</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {commonSkills.map(skill => (
                 <div key={skill.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -590,7 +590,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Courtly Skills */}
           <div className="medieval-card">
-            <h3 className="card-title">Courtly Skills (사교 기술)</h3>
+            <h3 className="card-title">사교 기술</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {courtlySkills.map(skill => (
                 <div key={skill.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -617,7 +617,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Combat Skills */}
           <div className="medieval-card">
-            <h3 className="card-title">Combat Skills (무예 기술)</h3>
+            <h3 className="card-title">무예 기술</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {combatSkills.map(skill => (
                 <div key={skill.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -651,18 +651,18 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Squire Stats Card */}
           <div className="medieval-card">
-            <h3 className="card-title">Squire Character Sheet (종자 시트)</h3>
+            <h3 className="card-title">종자 캐릭터 시트 (Squire)</h3>
             <div className="medieval-form-grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
               <div className="form-group" style={{ gridColumn: 'span 2' }}>
-                <label className="form-label">Squire Name (종자 이름)</label>
+                <label className="form-label">종자 이름 (Name)</label>
                 <input type="text" className="form-input" value={character.squire.name} onChange={e => handleInputChange('squire', 'name', e.target.value)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Age (나이)</label>
+                <label className="form-label">나이 (Age)</label>
                 <input type="number" className="form-input" value={character.squire.age} onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">SIZ (크기)</label>
+                <label className="form-label">SIZ (신체 크기)</label>
                 <input type="number" className="form-input" value={character.squire.siz} onChange={e => handleInputChange('squire', 'siz', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
@@ -674,19 +674,19 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <input type="number" className="form-input" value={character.squire.str} onChange={e => handleInputChange('squire', 'str', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">CON (체질)</label>
+                <label className="form-label">CON (건강)</label>
                 <input type="number" className="form-input" value={character.squire.con} onChange={e => handleInputChange('squire', 'con', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">First Aid (응급처치)</label>
+                <label className="form-label">응급처치 (First Aid)</label>
                 <input type="number" className="form-input" value={character.squire.firstAid} onChange={e => handleInputChange('squire', 'firstAid', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Horsemanship (마술)</label>
+                <label className="form-label">마술 (Horsemanship)</label>
                 <input type="number" className="form-input" value={character.squire.horsemanship} onChange={e => handleInputChange('squire', 'horsemanship', parseInt(e.target.value) || 0)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Weapon (무기 숙련)</label>
+                <label className="form-label">무기 숙련 (Weapon)</label>
                 <input type="number" className="form-input" value={character.squire.weapon} onChange={e => handleInputChange('squire', 'weapon', parseInt(e.target.value) || 0)} />
               </div>
             </div>
@@ -694,35 +694,35 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           {/* Horses Management Card */}
           <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
-            <h3 className="card-title">Horses & Mounts (기사의 애마 목록)</h3>
+            <h3 className="card-title">마필 정보 관리</h3>
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
               {/* Best Warhorse #1 */}
               <div style={{ borderRight: '1px solid var(--color-gold-light)', paddingRight: '15px' }}>
-                <h4 style={{ color: 'var(--color-crimson)', fontSize: '1.05rem', marginBottom: '10px' }}>Best Warhorse #1 (첫 번째 전투마)</h4>
+                <h4 style={{ color: 'var(--color-crimson)', fontSize: '1.05rem', marginBottom: '10px' }}>최고의 전투마 #1 (Best Warhorse)</h4>
                 <div className="medieval-form-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="form-group">
-                    <label className="form-label">Type (종류)</label>
+                    <label className="form-label">용도/분류 (Type)</label>
                     <input type="text" className="form-input" value={character.horses.warhorse.type} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, type: e.target.value })} placeholder="Charger" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Breed (품종)</label>
+                    <label className="form-label">마종 (Breed)</label>
                     <input type="text" className="form-input" value={character.horses.warhorse.breed} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, breed: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Damage (피해)</label>
+                    <label className="form-label">말의 피해량</label>
                     <input type="text" className="form-input" value={character.horses.warhorse.damage} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, damage: e.target.value })} placeholder="4d6" />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Move (이동)</label>
+                    <label className="form-label">이동 (Move)</label>
                     <input type="number" className="form-input" value={character.horses.warhorse.move} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, move: parseInt(e.target.value) || 0 })} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Armor (방어구)</label>
+                    <label className="form-label">마갑 방어 (Armor)</label>
                     <input type="number" className="form-input" value={character.horses.warhorse.armor} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, armor: parseInt(e.target.value) || 0 })} />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">HP (체력)</label>
+                    <label className="form-label">말의 HP</label>
                     <input type="number" className="form-input" value={character.horses.warhorse.hp} onChange={e => handleInputChange('horses', 'warhorse', { ...character.horses.warhorse, hp: parseInt(e.target.value) || 0 })} />
                   </div>
                 </div>
@@ -730,19 +730,19 @@ export default function CharacterSheet({ character, setCharacter }) {
 
               {/* Other Horses */}
               <div>
-                <h4 style={{ color: 'var(--color-gold-dark)', fontSize: '1.05rem', marginBottom: '10px' }}>Other Horses (예비 및 기타 마필)</h4>
+                <h4 style={{ color: 'var(--color-gold-dark)', fontSize: '1.05rem', marginBottom: '10px' }}>기타 및 비상용 말 목록</h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other2} onChange={e => handleInputChange('horses', 'other2', e.target.value)} placeholder="Horse #2 (e.g. Riding Palfrey)" />
+                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other2} onChange={e => handleInputChange('horses', 'other2', e.target.value)} placeholder="말 #2 (예: Riding Palfrey)" />
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other3} onChange={e => handleInputChange('horses', 'other3', e.target.value)} placeholder="Horse #3" />
+                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other3} onChange={e => handleInputChange('horses', 'other3', e.target.value)} placeholder="말 #3" />
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other4} onChange={e => handleInputChange('horses', 'other4', e.target.value)} placeholder="Horse #4" />
+                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other4} onChange={e => handleInputChange('horses', 'other4', e.target.value)} placeholder="말 #4" />
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other5} onChange={e => handleInputChange('horses', 'other5', e.target.value)} placeholder="Horse #5" />
+                    <input type="text" className="form-input" style={{ flex: 1 }} value={character.horses.other5} onChange={e => handleInputChange('horses', 'other5', e.target.value)} placeholder="말 #5" />
                   </div>
                 </div>
               </div>
@@ -758,46 +758,46 @@ export default function CharacterSheet({ character, setCharacter }) {
           
           {/* Equipment Carried */}
           <div className="medieval-card">
-            <h3 className="card-title">Equipment Carried (소지 장비)</h3>
+            <h3 className="card-title">소지한 장비 및 의복</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div className="form-group">
-                <label className="form-label">Armor & Shield (갑옷 및 방패 방어 점수)</label>
-                <input type="text" className="form-input" value={character.gear.armorShield} onChange={e => handleInputChange('gear', 'armorShield', e.target.value)} placeholder="e.g. 10 Points Chainmail + Shield" />
+                <label className="form-label">갑옷 및 방패 (Armor & Shield - 방어 점수)</label>
+                <input type="text" className="form-input" value={character.gear.armorShield} onChange={e => handleInputChange('gear', 'armorShield', e.target.value)} placeholder="예: 10 Points Chainmail + Shield" />
               </div>
               <div className="form-group">
-                <label className="form-label">Clothing (착용 의복 가치)</label>
-                <input type="text" className="form-input" value={character.gear.clothing} onChange={e => handleInputChange('gear', 'clothing', e.target.value)} placeholder="e.g. £1 Fine Tunic" />
+                <label className="form-label">의복 (Clothing - 소장 가치)</label>
+                <input type="text" className="form-input" value={character.gear.clothing} onChange={e => handleInputChange('gear', 'clothing', e.target.value)} placeholder="예: £2 Courtyard Tunic" />
               </div>
               <div className="form-group">
-                <label className="form-label">Personal Gear (개인 소품)</label>
-                <textarea className="form-input" rows={4} value={character.gear.personalGear} onChange={e => handleInputChange('gear', 'personalGear', e.target.value)} placeholder="Whetstone, holy symbol, family ring..." />
+                <label className="form-label">말에 실은 소품 (Personal Gear)</label>
+                <textarea className="form-input" rows={4} value={character.gear.personalGear} onChange={e => handleInputChange('gear', 'personalGear', e.target.value)} placeholder="Wooden crucifix, holy symbol, family ring..." />
               </div>
             </div>
           </div>
 
           {/* Wealth & Estate Gear */}
           <div className="medieval-card">
-            <h3 className="card-title">Wealth & Estate Gear (재산 및 보관 장비)</h3>
+            <h3 className="card-title">가문의 재정 상황 및 보관물</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div className="form-group">
-                <label className="form-label">Estate Cash (보유 금화 - 리브르 £)</label>
+                <label className="form-label">금화 / 은괴 잔고 (Cash - 리브르 £)</label>
                 <input type="number" className="form-input" value={character.gear.cash} onChange={e => handleInputChange('gear', 'cash', parseInt(e.target.value) || 0)} style={{ fontSize: '1.2rem', color: 'var(--color-gold-dark)', fontWeight: 'bold' }} />
               </div>
               <div className="form-group">
-                <label className="form-label">Glory (영예 점수)</label>
+                <label className="form-label">기사의 영예 (Glory)</label>
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>This Game (이번 세션)</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>이번 게임 획득 (This Game)</span>
                     <input type="number" className="form-input" value={character.gear.gloryThisGame} onChange={e => handleInputChange('gear', 'gloryThisGame', parseInt(e.target.value) || 0)} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>Total (누적 영예)</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>누적 영예 총점 (Total Glory)</span>
                     <input type="number" className="form-input" value={character.gear.gloryTotal} onChange={e => handleInputChange('gear', 'gloryTotal', parseInt(e.target.value) || 0)} />
                   </div>
                 </div>
               </div>
               <div className="form-group">
-                <label className="form-label">Possessions at Home (영지에 보관 중인 재산)</label>
+                <label className="form-label">영지에 보관 중인 자산 (Possessions at Home)</label>
                 <textarea className="form-input" rows={3} value={character.gear.homePossessions} onChange={e => handleInputChange('gear', 'homePossessions', e.target.value)} placeholder="Tapestries, war lances, chests of grain..." />
               </div>
             </div>

@@ -9,7 +9,7 @@
   font-family: var(--font-english);
   font-weight: 600;
   white-space: nowrap;
-  display: inline-block;
+  display: inline;
 }
 
 .proper-noun-ko {
@@ -17,7 +17,7 @@
   font-weight: 400;
   letter-spacing: -0.04em;
   white-space: nowrap;
-  display: inline-block;
+  display: inline;
 }
 
 .proper-noun-slash {

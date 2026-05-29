@@ -137,32 +137,32 @@ export default function App() {
       {/* Decorative Title Header bar */}
       <div className="header-decor">
         <h1>
-          <ProperNoun en="Paladin" ko="성기사" />
+          <ProperNoun en="Paladin: Passage of Arms" ko="팔라딘: 성기사들의 모험" />
         </h1>
         <p className="subtitle">
-          Warriors of <ProperNoun en="Charlemagne" ko="샤를마뉴 대제" /> &bull; Solo Companion Web App
+          <ProperNoun en="Warriors of Charlemagne" ko="샤를마뉴 대제의 용사들" /> &bull; 1인 전용 컴패니언 웹앱
         </p>
       </div>
 
       {/* Navigation tab bar */}
       <div className="tab-navigation">
         <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-          <BookOpen size={16} /> Dashboard
+          <BookOpen size={16} /> 대시보드
         </button>
         <button className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`} onClick={() => setActiveTab('character')}>
-          <User size={16} /> Knight Sheet
+          <User size={16} /> 기사 시트
         </button>
         <button className={`tab-btn ${activeTab === 'family' ? 'active' : ''}`} onClick={() => setActiveTab('family')}>
-          <Shield size={16} /> Family & Winter
+          <Shield size={16} /> 가문 & 겨울 정산
         </button>
         <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> Chronology & Journal
+          <Compass size={16} /> 연대기 & 일지
         </button>
         <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
-          <Sparkles size={16} /> Solo Oracles
+          <Sparkles size={16} /> 솔로 오라클
         </button>
         <button className={`tab-btn ${activeTab === 'sync' ? 'active' : ''}`} onClick={() => setActiveTab('sync')}>
-          <Cloud size={16} /> Sync & Backup
+          <Cloud size={16} /> 동기화 & 설정
         </button>
       </div>
 
