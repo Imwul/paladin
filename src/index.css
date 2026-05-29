@@ -1,19 +1,5 @@
-/* Import Eulyoo 1945 directly from jsdelivr CDN (noonnu) */
-@font-face {
-  font-family: 'Eulyoo 1945';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2102-01@1.0/Eulyoo1945-Regular.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Eulyoo 1945';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2102-01@1.0/Eulyoo1945-SemiBold.woff') format('woff');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
+/* Import Pretendard directement from CDN (noonnu / orioncactus) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
 
 :root {
   /* Exact color matching from the official character sheet */
@@ -31,9 +17,9 @@
   --color-grey-light: #e2dac9;
   --color-success: #2e7d32;
   
-  --font-korean: 'Eulyoo 1945', serif;
-  --font-english: 'Eulyoo 1945', serif;
-  --font-gothic: 'Eulyoo 1945', serif; /* Unified elegant serif font */
+  --font-korean: 'Pretendard', -apple-system, sans-serif;
+  --font-english: 'Pretendard', -apple-system, sans-serif;
+  --font-gothic: 'Pretendard', -apple-system, sans-serif; /* Unified elegant serif font */
   
   --shadow-medieval: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -50,7 +36,7 @@
 
 /* Force override browser-specific user agent styles for input elements */
 input, textarea, button, select, input[type="number"], input[type="text"] {
-  font-family: 'Eulyoo 1945', serif !important;
+  font-family: 'Pretendard', -apple-system, sans-serif !important;
   letter-spacing: -0.05em !important;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
@@ -59,7 +45,7 @@ input, textarea, button, select, input[type="number"], input[type="text"] {
 body {
   background-color: #e5ded0; /* Slightly darker surrounding margin paper */
   color: var(--color-ink);
-  font-family: 'Eulyoo 1945', serif !important;
+  font-family: 'Pretendard', -apple-system, sans-serif !important;
   font-size: 18.5px; /* Increased base body font size for superb legibility */
   letter-spacing: -0.05em !important; /* Strict Korean -5% letter spacing */
   line-height: 1.65; /* Slightly relaxed line height for better eye comfort */
@@ -123,7 +109,7 @@ body {
   color: var(--color-gold-dark);
   font-style: italic;
   letter-spacing: -0.05em;
-  font-family: 'Eulyoo 1945', serif;
+  font-family: 'Pretendard', -apple-system, sans-serif;
 }
 
 /* Auth Bar on Header Right */
@@ -177,7 +163,7 @@ body {
 }
 
 .tab-btn {
-  font-family: 'Eulyoo 1945', serif;
+  font-family: 'Pretendard', -apple-system, sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   padding: 12px 24px;
@@ -416,7 +402,7 @@ body {
   padding: 4px 6px !important;
   color: var(--color-ink) !important;
   outline: none !important;
-  font-family: 'Eulyoo 1945', serif !important;
+  font-family: 'Pretendard', -apple-system, sans-serif !important;
   font-size: 1.25rem !important;
   letter-spacing: -0.05em !important;
   transition: border-bottom-color 0.2s !important;
@@ -456,7 +442,7 @@ body {
 }
 
 .shield-text {
-  font-family: 'Eulyoo 1945', serif;
+  font-family: 'Pretendard', -apple-system, sans-serif;
   color: var(--color-grey);
   font-size: 1.5rem;
   text-align: center;
@@ -464,7 +450,7 @@ body {
 
 /* Medieval Buttons */
 .btn-medieval {
-  font-family: 'Eulyoo 1945', serif;
+  font-family: 'Pretendard', -apple-system, sans-serif;
   font-weight: 600;
   font-size: 1.05rem;
   padding: 8px 16px;
