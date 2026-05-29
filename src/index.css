@@ -1,7 +1,7 @@
-/* Import English font Cinzel from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&display=swap');
+/* Import authentic Medieval English fonts Almendra & Gothic Blackletter Grenze Gotisch from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400;1,700&family=Grenze+Gotisch:wght@500;700;900&display=swap');
 
-/* Import Eulyoo 1945 directly from jsdelivr CDN (noonnu) as it is not hosted on Google Fonts */
+/* Import Eulyoo 1945 directly from jsdelivr CDN (noonnu) */
 @font-face {
   font-family: 'Eulyoo 1945';
   src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2102-01@1.0/Eulyoo1945-Regular.woff') format('woff');
@@ -19,33 +19,33 @@
 }
 
 :root {
-  /* Elegant medieval manuscript color palette */
-  --color-parchment-base: 45, 30%, 97%;  /* HSL representation */
+  /* Exact color matching from the official character sheet */
+  --color-parchment-base: 45, 30%, 97%;
   --color-parchment: hsl(var(--color-parchment-base));
-  --color-parchment-dark: #f0e6d2;
-  --color-ink: #201a15;
-  --color-ink-light: #52473e;
-  --color-gold: #b38f43;
-  --color-gold-light: #dfc384;
-  --color-gold-dark: #7c5f23;
-  --color-crimson: #992222;
-  --color-crimson-light: #f4dcd9;
-  --color-grey: #6b665f;
-  --color-grey-light: #eae5dd;
+  --color-parchment-dark: #f2ebd9;
+  --color-ink: #2b251f;
+  --color-ink-light: #594f43;
+  --color-gold: #c3a165;
+  --color-gold-light: #e6d3b3;
+  --color-gold-dark: #8c6e33;
+  --color-crimson: #901b1b;      /* Official sheet crimson color */
+  --color-crimson-light: #f7e6e4;
+  --color-grey: #7c7267;
+  --color-grey-light: #e2dac9;
   --color-success: #2e7d32;
   
   --font-korean: 'Eulyoo 1945', serif;
-  --font-english: 'Cinzel', serif;
+  --font-english: 'Almendra', serif;
+  --font-gothic: 'Grenze Gotisch', serif; /* Heavy medieval title font */
   
-  --shadow-medieval: 0 10px 30px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
-  --border-medieval: 2px solid var(--color-gold);
+  --shadow-medieval: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-/* strict mapping: Only English letters use Cinzel; Numbers, Punctuation, and Korean use Eulyoo 1945 */
+/* strict mapping: Only English letters use Eulyoo/Almendra custom faces */
 @font-face {
   font-family: 'MedievalEnglish';
-  src: local('Cinzel Regular'), local('Cinzel-Regular'),
-       url('https://fonts.gstatic.com/s/cinzel/v23/8FwV5F23gQDd-1s3S7s.woff2') format('woff2');
+  src: local('Almendra Regular'), local('Almendra-Regular'),
+       url('https://fonts.gstatic.com/s/almendra/v23/H4ciBXy9t4F20V73c1r0pX0.woff2') format('woff2');
   unicode-range: U+0041-005A, U+0061-007A; /* Uppercase A-Z, Lowercase a-z */
 }
 
@@ -56,11 +56,11 @@
 }
 
 body {
-  background-color: var(--color-parchment); /* Unified parchment tone for full-screen feel */
+  background-color: #e5ded0; /* Slightly darker surrounding margin paper */
   color: var(--color-ink);
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   letter-spacing: -0.04em; /* Strict Korean -4% letter spacing */
-  line-height: 1.6;
+  line-height: 1.5;
   width: 100%;
   min-height: 100vh;
   margin: 0;
@@ -71,18 +71,16 @@ body {
 /* App container - Restructured to span 100% of viewport width and height */
 .app-container {
   background-color: var(--color-parchment);
-  background-image: radial-gradient(rgba(179, 143, 67, 0.04) 1px, transparent 0),
-                    radial-gradient(rgba(179, 143, 67, 0.04) 1px, transparent 0);
-  background-size: 12px 12px;
-  background-position: 0 0, 6px 6px;
+  background-image: radial-gradient(rgba(144, 27, 27, 0.015) 1px, transparent 0);
+  background-size: 20px 20px;
   width: 100%;
-  max-width: 100vw; /* Spans 100% viewport width! */
-  min-height: 100vh; /* Spans 100% viewport height! */
+  max-width: 100vw; 
+  min-height: 100vh; 
   margin: 0;
   padding: 0;
-  border-radius: 0; /* Flat edges for full-screen tome look */
+  border-radius: 0; 
   border: none;
-  border-top: 8px solid var(--color-gold-dark); /* Elegant gold top border bar */
+  border-top: 8px solid var(--color-crimson); /* Gothic Royal Crimson top border bar */
   box-shadow: none;
   display: flex;
   flex-direction: column;
@@ -90,30 +88,78 @@ body {
 
 /* Medieval header decor */
 .header-decor {
-  border-bottom: 3px double var(--color-gold-dark);
-  padding: 20px 25px;
-  text-align: center;
+  border-bottom: 4px double var(--color-crimson);
+  padding: 15px 30px;
   position: relative;
-  background-color: rgba(179, 143, 67, 0.03);
+  background-color: rgba(144, 27, 27, 0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.header-title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .header-decor h1 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-gothic);
   font-weight: 800;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: var(--color-crimson);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-  margin-bottom: 3px;
+  margin-bottom: 2px;
 }
 
 .header-decor p.subtitle {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--color-gold-dark);
   font-style: italic;
-  letter-spacing: 0.05em;
+  letter-spacing: -0.04em;
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
+}
+
+/* Auth Bar on Header Right */
+.auth-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.auth-badge {
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-size: 0.82rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-korean);
+  letter-spacing: -0.04em;
+}
+
+.auth-badge.unconfigured {
+  background-color: rgba(124, 114, 103, 0.1);
+  border: 1px solid var(--color-grey);
+  color: var(--color-grey);
+}
+
+.auth-badge.offline {
+  background-color: rgba(124, 114, 103, 0.2);
+  border: 1px solid var(--color-ink-light);
+  color: var(--color-ink-light);
+}
+
+.auth-badge.online {
+  background-color: var(--color-crimson-light);
+  border: 1px solid var(--color-crimson);
+  color: var(--color-crimson);
 }
 
 /* Navigation tabs */
@@ -122,7 +168,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   background-color: var(--color-parchment-dark);
-  border-bottom: 2px solid var(--color-gold-dark);
+  border-bottom: 3px double var(--color-crimson);
   gap: 4px;
   padding: 8px 15px 0 15px;
 }
@@ -131,9 +177,9 @@ body {
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   font-size: 1.05rem;
   font-weight: 600;
-  padding: 12px 24px; /* Slightly wider tabs for full-screen layout */
-  background-color: rgba(179, 143, 67, 0.08);
-  border: 1px solid var(--color-gold-dark);
+  padding: 12px 24px;
+  background-color: rgba(144, 27, 27, 0.05);
+  border: 1px solid var(--color-crimson);
   border-bottom: none;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -148,7 +194,7 @@ body {
 }
 
 .tab-btn:hover {
-  background-color: rgba(179, 143, 67, 0.2);
+  background-color: rgba(144, 27, 27, 0.15);
   color: var(--color-crimson);
 }
 
@@ -156,15 +202,15 @@ body {
   background-color: var(--color-parchment);
   color: var(--color-crimson);
   border-top: 3px solid var(--color-crimson);
-  border-bottom: 1px solid var(--color-parchment);
+  border-bottom: 2px solid var(--color-parchment);
   padding-bottom: 13px;
   z-index: 2;
 }
 
 /* Tutorial Text Style (Small gray text placed above tabs/views) */
 .tutorial-banner {
-  background-color: rgba(107, 102, 95, 0.06);
-  border-bottom: 1px dashed var(--color-gold);
+  background-color: rgba(144, 27, 27, 0.02);
+  border-bottom: 1px dashed var(--color-crimson);
   padding: 15px 30px;
   font-size: 0.88rem;
   color: var(--color-grey);
@@ -180,8 +226,8 @@ body {
 
 .tutorial-banner-title {
   font-weight: 600;
-  color: var(--color-ink-light);
-  font-family: 'Cinzel', serif;
+  color: var(--color-crimson);
+  font-family: var(--font-gothic);
   font-size: 0.85rem;
   text-transform: uppercase;
   margin-bottom: 2px;
@@ -190,93 +236,205 @@ body {
 /* Layout views */
 .main-content {
   flex: 1;
-  padding: 30px; /* Spacious padding for wide screens */
+  padding: 30px;
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-/* Card layout */
+/* Card layout - Transformed into the official sheet borderless section panels */
 .medieval-card {
-  background-color: var(--color-parchment);
-  border: 1px solid var(--color-gold-light);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-  padding: 25px;
-  margin-bottom: 20px;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 10px;
+  margin-bottom: 25px;
   position: relative;
   width: 100%;
 }
 
 .medieval-card::before {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  right: 3px;
-  bottom: 3px;
-  border: 1px solid rgba(179, 143, 67, 0.2);
-  pointer-events: none;
+  display: none; /* Removed boxed overlays */
 }
 
+/* Authentic Crimson Ribbon Header from the official Character Sheet */
 .card-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-gothic);
   color: var(--color-crimson);
-  font-size: 1.35rem;
-  border-bottom: 1px solid var(--color-gold-light);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  justify-content: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  border: none;
+  padding: 6px 0;
+  position: relative;
 }
 
-/* Form Styles */
+/* Draw beautiful gothic arrows/dots symmetrical decoration */
+.card-title::before,
+.card-title::after {
+  content: '';
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background-color: var(--color-crimson);
+  vertical-align: middle;
+}
+
+.card-title::before {
+  background: linear-gradient(to right, transparent, var(--color-crimson));
+}
+
+.card-title::after {
+  background: linear-gradient(to left, transparent, var(--color-crimson));
+}
+
+/* Section Header Ribbons with Double Crimson Border lines */
+.sheet-ribbon {
+  border-top: 2px solid var(--color-crimson);
+  border-bottom: 2px solid var(--color-crimson);
+  padding: 6px 0;
+  margin-bottom: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.sheet-ribbon h3 {
+  font-family: var(--font-gothic);
+  color: var(--color-crimson);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sheet-ribbon::before,
+.sheet-ribbon::after {
+  content: '❖'; /* Gothic cross icon */
+  color: var(--color-crimson);
+  font-size: 0.8rem;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.sheet-ribbon::before { left: 15px; }
+.sheet-ribbon::after { right: 15px; }
+
+/* 3-Column Layout matching the official sheet */
+.official-sheet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 35px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .official-sheet-grid {
+    grid-template-columns: 1fr; /* Stack vertically on tablet/mobile */
+    gap: 20px;
+  }
+}
+
+/* Form Styles - Completely updated to the elegant "underlined input" style */
 .medieval-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Wider fields for large display screens */
-  gap: 20px;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.form-group-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.form-group-row label {
+  white-space: nowrap;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .form-label {
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--color-ink-light);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-ink);
+  font-family: var(--font-korean);
+  letter-spacing: -0.04em;
 }
 
+/* Authentic Paper Underline Input styling */
 .form-input {
-  font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
-  font-size: 1.02rem;
-  padding: 10px 14px;
-  background-color: rgba(255, 255, 255, 0.6);
-  border: 1px solid var(--color-gold-light);
-  border-radius: 2px;
-  color: var(--color-ink);
-  outline: none;
-  transition: all 0.2s;
-  letter-spacing: -0.03em;
+  border: none !important;
+  border-bottom: 1.5px solid var(--color-grey) !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 2px 5px !important;
+  color: var(--color-ink) !important;
+  outline: none !important;
+  font-family: 'MedievalEnglish', 'Eulyoo 1945', serif !important;
+  font-size: 1.05rem !important;
+  letter-spacing: -0.04em !important;
+  transition: border-bottom-color 0.2s !important;
+  flex: 1;
 }
 
 .form-input:focus {
-  border-color: var(--color-crimson);
-  background-color: #fff;
-  box-shadow: 0 0 4px rgba(153, 34, 34, 0.1);
+  border-bottom-color: var(--color-crimson) !important;
+  background-color: rgba(144, 27, 27, 0.015) !important;
+}
+
+/* Gothic Shield Outline Box */
+.shield-container {
+  width: 100%;
+  max-width: 240px;
+  height: 280px;
+  border: 2px solid var(--color-ink);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 50% 70%;
+  border-bottom-right-radius: 50% 70%;
+  margin: 0 auto 20px auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.shield-text {
+  font-family: 'Cinzel', serif;
+  color: var(--color-grey);
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 /* Medieval Buttons */
 .btn-medieval {
   font-family: 'MedievalEnglish', 'Eulyoo 1945', serif;
   font-weight: 600;
-  font-size: 0.95rem;
-  padding: 10px 20px;
+  font-size: 0.92rem;
+  padding: 8px 16px;
   background-color: var(--color-parchment-dark);
-  border: 1px solid var(--color-gold-dark);
-  color: var(--color-ink);
+  border: 1px solid var(--color-crimson);
+  color: var(--color-crimson);
   cursor: pointer;
   transition: all 0.2s;
   text-transform: uppercase;
@@ -312,26 +470,40 @@ body {
 
 ::-webkit-scrollbar-track {
   background: var(--color-parchment-dark);
-  border-left: 1px solid var(--color-gold-light);
+  border-left: 1px solid var(--color-crimson);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-gold-light);
+  background: var(--color-crimson);
   border: 2px solid var(--color-parchment-dark);
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gold-dark);
+/* Trait Indicators matching official sheet */
+.trait-icon {
+  font-size: 0.8rem;
+  color: var(--color-crimson);
+  margin-right: 4px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* List group style for attributes / skills lines */
+.sheet-line-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
 }
 
 /* Interactive elements */
 .exp-checkbox {
   appearance: none;
-  width: 15px;
-  height: 15px;
-  border: 1px solid var(--color-crimson);
-  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--color-crimson);
+  border-radius: 2px; /* Square checkboxes from the official sheet */
   cursor: pointer;
   outline: none;
   display: inline-flex;
@@ -347,7 +519,7 @@ body {
 .exp-checkbox:checked::after {
   content: '✓';
   color: white;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
 }
 
