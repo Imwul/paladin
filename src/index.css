@@ -45,6 +45,7 @@
   font-family: var(--font-sans) !important; /* Ensure custom font for all elements */
   font-variant-numeric: tabular-nums; /* Tabular numbers */
   font-feature-settings: "tnum"; /* Numeric font features */
+  letter-spacing: -0.05em; /* Apply -5% spacing to numbers */
 }
 
 body {
@@ -449,7 +450,7 @@ body {
 .shield-text {
   font-family: 'Eulyoo 1945', serif;
   color: var(--color-grey);
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   text-align: center;
 }
 
