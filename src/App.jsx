@@ -187,8 +187,28 @@ export default function App() {
           // Load cloud data upon login
           services.loadFromCloud(usr.uid).then(cloudData => {
             if (cloudData) {
-              if (window.confirm("클라우드 백업 데이터를 발견했습니다! 기존 로컬 시트 데이터를 클라우드 데이터로 복구하시겠습니까?")) {
-                setCharacter(cloudData);
+              if (sessionStorage.getItem('paladin_cloud_prompted')) {
+                return;
+              }
+              // Simple smart comparison to see if local data is already identical
+              const localSaved = localStorage.getItem('paladin_companion_data');
+              let isDifferent = true;
+              if (localSaved) {
+                try {
+                  const localParsed = JSON.parse(localSaved);
+                  if (localParsed?.personal?.name === cloudData?.personal?.name &&
+                      JSON.stringify(localParsed?.attributes) === JSON.stringify(cloudData?.attributes) &&
+                      JSON.stringify(localParsed?.traits) === JSON.stringify(cloudData?.traits)) {
+                    isDifferent = false;
+                  }
+                } catch (e) {}
+              }
+
+              if (isDifferent) {
+                sessionStorage.setItem('paladin_cloud_prompted', 'true');
+                if (window.confirm("클라우드 백업 데이터를 발견했습니다! 기존 로컬 시트 데이터를 클라우드 데이터로 복구하시겠습니까?")) {
+                  setCharacter(cloudData);
+                }
               }
             }
           });
