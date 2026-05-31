@@ -166,8 +166,12 @@ export default function CharacterSheet({ character, setCharacter }) {
     <div className="cs-skill-row">
       <span className="cs-skill-name">{skill.label}</span>
       <span className="cs-skill-val">
-        <input type="number" value={character?.skills?.[skill.key] || 0}
-          onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+        <div className="cs-num-ctrl">
+          <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('skills', skill.key, Math.max(0, (character?.skills?.[skill.key] || 0) - 1))}>−</button>
+          <input type="number" value={character?.skills?.[skill.key] || 0}
+            onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
+          <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('skills', skill.key, (character?.skills?.[skill.key] || 0) + 1)}>+</button>
+        </div>
       </span>
       <input type="checkbox" className="exp-checkbox"
         checked={character?.skillsChecked?.[skill.key] || false}
@@ -340,13 +344,21 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <td className="cs-trait-sym">{t.sym}</td>
                   <td className="cs-trait-name">{t.label1}</td>
                   <td className="cs-trait-val">
-                    <input type="number" value={character?.traits?.[t.key1] || 0}
-                      onChange={e => handleTraitChange(t.key1, t.key2, e.target.value)} />
+                    <div className="cs-num-ctrl mini">
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, t.key2, Math.max(0, (character?.traits?.[t.key1] || 0) - 1))}>−</button>
+                      <input type="number" value={character?.traits?.[t.key1] || 0}
+                        onChange={e => handleTraitChange(t.key1, t.key2, e.target.value)} />
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, t.key2, Math.min(20, (character?.traits?.[t.key1] || 0) + 1))}>+</button>
+                    </div>
                   </td>
                   <td className="cs-trait-divider">/</td>
                   <td className="cs-trait-val">
-                    <input type="number" value={character?.traits?.[t.key2] || 0}
-                      onChange={e => handleTraitChange(t.key2, t.key1, e.target.value)} />
+                    <div className="cs-num-ctrl mini">
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, t.key1, Math.max(0, (character?.traits?.[t.key2] || 0) - 1))}>−</button>
+                      <input type="number" value={character?.traits?.[t.key2] || 0}
+                        onChange={e => handleTraitChange(t.key2, t.key1, e.target.value)} />
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, t.key1, Math.min(20, (character?.traits?.[t.key2] || 0) + 1))}>+</button>
+                    </div>
                   </td>
                   <td className="cs-trait-name-right">{t.label2}</td>
                 </tr>
@@ -369,9 +381,19 @@ export default function CharacterSheet({ character, setCharacter }) {
                   onChange={e => handleInputChange('passionsChecked', p.key, e.target.checked)} />
                 <span className="cs-passion-name">{p.label}</span>
                 <span className="cs-skill-val">
-                  <input type="number"
-                    value={character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal}
-                    onChange={e => handleInputChange('passions', p.key, parseInt(e.target.value) || 0)} />
+                  <div className="cs-num-ctrl">
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const val = character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal;
+                      handleInputChange('passions', p.key, Math.max(0, val - 1));
+                    }}>−</button>
+                    <input type="number"
+                      value={character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal}
+                      onChange={e => handleInputChange('passions', p.key, parseInt(e.target.value) || 0)} />
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const val = character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal;
+                      handleInputChange('passions', p.key, val + 1);
+                    }}>+</button>
+                  </div>
                 </span>
               </div>
             ))}
@@ -388,12 +410,22 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                     <span className="cs-passion-name" style={{ fontWeight: 'bold' }}>{s.label}</span>
                     <span className="cs-skill-val">
-                      <input type="number"
-                        value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
-                        onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
+                      <div className="cs-num-ctrl">
+                        <button type="button" className="cs-ctrl-btn" onClick={() => {
+                          const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
+                          handleInputChange('standings', s.key, Math.max(0, val - 1));
+                        }}>−</button>
+                        <input type="number"
+                          value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
+                          onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
+                        <button type="button" className="cs-ctrl-btn" onClick={() => {
+                          const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
+                          handleInputChange('standings', s.key, val + 1);
+                        }}>+</button>
+                      </div>
                     </span>
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)', textAlign: 'right', marginTop: '-4px' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)', textAlign: 'right', marginTop: '4px' }}>
                     공식 산출 기준: {s.base}
                   </span>
                 </div>
@@ -477,8 +509,12 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </div>
                 <div className="cs-companion-field" style={{ flex: '1 1 80px' }}>
                   <label>나이:</label>
-                  <input type="number" value={character?.squire?.age || 0}
-                    onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
+                  <div className="cs-num-ctrl">
+                    <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('squire', 'age', Math.max(0, (character?.squire?.age || 0) - 1))}>−</button>
+                    <input type="number" value={character?.squire?.age || 0}
+                      onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
+                    <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('squire', 'age', (character?.squire?.age || 0) + 1)}>+</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -491,19 +527,39 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div className="cs-companion-row">
                 <div className="cs-companion-field">
                   <label>HP:</label>
-                  <input type="number" value={character?.horses?.warhorse?.hp || 0}
-                    onChange={e => {
-                      const updated = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
+                  <div className="cs-num-ctrl">
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const updated = { ...(character?.horses?.warhorse || {}), hp: Math.max(0, (character?.horses?.warhorse?.hp || 0) - 1) };
                       handleInputChange('horses', 'warhorse', updated);
-                    }} />
+                    }}>−</button>
+                    <input type="number" value={character?.horses?.warhorse?.hp || 0}
+                      onChange={e => {
+                        const updated = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
+                        handleInputChange('horses', 'warhorse', updated);
+                      }} />
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const updated = { ...(character?.horses?.warhorse || {}), hp: (character?.horses?.warhorse?.hp || 0) + 1 };
+                      handleInputChange('horses', 'warhorse', updated);
+                    }}>+</button>
+                  </div>
                 </div>
                 <div className="cs-companion-field">
                   <label>방어:</label>
-                  <input type="number" value={character?.horses?.warhorse?.armor || 0}
-                    onChange={e => {
-                      const updated = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
+                  <div className="cs-num-ctrl">
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const updated = { ...(character?.horses?.warhorse || {}), armor: Math.max(0, (character?.horses?.warhorse?.armor || 0) - 1) };
                       handleInputChange('horses', 'warhorse', updated);
-                    }} />
+                    }}>−</button>
+                    <input type="number" value={character?.horses?.warhorse?.armor || 0}
+                      onChange={e => {
+                        const updated = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
+                        handleInputChange('horses', 'warhorse', updated);
+                      }} />
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const updated = { ...(character?.horses?.warhorse || {}), armor: (character?.horses?.warhorse?.armor || 0) + 1 };
+                      handleInputChange('horses', 'warhorse', updated);
+                    }}>+</button>
+                  </div>
                 </div>
                 <div className="cs-companion-field">
                   <label>피해:</label>
