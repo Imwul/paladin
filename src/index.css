@@ -341,10 +341,12 @@ body {
   align-items: start;
 }
 
+
 /* Ensure columns have a golden max-width to prevent staggering/stretching */
 .official-sheet-grid > div:not(.sheet-column-3) {
   max-width: 480px;
   width: 100%;
+  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
   justify-self: center;
 }
 
@@ -354,6 +356,7 @@ body {
   gap: 10px;
   max-width: 480px;
   width: 100%;
+  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
   justify-self: center;
 }
 
@@ -363,12 +366,13 @@ body {
   gap: 10px;
   max-width: 480px;
   width: 100%;
+  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
 }
 
 @media (max-width: 1600px) {
   .official-sheet-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 40px; /* Increased to 40px for extremely premium column breathing space */
   }
   
   .official-sheet-grid > div:not(.sheet-column-3) {
@@ -378,11 +382,12 @@ body {
 
   .sheet-column-3 {
     grid-column: span 2;
-    max-width: 990px; /* 480px * 2 + 30px gap */
+    max-width: 1000px; /* 480px * 2 + 40px gap */
     display: grid !important;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 40px;
     align-items: start;
+    justify-self: center;
   }
 }
 
