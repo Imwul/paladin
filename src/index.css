@@ -28,10 +28,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: var(--font-korean) !important; /* Ensure custom font for all elements */
-  font-variant-numeric: tabular-nums !important; /* Tabular numbers */
-  font-feature-settings: "tnum" !important; /* Numeric font features */
-  letter-spacing: -0.05em !important; /* Apply -5% spacing to numbers globally */
+  font-family: var(--font-korean) !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" !important;
+  letter-spacing: -0.05em !important;
+  overflow-wrap: break-word;
+  word-break: keep-all;
 }
 
 /* Force override browser-specific user agent styles for input elements */
@@ -43,32 +45,45 @@ input, textarea, button, select, input[type="number"], input[type="text"] {
 }
 
 body {
-  background-color: #e5ded0; /* Slightly darker surrounding margin paper */
+  background-color: #d8cebe;
   color: var(--color-ink);
   font-family: 'Pretendard', -apple-system, sans-serif !important;
-  font-size: 18.5px; /* Increased base body font size for superb legibility */
-  letter-spacing: -0.05em !important; /* Strict Korean -5% letter spacing */
-  line-height: 1.65; /* Slightly relaxed line height for better eye comfort */
+  font-size: 16px;
+  letter-spacing: -0.05em !important;
+  line-height: 1.65;
   width: 100%;
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 /* App container - Restructured to span 100% of viewport width and height */
 .app-container {
   background-color: var(--color-parchment);
-  background-image: radial-gradient(rgba(144, 27, 27, 0.015) 1px, transparent 0);
-  background-size: 20px 20px;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 40px,
+      rgba(195, 161, 101, 0.04) 40px,
+      rgba(195, 161, 101, 0.04) 41px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(195, 161, 101, 0.03) 40px,
+      rgba(195, 161, 101, 0.03) 41px
+    );
   width: 100%;
-  max-width: 100vw; 
-  min-height: 100vh; 
+  max-width: 100vw;
+  min-height: 100vh;
   margin: 0;
   padding: 0;
-  border-radius: 0; 
+  border-radius: 0;
   border: none;
-  border-top: 8px solid var(--color-crimson); /* Gothic Royal Crimson top border bar */
+  border-top: 6px solid var(--color-crimson);
   box-shadow: none;
   display: flex;
   flex-direction: column;
@@ -97,11 +112,12 @@ body {
 .header-decor h1 {
   font-family: var(--font-gothic);
   font-weight: 800;
-  font-size: 2.5rem;
+  font-size: clamp(1.2rem, 4vw, 2.2rem);
   color: var(--color-crimson);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   margin-bottom: 2px;
+  text-shadow: 1px 1px 0 rgba(144, 27, 27, 0.08);
 }
 
 .header-decor p.subtitle {
@@ -164,9 +180,9 @@ body {
 
 .tab-btn {
   font-family: 'Pretendard', -apple-system, sans-serif;
-  font-size: 1.2rem;
+  font-size: clamp(0.75rem, 2vw, 1rem);
   font-weight: 600;
-  padding: 12px 24px;
+  padding: 10px 14px;
   background-color: rgba(144, 27, 27, 0.05);
   border: 1px solid var(--color-crimson);
   border-bottom: none;
@@ -178,10 +194,9 @@ body {
   letter-spacing: -0.05em;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin-bottom: -1px;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
+  white-space: nowrap;
 }
 
 .tab-btn:hover {
@@ -349,7 +364,7 @@ body {
   max-width: 520px;
   min-width: 0;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .sheet-column-3 {
@@ -360,7 +375,7 @@ body {
   flex-direction: column;
   gap: 10px;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .sheet-subcolumn {
@@ -752,6 +767,20 @@ body {
 .cs-section {
   width: 100%;
   box-sizing: border-box;
+  background: rgba(255, 252, 245, 0.5);
+  border: 1px solid var(--color-gold-light);
+  border-radius: 2px;
+  position: relative;
+}
+
+.cs-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-light), transparent);
 }
 
 .cs-section-inner {
@@ -826,7 +855,7 @@ body {
   gap: 0;
   border: 1px solid var(--color-gold-light);
   border-radius: 2px;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cs-derived-item {
@@ -899,7 +928,7 @@ body {
   height: 8px;
   background: var(--color-gold-light);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 10px;
 }
 
