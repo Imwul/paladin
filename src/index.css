@@ -128,7 +128,7 @@ body {
   color: var(--color-gold-dark);
   font-style: italic;
   letter-spacing: -0.05em;
-  font-family: var(--font-heading);
+  font-family: var(--font-heading) !important;
 }
 
 /* Auth Bar on Header Right */
