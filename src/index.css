@@ -337,48 +337,81 @@ body {
   grid-template-columns: 1fr 1fr 1fr;
   gap: 40px;
   width: 100%;
+  justify-content: center;
   align-items: start;
+}
+
+/* Ensure columns have a golden max-width to prevent staggering/stretching */
+.official-sheet-grid > div:not(.sheet-column-3) {
+  max-width: 480px;
+  width: 100%;
+  justify-self: center;
 }
 
 .sheet-column-3 {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 480px;
+  width: 100%;
+  justify-self: center;
 }
 
 .sheet-subcolumn {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 480px;
+  width: 100%;
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 1600px) {
   .official-sheet-grid {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
   }
+  
+  .official-sheet-grid > div:not(.sheet-column-3) {
+    max-width: 480px;
+    justify-self: center;
+  }
+
   .sheet-column-3 {
     grid-column: span 2;
+    max-width: 990px; /* 480px * 2 + 30px gap */
     display: grid !important;
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     align-items: start;
+    justify-self: center;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .official-sheet-grid {
     grid-template-columns: 1fr;
     gap: 20px;
   }
+  
+  .official-sheet-grid > div:not(.sheet-column-3) {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
   .sheet-column-3 {
     grid-column: span 1;
+    max-width: 480px;
+    margin: 0 auto;
     display: flex !important;
     flex-direction: column;
     gap: 10px;
   }
+  
+  .sheet-subcolumn {
+    max-width: 480px;
+    width: 100%;
+  }
 }
-
 /* Form Styles */
 .medieval-form-grid {
   display: grid;

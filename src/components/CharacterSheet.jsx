@@ -252,30 +252,29 @@ export default function CharacterSheet({ character, setCharacter }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>체구 (SIZ):</span>
-              <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
-                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.siz || 0} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
-                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.95rem', color: 'var(--color-grey)' }}>(넉다운 기준 {knockdown})</span>
-              </div>
+              <span className="form-label" style={{ fontWeight: 'bold', width: '100px', flexShrink: 0 }}>체구 (SIZ):</span>
+              <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character?.attributes?.siz || 0} onChange={e => handleInputChange('attributes', 'siz', parseInt(e.target.value) || 0)} />
+              <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.95rem', color: 'var(--color-grey)', flex: 1 }}>(넉다운 기준 {knockdown})</span>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>민첩 (DEX):</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.dex || 0} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
+              <span className="form-label" style={{ fontWeight: 'bold', width: '100px', flexShrink: 0 }}>민첩 (DEX):</span>
+              <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character?.attributes?.dex || 0} onChange={e => handleInputChange('attributes', 'dex', parseInt(e.target.value) || 0)} />
+              <span style={{ flex: 1 }}></span>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>근력 (STR):</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.str || 0} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
+              <span className="form-label" style={{ fontWeight: 'bold', width: '100px', flexShrink: 0 }}>근력 (STR):</span>
+              <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character?.attributes?.str || 0} onChange={e => handleInputChange('attributes', 'str', parseInt(e.target.value) || 0)} />
+              <span style={{ flex: 1 }}></span>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>체질 (CON):</span>
-              <div style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
-                <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.con || 0} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
-                <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.95rem', color: 'var(--color-grey)' }}>(중상 기준 {majorWound})</span>
-              </div>
+              <span className="form-label" style={{ fontWeight: 'bold', width: '100px', flexShrink: 0 }}>체질 (CON):</span>
+              <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character?.attributes?.con || 0} onChange={e => handleInputChange('attributes', 'con', parseInt(e.target.value) || 0)} />
+              <span className="form-label" style={{ marginLeft: '10px', fontSize: '0.95rem', color: 'var(--color-grey)', flex: 1 }}>(중상 기준 {majorWound})</span>
             </div>
             <div className="sheet-line-item">
-              <span className="form-label" style={{ fontWeight: 'bold' }}>외모 (APP):</span>
-              <input type="number" className="form-input" style={{ maxWidth: '80px', textAlign: 'center' }} value={character?.attributes?.app || 0} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
+              <span className="form-label" style={{ fontWeight: 'bold', width: '100px', flexShrink: 0 }}>외모 (APP):</span>
+              <input type="number" className="form-input" style={{ width: '60px', textAlign: 'center' }} value={character?.attributes?.app || 0} onChange={e => handleInputChange('attributes', 'app', parseInt(e.target.value) || 0)} />
+              <span style={{ flex: 1 }}></span>
             </div>
             <div style={{ borderTop: '1px dashed var(--color-gold-light)', marginTop: '10px', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div className="sheet-line-item">
