@@ -720,3 +720,535 @@ body {
     grid-column: span 1;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════ */
+/* Character Sheet — New Section-Based Responsive Layout      */
+/* 어떤 화면에서도 절대 잘리지 않는 세로 흐름 기반 디자인      */
+/* ═══════════════════════════════════════════════════════════ */
+
+.cs-page {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Flex row for side-by-side cards */
+.cs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+
+.cs-row > .cs-section {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+/* Section card */
+.cs-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cs-section-inner {
+  padding: 12px 16px;
+}
+
+/* ─── Attribute Stat Blocks ─── */
+.cs-attr-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.cs-attr-block {
+  flex: 1 1 90px;
+  max-width: 130px;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 6px 8px;
+  border: 1.5px solid var(--color-gold-light);
+  border-top: 3px solid var(--color-crimson);
+  background: rgba(255,255,255,0.4);
+  border-radius: 2px;
+  position: relative;
+}
+
+.cs-attr-abbr {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--color-crimson);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cs-attr-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-ink-light);
+  margin-bottom: 2px;
+}
+
+.cs-attr-block input {
+  width: 48px;
+  height: 36px;
+  text-align: center;
+  font-size: 1.4rem !important;
+  font-weight: 800;
+  border: none !important;
+  border-bottom: 2px solid var(--color-crimson) !important;
+  background: transparent !important;
+  color: var(--color-ink) !important;
+  padding: 0 !important;
+  outline: none;
+}
+
+.cs-attr-note {
+  font-size: 0.7rem;
+  color: var(--color-grey);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+/* ─── Derived Stats Strip ─── */
+.cs-derived-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--color-gold-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.cs-derived-item {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  border-right: 1px solid var(--color-gold-light);
+  background: rgba(255,255,255,0.3);
+  min-width: 80px;
+}
+
+.cs-derived-item:last-child {
+  border-right: none;
+}
+
+.cs-derived-item .cs-derived-label {
+  font-size: 0.75rem;
+  color: var(--color-grey);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cs-derived-item .cs-derived-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+
+.cs-derived-item.cs-derived-hp {
+  background: rgba(144, 27, 27, 0.04);
+}
+
+.cs-derived-item.cs-derived-hp .cs-derived-value {
+  color: var(--color-crimson);
+}
+
+/* ─── HP Panel ─── */
+.cs-hp-panel {
+  border: 2px solid var(--color-crimson);
+  padding: 14px;
+  background: rgba(144, 27, 27, 0.015);
+  border-radius: 2px;
+}
+
+.cs-hp-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cs-hp-main input {
+  width: 64px;
+  height: 44px;
+  text-align: center;
+  font-size: 1.6rem !important;
+  font-weight: 800;
+  color: var(--color-crimson) !important;
+  border: none !important;
+  border-bottom: 2.5px solid var(--color-crimson) !important;
+  background: transparent !important;
+  outline: none;
+  padding: 0 !important;
+}
+
+.cs-hp-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-gold-light);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.cs-hp-bar-fill {
+  height: 100%;
+  background: var(--color-crimson);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.cs-hp-thresholds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 0.85rem;
+}
+
+.cs-hp-threshold {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.cs-hp-threshold.active {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* ─── Glory Row ─── */
+.cs-glory-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cs-glory-item {
+  flex: 1 1 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.cs-glory-item label {
+  font-size: 0.85rem;
+  color: var(--color-grey);
+  font-weight: 600;
+}
+
+.cs-glory-item input {
+  width: 80px;
+  height: 36px;
+  text-align: center;
+  font-size: 1.2rem !important;
+  font-weight: 700;
+  border: none !important;
+  border-bottom: 2px solid var(--color-gold) !important;
+  background: transparent !important;
+  color: var(--color-ink) !important;
+  outline: none;
+  padding: 0 !important;
+}
+
+.cs-glory-item.cs-glory-total input {
+  border-bottom-color: var(--color-crimson) !important;
+  color: var(--color-crimson) !important;
+  font-size: 1.3rem !important;
+}
+
+/* ─── Field Grid (for personal data) ─── */
+.cs-field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px 20px;
+}
+
+.cs-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cs-field .cs-field-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cs-field input {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  border-bottom: 1.5px solid var(--color-grey) !important;
+  background: transparent !important;
+  padding: 4px 4px !important;
+  font-size: 1rem !important;
+  color: var(--color-ink) !important;
+  outline: none;
+}
+
+.cs-field input:focus {
+  border-bottom-color: var(--color-crimson) !important;
+}
+
+/* ─── Trait Table ─── */
+.cs-trait-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cs-trait-table tr {
+  border-bottom: 1px solid rgba(195, 161, 101, 0.12);
+}
+
+.cs-trait-table tr:nth-child(even) {
+  background: rgba(195, 161, 101, 0.03);
+}
+
+.cs-trait-table td {
+  padding: 3px 4px;
+  vertical-align: middle;
+  font-size: 0.95rem;
+}
+
+.cs-trait-sym {
+  width: 36px;
+  text-align: center;
+  color: var(--color-crimson);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.cs-trait-name {
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.cs-trait-name-right {
+  font-weight: 500;
+  color: var(--color-ink-light);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cs-trait-val {
+  width: 40px;
+  text-align: center;
+}
+
+.cs-trait-val input {
+  width: 38px;
+  height: 28px;
+  text-align: center;
+  font-size: 1.05rem !important;
+  font-weight: 700;
+  border: none !important;
+  border-bottom: 1.5px solid var(--color-crimson) !important;
+  background: transparent !important;
+  color: var(--color-ink) !important;
+  outline: none;
+  padding: 0 !important;
+}
+
+.cs-trait-divider {
+  width: 16px;
+  text-align: center;
+  color: var(--color-gold-dark);
+  font-weight: bold;
+}
+
+/* ─── Bonus Indicators ─── */
+.cs-bonus-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(144, 27, 27, 0.03);
+  border: 1px solid var(--color-gold-light);
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+
+.cs-bonus-item {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-ink-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cs-bonus-item.active {
+  color: var(--color-crimson);
+  font-weight: 700;
+}
+
+/* ─── Skill Grid ─── */
+.cs-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cs-skill-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(195, 161, 101, 0.12);
+}
+
+.cs-skill-row:nth-child(even) {
+  background: rgba(195, 161, 101, 0.02);
+}
+
+.cs-skill-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.cs-skill-val input {
+  width: 42px;
+  height: 28px;
+  text-align: center;
+  font-size: 1.05rem !important;
+  font-weight: 700;
+  border: none !important;
+  border-bottom: 1.5px solid var(--color-crimson) !important;
+  background: transparent !important;
+  color: var(--color-ink) !important;
+  outline: none;
+  padding: 0 !important;
+}
+
+/* ─── Passion Row ─── */
+.cs-passion-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(195, 161, 101, 0.12);
+}
+
+.cs-passion-name {
+  flex: 1;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* ─── Companion Cards ─── */
+.cs-companion-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cs-companion-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.cs-companion-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 100px;
+  min-width: 0;
+}
+
+.cs-companion-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink-light);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cs-companion-field input {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  border: none !important;
+  border-bottom: 1.5px solid var(--color-grey) !important;
+  background: transparent !important;
+  padding: 3px 4px !important;
+  font-size: 1rem !important;
+  color: var(--color-ink) !important;
+  outline: none;
+}
+
+/* ─── Features ─── */
+.cs-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cs-feature-list input {
+  width: 100%;
+  border: none !important;
+  border-bottom: 1.5px dotted var(--color-grey) !important;
+  background: transparent !important;
+  padding: 4px 4px !important;
+  font-size: 1rem !important;
+  color: var(--color-ink) !important;
+  outline: none;
+}
+
+/* ─── Shield (centered) ─── */
+.cs-shield-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+/* ─── Responsive adjustments ─── */
+@media (max-width: 600px) {
+  .cs-section-inner {
+    padding: 10px 12px;
+  }
+  
+  .cs-field-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .cs-attr-block {
+    flex: 1 1 70px;
+    min-width: 60px;
+    padding: 8px 4px 6px;
+  }
+  
+  .cs-attr-block input {
+    width: 40px;
+    height: 30px;
+    font-size: 1.2rem !important;
+  }
+  
+  .cs-derived-item {
+    padding: 6px 8px;
+    min-width: 60px;
+  }
+}
+
