@@ -1430,3 +1430,133 @@ input[type="number"] {
   }
 }
 
+/* Crimson Flash Pop for Roll Completion */
+.roll-pop {
+  animation: rollPopAnim 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes rollPopAnim {
+  0% {
+    transform: scale(1.18);
+    color: var(--color-crimson) !important;
+    text-shadow: 0 0 15px rgba(144, 27, 27, 0.6);
+  }
+  60% {
+    color: var(--color-crimson) !important;
+    text-shadow: 0 0 8px rgba(144, 27, 27, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    text-shadow: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Tactile D6 & D20 Dice Visuals                               */
+/* ─────────────────────────────────────────────────────────── */
+
+.die-face {
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  border: 1.8px solid var(--color-ink);
+  border-radius: 8px;
+  box-shadow: 
+    0 3px 6px rgba(46, 31, 15, 0.18), 
+    inset 0 -3px 0 #d5c8b5,
+    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 5px;
+  gap: 3px;
+  user-select: none;
+  transition: all 0.2s ease;
+  background-image: radial-gradient(circle at 20% 20%, #ffffff 0%, #f4edd8 100%);
+}
+
+.die-cell { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+}
+
+.die-dot { 
+  width: 8px; 
+  height: 8px; 
+  border-radius: 50%; 
+  background: var(--color-ink); 
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* 1일 때는 눈금이 크고 붉은 장미빛(danger)으로 강렬하게 표시 */
+.die-face[data-val="1"] .die-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--color-danger);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 4px rgba(139, 32, 32, 0.4);
+}
+
+/* D20 3D 20면체 주사위 컨테이너 */
+.d20-container {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  margin: 12px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.d20-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgba(46, 31, 15, 0.25));
+}
+
+.d20-face-center {
+  fill: #ffffff;
+  fill-opacity: 0.95;
+  stroke: var(--color-gold);
+  stroke-width: 1.2;
+}
+
+.d20-face-outer {
+  fill: #fdfaf4;
+  fill-opacity: 0.45;
+  stroke: var(--color-gold-light);
+  stroke-width: 0.8;
+}
+
+.d20-line {
+  stroke: var(--color-gold);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+.d20-outline {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.d20-number {
+  position: absolute;
+  font-family: var(--font-serif) !important;
+  font-size: 1.85rem;
+  font-weight: 800;
+  user-select: none;
+  pointer-events: none;
+  /* 살짝 아래쪽으로 내려서 역삼각형 정중앙에 정확히 배치 */
+  transform: translateY(4px);
+  text-shadow: 
+    -1.5px -1.5px 0 #fff,  
+     1.5px -1.5px 0 #fff,
+    -1.5px  1.5px 0 #fff,
+     1.5px  1.5px 0 #fff;
+  transition: all 0.3s ease;
+}
+
+

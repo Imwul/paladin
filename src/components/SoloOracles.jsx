@@ -4,6 +4,67 @@ import { maleNames, femaleNames, surnames, locations, titles } from '../data/nam
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight } from 'lucide-react';
 
+// D6 Tactile Dice Face Component
+const DiceFace = ({ value, isRolling }) => {
+  const activeDotsMap = {
+    1: [4],
+    2: [0, 8],
+    3: [0, 4, 8],
+    4: [0, 2, 6, 8],
+    5: [0, 2, 4, 6, 8],
+    6: [0, 2, 3, 5, 6, 8]
+  };
+  const activeDots = activeDotsMap[value] || [];
+  return (
+    <div className={`die-face ${isRolling ? 'roll-blur' : 'roll-pop'}`} data-val={value}>
+      {[...Array(9)].map((_, i) => (
+        <div key={i} className="die-cell">
+          {activeDots.includes(i) && <div className="die-dot" />}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// D20 Tactile Icosahedron Component
+const D20Face = ({ value, isRolling, color }) => {
+  return (
+    <div className={`d20-container ${isRolling ? 'roll-blur' : 'roll-pop'}`}>
+      <svg viewBox="0 0 100 100" className="d20-svg">
+        {/* 중앙 삼각형 */}
+        <polygon points="50,25 24,70 76,70" className="d20-face-center" />
+        
+        {/* 외곽 삼각형 3D 투영 면들 */}
+        <polygon points="50,5 50,25 7,30" className="d20-face-outer" />
+        <polygon points="50,5 93,30 50,25" className="d20-face-outer" />
+        <polygon points="93,30 93,75 76,70" className="d20-face-outer" />
+        <polygon points="93,75 50,95 76,70" className="d20-face-outer" />
+        <polygon points="50,95 7,75 24,70" className="d20-face-outer" />
+        <polygon points="7,75 7,30 24,70" className="d20-face-outer" />
+        <polygon points="7,30 50,25 24,70" className="d20-face-outer" />
+        <polygon points="93,30 50,25 76,70" className="d20-face-outer" />
+        <polygon points="24,70 50,95 76,70" className="d20-face-outer" />
+        
+        {/* 내부 와이어프레임 입체 구분선 */}
+        <line x1="50" y1="5" x2="50" y2="25" className="d20-line" />
+        <line x1="93" y1="30" x2="50" y2="25" className="d20-line" />
+        <line x1="93" y1="30" x2="76" y2="70" className="d20-line" />
+        <line x1="93" y1="75" x2="76" y2="70" className="d20-line" />
+        <line x1="50" y1="95" x2="76" y2="70" className="d20-line" />
+        <line x1="50" y1="95" x2="24" y2="70" className="d20-line" />
+        <line x1="7" y1="75" x2="24" y2="70" className="d20-line" />
+        <line x1="7" y1="30" x2="24" y2="70" className="d20-line" />
+        <line x1="7" y1="30" x2="50" y2="25" className="d20-line" />
+        
+        <polygon points="50,5 93,30 93,75 50,95 7,75 7,30" className="d20-outline" />
+      </svg>
+      <div className="d20-number" style={{ color: color || 'var(--color-crimson)' }}>
+        {value}
+      </div>
+    </div>
+  );
+};
+
 export default function SoloOracles({ setCharacter }) {
   const [d20Result, setD20Result] = useState(null);
   const [d6Count, setD6Count] = useState(1);
@@ -172,13 +233,13 @@ export default function SoloOracles({ setCharacter }) {
               {isRollingD20 ? "주사위 굴리는 중..." : "d20 판정 던지기"}
             </button>
             {d20Result && (
-              <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>주사위</span>
-                <div className={isRollingD20 ? "roll-blur" : ""} style={{ fontSize: '2.5rem', fontWeight: 'bold', color: rollResolution?.color || 'inherit', margin: '-6px 0' }}>{d20Result}</div>
+              <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)', textTransform: 'uppercase', marginBottom: '4px' }}>판정 주사위</span>
+                <D20Face value={d20Result} isRolling={isRollingD20} color={rollResolution?.color} />
                 {rollResolution && !isRollingD20 && (
-                  <div style={{ marginTop: '4px' }}>
+                  <div style={{ marginTop: '8px' }}>
                     <h4 style={{ color: rollResolution.color, fontWeight: 'bold', fontSize: '1rem' }}>{rollResolution.title}</h4>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', marginTop: '2px' }}>{rollResolution.desc}</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', marginTop: '2px', whiteSpace: 'pre-line' }}>{rollResolution.desc}</p>
                   </div>
                 )}
               </div>
@@ -199,10 +260,10 @@ export default function SoloOracles({ setCharacter }) {
               {isRollingD6 ? "피해 굴리는 중..." : "d6 피해 굴리기"}
             </button>
             {d6Results.length > 0 && (
-              <div style={{ border: '1px solid var(--color-gold-light)', padding: '12px', textAlign: 'center' }}>
-                <div className={isRollingD6 ? "roll-blur" : ""} style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+              <div style={{ border: '1px solid var(--color-gold-light)', padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '12px', flexWrap: 'wrap' }}>
                   {d6Results.map((r, i) => (
-                    <span key={i} style={{ border: '1px solid var(--color-ink)', padding: '3px 8px', fontSize: '1.1rem', fontWeight: 'bold', background: '#fff' }}>{r}</span>
+                    <DiceFace key={i} value={r} isRolling={isRollingD6} />
                   ))}
                 </div>
                 <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>
@@ -227,9 +288,10 @@ export default function SoloOracles({ setCharacter }) {
               {isRollingOracle ? "신탁 묻는 중..." : "오라클에 묻기"}
             </button>
             {oracleAnswer && (
-              <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>d20 결과 {oracleAnswer.roll}</span>
-                <div className={isRollingOracle ? "roll-blur" : ""}>
+              <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginBottom: '4px' }}>신탁 주사위</span>
+                <D20Face value={oracleAnswer.roll} isRolling={isRollingOracle} color="var(--color-crimson)" />
+                <div className={isRollingOracle ? "roll-blur" : ""} style={{ marginTop: '8px' }}>
                   <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem', margin: '4px 0' }}>{oracleAnswer.result}</h4>
                   <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)' }}>{oracleAnswer.desc}</p>
                 </div>
@@ -250,8 +312,25 @@ export default function SoloOracles({ setCharacter }) {
             </button>
             {generatedName && (
               <div style={{ border: '1px solid var(--color-gold)', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div className={isRollingName ? "roll-blur" : ""} style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px dashed var(--color-gold-light)', paddingBottom: '6px' }}>
-                  <ProperNoun en={generatedName.fullTextEN} ko={generatedName.fullTextKO} />
+                <div className={isRollingName ? "roll-blur" : ""} style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px dashed var(--color-gold-light)', paddingBottom: '6px', textAlign: 'center' }}>
+                  {/* Top Line: Title + First Name */}
+                  <div style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>
+                    <span style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-crimson)' }}>
+                      {generatedName.title.en} {generatedName.name.en}
+                    </span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)', marginLeft: '8px', fontWeight: 'normal' }}>
+                      ({generatedName.title.ko} {generatedName.name.ko})
+                    </span>
+                  </div>
+                  {/* Bottom Line: House + Origin */}
+                  <div style={{ fontSize: '0.95rem' }}>
+                    <span style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-gold-dark)' }}>
+                      {generatedName.surname.en} of {generatedName.loc.en}
+                    </span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginLeft: '8px' }}>
+                      ({generatedName.surname.ko} {generatedName.loc.ko})
+                    </span>
+                  </div>
                 </div>
                 <button className="btn-medieval" onClick={applyName} style={{ fontSize: '0.8rem', padding: '3px 8px', justifyContent: 'center' }} disabled={isRollingName}>
                   시트에 적용
