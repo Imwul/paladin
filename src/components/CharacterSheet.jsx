@@ -217,26 +217,26 @@ export default function CharacterSheet({ character, setCharacter }) {
             {traitList.map(trait => (
               <div key={trait.key1} style={{
                 display: 'grid',
-                gridTemplateColumns: '42px 1fr auto auto auto auto',
+                gridTemplateColumns: 'minmax(28px, 42px) 1fr minmax(36px, 44px) auto minmax(36px, 44px) minmax(40px, 68px)',
                 alignItems: 'center',
-                gap: '4px',
-                padding: '4px 0',
+                gap: '2px',
+                padding: '3px 0',
                 borderBottom: '1px solid rgba(195,161,101,0.12)'
               }}>
                 {/* Symbol */}
-                <span style={{ fontSize: '1.4rem', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
+                <span style={{ fontSize: 'clamp(0.9rem, 1.2vw, 1.4rem)', color: 'var(--color-crimson)', fontWeight: 'bold', lineHeight: 1 }}>
                   {trait.sym}
                 </span>
                 {/* Left label */}
-                <span style={{ fontSize: '1.15rem', fontWeight: '600', color: 'var(--color-ink)' }}>{trait.label1}</span>
+                <span style={{ fontSize: 'clamp(0.85rem, 1vw, 1.15rem)', fontWeight: '600', color: 'var(--color-ink)' }}>{trait.label1}</span>
                 {/* Left value */}
-                <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
+                <input type="number" className="form-input" style={{ width: '100%', height: '30px', fontSize: 'clamp(0.9rem, 1vw, 1.25rem)', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 2px' }} value={character?.traits?.[trait.key1] || 0} onChange={e => handleTraitChange(trait.key1, trait.key2, e.target.value)} />
                 {/* Divider */}
-                <span style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '1.1rem', padding: '0 2px' }}>/</span>
+                <span style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '1em', padding: '0 1px', textAlign: 'center' }}>/</span>
                 {/* Right value */}
-                <input type="number" className="form-input" style={{ width: '44px', height: '32px', fontSize: '1.25rem', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 4px' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
+                <input type="number" className="form-input" style={{ width: '100%', height: '30px', fontSize: 'clamp(0.9rem, 1vw, 1.25rem)', textAlign: 'center', borderBottomColor: 'var(--color-crimson)', fontWeight: 'bold', padding: '2px 2px' }} value={character?.traits?.[trait.key2] || 0} onChange={e => handleTraitChange(trait.key2, trait.key1, e.target.value)} />
                 {/* Right label */}
-                <span style={{ fontSize: '1.1rem', fontWeight: '500', color: 'var(--color-ink-light)', width: '68px', textAlign: 'right' }}>{trait.label2}</span>
+                <span style={{ fontSize: 'clamp(0.8rem, 0.9vw, 1.1rem)', fontWeight: '500', color: 'var(--color-ink-light)', textAlign: 'right' }}>{trait.label2}</span>
               </div>
             ))}
           </div>
