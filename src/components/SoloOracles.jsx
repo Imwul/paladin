@@ -182,12 +182,8 @@ export default function SoloOracles({ setCharacter }) {
           <div className="cs-row" style={{ gap: '16px' }}>
             {soloScenariosRef.map((sc, i) => (
               <div key={i} style={{ flex: '1 1 250px', minWidth: 0, borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '10px' }}>
-                <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '4px' }}>
-                  {sc.name === "Crossroad Encounters (교차로에서의 조우)" ? "교차로 조우" :
-                   sc.name === "The Joust (마상 창시합)" ? "마상 창시합" :
-                   sc.name === "The Feud (가문의 복수극)" ? "가문의 복수극" :
-                   sc.name === "The Forest (깊은 숲에서의 미로)" ? "아르덴 숲" :
-                   "로맨스"}
+                <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '4px' }}>
+                  {sc.name}
                 </h4>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', marginBottom: '6px' }}>{sc.desc}</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', paddingLeft: '8px', borderLeft: '2px solid var(--color-gold-light)' }}>

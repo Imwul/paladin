@@ -331,7 +331,7 @@ export default function App() {
               <button className="btn-medieval" onClick={handleCloudLoad}>
                 <Cloud size={15} /> 가져오기
               </button>
-              <button className="btn-medieval" style={{ color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }} onClick={handleLogout}>
+              <button className="btn-medieval" onClick={handleLogout}>
                 <LogOut size={15} /> 로그아웃
               </button>
             </>
