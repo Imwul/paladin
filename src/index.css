@@ -331,82 +331,74 @@ body {
 .sheet-ribbon::before { left: 8px; }
 .sheet-ribbon::after { right: 8px; }
 
-/* 3-Column Layout matching the official sheet */
+/* 3-Column Layout matching the official sheet - Flexbox wrapping system (highly robust & overlap-proof) */
 .official-sheet-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 40px;
   width: 100%;
   justify-content: center;
   align-items: start;
 }
 
-
 /* Ensure columns have a golden max-width to prevent staggering/stretching */
 .official-sheet-grid > div:not(.sheet-column-3) {
+  flex: 1 1 450px;
   max-width: 480px;
-  width: 100%;
-  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
-  justify-self: center;
+  min-width: 320px;
+  box-sizing: border-box;
 }
 
 .sheet-column-3 {
+  flex: 1 1 450px;
+  max-width: 480px;
+  min-width: 320px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 480px;
-  width: 100%;
-  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
-  justify-self: center;
+  box-sizing: border-box;
 }
 
 .sheet-subcolumn {
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   max-width: 480px;
   width: 100%;
-  min-width: 0; /* Fix Safari / Mac WebKit flex stretch layout bug */
+  box-sizing: border-box;
 }
 
 @media (max-width: 1600px) {
-  .official-sheet-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 40px; /* Increased to 40px for extremely premium column breathing space */
-  }
-  
-  .official-sheet-grid > div:not(.sheet-column-3) {
-    max-width: 480px;
-    justify-self: center;
-  }
-
   .sheet-column-3 {
-    grid-column: span 2;
+    flex: 1 1 100%;
     max-width: 1000px; /* 480px * 2 + 40px gap */
-    display: grid !important;
-    grid-template-columns: 1fr 1fr;
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 40px;
     align-items: start;
-    justify-self: center;
   }
 }
 
 @media (max-width: 1120px) {
   .official-sheet-grid {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: center;
     gap: 20px;
   }
   
   .official-sheet-grid > div:not(.sheet-column-3) {
+    flex: 1 1 auto;
+    width: 100%;
     max-width: 480px;
-    margin: 0 auto;
   }
 
   .sheet-column-3 {
-    grid-column: span 1;
+    flex: 1 1 auto;
+    width: 100%;
     max-width: 480px;
-    margin: 0 auto;
-    display: flex !important;
     flex-direction: column;
     gap: 10px;
   }
@@ -415,6 +407,16 @@ body {
     max-width: 480px;
     width: 100%;
   }
+}
+
+/* Customized Application Title Korean Sub-text styling */
+.title-ko-sub {
+  font-size: 1.35rem;
+  font-weight: 300 !important;
+  color: var(--color-ink-light);
+  margin-left: 10px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Form Styles */

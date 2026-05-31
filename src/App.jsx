@@ -295,7 +295,7 @@ export default function App() {
       <div className="header-decor">
         <div className="header-title-container">
           <h1>
-            <ProperNoun en="Paladin: Passage of Arms" ko="팔라딘: 성기사들의 모험" />
+            Paladin: Passage of Arms <span className="title-ko-sub">팔라딘: 성기사들의 모험</span>
           </h1>
           <p className="subtitle">
             <ProperNoun en="Warriors of Charlemagne" ko="샤를마뉴 대제의 용사들" /> &bull; 1인 전용 컴패니언 웹앱
