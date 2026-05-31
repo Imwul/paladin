@@ -157,10 +157,10 @@ export default function LoreEncyclopedia() {
                 {/* Crest Description Badge */}
                 <div style={{ border: '1px dashed var(--color-gold)', padding: '10px 14px', borderRadius: '4px', background: 'rgba(179,143,67,0.03)' }}>
                   <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🛡️ 가문의 공식 문장 설명 (Blazon)</div>
-                  <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)', fontStyle: 'italic' }}>
+                  <div style={{ fontSize: '0.88rem', color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)', lineHeight: '1.5' }}>
                     &ldquo;{selectedFamily.crestDescKO}&rdquo;
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px', fontFamily: 'var(--font-serif)' }}>
                     ({selectedFamily.crestDescEN})
                   </div>
                 </div>
@@ -168,10 +168,10 @@ export default function LoreEncyclopedia() {
                 {/* Motto */}
                 <div>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '4px' }}>📜 가훈 (Motto)</h4>
-                  <p style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-crimson)', fontFamily: 'Georgia, serif' }}>
+                  <p style={{ fontSize: '1.18rem', fontWeight: 'bold', color: 'var(--color-crimson)', fontFamily: 'var(--font-korean-serif)' }}>
                     &ldquo;{selectedFamily.mottoKO}&rdquo;
                   </p>
-                  <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', fontStyle: 'italic' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--color-grey)', fontStyle: 'italic', fontFamily: 'var(--font-serif)' }}>
                     ({selectedFamily.mottoEN})
                   </p>
                 </div>
@@ -179,10 +179,10 @@ export default function LoreEncyclopedia() {
                 {/* Background Narrative */}
                 <div>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '4px' }}>📖 역사 및 대가문 배경</h4>
-                  <p style={{ fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--color-ink)' }}>
+                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
                     {selectedFamily.backgroundKO}
                   </p>
-                  <p style={{ fontSize: '0.8rem', lineHeight: 1.5, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px' }}>
+                  <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
                     {selectedFamily.backgroundEN}
                   </p>
                 </div>
@@ -190,10 +190,10 @@ export default function LoreEncyclopedia() {
                 {/* Traits & Modifiers */}
                 <div style={{ borderTop: '1px solid var(--color-grey-light)', paddingTop: '12px' }}>
                   <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '6px' }}>⚖️ 혈통적 기질 및 권장 성향</h4>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--color-crimson)', fontWeight: 'bold' }}>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--color-crimson)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>
                     {selectedFamily.traitsKO}
                   </p>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--color-grey)', marginTop: '2px' }}>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--color-grey)', marginTop: '2px', fontFamily: 'var(--font-serif)' }}>
                     ({selectedFamily.traitsEN})
                   </p>
                 </div>
