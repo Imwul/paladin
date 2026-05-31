@@ -843,10 +843,57 @@ body {
   outline: none;
 }
 
+/* Hide native number spinners globally */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.cs-attr-actions {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0 2px;
+}
+
+.cs-attr-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.2px solid var(--color-gold-light);
+  background: #fdfaf4;
+  color: var(--color-crimson);
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  padding: 0;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.cs-attr-btn:hover {
+  background: var(--color-crimson);
+  color: white;
+  border-color: var(--color-crimson);
+  transform: scale(1.1);
+}
+
+.cs-attr-btn:active {
+  transform: scale(0.95);
+}
+
 .cs-attr-note {
   font-size: 0.7rem;
   color: var(--color-grey);
-  margin-top: 2px;
+  margin-top: 1px;
   white-space: nowrap;
 }
 

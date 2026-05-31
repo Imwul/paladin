@@ -218,6 +218,12 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <span className="cs-attr-label">{attr.label}</span>
                 <input type="number" value={character?.attributes?.[attr.key] || 0}
                   onChange={e => handleInputChange('attributes', attr.key, parseInt(e.target.value) || 0)} />
+                <div className="cs-attr-actions">
+                  <button type="button" className="cs-attr-btn" 
+                    onClick={() => handleInputChange('attributes', attr.key, Math.max(0, (character?.attributes?.[attr.key] || 0) - 1))}>−</button>
+                  <button type="button" className="cs-attr-btn" 
+                    onClick={() => handleInputChange('attributes', attr.key, (character?.attributes?.[attr.key] || 0) + 1)}>+</button>
+                </div>
                 {attr.note && <span className="cs-attr-note">{attr.note}</span>}
               </div>
             ))}
