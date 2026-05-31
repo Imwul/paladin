@@ -1,5 +1,70 @@
 import React from 'react';
 
+const traitList = [
+  { key1: "chaste", label1: "정숙", key2: "lustful", label2: "음탕", sym: "✝♥" },
+  { key1: "energetic", label1: "열정", key2: "lazy", label2: "나태", sym: "⦿" },
+  { key1: "forgiving", label1: "관용", key2: "vengeful", label2: "복수", sym: "✝♥" },
+  { key1: "generous", label1: "관대", key2: "selfish", label2: "이기", sym: "⦿♥" },
+  { key1: "honest", label1: "정직", key2: "deceitful", label2: "기만", sym: "⦿♥" },
+  { key1: "just", label1: "정의", key2: "arbitrary", label2: "독단", sym: "⦿" },
+  { key1: "merciful", label1: "자비", key2: "cruel", label2: "잔혹", sym: "⦿✝" },
+  { key1: "modest", label1: "겸손", key2: "proud", label2: "오만", sym: "⦿✝" },
+  { key1: "pious", label1: "경건", key2: "worldly", label2: "세속", sym: "✝⦿" },
+  { key1: "prudent", label1: "신중", key2: "reckless", label2: "무모", sym: "♥" },
+  { key1: "temperate", label1: "절제", key2: "indulgent", label2: "방종", sym: "✝" },
+  { key1: "trusting", label1: "신뢰", key2: "suspicious", label2: "의심", sym: "✝♥" },
+  { key1: "valorous", label1: "용맹", key2: "cowardly", label2: "겁쟁이", sym: "⦿" }
+];
+
+const commonSkills = [
+  { key: "awareness", label: "경계" }, { key: "chirurgery", label: "의술" },
+  { key: "faerieLore", label: "요정 전설" }, { key: "firstAid", label: "응급처치" },
+  { key: "folkLore", label: "민간 전설" }, { key: "horsemanship", label: "마술" },
+  { key: "hunting", label: "수렵" }, { key: "industry", label: "근면" },
+  { key: "recognize", label: "신분 식별" }, { key: "religion", label: "종교 지식" },
+  { key: "stewardship", label: "영지 관리" }, { key: "swimming", label: "수영" }
+];
+
+const courtlySkills = [
+  { key: "courtesy", label: "예의" }, { key: "dancing", label: "무용" },
+  { key: "eloquence", label: "웅변" }, { key: "falconry", label: "매사냥" },
+  { key: "gaming", label: "유희" }, { key: "heraldry", label: "문장학" },
+  { key: "intrigue", label: "음모" }, { key: "playInstruments", label: "악기 연주" },
+  { key: "readingWriting", label: "독서 및 집필" }, { key: "romance", label: "로맨스" },
+  { key: "singing", label: "가창" }
+];
+
+const weaponSkills = [
+  { key: "sword", label: "검" }, { key: "lance", label: "마창" },
+  { key: "axe", label: "도끼" }, { key: "spear", label: "창 / 폴암" },
+  { key: "dagger", label: "단검" }, { key: "bludgeon", label: "둔기" },
+  { key: "unarmed", label: "맨손 격투" }
+];
+
+const personalFields = [
+  { key: 'name', label: '기사 이름', cat: 'personal' },
+  { key: 'age', label: '나이', cat: 'personal', type: 'number' },
+  { key: 'sonNumber', label: '자녀 서열', cat: 'personal' },
+  { key: 'blessing', label: '성스러운 축복', cat: 'personal' },
+  { key: 'homeland', label: '고향/출신지', cat: 'personal' },
+  { key: 'home', label: '영지/거처', cat: 'personal' },
+  { key: 'culture', label: '문화권', cat: 'personal' },
+  { key: 'lineage', label: '가문/혈통', cat: 'personal' },
+  { key: 'liegeLord', label: '섬기는 주군', cat: 'personal' },
+  { key: 'fathersClass', label: '부친의 계급', cat: 'personal' },
+  { key: 'personalClass', label: '기사의 신분', cat: 'personal' },
+];
+
+const passions = [
+  { key: "loyaltyLiege", label: "주군에 대한 충성 (Loyalty)", defaultVal: 15 },
+  { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
+  { key: "hospitality", label: "손대접 및 환대 (Hospitality)", defaultVal: 15 },
+  { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
+  { key: "hateSarasens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
+  { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
+  { key: "amor", label: "Amor [연인에 대한 로맨스]", defaultVal: 0 }
+];
+
 export default function CharacterSheet({ character, setCharacter }) {
   const handleInputChange = (category, field, value) => {
     setCharacter(prev => {
@@ -95,47 +160,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     { key: "commoners", label: "영지 평민단 (Commoners)", base: baseStandings.commoners }
   ];
 
-  // Data arrays
-  const traitList = [
-    { key1: "chaste", label1: "정숙", key2: "lustful", label2: "음탕", sym: "✝♥" },
-    { key1: "energetic", label1: "열정", key2: "lazy", label2: "나태", sym: "⦿" },
-    { key1: "forgiving", label1: "관용", key2: "vengeful", label2: "복수", sym: "✝♥" },
-    { key1: "generous", label1: "관대", key2: "selfish", label2: "이기", sym: "⦿♥" },
-    { key1: "honest", label1: "정직", key2: "deceitful", label2: "기만", sym: "⦿♥" },
-    { key1: "just", label1: "정의", key2: "arbitrary", label2: "독단", sym: "⦿" },
-    { key1: "merciful", label1: "자비", key2: "cruel", label2: "잔혹", sym: "⦿✝" },
-    { key1: "modest", label1: "겸손", key2: "proud", label2: "오만", sym: "⦿✝" },
-    { key1: "pious", label1: "경건", key2: "worldly", label2: "세속", sym: "✝⦿" },
-    { key1: "prudent", label1: "신중", key2: "reckless", label2: "무모", sym: "♥" },
-    { key1: "temperate", label1: "절제", key2: "indulgent", label2: "방종", sym: "✝" },
-    { key1: "trusting", label1: "신뢰", key2: "suspicious", label2: "의심", sym: "✝♥" },
-    { key1: "valorous", label1: "용맹", key2: "cowardly", label2: "겁쟁이", sym: "⦿" }
-  ];
-
-  const commonSkills = [
-    { key: "awareness", label: "경계" }, { key: "chirurgery", label: "의술" },
-    { key: "faerieLore", label: "요정 전설" }, { key: "firstAid", label: "응급처치" },
-    { key: "folkLore", label: "민간 전설" }, { key: "horsemanship", label: "마술" },
-    { key: "hunting", label: "수렵" }, { key: "industry", label: "근면" },
-    { key: "recognize", label: "신분 식별" }, { key: "religion", label: "종교 지식" },
-    { key: "stewardship", label: "영지 관리" }, { key: "swimming", label: "수영" }
-  ];
-
-  const courtlySkills = [
-    { key: "courtesy", label: "예의" }, { key: "dancing", label: "무용" },
-    { key: "eloquence", label: "웅변" }, { key: "falconry", label: "매사냥" },
-    { key: "gaming", label: "유희" }, { key: "heraldry", label: "문장학" },
-    { key: "intrigue", label: "음모" }, { key: "playInstruments", label: "악기 연주" },
-    { key: "readingWriting", label: "독서 및 집필" }, { key: "romance", label: "로맨스" },
-    { key: "singing", label: "가창" }
-  ];
-
-  const weaponSkills = [
-    { key: "sword", label: "검" }, { key: "lance", label: "마창" },
-    { key: "axe", label: "도끼" }, { key: "spear", label: "창 / 폴암" },
-    { key: "dagger", label: "단검" }, { key: "bludgeon", label: "둔기" },
-    { key: "unarmed", label: "맨손 격투" }
-  ];
+  // Data arrays are declared at module scope level
 
   const SkillRow = ({ skill, category = 'skills' }) => (
     <div className="cs-skill-row">
@@ -150,19 +175,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     </div>
   );
 
-  const personalFields = [
-    { key: 'name', label: '기사 이름', cat: 'personal' },
-    { key: 'age', label: '나이', cat: 'personal', type: 'number' },
-    { key: 'sonNumber', label: '자녀 서열', cat: 'personal' },
-    { key: 'blessing', label: '성스러운 축복', cat: 'personal' },
-    { key: 'homeland', label: '고향/출신지', cat: 'personal' },
-    { key: 'home', label: '영지/거처', cat: 'personal' },
-    { key: 'culture', label: '문화권', cat: 'personal' },
-    { key: 'lineage', label: '가문/혈통', cat: 'personal' },
-    { key: 'liegeLord', label: '섬기는 주군', cat: 'personal' },
-    { key: 'fathersClass', label: '부친의 계급', cat: 'personal' },
-    { key: 'personalClass', label: '기사의 신분', cat: 'personal' },
-  ];
+  // Personal fields are declared at module scope level
 
   const attrList = [
     { key: 'siz', label: '체구', abbr: 'SIZ', note: `넉다운 ${knockdown}` },
@@ -172,15 +185,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     { key: 'app', label: '외모', abbr: 'APP' },
   ];
 
-  const passions = [
-    { key: "loyaltyLiege", label: "주군에 대한 충성 (Loyalty)", defaultVal: 15 },
-    { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
-    { key: "hospitality", label: "손대접 및 환대 (Hospitality)", defaultVal: 15 },
-    { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
-    { key: "hateSarasens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
-    { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
-    { key: "amor", label: "Amor [연인에 대한 로맨스]", defaultVal: 0 }
-  ];
+  // Passions are declared at module scope level
 
   return (
     <div className="cs-page view-animate">
