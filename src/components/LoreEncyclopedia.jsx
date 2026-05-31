@@ -154,6 +154,41 @@ export default function LoreEncyclopedia() {
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
                 
+                {/* Visual Coat of Arms Shield */}
+                {selectedFamily.crestImage && (
+                  <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '4px' }}>
+                    <div 
+                      style={{ 
+                        width: '120px', 
+                        height: '140px', 
+                        border: '2.5px solid var(--color-gold-dark)',
+                        borderTopLeftRadius: '4px',
+                        borderTopRightRadius: '4px',
+                        borderBottomLeftRadius: '50% 75%',
+                        borderBottomRightRadius: '50% 75%',
+                        padding: '12px 10px 18px 10px',
+                        background: 'linear-gradient(135deg, #fdfbf7 0%, #f5ecd5 100%)',
+                        boxShadow: '0 6px 12px rgba(46, 31, 15, 0.12), inset 0 0 12px rgba(201,168,76,0.15)',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <img 
+                        src={selectedFamily.crestImage} 
+                        alt={`${selectedFamily.nameKO} Crest`} 
+                        style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'contain',
+                          filter: 'drop-shadow(0 3px 4px rgba(0,0,0,0.15))'
+                        }} 
+                      />
+                    </div>
+                  </div>
+                )}
+                
                 {/* Crest Description Badge */}
                 <div style={{ border: '1px dashed var(--color-gold)', padding: '10px 14px', borderRadius: '4px', background: 'rgba(179,143,67,0.03)' }}>
                   <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🛡️ 가문의 공식 문장 설명 (Blazon)</div>
