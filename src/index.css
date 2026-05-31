@@ -123,7 +123,8 @@ body {
   text-shadow: 1px 1px 0 rgba(43, 65, 112, 0.06);
 }
 
-.header-decor p.subtitle {
+.header-decor p.subtitle,
+.header-decor p.subtitle * {
   font-size: 1.1rem;
   color: var(--color-gold-dark);
   font-style: italic;
