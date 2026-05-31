@@ -53,7 +53,7 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 /* App container - Restructured to span 100% of viewport width and height */
@@ -340,17 +340,42 @@ body {
   align-items: start;
 }
 
-@media (max-width: 1200px) {
+.sheet-column-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sheet-subcolumn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media (max-width: 1400px) {
   .official-sheet-grid {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
   }
+  .sheet-column-3 {
+    grid-column: span 2;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+  }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .official-sheet-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+  .sheet-column-3 {
+    grid-column: span 1;
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
   }
 }
 
@@ -407,6 +432,7 @@ body {
   letter-spacing: -0.05em !important;
   transition: border-bottom-color 0.2s !important;
   width: auto;
+  min-width: 0; /* Allow input to shrink inside flex containers */
   min-height: 36px;
   line-height: 1.4;
   font-variant-numeric: tabular-nums;
@@ -588,5 +614,37 @@ body {
   }
   .tutorial-banner {
     padding: 12px 15px;
+  }
+}
+
+/* Winter & Oracle Responsive grids */
+.winter-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .winter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.oracles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.oracles-span-2 {
+  grid-column: span 2;
+}
+
+@media (max-width: 768px) {
+  .oracles-span-2 {
+    grid-column: span 1;
   }
 }

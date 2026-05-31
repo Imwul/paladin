@@ -112,7 +112,7 @@ export default function SoloOracles({ setCharacter }) {
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginTop: '20px' }}>
+      <div className="oracles-grid">
         
         {/* DICE ROLLER CARD */}
         <div className="medieval-card">
@@ -248,7 +248,7 @@ export default function SoloOracles({ setCharacter }) {
         </div>
 
         {/* SOLO SCENARIOS QUICK REFERENCE */}
-        <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
+        <div className="medieval-card oracles-span-2">
           <h3 className="card-title">기본 솔로 규칙 퀵 리퍼런스 (요약집)</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {soloScenariosRef.map((sc, i) => (

@@ -173,10 +173,10 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       {/* SUB TAB 2: WINTER PHASE HELPER */}
       {activeSubTab === 'winter' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        <div className="winter-grid">
           
           {/* Main Step wizard */}
-          <div className="medieval-card" style={{ gridColumn: 'span 2' }}>
+          <div className="medieval-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px' }}>
               <h3 style={{ color: 'var(--color-crimson)' }}>
                 {winterStep}단계 / 총 7단계: {
