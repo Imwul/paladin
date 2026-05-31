@@ -1,6 +1,6 @@
-/* Fonts: Pretendard (Korean), MedievalSharp (dramatic EN headings), Cinzel (EN accent) */
+/* Fonts: Pretendard (Korean), UnifrakturMaguntia (blackletter EN headings), Cinzel (EN fallback) */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
-@import url("https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@400;500;600;700;800&display=swap");
 
 :root {
   /* Illuminated Manuscript Palette */
@@ -21,9 +21,9 @@
   --color-success: #2e6b33;
   
   --font-korean: 'Pretendard', -apple-system, sans-serif;
-  --font-heading: 'MedievalSharp', 'Cinzel', 'Georgia', serif;
-  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
-  --font-gothic: 'MedievalSharp', 'Cinzel', 'Georgia', serif;
+  --font-heading: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
+  --font-serif: 'Cinzel', 'Georgia', serif;
+  --font-gothic: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
   
   --shadow-medieval: 0 4px 15px rgba(46, 31, 15, 0.1);
 }
