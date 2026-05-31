@@ -57,11 +57,11 @@ export default function ChronologyJournal({ character, setCharacter }) {
           <h4 style={{ marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '0.95rem' }}>
             <Calendar size={16} /> 연도 선택
           </h4>
-          <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '8px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
             {chronologyData.map(item => (
               <button key={item.year}
                 className={`btn-medieval ${selectedYear === item.year ? 'btn-medieval-primary' : ''}`}
-                style={{ padding: '6px 14px', minWidth: '70px', flexShrink: 0, fontSize: '1rem' }}
+                style={{ padding: '5px 10px', fontSize: '0.85rem' }}
                 onClick={() => handleYearChange(item.year)}>
                 {item.year}
               </button>
