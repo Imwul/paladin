@@ -1412,3 +1412,21 @@ input[type="number"] {
   font-size: 0.85rem !important;
 }
 
+/* Shaking Motion Blur Animation for Rollers */
+.roll-blur {
+  animation: rollBlurAnim 0.08s infinite alternate;
+}
+
+@keyframes rollBlurAnim {
+  0% {
+    filter: blur(0.5px);
+    transform: translateY(-2px) scale(0.98);
+    opacity: 0.8;
+  }
+  100% {
+    filter: blur(2px);
+    transform: translateY(2px) scale(1.02);
+    opacity: 0.9;
+  }
+}
+

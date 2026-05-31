@@ -14,49 +14,130 @@ export default function SoloOracles({ setCharacter }) {
   const [oracleAnswer, setOracleAnswer] = useState(null);
   const [generatedName, setGeneratedName] = useState(null);
 
+  // Animation states
+  const [isRollingD20, setIsRollingD20] = useState(false);
+  const [isRollingD6, setIsRollingD6] = useState(false);
+  const [isRollingOracle, setIsRollingOracle] = useState(false);
+  const [isRollingName, setIsRollingName] = useState(false);
+
   const rollD20 = () => {
-    const roll = Math.floor(Math.random() * 20) + 1;
-    setD20Result(roll);
-    let resolution = null;
-    if (roll === 20) resolution = rollGrades.FUMBLE;
-    else if (roll === 1) resolution = rollGrades.CRITICAL;
-    else if (roll === targetSkill) resolution = rollGrades.CRITICAL;
-    else if (roll < targetSkill) resolution = rollGrades.SUCCESS;
-    else resolution = rollGrades.FAILURE;
-    setRollResolution(resolution);
+    if (isRollingD20) return;
+    setIsRollingD20(true);
+    setRollResolution(null);
+    let counter = 0;
+    const interval = setInterval(() => {
+      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      setD20Result(tempRoll);
+      counter++;
+      if (counter > 12) {
+        clearInterval(interval);
+        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        setD20Result(finalRoll);
+        let resolution = null;
+        if (finalRoll === 20) resolution = rollGrades.FUMBLE;
+        else if (finalRoll === 1) resolution = rollGrades.CRITICAL;
+        else if (finalRoll === targetSkill) resolution = rollGrades.CRITICAL;
+        else if (finalRoll < targetSkill) resolution = rollGrades.SUCCESS;
+        else resolution = rollGrades.FAILURE;
+        setRollResolution(resolution);
+        setIsRollingD20(false);
+      }
+    }, 50);
   };
 
   const rollD6Pool = () => {
-    const rolls = [];
-    let sum = 0;
-    for (let i = 0; i < d6Count; i++) { const r = Math.floor(Math.random() * 6) + 1; rolls.push(r); sum += r; }
-    setD6Results(rolls);
-    setD6Sum(sum);
+    if (isRollingD6) return;
+    setIsRollingD6(true);
+    let counter = 0;
+    const interval = setInterval(() => {
+      const rolls = [];
+      let sum = 0;
+      for (let i = 0; i < d6Count; i++) {
+        const r = Math.floor(Math.random() * 6) + 1;
+        rolls.push(r);
+        sum += r;
+      }
+      setD6Results(rolls);
+      setD6Sum(sum);
+      counter++;
+      if (counter > 12) {
+        clearInterval(interval);
+        const rollsFinal = [];
+        let sumFinal = 0;
+        for (let i = 0; i < d6Count; i++) {
+          const r = Math.floor(Math.random() * 6) + 1;
+          rollsFinal.push(r);
+          sumFinal += r;
+        }
+        setD6Results(rollsFinal);
+        setD6Sum(sumFinal);
+        setIsRollingD6(false);
+      }
+    }, 50);
   };
 
   const askOracle = () => {
-    const roll = Math.floor(Math.random() * 20) + 1;
-    let match = null;
-    if (roll <= 2) match = yesNoOracle[0];
-    else if (roll <= 8) match = yesNoOracle[1];
-    else if (roll <= 12) match = yesNoOracle[2];
-    else if (roll <= 18) match = yesNoOracle[3];
-    else match = yesNoOracle[4];
-    setOracleAnswer({ roll, ...match });
+    if (isRollingOracle) return;
+    setIsRollingOracle(true);
+    let counter = 0;
+    const interval = setInterval(() => {
+      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      let tempMatch = null;
+      if (tempRoll <= 2) tempMatch = yesNoOracle[0];
+      else if (tempRoll <= 8) tempMatch = yesNoOracle[1];
+      else if (tempRoll <= 12) tempMatch = yesNoOracle[2];
+      else if (tempRoll <= 18) tempMatch = yesNoOracle[3];
+      else tempMatch = yesNoOracle[4];
+      setOracleAnswer({ roll: tempRoll, ...tempMatch });
+      counter++;
+      if (counter > 12) {
+        clearInterval(interval);
+        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        let match = null;
+        if (finalRoll <= 2) match = yesNoOracle[0];
+        else if (finalRoll <= 8) match = yesNoOracle[1];
+        else if (finalRoll <= 12) match = yesNoOracle[2];
+        else if (finalRoll <= 18) match = yesNoOracle[3];
+        else match = yesNoOracle[4];
+        setOracleAnswer({ roll: finalRoll, ...match });
+        setIsRollingOracle(false);
+      }
+    }, 50);
   };
 
   const generateFrankishName = () => {
-    const isMale = Math.random() > 0.5;
-    const namePool = isMale ? maleNames : femaleNames;
-    const name = namePool[Math.floor(Math.random() * namePool.length)];
-    const surname = surnames[Math.floor(Math.random() * surnames.length)];
-    const title = titles[Math.floor(Math.random() * titles.length)];
-    const loc = locations[Math.floor(Math.random() * locations.length)];
-    setGeneratedName({
-      title, name, surname, loc,
-      fullTextEN: `${title.en} ${name.en} ${surname.en} of ${loc.en}`,
-      fullTextKO: `${title.ko} ${name.ko} ${surname.ko} ${loc.ko}`
-    });
+    if (isRollingName) return;
+    setIsRollingName(true);
+    let counter = 0;
+    const interval = setInterval(() => {
+      const isMale = Math.random() > 0.5;
+      const namePool = isMale ? maleNames : femaleNames;
+      const name = namePool[Math.floor(Math.random() * namePool.length)];
+      const surname = surnames[Math.floor(Math.random() * surnames.length)];
+      const title = titles[Math.floor(Math.random() * titles.length)];
+      const loc = locations[Math.floor(Math.random() * locations.length)];
+      setGeneratedName({
+        title, name, surname, loc,
+        fullTextEN: `${title.en} ${name.en} ${surname.en} of ${loc.en}`,
+        fullTextKO: `${title.ko} ${name.ko} ${surname.ko} ${loc.ko}`
+      });
+      counter++;
+      if (counter > 12) {
+        clearInterval(interval);
+        const isMaleFinal = Math.random() > 0.5;
+        const namePoolFinal = isMaleFinal ? maleNames : femaleNames;
+        const nameFinal = namePoolFinal[Math.floor(Math.random() * namePoolFinal.length)];
+        const surnameFinal = surnames[Math.floor(Math.random() * surnames.length)];
+        const titleFinal = titles[Math.floor(Math.random() * titles.length)];
+        const locFinal = locations[Math.floor(Math.random() * locations.length)];
+        setGeneratedName({
+          title: titleFinal, name: nameFinal, surname: surnameFinal, loc: locFinal,
+          fullTextEN: `${titleFinal.en} ${nameFinal.en} ${surnameFinal.en} of ${locFinal.en}`,
+          fullTextKO: `${titleFinal.ko} ${nameFinal.ko} ${surnameFinal.ko} ${locFinal.ko}`
+        });
+        setIsRollingName(false);
+      }
+    }, 50);
   };
 
   const applyName = () => {
@@ -87,14 +168,14 @@ export default function SoloOracles({ setCharacter }) {
               <input type="number" value={targetSkill} min={1} max={20}
                 onChange={e => setTargetSkill(parseInt(e.target.value) || 1)} style={{ maxWidth: '80px' }} />
             </div>
-            <button className="btn-medieval btn-medieval-primary" onClick={rollD20} style={{ justifyContent: 'center' }}>
-              d20 판정 던지기
+            <button className="btn-medieval btn-medieval-primary" onClick={rollD20} style={{ justifyContent: 'center' }} disabled={isRollingD20}>
+              {isRollingD20 ? "주사위 굴리는 중..." : "d20 판정 던지기"}
             </button>
             {d20Result && (
               <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>주사위</span>
-                <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: rollResolution?.color || 'inherit', margin: '-6px 0' }}>{d20Result}</div>
-                {rollResolution && (
+                <div className={isRollingD20 ? "roll-blur" : ""} style={{ fontSize: '2.5rem', fontWeight: 'bold', color: rollResolution?.color || 'inherit', margin: '-6px 0' }}>{d20Result}</div>
+                {rollResolution && !isRollingD20 && (
                   <div style={{ marginTop: '4px' }}>
                     <h4 style={{ color: rollResolution.color, fontWeight: 'bold', fontSize: '1rem' }}>{rollResolution.title}</h4>
                     <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', marginTop: '2px' }}>{rollResolution.desc}</p>
@@ -114,12 +195,12 @@ export default function SoloOracles({ setCharacter }) {
               <input type="number" value={d6Count} min={1} max={15}
                 onChange={e => setD6Count(parseInt(e.target.value) || 1)} style={{ maxWidth: '80px' }} />
             </div>
-            <button className="btn-medieval btn-medieval-primary" onClick={rollD6Pool} style={{ justifyContent: 'center' }}>
-              d6 피해 굴리기
+            <button className="btn-medieval btn-medieval-primary" onClick={rollD6Pool} style={{ justifyContent: 'center' }} disabled={isRollingD6}>
+              {isRollingD6 ? "피해 굴리는 중..." : "d6 피해 굴리기"}
             </button>
             {d6Results.length > 0 && (
               <div style={{ border: '1px solid var(--color-gold-light)', padding: '12px', textAlign: 'center' }}>
-                <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
+                <div className={isRollingD6 ? "roll-blur" : ""} style={{ display: 'flex', gap: '6px', justifyContent: 'center', marginBottom: '8px', flexWrap: 'wrap' }}>
                   {d6Results.map((r, i) => (
                     <span key={i} style={{ border: '1px solid var(--color-ink)', padding: '3px 8px', fontSize: '1.1rem', fontWeight: 'bold', background: '#fff' }}>{r}</span>
                   ))}
@@ -142,12 +223,16 @@ export default function SoloOracles({ setCharacter }) {
             <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
               상황에 대한 질문을 떠올리고 운명에 물어보세요:
             </p>
-            <button className="btn-medieval" onClick={askOracle} style={{ justifyContent: 'center' }}>오라클에 묻기</button>
+            <button className="btn-medieval" onClick={askOracle} style={{ justifyContent: 'center' }} disabled={isRollingOracle}>
+              {isRollingOracle ? "신탁 묻는 중..." : "오라클에 묻기"}
+            </button>
             {oracleAnswer && (
               <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>d20 결과 {oracleAnswer.roll}</span>
-                <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem', margin: '4px 0' }}>{oracleAnswer.result}</h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)' }}>{oracleAnswer.desc}</p>
+                <div className={isRollingOracle ? "roll-blur" : ""}>
+                  <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '1.05rem', margin: '4px 0' }}>{oracleAnswer.result}</h4>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)' }}>{oracleAnswer.desc}</p>
+                </div>
               </div>
             )}
           </div>
@@ -160,13 +245,15 @@ export default function SoloOracles({ setCharacter }) {
             <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
               프랑크인 이름과 작위를 자동 생성합니다:
             </p>
-            <button className="btn-medieval" onClick={generateFrankishName} style={{ justifyContent: 'center' }}>이름 생성</button>
+            <button className="btn-medieval" onClick={generateFrankishName} style={{ justifyContent: 'center' }} disabled={isRollingName}>
+              {isRollingName ? "이름 모색 중..." : "이름 생성"}
+            </button>
             {generatedName && (
               <div style={{ border: '1px solid var(--color-gold)', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px dashed var(--color-gold-light)', paddingBottom: '6px' }}>
+                <div className={isRollingName ? "roll-blur" : ""} style={{ fontSize: '1rem', fontWeight: 'bold', borderBottom: '1px dashed var(--color-gold-light)', paddingBottom: '6px' }}>
                   <ProperNoun en={generatedName.fullTextEN} ko={generatedName.fullTextKO} />
                 </div>
-                <button className="btn-medieval" onClick={applyName} style={{ fontSize: '0.8rem', padding: '3px 8px', justifyContent: 'center' }}>
+                <button className="btn-medieval" onClick={applyName} style={{ fontSize: '0.8rem', padding: '3px 8px', justifyContent: 'center' }} disabled={isRollingName}>
                   시트에 적용
                 </button>
               </div>
