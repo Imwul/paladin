@@ -5,44 +5,14 @@ import { BookOpen, Award, Compass } from 'lucide-react';
 export default function Dashboard({ setActiveTab }) {
   return (
     <div className="cs-page view-animate">
-
-      {/* Tutorial + Illustration — manuscript style: text beside illustration */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '16px', 
-        alignItems: 'stretch',
-        padding: '12px 0 0',
-      }}>
-        <div className="tutorial-banner" style={{ flex: '1 1 auto', margin: 0, borderRadius: '8px' }}>
-          <div>
-            <h4 className="tutorial-banner-title">📜 컴패니언 튜토리얼 (도움말)</h4>
-            <p>
-              <ProperNoun en="Paladin" ko="팔라딘" /> 솔로 컴패니언에 오신 것을 환영합니다! 이 웹앱은 <ProperNoun en="Charlemagne" ko="샤를마뉴" /> 대제 시대의 성기사가 되어 모험을 즐길 수 있도록 돕습니다.
-              룰북을 보지 않고도 시작할 수 있게 설계되었습니다.
-            </p>
-          </div>
+      <div className="tutorial-banner">
+        <div>
+          <h4 className="tutorial-banner-title">📜 컴패니언 튜토리얼 (도움말)</h4>
+          <p>
+            <ProperNoun en="Paladin" ko="팔라딘" /> 솔로 컴패니언에 오신 것을 환영합니다! 이 웹앱은 <ProperNoun en="Charlemagne" ko="샤를마뉴" /> 대제 시대의 성기사가 되어 모험을 즐길 수 있도록 돕습니다.
+            룰북을 보지 않고도 시작할 수 있게 설계되었습니다.
+          </p>
         </div>
-        <img 
-          src="/medieval-knight.png" 
-          alt="중세 기사 필사본 삽화" 
-          style={{ 
-            width: '140px',
-            flexShrink: 0,
-            borderRadius: '10px',
-            border: '2px solid var(--color-gold-light)',
-            boxShadow: '0 3px 12px rgba(43, 65, 112, 0.1)',
-            objectFit: 'cover',
-          }} 
-        />
-      </div>
-
-      {/* Manuscript Border Divider */}
-      <div style={{ margin: '10px 0', overflow: 'hidden', borderRadius: '4px' }}>
-        <img 
-          src="/manuscript-border.png" 
-          alt="" 
-          style={{ width: '100%', height: '32px', objectFit: 'cover', opacity: 0.6 }} 
-        />
       </div>
 
       <div className="cs-row" style={{ marginTop: '12px' }}>

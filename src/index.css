@@ -20,7 +20,7 @@
   --color-grey-light: #ddd3c1;
   --color-success: #2e6b33;
   
-  --font-korean: 'Pretendard', -apple-system, sans-serif;
+  --font-korean: 'UnifrakturMaguntia', 'Pretendard', -apple-system, sans-serif;
   --font-heading: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
   --font-serif: 'Cinzel', 'Georgia', serif;
   --font-gothic: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
@@ -42,7 +42,7 @@
 
 /* Force override browser-specific user agent styles for input elements */
 input, textarea, button, select, input[type="number"], input[type="text"] {
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: 'UnifrakturMaguntia', 'Pretendard', -apple-system, sans-serif !important;
   letter-spacing: -0.05em !important;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
@@ -51,7 +51,7 @@ input, textarea, button, select, input[type="number"], input[type="text"] {
 body {
   background-color: #cfc4ae;
   color: var(--color-ink);
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: 'UnifrakturMaguntia', 'Pretendard', -apple-system, sans-serif !important;
   font-size: 16px;
   letter-spacing: -0.05em !important;
   line-height: 1.65;
