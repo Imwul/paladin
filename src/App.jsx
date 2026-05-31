@@ -5,9 +5,10 @@ import CharacterSheet from './components/CharacterSheet';
 import FamilyWinter from './components/FamilyWinter';
 import ChronologyJournal from './components/ChronologyJournal';
 import SoloOracles from './components/SoloOracles';
+import LoreEncyclopedia from './components/LoreEncyclopedia';
 import SettingsModal from './components/SettingsModal';
 import { getFirebaseServices } from './firebase';
-import { BookOpen, User, Shield, Compass, Sparkles, Cloud, Settings, LogIn, LogOut } from 'lucide-react';
+import { BookOpen, User, Shield, Compass, Sparkles, Cloud, Settings, LogIn, LogOut, Library } from 'lucide-react';
 import './components/SettingsModal.css';
 
 // Initial state template representing the full blank Knight Character Sheet & Linage
@@ -112,6 +113,15 @@ const initialCharacterState = {
     honor: 16,
     hateSarasens: 12,
     loveGod: 15
+  },
+  passionsChecked: {},
+  standings: {
+    charlemagne: 10,
+    liegeLord: 15,
+    family: 16,
+    retinue: 13,
+    church: 15,
+    commoners: 11
   }
 };
 
@@ -134,7 +144,9 @@ const mergeWithDefault = (data) => {
     gear: { ...initialCharacterState.gear, ...data.gear },
     family: { ...initialCharacterState.family, ...data.family },
     journal: { ...initialCharacterState.journal, ...data.journal },
-    passions: { ...initialCharacterState.passions, ...data.passions }
+    passions: { ...initialCharacterState.passions, ...data.passions },
+    passionsChecked: { ...initialCharacterState.passionsChecked || {}, ...data.passionsChecked },
+    standings: { ...initialCharacterState.standings || {}, ...data.standings }
   };
 };
 
@@ -352,13 +364,16 @@ export default function App() {
           <User size={16} /> 기사 시트
         </button>
         <button className={`tab-btn ${activeTab === 'family' ? 'active' : ''}`} onClick={() => setActiveTab('family')}>
-          <Shield size={16} /> 가문 & 겨울 정산
+          <Shield size={16} /> 가문 &amp; 겨울 정산
         </button>
         <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> 역사 연대기 & 일지
+          <Compass size={16} /> 역사 연대기 &amp; 일지
         </button>
         <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
           <Sparkles size={16} /> 솔로 오라클
+        </button>
+        <button className={`tab-btn ${activeTab === 'lore' ? 'active' : ''}`} onClick={() => setActiveTab('lore')}>
+          <Library size={16} /> 제국 백과사전
         </button>
       </div>
 
@@ -369,6 +384,7 @@ export default function App() {
         {activeTab === 'family' && <FamilyWinter character={character} setCharacter={setCharacter} />}
         {activeTab === 'journal' && <ChronologyJournal character={character} setCharacter={setCharacter} />}
         {activeTab === 'oracles' && <SoloOracles setCharacter={setCharacter} />}
+        {activeTab === 'lore' && <LoreEncyclopedia />}
       </div>
 
       {/* Settings & JSON Backup popup modal */}

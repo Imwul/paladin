@@ -38,21 +38,62 @@ export default function CharacterSheet({ character, setCharacter }) {
   const currentHp = character?.attributes?.currentHp || 0;
   const hpPercent = maxHP > 0 ? Math.max(0, Math.min(100, (currentHp / maxHP) * 100)) : 0;
 
-  // Bonus checks
+  // 1. Chivalrous Knight: Energetic, Generous, Just, Merciful, Modest, Valorous (Total >= 90 & Honor >= 16)
   const chivalrousTraitsTotal =
-    (character?.traits?.chaste || 0) + (character?.traits?.forgiving || 0) +
-    (character?.traits?.generous || 0) + (character?.traits?.honest || 0) +
-    (character?.traits?.prudent || 0) + (character?.traits?.trusting || 0) +
-    (character?.traits?.valorous || 0);
+    (character?.traits?.energetic || 0) + (character?.traits?.generous || 0) +
+    (character?.traits?.just || 0) + (character?.traits?.merciful || 0) +
+    (character?.traits?.modest || 0) + (character?.traits?.valorous || 0);
   const honorVal = parseInt(character?.passions?.honor) || 0;
   const isChivalrousActive = chivalrousTraitsTotal >= 90 && honorVal >= 16;
 
+  // 2. Religious Knight: Chaste, Forgiving, Merciful, Modest, Temperate, Trusting (Total >= 90 & Love[God] >= 16)
   const religiousTraitsTotal =
     (character?.traits?.chaste || 0) + (character?.traits?.forgiving || 0) +
     (character?.traits?.merciful || 0) + (character?.traits?.modest || 0) +
-    (character?.traits?.pious || 0);
+    (character?.traits?.temperate || 0) + (character?.traits?.trusting || 0);
   const loveGodVal = parseInt(character?.passions?.loveGod) || 0;
   const isReligiousActive = religiousTraitsTotal >= 90 && loveGodVal >= 16;
+
+  // 3. Romantic Knight: Forgiving, Generous, Honest, Just, Prudent, Trusting (Total >= 90 & Amor >= 16 & Romance skill >= 10 & 4 other courtly skills >= 10)
+  const romanticTraitsTotal =
+    (character?.traits?.forgiving || 0) + (character?.traits?.generous || 0) +
+    (character?.traits?.honest || 0) + (character?.traits?.just || 0) +
+    (character?.traits?.prudent || 0) + (character?.traits?.trusting || 0);
+
+  const romanceVal = character?.skills?.romance || 0;
+  const otherCourtlySkillsOver10 = courtlySkills
+    .filter(s => s.key !== 'romance')
+    .filter(s => (character?.skills?.[s.key] || 0) >= 10)
+    .length;
+  const hasRequiredCourtlySkills = romanceVal >= 10 && otherCourtlySkillsOver10 >= 4;
+  const amorVal = parseInt(character?.passions?.amor) || 0;
+  const isRomanticActive = romanticTraitsTotal >= 90 && amorVal >= 16 && hasRequiredCourtlySkills;
+
+  // 4. Standings Base values auto-calculated
+  const baseStandings = {
+    charlemagne: Math.min(
+      character?.traits?.energetic || 0,
+      character?.traits?.generous || 0,
+      character?.traits?.just || 0,
+      character?.traits?.merciful || 0,
+      character?.traits?.modest || 0,
+      character?.traits?.valorous || 0
+    ),
+    liegeLord: character?.traits?.valorous || 0,
+    family: honorVal,
+    retinue: character?.traits?.generous || 0,
+    church: loveGodVal,
+    commoners: character?.traits?.merciful || 0
+  };
+
+  const standingsList = [
+    { key: "charlemagne", label: "황제 샤를마뉴 (Charlemagne)", base: baseStandings.charlemagne },
+    { key: "liegeLord", label: "섬기는 주군 (Liege Lord)", base: baseStandings.liegeLord },
+    { key: "family", label: "가문 가계 (Family)", base: baseStandings.family },
+    { key: "retinue", label: "종자 및 시종단 (Retinue)", base: baseStandings.retinue },
+    { key: "church", label: "성 교회 (The Church)", base: baseStandings.church },
+    { key: "commoners", label: "영지 평민단 (Commoners)", base: baseStandings.commoners }
+  ];
 
   // Data arrays
   const traitList = [
@@ -132,12 +173,13 @@ export default function CharacterSheet({ character, setCharacter }) {
   ];
 
   const passions = [
-    { key: "loyaltyLiege", label: "주군에 대한 충성", defaultVal: 15 },
-    { key: "loveFamily", label: "가족에 대한 사랑", defaultVal: 15 },
-    { key: "hospitality", label: "손대접 및 환대", defaultVal: 15 },
-    { key: "honor", label: "기사의 명예", defaultVal: 16 },
-    { key: "hateSarasens", label: "이교도에 대한 증오", defaultVal: 12 },
-    { key: "loveGod", label: "신에 대한 사랑", defaultVal: 15 }
+    { key: "loyaltyLiege", label: "주군에 대한 충성 (Loyalty)", defaultVal: 15 },
+    { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
+    { key: "hospitality", label: "손대접 및 환대 (Hospitality)", defaultVal: 15 },
+    { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
+    { key: "hateSarasens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
+    { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
+    { key: "amor", label: "Amor [연인에 대한 로맨스]", defaultVal: 0 }
   ];
 
   return (
@@ -268,12 +310,15 @@ export default function CharacterSheet({ character, setCharacter }) {
         <div className="sheet-ribbon"><h3>성향 및 도덕률</h3></div>
         <div className="cs-section-inner">
           {/* Bonus indicators */}
-          <div className="cs-bonus-strip">
+          <div className="cs-bonus-strip" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             <span className={`cs-bonus-item ${isChivalrousActive ? 'active' : ''}`}>
-              ⦿ 기사도 [{chivalrousTraitsTotal}/90] {isChivalrousActive ? '★ +3 아머' : ''}
+              ⦿ 기사도 [{chivalrousTraitsTotal}/90] {isChivalrousActive ? '★ +3 아머 (Divine Aid)' : ''}
             </span>
             <span className={`cs-bonus-item ${isReligiousActive ? 'active' : ''}`}>
-              ✝ 신앙심 [{religiousTraitsTotal}/90] {isReligiousActive ? '★ +5 기도' : ''}
+              ✝ 신앙심 [{religiousTraitsTotal}/90] {isReligiousActive ? '★ +5 기도 보너스' : ''}
+            </span>
+            <span className={`cs-bonus-item ${isRomanticActive ? 'active' : ''}`} style={{ borderColor: isRomanticActive ? '#4a148c' : 'inherit', backgroundColor: isRomanticActive ? 'rgba(74,20,140,0.06)' : 'inherit', color: isRomanticActive ? '#4a148c' : 'inherit' }}>
+              🌹 로맨스 [{romanticTraitsTotal}/90] {isRomanticActive ? '★ 1회 주사위 재굴림' : ''}
             </span>
           </div>
 
@@ -300,25 +345,52 @@ export default function CharacterSheet({ character, setCharacter }) {
         </div>
       </section>
 
-      {/* ══════ PASSIONS ══════ */}
-      <section className="cs-section">
-        <div className="sheet-ribbon"><h3>기사의 열망 (Passions)</h3></div>
-        <div className="cs-section-inner">
-          {passions.map(p => (
-            <div className="cs-passion-row" key={p.key}>
-              <input type="checkbox" className="exp-checkbox"
-                checked={character?.passionsChecked?.[p.key] || false}
-                onChange={e => handleInputChange('passionsChecked', p.key, e.target.checked)} />
-              <span className="cs-passion-name">{p.label}</span>
-              <span className="cs-skill-val">
-                <input type="number"
-                  value={character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal}
-                  onChange={e => handleInputChange('passions', p.key, parseInt(e.target.value) || 0)} />
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ══════ PASSIONS + STANDINGS (side by side) ══════ */}
+      <div className="cs-row">
+        {/* Passions */}
+        <section className="cs-section" style={{ flex: '1' }}>
+          <div className="sheet-ribbon"><h3>기사의 열망 (Passions)</h3></div>
+          <div className="cs-section-inner">
+            {passions.map(p => (
+              <div className="cs-passion-row" key={p.key}>
+                <input type="checkbox" className="exp-checkbox"
+                  checked={character?.passionsChecked?.[p.key] || false}
+                  onChange={e => handleInputChange('passionsChecked', p.key, e.target.checked)} />
+                <span className="cs-passion-name">{p.label}</span>
+                <span className="cs-skill-val">
+                  <input type="number"
+                    value={character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal}
+                    onChange={e => handleInputChange('passions', p.key, parseInt(e.target.value) || 0)} />
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Standings */}
+        <section className="cs-section" style={{ flex: '1' }}>
+          <div className="sheet-ribbon"><h3>사회적 명망 &amp; 신분 (Standings)</h3></div>
+          <div className="cs-section-inner">
+            {standingsList.map(s => (
+              <div className="cs-passion-row" key={s.key}>
+                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                    <span className="cs-passion-name" style={{ fontWeight: 'bold' }}>{s.label}</span>
+                    <span className="cs-skill-val">
+                      <input type="number"
+                        value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
+                        onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)', textAlign: 'right', marginTop: '-4px' }}>
+                    공식 산출 기준: {s.base}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* ══════ SKILLS: Common + Courtly (side by side) ══════ */}
       <div className="cs-row">
