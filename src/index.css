@@ -331,127 +331,82 @@ body {
 .sheet-ribbon::before { left: 8px; }
 .sheet-ribbon::after { right: 8px; }
 
-/* 3-Column Layout matching the official sheet - Flexbox wrapping system (highly robust & overlap-proof) */
+/* 3-Column Layout matching the official sheet - Flexbox wrapping system */
+/* flex-basis 420px → 3열에는 ~1316px 필요, 부족하면 자동으로 2+1열로 줄바꿈 */
 .official-sheet-grid {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 28px;
+  gap: 24px;
   width: 100%;
   justify-content: center;
   align-items: start;
 }
 
-/* Ensure columns shrink flexibly without hard min-width to prevent clipping */
+/* Each column: flex-basis 420px ensures natural wrapping on narrow screens */
 .official-sheet-grid > div:not(.sheet-column-3) {
-  flex: 1 1 280px;
-  max-width: 480px;
-  min-width: 0;
+  flex: 1 1 420px;
+  max-width: 520px;
+  min-width: 300px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .sheet-column-3 {
-  flex: 1 1 280px;
-  max-width: 480px;
-  min-width: 0;
+  flex: 1 1 420px;
+  max-width: 520px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .sheet-subcolumn {
-  flex: 1 1 200px;
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 480px;
+  max-width: 520px;
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
 }
 
-/* Desktop: 3 columns side by side, column-3 splits into sub-columns below it */
+/* When viewport can't hold 3 full columns, column-3 wraps below and splits into 2 sub-columns */
 @media (max-width: 1600px) {
   .sheet-column-3 {
     flex: 1 1 100%;
-    max-width: 1000px;
+    max-width: 100%;
     display: flex !important;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 28px;
+    gap: 24px;
     align-items: start;
   }
 }
 
-/* Medium-large screens: scale down text to prevent overflow */
-@media (max-width: 1500px) {
-  .official-sheet-grid {
-    gap: 20px;
-    font-size: 0.92em;
-  }
-  .official-sheet-grid .form-label {
-    font-size: 1.02rem;
-  }
-  .official-sheet-grid .form-input {
-    font-size: 1.08rem !important;
-    min-height: 30px;
-  }
-  .official-sheet-grid .sheet-ribbon h3 {
-    font-size: 1.05rem;
-  }
-}
-
-/* Medium screens: scale down more aggressively */
-@media (max-width: 1300px) {
-  .official-sheet-grid {
-    gap: 16px;
-    font-size: 0.85em;
-  }
-  .official-sheet-grid .form-label {
-    font-size: 0.92rem;
-  }
-  .official-sheet-grid .form-input {
-    font-size: 0.95rem !important;
-    min-height: 26px;
-    padding: 2px 4px !important;
-  }
-  .official-sheet-grid .sheet-ribbon {
-    padding: 4px 16px;
-    margin-top: 8px;
-    margin-bottom: 10px;
-  }
-  .official-sheet-grid .sheet-ribbon h3 {
-    font-size: 0.95rem;
-    letter-spacing: 0.05em;
-  }
-  .official-sheet-grid > div:not(.sheet-column-3) {
-    flex: 1 1 240px;
-  }
-  .sheet-column-3 {
-    flex: 1 1 240px;
-  }
-}
-
-/* Narrow: single-column stack */
-@media (max-width: 1120px) {
+/* Narrow: single-column stack for phones/small tablets */
+@media (max-width: 900px) {
   .official-sheet-grid {
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    font-size: 1em;
   }
   
   .official-sheet-grid > div:not(.sheet-column-3) {
     flex: 1 1 auto;
     width: 100%;
     max-width: 520px;
+    min-width: 0;
   }
 
   .sheet-column-3 {
     flex: 1 1 auto;
     width: 100%;
     max-width: 520px;
+    min-width: 0;
     flex-direction: column;
     gap: 10px;
   }
@@ -459,17 +414,6 @@ body {
   .sheet-subcolumn {
     max-width: 520px;
     width: 100%;
-  }
-
-  .official-sheet-grid .form-label {
-    font-size: 1.1rem;
-  }
-  .official-sheet-grid .form-input {
-    font-size: 1.15rem !important;
-    min-height: 34px;
-  }
-  .official-sheet-grid .sheet-ribbon h3 {
-    font-size: 1.15rem;
   }
 }
 
