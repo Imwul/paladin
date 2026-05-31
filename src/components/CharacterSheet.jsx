@@ -205,7 +205,7 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div className="cs-section-inner">
             <div className="cs-hp-panel">
               <div className="cs-hp-main">
-                <span style={{ fontWeight: 700, color: 'var(--color-crimson)', fontSize: '0.95rem' }}>HP</span>
+                <span style={{ fontWeight: 700, color: 'var(--color-danger)', fontSize: '0.95rem' }}>HP</span>
                 <input type="number" value={currentHp} max={maxHP}
                   onChange={e => handleInputChange('attributes', 'currentHp', Math.min(maxHP, parseInt(e.target.value) || 0))} />
                 <span style={{ fontSize: '1.1rem', color: 'var(--color-grey)' }}>/ {maxHP}</span>
@@ -223,7 +223,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <span className={`cs-hp-threshold ${currentHp <= maxHP * 0.25 ? 'active' : ''}`}>
                   ⦿ 1/4 [{Math.round(maxHP * 0.25)}] 의식불명
                 </span>
-                <span className={`cs-hp-threshold ${currentHp <= 0 ? 'active' : ''}`} style={{ color: 'var(--color-crimson)' }}>
+                <span className={`cs-hp-threshold ${currentHp <= 0 ? 'active' : ''}`} style={{ color: 'var(--color-danger)' }}>
                   ✝ 사망 위험
                 </span>
               </div>
