@@ -29,7 +29,7 @@ export default function SoloOracles({ setCharacter }) {
       const tempRoll = Math.floor(Math.random() * 20) + 1;
       setD20Result(tempRoll);
       counter++;
-      if (counter > 12) {
+      if (counter > 24) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
         setD20Result(finalRoll);
@@ -60,7 +60,7 @@ export default function SoloOracles({ setCharacter }) {
       setD6Results(rolls);
       setD6Sum(sum);
       counter++;
-      if (counter > 12) {
+      if (counter > 24) {
         clearInterval(interval);
         const rollsFinal = [];
         let sumFinal = 0;
@@ -90,7 +90,7 @@ export default function SoloOracles({ setCharacter }) {
       else tempMatch = yesNoOracle[4];
       setOracleAnswer({ roll: tempRoll, ...tempMatch });
       counter++;
-      if (counter > 12) {
+      if (counter > 24) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
         let match = null;
@@ -122,7 +122,7 @@ export default function SoloOracles({ setCharacter }) {
         fullTextKO: `${title.ko} ${name.ko} ${surname.ko} ${loc.ko}`
       });
       counter++;
-      if (counter > 12) {
+      if (counter > 24) {
         clearInterval(interval);
         const isMaleFinal = Math.random() > 0.5;
         const namePoolFinal = isMaleFinal ? maleNames : femaleNames;
