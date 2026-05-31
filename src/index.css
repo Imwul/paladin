@@ -1,27 +1,30 @@
-/* Import Pretendard directement from CDN (noonnu / orioncactus) */
+/* Fonts: Pretendard (Korean body), Cinzel (medieval headings), Cormorant Garamond (elegant serif) */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap");
 
 :root {
-  /* Exact color matching from the official character sheet */
-  --color-parchment-base: 45, 30%, 97%;
+  /* Illuminated Manuscript Palette — warm parchment, royal blue, vermillion, gold */
+  --color-parchment-base: 42, 40%, 94%;
   --color-parchment: hsl(var(--color-parchment-base));
-  --color-parchment-dark: #f2ebd9;
-  --color-ink: #2b251f;
-  --color-ink-light: #443a2f;    /* Darkened slightly to dramatically enhance readability & contrast */
-  --color-gold: #c3a165;
-  --color-gold-light: #e6d3b3;
-  --color-gold-dark: #8c6e33;
-  --color-crimson: #901b1b;      /* Official sheet crimson color */
-  --color-crimson-light: #f7e6e4;
-  --color-grey: #6b6053;         /* Darkened slightly for better visibility */
-  --color-grey-light: #e2dac9;
-  --color-success: #2e7d32;
+  --color-parchment-dark: #ece3cc;
+  --color-ink: #2e1f0f;
+  --color-ink-light: #4a3726;
+  --color-gold: #c9a84c;
+  --color-gold-light: #e8d5a0;
+  --color-gold-dark: #8b6914;
+  --color-crimson: #8b2020;          /* Deep vermillion red */
+  --color-crimson-light: #f5e3df;
+  --color-royal-blue: #2b4170;       /* Deep manuscript blue */
+  --color-grey: #6b5d4e;
+  --color-grey-light: #ddd3c1;
+  --color-success: #2e6b33;
   
   --font-korean: 'Pretendard', -apple-system, sans-serif;
-  --font-english: 'Pretendard', -apple-system, sans-serif;
-  --font-gothic: 'Pretendard', -apple-system, sans-serif; /* Unified elegant serif font */
+  --font-heading: 'Cinzel', 'Georgia', serif;
+  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+  --font-gothic: 'Cinzel', 'Georgia', serif;
   
-  --shadow-medieval: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --shadow-medieval: 0 4px 15px rgba(46, 31, 15, 0.1);
 }
 
 * {
@@ -45,7 +48,7 @@ input, textarea, button, select, input[type="number"], input[type="text"] {
 }
 
 body {
-  background-color: #d8cebe;
+  background-color: #cfc4ae;
   color: var(--color-ink);
   font-family: 'Pretendard', -apple-system, sans-serif !important;
   font-size: 16px;
@@ -83,7 +86,7 @@ body {
   padding: 0;
   border-radius: 0;
   border: none;
-  border-top: 6px solid var(--color-crimson);
+  border-top: 5px solid var(--color-royal-blue);
   box-shadow: none;
   display: flex;
   flex-direction: column;
@@ -91,7 +94,7 @@ body {
 
 /* Medieval header decor */
 .header-decor {
-  border-bottom: 4px double var(--color-crimson);
+  border-bottom: 3px double var(--color-gold);
   padding: 15px 30px;
   position: relative;
   background-color: rgba(144, 27, 27, 0.02);
@@ -110,14 +113,13 @@ body {
 }
 
 .header-decor h1 {
-  font-family: var(--font-gothic);
-  font-weight: 800;
-  font-size: clamp(1.2rem, 4vw, 2.2rem);
-  color: var(--color-crimson);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+  color: var(--color-royal-blue);
+  letter-spacing: 0.04em;
   margin-bottom: 2px;
-  text-shadow: 1px 1px 0 rgba(144, 27, 27, 0.08);
+  text-shadow: 1px 1px 0 rgba(43, 65, 112, 0.06);
 }
 
 .header-decor p.subtitle {
@@ -173,25 +175,25 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   background-color: var(--color-parchment-dark);
-  border-bottom: 3px double var(--color-crimson);
+  border-bottom: 2px solid var(--color-gold);
   gap: 4px;
   padding: 8px 15px 0 15px;
 }
 
 .tab-btn {
-  font-family: 'Pretendard', -apple-system, sans-serif;
-  font-size: clamp(0.75rem, 2vw, 1rem);
+  font-family: var(--font-korean);
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
   font-weight: 600;
-  padding: 10px 14px;
-  background-color: rgba(144, 27, 27, 0.05);
-  border: 1px solid var(--color-crimson);
+  padding: 9px 14px;
+  background-color: rgba(43, 65, 112, 0.04);
+  border: 1px solid var(--color-gold);
   border-bottom: none;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
   color: var(--color-ink-light);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.03em;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -200,17 +202,18 @@ body {
 }
 
 .tab-btn:hover {
-  background-color: rgba(144, 27, 27, 0.15);
-  color: var(--color-crimson);
+  background-color: rgba(43, 65, 112, 0.1);
+  color: var(--color-royal-blue);
 }
 
 .tab-btn.active {
   background-color: var(--color-parchment);
-  color: var(--color-crimson);
-  border-top: 3px solid var(--color-crimson);
+  color: var(--color-royal-blue);
+  border-top: 3px solid var(--color-royal-blue);
   border-bottom: 2px solid var(--color-parchment);
-  padding-bottom: 13px;
+  padding-bottom: 11px;
   z-index: 2;
+  font-weight: 700;
 }
 
 /* Tutorial Text Style */
@@ -307,44 +310,44 @@ body {
 
 /* Section Header Ribbons — matching official crimson background style */
 .sheet-ribbon {
-  background: linear-gradient(135deg, var(--color-crimson) 0%, #7b1212 100%);
-  border-top: 2px solid var(--color-gold);
-  border-bottom: 2px solid var(--color-gold);
-  padding: 6px 28px;
-  margin-top: 12px;
-  margin-bottom: 14px;
+  background: linear-gradient(135deg, var(--color-royal-blue) 0%, #1e3158 50%, var(--color-royal-blue) 100%);
+  border: none;
+  padding: 8px 28px;
   text-align: center;
   position: relative;
-  box-shadow: 0 1px 4px rgba(144, 27, 27, 0.18);
+  border-radius: 8px;
+  margin: 8px 12px;
+  box-shadow: 
+    0 2px 8px rgba(43, 65, 112, 0.2),
+    inset 0 1px 0 rgba(255,255,255,0.1);
 }
 
 .sheet-ribbon h3 {
-  font-family: var(--font-gothic);
+  font-family: var(--font-heading);
   color: #fff;
-  font-size: 1.25rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  gap: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .sheet-ribbon::before,
 .sheet-ribbon::after {
-  content: '❖';
+  content: '✦';
   color: var(--color-gold);
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
-.sheet-ribbon::before { left: 8px; }
-.sheet-ribbon::after { right: 8px; }
+.sheet-ribbon::before { left: 10px; }
+.sheet-ribbon::after { right: 10px; }
 
 /* 3-Column Layout matching the official sheet - Flexbox wrapping system */
 /* 3열: ~1600px 이상, 2열: ~1200px 이상, 1열: ~1200px 이하 */
@@ -435,12 +438,14 @@ body {
 
 /* Customized Application Title Korean Sub-text styling */
 .title-ko-sub {
-  font-size: 1.35rem;
-  font-weight: 300 !important;
-  color: var(--color-ink-light);
-  margin-left: 10px;
+  font-family: var(--font-korean) !important;
+  font-size: clamp(0.75rem, 2.5vw, 1.05rem);
+  font-weight: 400 !important;
+  color: var(--color-gold-dark);
+  margin-left: 8px;
   display: inline-block;
   vertical-align: middle;
+  letter-spacing: -0.02em !important;
 }
 
 /* Form Styles */
@@ -540,32 +545,31 @@ body {
 
 /* Medieval Buttons */
 .btn-medieval {
-  font-family: 'Pretendard', -apple-system, sans-serif;
+  font-family: var(--font-korean);
   font-weight: 600;
-  font-size: 1.05rem;
-  padding: 8px 16px;
-  background-color: var(--color-parchment-dark);
-  border: 1px solid var(--color-crimson);
-  color: var(--color-crimson);
+  font-size: 0.85rem;
+  padding: 7px 14px;
+  background-color: rgba(255, 250, 240, 0.8);
+  border: 1px solid var(--color-gold);
+  color: var(--color-royal-blue);
   cursor: pointer;
   transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 2px;
+  gap: 5px;
+  border-radius: 20px;
 }
 
 .btn-medieval:hover {
-  background-color: var(--color-crimson);
+  background-color: var(--color-royal-blue);
   color: #fff;
-  border-color: var(--color-crimson);
+  border-color: var(--color-royal-blue);
 }
 
 .btn-medieval-primary {
-  background-color: var(--color-crimson);
-  border-color: var(--color-crimson);
+  background-color: var(--color-royal-blue);
+  border-color: var(--color-royal-blue);
   color: #fff;
 }
 
@@ -767,24 +771,18 @@ body {
 .cs-section {
   width: 100%;
   box-sizing: border-box;
-  background: rgba(255, 252, 245, 0.5);
-  border: 1px solid var(--color-gold-light);
-  border-radius: 2px;
+  background: linear-gradient(145deg, rgba(255, 250, 235, 0.7) 0%, rgba(244, 237, 216, 0.5) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 12px;
   position: relative;
-}
-
-.cs-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-gold-light), transparent);
+  box-shadow: 
+    0 1px 3px rgba(139, 105, 20, 0.05),
+    inset 0 1px 0 rgba(255,255,255,0.5);
+  overflow: hidden;
 }
 
 .cs-section-inner {
-  padding: 12px 16px;
+  padding: 14px 18px;
 }
 
 /* ─── Attribute Stat Blocks ─── */
