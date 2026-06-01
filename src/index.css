@@ -1974,13 +1974,16 @@ input[type="number"] {
   flex-direction: column;
   gap: 14px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   flex-grow: 1;
+  max-height: calc(85vh - 130px);
+  max-height: calc(85dvh - 130px);
   scrollbar-width: thin;
-  scrollbar-color: var(--color-gold-light) transparent;
+  scrollbar-color: var(--color-gold) transparent;
 }
 
 .ft-modal-body::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .ft-modal-body::-webkit-scrollbar-track {
@@ -1988,8 +1991,8 @@ input[type="number"] {
 }
 
 .ft-modal-body::-webkit-scrollbar-thumb {
-  background-color: var(--color-gold-light);
-  border-radius: 3px;
+  background-color: var(--color-gold);
+  border-radius: 4px;
 }
 
 .ft-form-group {
@@ -2070,6 +2073,215 @@ input[type="number"] {
 @keyframes floatTombstone {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-2px) scale(1.05); }
+}
+
+/* Character Sheet Generator UI */
+.cs-gen-container {
+  margin-bottom: 24px;
+  background-color: var(--color-parchment);
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(195, 161, 101, 0.01) 40px, rgba(195, 161, 101, 0.01) 41px),
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(195, 161, 101, 0.01) 40px, rgba(195, 161, 101, 0.01) 41px);
+  border: 2px double var(--color-gold);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 15px rgba(46, 31, 15, 0.1);
+  transition: all 0.3s ease;
+}
+
+.cs-gen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-gold-light);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.cs-gen-header h3 {
+  font-family: var(--font-korean);
+  color: var(--color-royal-blue);
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cs-gen-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cs-gen-tab-btn {
+  background: none;
+  border: 1px solid var(--color-gold-light);
+  padding: 6px 14px;
+  font-family: var(--font-korean);
+  font-size: 0.84rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--color-ink);
+  transition: all 0.2s;
+}
+
+.cs-gen-tab-btn.active {
+  background-color: var(--color-royal-blue);
+  color: white;
+  border-color: var(--color-royal-blue);
+}
+
+.cs-gen-tab-btn:hover:not(.active) {
+  background-color: rgba(201, 168, 76, 0.1);
+}
+
+/* Presets Grid */
+.cs-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cs-preset-card {
+  border: 1.5px solid var(--color-gold-light);
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cs-preset-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-royal-blue);
+  box-shadow: 0 4px 10px rgba(43, 65, 112, 0.1);
+  background-color: white;
+}
+
+.cs-preset-card.selected {
+  border-color: var(--color-royal-blue);
+  background-color: rgba(43, 65, 112, 0.05);
+  box-shadow: 0 0 0 3px rgba(43, 65, 112, 0.1);
+}
+
+.cs-preset-title {
+  font-family: var(--font-korean);
+  font-size: 0.94rem;
+  font-weight: bold;
+  color: var(--color-royal-blue);
+  margin-bottom: 4px;
+}
+
+.cs-preset-desc {
+  font-size: 0.76rem;
+  color: var(--color-grey);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+
+.cs-preset-meta {
+  font-size: 0.74rem;
+  background-color: rgba(43, 65, 112, 0.05);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-ink);
+  margin-top: auto;
+}
+
+/* Custom Roll Grid */
+.cs-roll-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .cs-roll-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.cs-roll-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cs-roll-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.cs-roll-stat-label {
+  font-size: 0.84rem;
+  font-weight: bold;
+  color: var(--color-ink);
+}
+
+.cs-roll-stat-val {
+  font-family: var(--font-korean);
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--color-royal-blue);
+  background-color: rgba(43, 65, 112, 0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  min-width: 32px;
+  text-align: center;
+}
+
+.cs-roll-btn {
+  background: linear-gradient(135deg, var(--color-gold) 0%, #a37f2a 100%);
+  color: white;
+  border: none;
+  font-family: var(--font-korean);
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.cs-roll-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.cs-roll-select {
+  width: 100%;
+  border: 1.5px solid var(--color-gold-light) !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  background-color: white !important;
+  font-family: var(--font-korean) !important;
+  font-size: 0.82rem !important;
+  outline: none;
+}
+
+.cs-roll-select:focus {
+  border-color: var(--color-royal-blue) !important;
+}
+
+.cs-gen-apply-bar {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-gold-light);
+  margin-top: 18px;
+  padding-top: 14px;
+  gap: 12px;
 }
 
 
