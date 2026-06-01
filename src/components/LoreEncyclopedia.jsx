@@ -37,7 +37,7 @@ export default function LoreEncyclopedia() {
   );
 
   return (
-
+    <div className="cs-page view-animate">
       {/* Tutorial Header Banner */}
       <div className="tutorial-banner">
         <div>
