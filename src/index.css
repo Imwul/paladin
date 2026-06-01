@@ -1646,11 +1646,13 @@ input[type="number"] {
 
 .ft-gen-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   width: 100%;
   border-bottom: 1.5px dashed rgba(201, 168, 76, 0.15);
   padding-bottom: 12px;
+  padding-top: 12px;
 }
 
 .ft-gen-row:last-child {
@@ -1660,12 +1662,18 @@ input[type="number"] {
 
 .ft-gen-label {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
+  width: 190px;
+  flex-shrink: 0;
+  border-right: 1.5px solid rgba(201, 168, 76, 0.2);
+  padding-right: 12px;
   font-family: var(--font-korean);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-gold-dark);
+  white-space: nowrap;
 }
 
 .ft-gen-badge {
@@ -1682,8 +1690,10 @@ input[type="number"] {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: center;
-  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  padding-left: 16px;
 }
 
 .ft-marriage-block {
@@ -2032,16 +2042,16 @@ input[type="number"] {
 
 /* Deceased Member Custom Visual Styles */
 .ft-card-deceased {
-  opacity: 0.68;
-  filter: grayscale(35%);
+  opacity: 1 !important;
+  filter: grayscale(75%) !important;
   background: linear-gradient(135deg, #e3dfd7 0%, #dbd7cf 100%) !important;
   border-color: #8c857b !important;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03) !important;
 }
 
 .ft-card-deceased:hover {
-  opacity: 0.95;
-  filter: grayscale(0%);
+  opacity: 1 !important;
+  filter: grayscale(15%) !important;
   border-color: var(--color-gold) !important;
 }
 
