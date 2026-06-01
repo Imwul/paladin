@@ -63,10 +63,15 @@ export default function FamilyTree({ character, setCharacter }) {
           const r1 = nodeEl.getBoundingClientRect();
           const r2 = spouseEl.getBoundingClientRect();
 
-          const x1 = (r1.left + r1.right) / 2 - containerRect.left;
-          const y1 = (r1.top + r1.bottom) / 2 - containerRect.top;
-          const x2 = (r2.left + r2.right) / 2 - containerRect.left;
-          const y2 = (r2.top + r2.bottom) / 2 - containerRect.top;
+          // Draw line from the right edge of the left card to the left edge of the right card
+          const isLeft = r1.left < r2.left;
+          const leftCard = isLeft ? r1 : r2;
+          const rightCard = isLeft ? r2 : r1;
+
+          const x1 = leftCard.right - containerRect.left;
+          const y1 = (leftCard.top + leftCard.bottom) / 2 - containerRect.top;
+          const x2 = rightCard.left - containerRect.left;
+          const y2 = (rightCard.top + rightCard.bottom) / 2 - containerRect.top;
 
           computedLines.push({
             type: 'marriage',
@@ -419,7 +424,6 @@ export default function FamilyTree({ character, setCharacter }) {
         data-node-id={member.id}
       >
         {isKnight && <div className="ft-crown"><Crown size={15} /></div>}
-        {isDeceased && <div className="ft-tombstone" style={{ fontSize: '1.25rem', position: 'absolute', top: '-4px', right: '4px', zIndex: 5 }}>🪦</div>}
         
         <div className="ft-card-header">
           <span className="ft-relation">{member.relation}</span>
@@ -428,7 +432,7 @@ export default function FamilyTree({ character, setCharacter }) {
               className="ft-status-text"
               style={{ color: statusColor, fontWeight: 'bold', fontSize: '0.62rem', letterSpacing: '-0.02em', fontFamily: 'var(--font-korean)' }}
             >
-              {member.status === '사망' && '🕯️ 영면'}
+              {member.status === '사망' && '🪦 영면'}
               {member.status === '질병' && '🩸 병환'}
               {member.status === '실종' && '🌫️ 행방불명'}
               {member.status === '포로' && '⛓️ 억류'}
