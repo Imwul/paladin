@@ -2316,7 +2316,7 @@ export default function SoloOracles({ character, setCharacter }) {
             </div>
             <div className="cs-section-inner">
               <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
-                기사의 일반 능력, 궁정 교양, 전투 무술 기술들을 굴려 성공 체크를 남기거나, 겨울 단계에서 훈련 d20 굴림(d20 > 현재 레벨)을 통해 영구히 스킬 레벨을 단련합니다.
+                기사의 일반 능력, 궁정 교양, 전투 무술 기술들을 굴려 성공 체크를 남기거나, 겨울 단계에서 훈련 d20 굴림(d20 &gt; 현재 레벨)을 통해 영구히 스킬 레벨을 단련합니다.
               </p>
 
               <div className="cs-row" style={{ gap: '16px' }}>
