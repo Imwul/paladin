@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull } from 'lucide-react';
 
 const splitName = (fullName) => {
@@ -563,7 +564,7 @@ export default function FamilyTree({ character, setCharacter }) {
       </div>
 
       {/* Modal Dialog for Add/Edit Member */}
-      {isModalOpen && (
+      {isModalOpen && createPortal(
         <div className="ft-modal-overlay">
           <form onSubmit={handleSave} className="ft-modal view-animate">
             <div className="ft-modal-header">
@@ -711,7 +712,8 @@ export default function FamilyTree({ character, setCharacter }) {
               </button>
             </div>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>
