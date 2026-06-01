@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ProperNoun from './ProperNoun';
 import { maleNames, femaleNames, surnames, locations, titles } from '../data/names';
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
-import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User } from 'lucide-react';
+import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
 
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
@@ -66,7 +66,7 @@ const D20Face = ({ value, isRolling, color }) => {
 };
 
 export default function SoloOracles({ character, setCharacter }) {
-  const [activeSubTab, setActiveSubTab] = useState('general'); // 'general' | 'personality'
+  const [activeSubTab, setActiveSubTab] = useState('general'); // 'general' | 'personality' | 'reputation_combat'
 
   // ==========================================
   // GENERAL SUB-TAB STATES
@@ -86,16 +86,14 @@ export default function SoloOracles({ character, setCharacter }) {
   const [isRollingName, setIsRollingName] = useState(false);
 
   // ==========================================
-  // PERSONALITY SUB-TAB STATES
+  // PERSONALITY SUB-TAB STATES (Chapter 3)
   // ==========================================
-  // 1. Trait Roll states
-  const [selectedTraitPair, setSelectedTraitPair] = useState(0); // Index of traitPairs
-  const [selectedTraitDirection, setSelectedTraitDirection] = useState('left'); // 'left' | 'right'
+  const [selectedTraitPair, setSelectedTraitPair] = useState(0);
+  const [selectedTraitDirection, setSelectedTraitDirection] = useState('left');
   const [traitModifier, setTraitModifier] = useState(0);
   const [traitRollResult, setTraitRollResult] = useState(null);
   const [isRollingTrait, setIsRollingTrait] = useState(false);
 
-  // 2. Passion Roll states
   const [selectedPassionKey, setSelectedPassionKey] = useState('');
   const [passionModifier, setPassionModifier] = useState(0);
   const [passionRollResult, setPassionRollResult] = useState(null);
@@ -103,13 +101,11 @@ export default function SoloOracles({ character, setCharacter }) {
   const [isChivalryActive, setIsChivalryActive] = useState(false);
   const [passionActionApplied, setPassionActionApplied] = useState(false);
 
-  // 3. Conflicting Emotions states
   const [emotionA, setEmotionA] = useState({ type: 'trait', key: 'just', label: '정의 (Just)', value: 10 });
   const [emotionB, setEmotionB] = useState({ type: 'trait', key: 'merciful', label: '자비 (Merciful)', value: 11 });
   const [emotionRollResult, setEmotionRollResult] = useState(null);
   const [isRollingEmotions, setIsRollingEmotions] = useState(false);
 
-  // 4. Group Inspiration states
   const [groupKnights, setGroupKnights] = useState([
     { name: '롤랑 경 (Sir Roland)', passionScore: 16 },
     { name: '올리비에 경 (Sir Oliver)', passionScore: 14 },
@@ -119,12 +115,53 @@ export default function SoloOracles({ character, setCharacter }) {
   const [groupRollResult, setGroupRollResult] = useState(null);
   const [isRollingGroup, setIsRollingGroup] = useState(false);
 
-  // 5. Introspection states
   const [selectedAmorKey, setSelectedAmorKey] = useState('loveFamily');
   const [introspectionResult, setIntrospectionResult] = useState(null);
   const [isRollingIntro, setIsRollingIntro] = useState(false);
 
-  // 13 Trait pairs mapped with keys and Korean translations
+  // ==========================================
+  // REPUTATION & COMBAT SKILLS STATES (Chapter 4 & 5)
+  // ==========================================
+  // 1. Glory Calculator States
+  const [selectedOpponentType, setSelectedOpponentType] = useState('ordinary_knight');
+  const [combatType, setCombatType] = useState('mortal'); // 'mortal' | 'love'
+  const [damage6d6, setDamage6d6] = useState(false);
+  const [halfGiant, setHalfGiant] = useState(false);
+  const [passionInspiration, setPassionInspiration] = useState(false);
+  const [critPassionInspiration, setCritPassionInspiration] = useState(false);
+  const [critMiracle, setCritMiracle] = useState(false);
+  const [magicEquipment, setMagicEquipment] = useState(false);
+  const [fantasticItem, setFantasticItem] = useState(false);
+  
+  const [spouseGlory, setSpouseGlory] = useState(500);
+  const [spouseIsPagan, setSpouseIsPagan] = useState(false);
+  const [spouseHonor, setSpouseHonor] = useState(15);
+  
+  const [gloryActionApplied, setGloryActionApplied] = useState(false);
+  const [marriageGloryActionApplied, setMarriageGloryActionApplied] = useState(false);
+
+  // 2. Standing States
+  const [selectedStandingKey, setSelectedStandingKey] = useState('charlemagne');
+  const [giftAmount, setGiftAmount] = useState(10);
+  const [giftRollResult, setGiftRollResult] = useState(null);
+  const [standingRollResult, setStandingRollResult] = useState(null);
+  const [isRollingStanding, setIsRollingStanding] = useState(false);
+  const [isRollingGiftProportion, setIsRollingGiftProportion] = useState(false);
+  const [standingActionApplied, setStandingActionApplied] = useState(false);
+
+  // 3. Melee Clash Simulator States
+  const [playerWeapon, setPlayerWeapon] = useState('sword');
+  const [playerMounted, setPlayerMounted] = useState(true);
+  const [playerSkillOverride, setPlayerSkillOverride] = useState(13); // defaults to actual sword skill 13
+  const [opponentWeapon, setOpponentWeapon] = useState('spear');
+  const [opponentMounted, setOpponentMounted] = useState(false);
+  const [opponentSkill, setOpponentSkill] = useState(11);
+  const [isCharging, setIsCharging] = useState(true);
+  
+  const [clashResult, setClashResult] = useState(null);
+  const [isRollingClash, setIsRollingClash] = useState(false);
+
+  // Mappings
   const traitPairs = [
     { left: 'chaste', leftKo: '정숙 (Chaste)', right: 'lustful', rightKo: '음탕 (Lustful)' },
     { left: 'energetic', leftKo: '열정 (Energetic)', right: 'lazy', rightKo: '나태 (Lazy)' },
@@ -152,45 +189,42 @@ export default function SoloOracles({ character, setCharacter }) {
     hateMoors: '무어인 증오 (Hate [Moors])'
   };
 
+  const humanOpponents = {
+    ordinary_knight: { label: '일반 기사 (Ordinary Knight)', baseGlory: 50, loveGlory: 5 },
+    notable_knight: { label: '유력 기사 (Notable Knight)', baseGlory: 100, loveGlory: 10 },
+    famous_knight: { label: '유명 기사 (Famous Knight)', baseGlory: 250, loveGlory: 25 },
+    extraordinary_knight: { label: '비범한 기사 (Extraordinary Knight)', baseGlory: 500, loveGlory: 50 },
+    peasant: { label: '무법 평민 (Unruly Peasant)', baseGlory: 1, loveGlory: 0 },
+    thief: { label: '도둑 (Thief)', baseGlory: 5, loveGlory: 0 },
+    ordinary_bandit: { label: '일반 도적 (Ordinary Bandit)', baseGlory: 10, loveGlory: 0 },
+    notable_bandit: { label: '유명 도적 (Notable Bandit)', baseGlory: 25, loveGlory: 0 },
+    unarmored_foot: { label: '무장하지 않은 보병 (Unarmored Foot)', baseGlory: 10, loveGlory: 0 },
+    armored_foot: { label: '무장 보병 (Armored Foot)', baseGlory: 25, loveGlory: 0 },
+    mounted_warrior: { label: '기마 전사 (Mounted Non-Knight)', baseGlory: 35, loveGlory: 0 }
+  };
+
+  const weaponProperties = {
+    lance: { label: '랜스 (Lance)', damage: '돌격마 피해 (Damage as per Horse)', note: '기마 돌격 시 +5 보정, 보병의 창 방어에 카운터됨' },
+    sword: { label: '검 (One-Handed Sword)', damage: '기본 피해 (Normal)', note: '동률 시 상대방 비-검 파괴, 펌블 시 떨어뜨릴 뿐 부러지지 않음' },
+    two_handed_sword: { label: '양손검 (Two-Handed Sword)', damage: '기본 +1d6 추가 피해', note: '동률 시 상대방 비-검 파괴, 펌블 시 떨어뜨림, 방패 사용 불가능' },
+    spear: { label: '창 (Spear/Polearm)', damage: '기본 피해 (Normal)', note: '보병 상태에서 기마 적 대적 시 +5 창 보정 및 적 랜스 돌격 보너스 무효화' },
+    halberd: { label: '할버드 (Halberd)', damage: '기본 +1d6 추가 피해', note: '보병 상태에서 기마 대적 시 +5 보정, 펌블 시 무기 완파' },
+    dagger: { label: '단검 (Dagger)', damage: '기본 피해 (Normal)', note: '초근접 난전용 무기' },
+    unarmed: { label: '맨손 (Unarmed Grapple)', damage: '맨손 그래플링', note: '상대 무기 해제 및 그래플링 상태 돌입' }
+  };
+
+  const standingNamesKo = {
+    charlemagne: '샤를마뉴 대제 (Standing [Charlemagne])',
+    liegeLord: '영주 백작 (Standing [Lord])',
+    family: '가문 구성원 (Standing [Family])',
+    retinue: '가신단/종자 (Standing [Retinue])',
+    church: '성직자/교회 (Standing [Church])',
+    commoners: '평민/상인 (Standing [Commoners])'
+  };
+
   // ==========================================
   // GENERAL SUB-TAB LOGIC
   // ==========================================
-  const resolveD20 = (roll, skill) => {
-    if (roll === 20) return rollGrades.FUMBLE;
-    if (roll === 1) return rollGrades.CRITICAL;
-    if (roll === skill) return rollGrades.CRITICAL;
-    if (roll < skill) return rollGrades.SUCCESS;
-    return rollGrades.FAILURE;
-  };
-
-  const handleManualD20Result = (val) => {
-    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
-    setD20Result(num);
-    setRollResolution(resolveD20(num, targetSkill));
-  };
-
-  const handleTargetSkillChange = (val) => {
-    const skill = parseInt(val) || 1;
-    setTargetSkill(skill);
-    if (d20Result) {
-      setRollResolution(resolveD20(d20Result, skill));
-    }
-  };
-
-  const getOracleAnswerFromRoll = (roll) => {
-    if (roll <= 2) return yesNoOracle[0];
-    if (roll <= 8) return yesNoOracle[1];
-    if (roll <= 12) return yesNoOracle[2];
-    if (roll <= 18) return yesNoOracle[3];
-    return yesNoOracle[4];
-  };
-
-  const handleManualOracleRoll = (val) => {
-    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
-    const match = getOracleAnswerFromRoll(num);
-    setOracleAnswer({ roll: num, ...match });
-  };
-
   const rollD20 = () => {
     if (isRollingD20) return;
     setIsRollingD20(true);
@@ -295,29 +329,21 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
-  const applyName = () => {
-    if (!generatedName) return;
-    const cleanName = `${generatedName.name.en} ${generatedName.surname.en}`;
-    setCharacter(prev => ({ ...prev, personal: { ...prev.personal, name: cleanName, homeland: generatedName.loc.en } }));
-    alert(`[${cleanName}]이 기사 시트에 적용되었습니다!`);
-  };
-
-
   // ==========================================
   // PERSONALITY SUB-TAB LOGIC (Chapter 3)
   // ==========================================
-  
-  // Helper to get trait values dynamically
   const getTraitValue = (key) => {
     return character?.traits?.[key] ?? 10;
   };
 
-  // Helper to get passion values dynamically
   const getPassionValue = (key) => {
     return character?.passions?.[key] ?? 10;
   };
 
-  // 1. Trait Roll Execution
+  const getStandingValue = (key) => {
+    return character?.standings?.[key] ?? 10;
+  };
+
   const executeTraitRoll = () => {
     if (isRollingTrait) return;
     setIsRollingTrait(true);
@@ -374,7 +400,6 @@ export default function SoloOracles({ character, setCharacter }) {
           color = 'var(--color-royal-blue)';
           checkRequired = true;
         } else {
-          // Failure: Opposed roll triggered!
           const opposedBase = getTraitValue(opposedKey);
           opposedRollVal = Math.floor(Math.random() * 20) + 1;
           
@@ -413,14 +438,10 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
-  // Trait action sheet apply
   const applyTraitOutcome = (type) => {
     if (!traitRollResult) return;
-    
-    const key = traitRollResult.key;
-    const opposedKey = traitRollResult.opposedKey;
-    const ko = traitRollResult.rolledKo;
     const oppKo = traitRollResult.opposedKo;
+    const ko = traitRollResult.rolledKo;
 
     if (type === 'fumble' || type === 'act_opposite') {
       alert(`[반대 성향 페널티]: ${oppKo}의 충동이 기록되었습니다! 다음 겨울 정산 시 ${oppKo} 성장을 굴릴 수 있는 자격을 획득합니다.`);
@@ -429,7 +450,6 @@ export default function SoloOracles({ character, setCharacter }) {
     }
   };
 
-  // 2. Passion Roll Execution
   const executePassionRoll = () => {
     if (!selectedPassionKey) {
       alert('판정할 열정(Passion)을 먼저 선택해 주세요!');
@@ -461,7 +481,7 @@ export default function SoloOracles({ character, setCharacter }) {
         const finalRoll = Math.floor(Math.random() * 20) + 1;
 
         let outcome = '';
-        let state = ''; // 'inspiration' | 'disheartened' | 'madness'
+        let state = '';
         let skillBonus = 0;
         let desc = '';
         let color = '';
@@ -510,16 +530,13 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const applyPassionResolution = (successType) => {
     if (!passionRollResult || passionActionApplied) return;
-
     const key = passionRollResult.key;
     const ko = passionRollResult.passionKo;
 
     setCharacter(prev => {
       const updated = { ...prev };
-      
       if (passionRollResult.state === 'inspiration') {
         if (successType === 'success') {
-          // Success action: Gained Passion Check OR +1 for critical
           if (passionRollResult.roll === 1 || passionRollResult.roll === passionRollResult.modifiedTarget) {
             updated.passions[key] = Math.min(20, (updated.passions[key] || 10) + 1);
             alert(`[열망 상승 완료]: 전공 완수! ${ko} 수치가 +1 상승하였습니다!`);
@@ -528,16 +545,13 @@ export default function SoloOracles({ character, setCharacter }) {
             alert(`[경험 체크 완료]: 전공 완수! ${ko}에 겨울 성장용 경험 체크를 누적했습니다.`);
           }
         } else if (successType === 'fail') {
-          // Shock! (Aging table d20)
           alert(`[기사의 쇼크 충격!]: 열정 영감으로도 극복하지 못해 정신적 쇼크(Shock)가 닥칩니다! 가문&겨울 탭의 노화 d20 판정(Aging Table)을 즉각 1회 실행하세요.`);
         }
       } else if (passionRollResult.state === 'disheartened') {
         if (successType === 'success') {
-          // Overcome: Passion +1
           updated.passions[key] = Math.min(20, (updated.passions[key] || 10) + 1);
           alert(`[역경 극복]: 극적인 사투 끝에 낙담을 물리쳤습니다! ${ko} 수치가 +1 상승했습니다!`);
         } else {
-          // Melancholy and -1 passion
           updated.passions[key] = Math.max(1, (updated.passions[key] || 10) - 1);
           alert(`[우울증 봉착]: 깊은 슬픔(Melancholy) 속에 기사는 침잠합니다. ${ko} 수치가 -1 하락하는 참담한 상처를 받았습니다.`);
         }
@@ -545,14 +559,11 @@ export default function SoloOracles({ character, setCharacter }) {
         updated.passions[key] = Math.max(1, (updated.passions[key] || 10) - 1);
         alert(`[광기 적용]: 기사는 이성을 잃고 야만인처럼 울부짖으며 들판으로 사라집니다! ${ko} 수치가 -1 하락했습니다.`);
       }
-
       return updated;
     });
-
     setPassionActionApplied(true);
   };
 
-  // 3. Conflicting Emotions Execution
   const executeEmotionRoll = () => {
     if (isRollingEmotions) return;
     setIsRollingEmotions(true);
@@ -573,13 +584,9 @@ export default function SoloOracles({ character, setCharacter }) {
         
         const finalRollA = Math.floor(Math.random() * 20) + 1;
         const finalRollB = Math.floor(Math.random() * 20) + 1;
-        
-        // Resolve matching values
         const valA = emotionA.value;
         const valB = emotionB.value;
 
-        // Opposed resolution: Whoever rolls lower or equal to stat and higher than the other wins.
-        // Simplified TRPG resolution: Success roll defeats failure, higher success defeats lower success.
         const successA = finalRollA <= valA;
         const successB = finalRollB <= valB;
 
@@ -628,7 +635,6 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
-  // 4. Group Inspiration Execution
   const executeGroupRoll = () => {
     if (isRollingGroup) return;
     setIsRollingGroup(true);
@@ -646,10 +652,7 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        
-        // Compare single roll to each individual's score
         let successesCount = 0;
-        let criticalsCount = 0;
         let fumblesCount = 0;
 
         const details = groupKnights.map(k => {
@@ -659,7 +662,6 @@ export default function SoloOracles({ character, setCharacter }) {
             fumblesCount++;
           } else if (finalRoll === 1 || finalRoll === k.passionScore) {
             indRes = '결정적 성공 ( Inspired +10 )';
-            criticalsCount++;
             successesCount++;
           } else if (finalRoll < k.passionScore) {
             indRes = '성공 ( Inspired +5 )';
@@ -670,7 +672,6 @@ export default function SoloOracles({ character, setCharacter }) {
           return { ...k, result: indRes };
         });
 
-        // Determine average group outcome
         let finalGroupOutcome = '실패 (낙담)';
         let groupDesc = `부대 사기 저하! 연설이 와닿지 못했습니다. 동료 기사 전원 '낙담(Disheartened)' 상태에 빠집니다. (모든 롤에 -5 페널티)`;
         let color = 'var(--color-gold-dark)';
@@ -685,7 +686,7 @@ export default function SoloOracles({ character, setCharacter }) {
           color = 'var(--color-royal-blue)';
         } else if (fumblesCount > 0) {
           finalGroupOutcome = '재앙적 펌블 (대혼란)';
-          groupDesc = `연설 도중 끔찍한 도발이나 비열함이 노출되어 대혼란과 광기가 무리에 엄습합니다! 일부는 대장에게 분노합니다.`;
+          groupDesc = `연설 도중 끔찍한 도발이나 비열함이 노출되어 대혼란과 광기가 무리에 엄습합니다!`;
           color = 'var(--color-crimson)';
         }
 
@@ -702,7 +703,6 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
-  // 5. Introspection Roll Execution
   const executeIntrospectionRoll = () => {
     if (isRollingIntro) return;
     setIsRollingIntro(true);
@@ -723,15 +723,13 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        let isDazed = false;
         let title = '평온함';
         let desc = '기사는 현실의 임무에 또렷이 집중하고 있습니다. 정상적인 모험 활동이 가능합니다.';
         let color = 'var(--color-grey)';
 
         if (finalRoll === 1 || finalRoll <= 3) {
-          isDazed = true;
-          title = '사랑의 자기성찰 (Introspection) Daze! 🌌';
-          desc = `황홀경 돌입! 기사의 눈앞에 문득 연인(Amor)의 고운 실루엣과 하얀 손길이 몽환적으로 떠오릅니다. 향후 [ 4d6분 ] 동안 깊은 트랜스 상태에 빠집니다. 이 시간 동안 감각(Awareness), 지식, 통찰 등 모든 인지 스킬 굴림이 전원 원천 금지됩니다! 단, 적들의 기습을 방어하는 개인 호신전투 중에는 Inspired(+5) 보정을 정상 획득합니다.`;
+          title = '사랑의 몽상: 넋을 잃음! 🌌';
+          desc = `넋을 잃음 돌입! 기사의 눈앞에 문득 연인(Amor)의 고운 실루엣과 하얀 손길이 몽환적으로 떠오릅니다. 향후 [ 4d6분 ] 동안 사랑에 넋을 잃은 채 깊은 몽상 상태에 빠집니다. 이 시간 동안 감각(Awareness), 지식, 통찰 등 모든 인지 스킬 굴림이 전원 원천 금지됩니다! 단, 적들의 기습을 방어하는 개인 호신전투 중에는 Inspired(+5) 보정을 정상 획득합니다.`;
           color = 'var(--color-success)';
         } else {
           title = '마음의 안정 유지 ✓';
@@ -753,38 +751,402 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
-  // Helper for rendering custom select options
-  const renderTraitOptions = () => {
-    return traitPairs.map((p, index) => {
-      const lVal = getTraitValue(p.left);
-      const rVal = getTraitValue(p.right);
-      return (
-        <option key={index} value={index}>
-          {p.leftKo} ({lVal}) vs {p.rightKo} ({rVal})
-        </option>
-      );
+  // ==========================================
+  // REPUTATION & COMBAT LOGIC (Chapter 4 & 5)
+  // ==========================================
+  
+  // 1. Glory Value Calculators
+  const getCalculatedGlory = () => {
+    const opponent = humanOpponents[selectedOpponentType];
+    if (!opponent) return 0;
+    
+    let base = combatType === 'mortal' ? opponent.baseGlory : opponent.loveGlory;
+    let add = 0;
+    
+    if (damage6d6) add += 10;
+    if (halfGiant) add += 20;
+    if (passionInspiration) add += 10;
+    if (critPassionInspiration) add += 20;
+    if (critMiracle) add += 50;
+    if (magicEquipment) add += 25;
+    if (fantasticItem) add += 50;
+    
+    if (combatType === 'love') {
+      add = Math.floor(add / 10);
+    }
+    
+    return base + add;
+  };
+
+  const getCalculatedMarriageGlory = () => {
+    if (spouseIsPagan) {
+      const val = Math.floor((spouseGlory / 100) * spouseHonor);
+      return Math.min(1000, val);
+    } else {
+      return Math.min(1000, spouseGlory);
+    }
+  };
+
+  const applyGloryToSheet = () => {
+    if (gloryActionApplied) return;
+    const addedGlory = getCalculatedGlory();
+    setCharacter(prev => {
+      const updated = { ...prev };
+      updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + addedGlory;
+      return updated;
+    });
+    setGloryActionApplied(true);
+    alert(`[명예 획득 반영]: +${addedGlory} Glory가 성기사의 시트 명예 총량에 성공적으로 반영되었습니다!`);
+  };
+
+  const applyMarriageGloryToSheet = () => {
+    if (marriageGloryActionApplied) return;
+    const addedGlory = getCalculatedMarriageGlory();
+    setCharacter(prev => {
+      const updated = { ...prev };
+      updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + addedGlory;
+      return updated;
+    });
+    setMarriageGloryActionApplied(true);
+    alert(`[결혼 명예 반영]: +${addedGlory} Glory가 성공적으로 기사 시트에 반영되었습니다!`);
+  };
+
+  // 2. Standing Gift & Rolls Logic
+  const handleGiftDonation = () => {
+    if (standingActionApplied) return;
+    const cash = character?.gear?.cash || 0;
+    if (cash < giftAmount) {
+      alert(`보유 소지금(£${cash})이 헌납하고자 하는 금액(£${giftAmount})보다 부족합니다!`);
+      return;
+    }
+
+    setStandingActionApplied(true);
+    setGiftRollResult(null);
+
+    let pointsEarned = 0;
+    let rollText = '';
+
+    if (selectedStandingKey === 'charlemagne') {
+      pointsEarned = Math.floor(giftAmount / 100);
+      const remainder = giftAmount % 100;
+      if (remainder > 0) {
+        setIsRollingGiftProportion(true);
+        const roll = Math.floor(Math.random() * 100) + 1;
+        const success = roll <= remainder;
+        if (success) {
+          pointsEarned += 1;
+          rollText = `국왕 헌납 비율 판정: d100 [ ${roll} ] vs 목표 [ ${remainder}% ]. 성공! 명망 +1점 혜택을 극적으로 획득하셨습니다!`;
+        } else {
+          rollText = `국왕 헌납 비율 판정: d100 [ ${roll} ] vs 목표 [ ${remainder}% ]. 아쉽게 명망 추가점을 얻지 못했습니다.`;
+        }
+        setIsRollingGiftProportion(false);
+      }
+    } else {
+      pointsEarned = Math.floor(giftAmount / 10);
+      const remainder = giftAmount % 10;
+      if (remainder > 0) {
+        setIsRollingGiftProportion(true);
+        const roll = Math.floor(Math.random() * 10) + 1;
+        const success = roll <= remainder;
+        if (success) {
+          pointsEarned += 1;
+          rollText = `일반 명망 비율 판정: d10 [ ${roll} ] vs 목표 [ ${remainder} ]. 성공! 명망 +1점 추가 상승!`;
+        } else {
+          rollText = `일반 명망 비율 판정: d10 [ ${roll} ] vs 목표 [ ${remainder} ]. 명망 추가 상승에 실패했습니다.`;
+        }
+        setIsRollingGiftProportion(false);
+      }
+    }
+
+    // Apply to sheet
+    setCharacter(prev => {
+      const updated = { ...prev };
+      updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - giftAmount);
+      
+      const currentVal = updated.standings[selectedStandingKey] || 10;
+      updated.standings[selectedStandingKey] = Math.min(25, currentVal + pointsEarned);
+      
+      return updated;
+    });
+
+    setGiftRollResult({
+      pointsEarned,
+      rollText,
+      amount: giftAmount
     });
   };
 
-  const getPassionKeys = () => {
-    return character?.passions ? Object.keys(character.passions) : [];
+  const executeStandingRoll = () => {
+    if (isRollingStanding) return;
+    setIsRollingStanding(true);
+    setStandingRollResult(null);
+
+    const baseVal = getStandingValue(selectedStandingKey);
+    const standingKo = standingNamesKo[selectedStandingKey] || selectedStandingKey;
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      setStandingRollResult({
+        roll: tempRoll,
+        isRolling: true
+      });
+      counter++;
+      if (counter > 15) {
+        clearInterval(interval);
+        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        
+        let outcome = '';
+        let desc = '';
+        let color = '';
+
+        if (finalRoll === 20) {
+          outcome = '펌블 (Fumble) ☠️';
+          desc = `청탁 대참사! 오만방자하거나 예의를 지키지 못해 집단의 격한 분노를 샀습니다. Standing 수치가 즉각 1점 차감되며 상당한 배척을 받게 됩니다.`;
+          color = 'var(--color-crimson)';
+          
+          // Deduct standing on Fumble
+          setCharacter(prev => {
+            const updated = { ...prev };
+            updated.standings[selectedStandingKey] = Math.max(1, (updated.standings[selectedStandingKey] || 10) - 1);
+            return updated;
+          });
+        } else if (finalRoll === 1 || finalRoll === baseVal) {
+          outcome = '결정적 성공 (Critical Success) 🌟';
+          desc = `감동적인 대환대! 국왕 혹은 집단이 눈물을 흘릴 정도의 숭고한 헌신을 느끼고 기사의 부탁을 최고의 권한으로 승인하며, 가문 및 추종 기사단 전체에 대한 총애를 하사합니다.`;
+          color = 'var(--color-success)';
+        } else if (finalRoll < baseVal) {
+          outcome = '성공 (Success) ✓';
+          desc = `호의적 협조! 기사의 예의를 갖춘 요청을 흔쾌히 수락하여 아군으로 기꺼이 조력하거나 청탁한 favor를 승인해 줍니다.`;
+          color = 'var(--color-royal-blue)';
+        } else {
+          outcome = '실패 (Failure) 🕯️';
+          desc = `묵살 및 냉소! 요청이 거절되거나 침묵으로 묵살되었습니다. 아무런 도움이나 우호적 반응을 이끌어내지 못했습니다.`;
+          color = 'var(--color-grey)';
+        }
+
+        setStandingRollResult({
+          roll: finalRoll,
+          outcome,
+          desc,
+          color,
+          baseVal,
+          standingKo,
+          isRolling: false
+        });
+        setIsRollingStanding(false);
+      }
+    }, 50);
+  };
+
+  // 3. Melee Clash Simulator Logic (Chapter 5)
+  const executeClashMatch = () => {
+    if (isRollingClash) return;
+    setIsRollingClash(true);
+    setClashResult(null);
+
+    // Grab modifiers
+    let pSkill = parseInt(playerSkillOverride) || 10;
+    let oSkill = parseInt(opponentSkill) || 10;
+
+    let pModName = '';
+    let oModName = '';
+    let pMod = 0;
+    let oMod = 0;
+
+    // Lance vs Spear mounted anti-charge rules
+    if (playerMounted && !opponentMounted) {
+      if (playerWeapon === 'lance' && isCharging) {
+        if (opponentWeapon === 'spear' || opponentWeapon === 'halberd') {
+          // Spearfoot defense: Opponent gets +5, Player loses the charge bonus!
+          oMod = 5;
+          oModName = '보병의 대기마 창 방어 보정 (+5)';
+          pModName = '상대 보병의 창 방어로 인한 기마 랜스 충격 무효화';
+        } else {
+          // Lance charge adds +5
+          pMod = 5;
+          pModName = '기마 랜스 돌격 차징 보정 (+5)';
+        }
+      }
+    }
+
+    if (opponentMounted && !playerMounted) {
+      if (opponentWeapon === 'lance' && isCharging) {
+        if (playerWeapon === 'spear' || playerWeapon === 'halberd') {
+          pMod = 5;
+          pModName = '보병의 대기마 창 방어 보정 (+5)';
+          oModName = '기사의 창 방어로 인한 상대방 랜스 보너스 무효화';
+        } else {
+          oMod = 5;
+          oModName = '기마 랜스 돌격 차징 보정 (+5)';
+        }
+      }
+    }
+
+    // Halberd foot vs horse modifier
+    if (playerWeapon === 'halberd' && !playerMounted && opponentMounted) {
+      pMod = 5;
+      pModName = '할버드 보병 대기마 대적 보정 (+5)';
+    }
+    if (opponentWeapon === 'halberd' && !opponentMounted && playerMounted) {
+      oMod = 5;
+      oModName = '할버드 보병 대기마 대적 보정 (+5)';
+    }
+
+    const pTarget = pSkill + pMod;
+    const oTarget = oSkill + oMod;
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      const rollP = Math.floor(Math.random() * 20) + 1;
+      const rollO = Math.floor(Math.random() * 20) + 1;
+      setClashResult({
+        rollP,
+        rollO,
+        isRolling: true
+      });
+      counter++;
+      if (counter > 15) {
+        clearInterval(interval);
+        const finalRollP = Math.floor(Math.random() * 20) + 1;
+        const finalRollO = Math.floor(Math.random() * 20) + 1;
+
+        // Success Grades
+        const successP = finalRollP <= pTarget && finalRollP !== 20;
+        const critP = finalRollP === 1 || finalRollP === pTarget;
+        const fumbleP = finalRollP === 20;
+
+        const successO = finalRollO <= oTarget && finalRollO !== 20;
+        const critO = finalRollO === 1 || finalRollO === oTarget;
+        const fumbleO = finalRollO === 20;
+
+        let pGrade = fumbleP ? 'Fumble' : critP ? 'Critical' : successP ? 'Success' : 'Failure';
+        let oGrade = fumbleO ? 'Fumble' : critO ? 'Critical' : successO ? 'Success' : 'Failure';
+
+        let pWeaponState = 'Intact';
+        let oWeaponState = 'Intact';
+        let clashOutcome = '';
+        let winner = '';
+        let color = '';
+        let detailDesc = '';
+
+        // Fumble breakage rules
+        if (fumbleP) {
+          if (playerWeapon === 'sword' || playerWeapon === 'two_handed_sword') {
+            pWeaponState = 'Dropped';
+            detailDesc += '⚠️ 기사가 펌블을 범해 무기를 떨어뜨렸습니다 (검의 낙하 안전 룰: 파괴 안됨).\n';
+          } else {
+            pWeaponState = 'Broken';
+            detailDesc += '💥 펌블! 기사의 비-검 무기 [' + weaponProperties[playerWeapon].label + ']가 산산조각났습니다!\n';
+          }
+        }
+        if (fumbleO) {
+          if (opponentWeapon === 'sword' || opponentWeapon === 'two_handed_sword') {
+            oWeaponState = 'Dropped';
+            detailDesc += '⚠️ 상대방이 펌블을 범해 검을 바닥에 떨어뜨렸습니다.\n';
+          } else {
+            oWeaponState = 'Broken';
+            detailDesc += '💥 펌블! 상대의 비-검 무기 [' + weaponProperties[opponentWeapon].label + ']가 부서졌습니다!\n';
+          }
+        }
+
+        // Opposed resolution checks
+        const pScore = fumbleP ? -2 : !successP ? -1 : critP ? 100 + finalRollP : finalRollP;
+        const oScore = fumbleO ? -2 : !successO ? -1 : critO ? 100 + finalRollO : finalRollO;
+
+        if (pScore > oScore) {
+          winner = 'Player';
+          clashOutcome = '기사의 격돌 대승리! 🎉';
+          color = 'var(--color-success)';
+          
+          let dmg = '기본 무기 피해';
+          if (playerWeapon === 'two_handed_sword' || playerWeapon === 'halberd') dmg = '무기 피해 + 1d6 추가 피해';
+          else if (playerWeapon === 'lance' && playerMounted) dmg = '돌격 군마의 피해량 적용';
+          
+          detailDesc += `🛡️ 기사가 주사위 차이로 방어를 뚫고 적을 격타하여 상해를 줍니다! (예상 피해: ${dmg})`;
+        } else if (oScore > pScore) {
+          winner = 'Opponent';
+          clashOutcome = '상대방의 격돌 승리 ⚔️';
+          color = 'var(--color-crimson)';
+          
+          let dmg = '적 기본 피해';
+          if (opponentWeapon === 'two_handed_sword' || opponentWeapon === 'halberd') dmg = '적 피해 + 1d6 추가 피해';
+          
+          detailDesc += `⚠️ 상대방의 주사위가 더 강하여 기사의 방어를 뚫고 무거운 피해를 선사했습니다.`;
+        } else {
+          // TIE situation - Sword tie breaker rules!
+          winner = 'None';
+          
+          const pHasSword = playerWeapon === 'sword' || playerWeapon === 'two_handed_sword';
+          const oHasSword = opponentWeapon === 'sword' || opponentWeapon === 'two_handed_sword';
+
+          if (successP && successO) {
+            if (pHasSword && !oHasSword) {
+              winner = 'Player';
+              oWeaponState = 'Broken';
+              clashOutcome = '검의 결투 법칙 승리! ⚔️';
+              color = 'var(--color-success)';
+              detailDesc += `✨ 동률 상황에서의 철칙! 기사의 고귀한 검이 상대방의 비-검 무기 [${weaponProperties[opponentWeapon].label}]의 날을 박살내어 동강내며 위대한 승리를 가져왔습니다!`;
+            } else if (!pHasSword && oHasSword) {
+              winner = 'Opponent';
+              pWeaponState = 'Broken';
+              clashOutcome = '상대방 검의 타이 브레이커 패배 😭';
+              color = 'var(--color-crimson)';
+              detailDesc += `💥 동률 상황 철칙 패배! 상대방의 예리한 명검이 기사가 쥐고 있던 비-검 무기 [${weaponProperties[playerWeapon].label}]의 자루를 박살내며 승리했습니다! 무기 완파!`;
+            } else {
+              clashOutcome = '동률 무기 대격돌 (Standoff) ⚖️';
+              color = 'var(--color-grey)';
+              detailDesc += `기사와 적의 무기가 똑같은 동률(Tie) 세기로 공중에서 폭발적으로 맞부딪혔습니다! 아무도 상처를 입지 않고 뒤로 밀려납니다.`;
+            }
+          } else {
+            clashOutcome = '쌍방 공격 실패 (Standoff)';
+            color = 'var(--color-grey)';
+            detailDesc += '서로의 허공을 가르는 둔탁한 소리만이 가득했습니다. 아무도 격타에 실패했습니다.';
+          }
+        }
+
+        setClashResult({
+          rollP: finalRollP,
+          rollO: finalRollO,
+          pTarget,
+          oTarget,
+          pModName,
+          oModName,
+          pGrade,
+          oGrade,
+          pWeaponState,
+          oWeaponState,
+          clashOutcome,
+          winner,
+          color,
+          detailDesc,
+          isRolling: false
+        });
+        setIsRollingClash(false);
+      }
+    }, 50);
+  };
+
+  const getOracleAnswerFromRollText = (ans) => {
+    if (!ans) return '';
+    return ans.result + ': ' + ans.desc;
   };
 
   return (
     <div className="cs-page view-animate">
       
-      {/* Dynamic Character Profile Banner */}
+      {/* Profile Header Banner */}
       <div className="tutorial-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h4 className="tutorial-banner-title">
-            🛡️ {character?.personal?.name || '기사'}의 오라클 성소
+            🛡️ {character?.personal?.name || '기사'}의 오라클 &amp; 기사단 무대
           </h4>
           <p>
-            명예: {character?.gear?.gloryTotal || 1000} Glory &bull; {character?.personal?.lineage || '가문'} 가신 기사
+            명예: {character?.gear?.gloryTotal || 1000} Glory &bull; 소지금: £{character?.gear?.cash || 0}
           </p>
         </div>
         
-        {/* Interactive Sub-tab toggle buttons */}
+        {/* Expanded sub-tabs */}
         <div className="sub-tab-navigation" style={{ display: 'flex', gap: '8px', margin: 0 }}>
           <button 
             className={`tab-btn btn-medieval ${activeSubTab === 'general' ? 'active' : ''}`} 
@@ -796,15 +1158,22 @@ export default function SoloOracles({ character, setCharacter }) {
           <button 
             className={`tab-btn btn-medieval ${activeSubTab === 'personality' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('personality')}
-            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '160px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '160px', justifyContent: 'center' }}
           >
-            <Sparkles size={14} style={{ marginRight: '4px' }} /> 챕터 3: 성격 &amp; 열정 판정
+            <Sparkles size={14} style={{ marginRight: '4px' }} /> 챕터 3: 성격 &amp; 열정
+          </button>
+          <button 
+            className={`tab-btn btn-medieval ${activeSubTab === 'reputation_combat' ? 'active' : ''}`} 
+            onClick={() => setActiveSubTab('reputation_combat')}
+            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '170px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
+          >
+            <Award size={14} style={{ marginRight: '4px' }} /> 챕터 4&amp;5: 명예 &amp; 전투 스킬
           </button>
         </div>
       </div>
 
       {/* ========================================================
-          SUB-TAB 1: GENERAL ORACLES & BASIC DICE
+          SUB-TAB 1: GENERAL ORACLES & BASIC DICES
           ======================================================== */}
       {activeSubTab === 'general' && (
         <>
@@ -883,7 +1252,7 @@ export default function SoloOracles({ character, setCharacter }) {
             </section>
           </div>
 
-          {/* Oracle + Name Gen row */}
+          {/* Oracle + Name Gen */}
           <div className="cs-row">
             {/* Oracle */}
             <section className="cs-section">
@@ -991,10 +1360,8 @@ export default function SoloOracles({ character, setCharacter }) {
           ======================================================== */}
       {activeSubTab === 'personality' && (
         <>
-          {/* Section 1: Traits and Passions Rollers */}
           <div className="cs-row">
-            
-            {/* 1. 성격 특성 판정기 (Trait Roller) */}
+            {/* 1. Trait Roller */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
                 <h3><Shield size={16} style={{ marginRight: '6px' }} />성격 특성(Traits) 판정기 (p.70-71)</h3>
@@ -1004,7 +1371,6 @@ export default function SoloOracles({ character, setCharacter }) {
                   상황에서 기사가 어떤 비이성적 충동이나 신조적 행동을 할지 주사위 d20으로 가늠합니다.
                 </p>
 
-                {/* Trait selector */}
                 <div className="cs-field">
                   <span className="cs-field-label">성격 스펙트럼 선택:</span>
                   <select 
@@ -1015,64 +1381,31 @@ export default function SoloOracles({ character, setCharacter }) {
                     }}
                     style={{ width: '100%', padding: '6px' }}
                   >
-                    {renderTraitOptions()}
+                    {traitPairs.map((p, idx) => (
+                      <option key={idx} value={idx}>
+                        {p.leftKo} ({getTraitValue(p.left)}) vs {p.rightKo} ({getTraitValue(p.right)})
+                      </option>
+                    ))}
                   </select>
                 </div>
 
-                {/* Direct trait toggle */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'rgba(0,0,0,0.02)', padding: '8px', border: '1px solid var(--color-grey-light)' }}>
                   <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', padding: '6px', border: selectedTraitDirection === 'left' ? '2px solid var(--color-royal-blue)' : '2px solid transparent', background: selectedTraitDirection === 'left' ? 'rgba(59, 130, 246, 0.05)' : 'transparent' }}>
-                    <input 
-                      type="radio" 
-                      name="traitDirection" 
-                      checked={selectedTraitDirection === 'left'}
-                      onChange={() => {
-                        setSelectedTraitDirection('left');
-                        setTraitRollResult(null);
-                      }}
-                      style={{ display: 'none' }}
-                    />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>
-                      {traitPairs[selectedTraitPair].leftKo.split(' ')[0]}
-                    </span>
-                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', marginTop: '4px' }}>
-                      {getTraitValue(traitPairs[selectedTraitPair].left)}
-                    </span>
+                    <input type="radio" checked={selectedTraitDirection === 'left'} onChange={() => { setSelectedTraitDirection('left'); setTraitRollResult(null); }} style={{ display: 'none' }} />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{traitPairs[selectedTraitPair].leftKo.split(' ')[0]}</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', marginTop: '4px' }}>{getTraitValue(traitPairs[selectedTraitPair].left)}</span>
                   </label>
-
                   <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', padding: '6px', border: selectedTraitDirection === 'right' ? '2px solid var(--color-royal-blue)' : '2px solid transparent', background: selectedTraitDirection === 'right' ? 'rgba(59, 130, 246, 0.05)' : 'transparent' }}>
-                    <input 
-                      type="radio" 
-                      name="traitDirection" 
-                      checked={selectedTraitDirection === 'right'}
-                      onChange={() => {
-                        setSelectedTraitDirection('right');
-                        setTraitRollResult(null);
-                      }}
-                      style={{ display: 'none' }}
-                    />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>
-                      {traitPairs[selectedTraitPair].rightKo.split(' ')[0]}
-                    </span>
-                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', marginTop: '4px' }}>
-                      {getTraitValue(traitPairs[selectedTraitPair].right)}
-                    </span>
+                    <input type="radio" checked={selectedTraitDirection === 'right'} onChange={() => { setSelectedTraitDirection('right'); setTraitRollResult(null); }} style={{ display: 'none' }} />
+                    <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{traitPairs[selectedTraitPair].rightKo.split(' ')[0]}</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', marginTop: '4px' }}>{getTraitValue(traitPairs[selectedTraitPair].right)}</span>
                   </label>
                 </div>
 
-                {/* Modifiers */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="cs-field" style={{ margin: 0 }}>
-                    <span className="cs-field-label">상황적 보정치 (Modifier):</span>
-                    <input 
-                      type="number" 
-                      value={traitModifier} 
-                      onChange={e => {
-                        setTraitModifier(parseInt(e.target.value) || 0);
-                        setTraitRollResult(null);
-                      }}
-                      style={{ width: '100%' }}
-                    />
+                    <span className="cs-field-label">상황적 보정치:</span>
+                    <input type="number" value={traitModifier} onChange={e => { setTraitModifier(parseInt(e.target.value) || 0); setTraitRollResult(null); }} style={{ width: '100%' }} />
                   </div>
                   <div className="cs-field" style={{ margin: 0, opacity: 0.85 }}>
                     <span className="cs-field-label">최종 판정 목표치:</span>
@@ -1082,17 +1415,10 @@ export default function SoloOracles({ character, setCharacter }) {
                   </div>
                 </div>
 
-                {/* Roll button */}
-                <button 
-                  className="btn-medieval btn-medieval-primary" 
-                  onClick={executeTraitRoll}
-                  style={{ justifyContent: 'center' }}
-                  disabled={isRollingTrait}
-                >
-                  {isRollingTrait ? '주사위가 구르는 중...' : '성격 특성 주사위 던지기'}
+                <button className="btn-medieval btn-medieval-primary" onClick={executeTraitRoll} style={{ justifyContent: 'center' }} disabled={isRollingTrait}>
+                  {isRollingTrait ? '주사위 굴림 중...' : '특성 주사위 굴리기'}
                 </button>
 
-                {/* Trait Roll result display */}
                 {traitRollResult && (
                   <div style={{ border: `2px solid ${traitRollResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 결과</span>
@@ -1100,42 +1426,13 @@ export default function SoloOracles({ character, setCharacter }) {
                     
                     {!traitRollResult.isRolling && (
                       <div style={{ marginTop: '10px', textAlign: 'center', width: '100%' }}>
-                        <h4 style={{ color: traitRollResult.color, fontWeight: 'bold', fontSize: '1.1rem', margin: '4px 0' }}>
-                          {traitRollResult.outcome}
-                        </h4>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', whiteSpace: 'pre-line', margin: '8px 0' }}>
-                          {traitRollResult.desc}
-                        </p>
+                        <h4 style={{ color: traitRollResult.color, fontWeight: 'bold', fontSize: '1.1rem' }}>{traitRollResult.outcome}</h4>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '8px 0', whiteSpace: 'pre-line' }}>{traitRollResult.desc}</p>
                         
-                        {/* Interactive consequence buttons */}
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
-                          {traitRollResult.checkRequired && (
-                            <button 
-                              className="btn-medieval" 
-                              onClick={() => applyTraitOutcome('checked')}
-                              style={{ fontSize: '0.75rem', padding: '4px 8px' }}
-                            >
-                              ✓ 신조대로 행동 (영광 반영)
-                            </button>
-                          )}
-                          {traitRollResult.checkRequired && (
-                            <button 
-                              className="btn-medieval" 
-                              onClick={() => applyTraitOutcome('act_opposite')}
-                              style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}
-                            >
-                              ✗ 유혹 굴복 (반대 성정 페널티)
-                            </button>
-                          )}
-                          {traitRollResult.oppositeCheckRequired && (
-                            <button 
-                              className="btn-medieval" 
-                              onClick={() => applyTraitOutcome('fumble')}
-                              style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}
-                            >
-                              ☠️ 펌블 충동 굴복 확인
-                            </button>
-                          )}
+                          {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('checked')} style={{ fontSize: '0.75rem', padding: '4px 8px' }}>✓ 신조대로 행동</button>}
+                          {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('act_opposite')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>✗ 유혹 굴복 페널티</button>}
+                          {traitRollResult.oppositeCheckRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('fumble')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>☠️ 펌블 굴복</button>}
                         </div>
                       </div>
                     )}
@@ -1144,65 +1441,37 @@ export default function SoloOracles({ character, setCharacter }) {
               </div>
             </section>
 
-            {/* 2. 열정 & 영감 판정기 (Passion Roller) */}
+            {/* 2. Passion Roller */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
-                <h3><Flame size={16} style={{ marginRight: '6px' }} />열정(Passions) &amp; 영감 롤러 (p.78-79)</h3>
+                <h3><Flame size={16} style={{ marginRight: '6px' }} />열정(Passions) &amp; 영감 롤러</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
-                  가족이나 주군을 향한 열정을 불태워 전투 및 스킬 판정에 위대한 초인적인 보정치(Inspiration)를 불어넣습니다.
+                  가족이나 주군을 향한 열정을 불태워 전투 및 스킬 판정에 위대한 초인적 영감(Inspiration) 보정을 불러옵니다.
                 </p>
 
-                {/* Passion selector */}
                 <div className="cs-field">
-                  <span className="cs-field-label">보유한 열정 선택:</span>
-                  <select 
-                    value={selectedPassionKey}
-                    onChange={e => {
-                      setSelectedPassionKey(e.target.value);
-                      setPassionRollResult(null);
-                      setPassionActionApplied(false);
-                    }}
-                    style={{ width: '100%', padding: '6px' }}
-                  >
+                  <span className="cs-field-label">열정 선택:</span>
+                  <select value={selectedPassionKey} onChange={e => { setSelectedPassionKey(e.target.value); setPassionRollResult(null); setPassionActionApplied(false); }} style={{ width: '100%', padding: '6px' }}>
                     <option value="">-- 열정 선택 --</option>
-                    {getPassionKeys().map(key => (
-                      <option key={key} value={key}>
-                        {passionNamesKo[key] || key} ({getPassionValue(key)})
-                      </option>
+                    {character?.passions && Object.keys(character.passions).map(key => (
+                      <option key={key} value={key}>{passionNamesKo[key] || key} ({getPassionValue(key)})</option>
                     ))}
                   </select>
                 </div>
 
-                {/* Options (Chivalry / Romance) */}
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>
-                    <input 
-                      type="checkbox" 
-                      checked={isChivalryActive}
-                      onChange={e => {
-                        setIsChivalryActive(e.target.checked);
-                        setPassionRollResult(null);
-                      }}
-                    />
-                    🛡️ 기사도/로맨스 보너스 활성화 (Inspiration 효과 2배!)
+                    <input type="checkbox" checked={isChivalryActive} onChange={e => { setIsChivalryActive(e.target.checked); setPassionRollResult(null); }} />
+                    🛡️ 기사도/로맨스 보너스 활성화 (효과 2배!)
                   </label>
                 </div>
 
-                {/* Modifiers */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="cs-field" style={{ margin: 0 }}>
-                    <span className="cs-field-label">상황적 보정치 (Modifier):</span>
-                    <input 
-                      type="number" 
-                      value={passionModifier} 
-                      onChange={e => {
-                        setPassionModifier(parseInt(e.target.value) || 0);
-                        setPassionRollResult(null);
-                      }}
-                      style={{ width: '100%' }}
-                    />
+                    <span className="cs-field-label">상황 보정치:</span>
+                    <input type="number" value={passionModifier} onChange={e => { setPassionModifier(parseInt(e.target.value) || 0); setPassionRollResult(null); }} style={{ width: '100%' }} />
                   </div>
                   <div className="cs-field" style={{ margin: 0 }}>
                     <span className="cs-field-label">최종 영감 판정치:</span>
@@ -1212,17 +1481,10 @@ export default function SoloOracles({ character, setCharacter }) {
                   </div>
                 </div>
 
-                {/* Roll button */}
-                <button 
-                  className="btn-medieval btn-medieval-primary" 
-                  onClick={executePassionRoll}
-                  style={{ justifyContent: 'center' }}
-                  disabled={isRollingPassion || !selectedPassionKey}
-                >
-                  {isRollingPassion ? '열정을 울부짖는 중...' : '열정 영감 고취 주사위 굴리기'}
+                <button className="btn-medieval btn-medieval-primary" onClick={executePassionRoll} style={{ justifyContent: 'center' }} disabled={isRollingPassion || !selectedPassionKey}>
+                  {isRollingPassion ? '열정 부르짖는 중...' : '열정 주사위 굴리기'}
                 </button>
 
-                {/* Result Display with applying choices */}
                 {passionRollResult && (
                   <div style={{ border: `2px solid ${passionRollResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 결과</span>
@@ -1230,79 +1492,28 @@ export default function SoloOracles({ character, setCharacter }) {
                     
                     {!passionRollResult.isRolling && (
                       <div style={{ marginTop: '10px', textAlign: 'center', width: '100%' }}>
-                        <h4 style={{ color: passionRollResult.color, fontWeight: 'bold', fontSize: '1.1rem', margin: '4px 0' }}>
-                          {passionRollResult.outcome}
-                        </h4>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', whiteSpace: 'pre-line', margin: '8px 0' }}>
-                          {passionRollResult.desc}
-                        </p>
+                        <h4 style={{ color: passionRollResult.color, fontWeight: 'bold', fontSize: '1.1rem' }}>{passionRollResult.outcome}</h4>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '8px 0' }}>{passionRollResult.desc}</p>
                         
-                        {/* Live Update Interactions */}
                         <div style={{ marginTop: '12px', borderTop: '1px dashed var(--color-grey-light)', paddingTop: '10px' }}>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', display: 'block', marginBottom: '8px' }}>
-                            플레이한 사투/행동의 내러티브 결과를 반영하세요:
-                          </span>
-                          
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
                             {passionRollResult.state === 'inspiration' && (
                               <>
-                                <button 
-                                  className="btn-medieval" 
-                                  onClick={() => applyPassionResolution('success')}
-                                  disabled={passionActionApplied}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', background: 'rgba(16, 185, 129, 0.05)', color: 'var(--color-success)', borderColor: 'var(--color-success)' }}
-                                >
-                                  ⚔️ 전투/임무 성공 (기사 위업 반영)
-                                </button>
-                                <button 
-                                  className="btn-medieval" 
-                                  onClick={() => applyPassionResolution('fail')}
-                                  disabled={passionActionApplied}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}
-                                >
-                                  💥 전투/임무 실패 (쇼크 충격)
-                                </button>
+                                <button className="btn-medieval" onClick={() => applyPassionResolution('success')} disabled={passionActionApplied} style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-success)', borderColor: 'var(--color-success)' }}>⚔️ 임무 성공 반영</button>
+                                <button className="btn-medieval" onClick={() => applyPassionResolution('fail')} disabled={passionActionApplied} style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}>💥 임무 실패 (쇼크)</button>
                               </>
                             )}
-
                             {passionRollResult.state === 'disheartened' && (
                               <>
-                                <button 
-                                  className="btn-medieval" 
-                                  onClick={() => applyPassionResolution('success')}
-                                  disabled={passionActionApplied}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-success)', borderColor: 'var(--color-success)' }}
-                                >
-                                  ✓ 역경 훌륭히 극복 (+1 Passion)
-                                </button>
-                                <button 
-                                  className="btn-medieval" 
-                                  onClick={() => applyPassionResolution('fail')}
-                                  disabled={passionActionApplied}
-                                  style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}
-                                >
-                                  ☠️ 낙담에 굴복 (-1 Passion &amp; 우울)
-                                </button>
+                                <button className="btn-medieval" onClick={() => applyPassionResolution('success')} disabled={passionActionApplied} style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-success)', borderColor: 'var(--color-success)' }}>✓ 역경 극복 (+1)</button>
+                                <button className="btn-medieval" onClick={() => applyPassionResolution('fail')} disabled={passionActionApplied} style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)' }}>☠️ 낙담 침전 (-1 &amp; 우울)</button>
                               </>
                             )}
-
                             {passionRollResult.state === 'madness' && (
-                              <button 
-                                className="btn-medieval" 
-                                onClick={() => applyPassionResolution('madness')}
-                                disabled={passionActionApplied}
-                                style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)', width: '100%', justifyContent: 'center' }}
-                              >
-                                💀 이성을 잃고 광기에 침식됨 적용 (-1 Passion)
-                              </button>
+                              <button className="btn-medieval" onClick={() => applyPassionResolution('madness')} disabled={passionActionApplied} style={{ fontSize: '0.75rem', padding: '4px 8px', color: 'var(--color-crimson)', borderColor: 'var(--color-crimson)', width: '100%', justifyContent: 'center' }}>💀 광기 돌입 적용 (-1)</button>
                             )}
                           </div>
-
-                          {passionActionApplied && (
-                            <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', display: 'block', marginTop: '8px', fontWeight: 'bold' }}>
-                              ✓ 기사단 보존용 클라우드 데이터(동적 시트)에 판정 결과가 실시간 기록되었습니다!
-                            </span>
-                          )}
+                          {passionActionApplied && <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', display: 'block', marginTop: '8px', fontWeight: 'bold' }}>✓ 캐릭터 데이터 시트에 성공적으로 동적 반영되었습니다!</span>}
                         </div>
                       </div>
                     )}
@@ -1312,183 +1523,97 @@ export default function SoloOracles({ character, setCharacter }) {
             </section>
           </div>
 
-          {/* Section 2: Conflicting Emotions & Group Inspiration & Introspection */}
           <div className="cs-row">
-            
-            {/* 3. 감정 대립 판정기 (Conflicting Emotions) */}
+            {/* 3. Conflicting Emotions */}
             <section className="cs-section" style={{ flex: '1 1 300px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
                 <h3>⚖️ 감정 대립 대결기 (p.71-72)</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
-                  두 개의 상충되는 감정(예: 정의 vs 자비)이 격돌할 때, 어떠한 기사로서의 본능이 서사를 결정지을지 대결합니다.
-                </p>
-
-                {/* Match inputs */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                  <div className="cs-field" style={{ margin: 0 }}>
-                    <span className="cs-field-label">대치 가치 A:</span>
-                    <select 
-                      value={emotionA.key} 
-                      onChange={e => {
-                        const k = e.target.value;
-                        setEmotionA({
-                          type: 'trait',
-                          key: k,
-                          label: traitPairs.find(p => p.left === k || p.right === k)?.leftKo.split(' ')[0] || k,
-                          value: getTraitValue(k)
-                        });
-                        setEmotionRollResult(null);
-                      }}
-                      style={{ width: '100%' }}
-                    >
-                      {traitPairs.map(p => (
-                        <option key={p.left} value={p.left}>{p.leftKo.split(' ')[0]}</option>
-                      ))}
-                    </select>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', display: 'block', marginTop: '4px', textAlign: 'center' }}>
-                      (능력: {emotionA.value})
-                    </span>
-                  </div>
-
-                  <div className="cs-field" style={{ margin: 0 }}>
-                    <span className="cs-field-label">대치 가치 B:</span>
-                    <select 
-                      value={emotionB.key} 
-                      onChange={e => {
-                        const k = e.target.value;
-                        setEmotionB({
-                          type: 'trait',
-                          key: k,
-                          label: traitPairs.find(p => p.left === k || p.right === k)?.leftKo.split(' ')[0] || k,
-                          value: getTraitValue(k)
-                        });
-                        setEmotionRollResult(null);
-                      }}
-                      style={{ width: '100%' }}
-                    >
-                      {traitPairs.map(p => (
-                        <option key={p.left} value={p.left}>{p.leftKo.split(' ')[0]}</option>
-                      ))}
-                    </select>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', display: 'block', marginTop: '4px', textAlign: 'center' }}>
-                      (능력: {emotionB.value})
-                    </span>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>두 감정이 대치할 때의 본능을 대결합니다.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    <div className="cs-field" style={{ flex: '1 1 130px', margin: 0, minWidth: '130px' }}>
+                      <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>감정 A:</span>
+                      <select value={emotionA.key} onChange={e => { const k = e.target.value; setEmotionA({ type: 'trait', key: k, label: traitPairs.find(p => p.left === k || p.right === k)?.leftKo.split(' ')[0] || k, value: getTraitValue(k) }); setEmotionRollResult(null); }} style={{ width: '100%', flexGrow: 1 }}>
+                        {traitPairs.map(p => {
+                          const name = p.leftKo.split(' ')[0];
+                          const val = getTraitValue(p.left);
+                          return <option key={p.left} value={p.left}>{`${name} (${val})`}</option>;
+                        })}
+                      </select>
+                    </div>
+                    <div className="cs-field" style={{ flex: '1 1 130px', margin: 0, minWidth: '130px' }}>
+                      <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>감정 B:</span>
+                      <select value={emotionB.key} onChange={e => { const k = e.target.value; setEmotionB({ type: 'trait', key: k, label: traitPairs.find(p => p.left === k || p.right === k)?.leftKo.split(' ')[0] || k, value: getTraitValue(k) }); setEmotionRollResult(null); }} style={{ width: '100%', flexGrow: 1 }}>
+                        {traitPairs.map(p => {
+                          const name = p.leftKo.split(' ')[0];
+                          const val = getTraitValue(p.left);
+                          return <option key={p.left} value={p.left}>{`${name} (${val})`}</option>;
+                        })}
+                      </select>
+                    </div>
                   </div>
                 </div>
-
-                <button 
-                  className="btn-medieval" 
-                  onClick={executeEmotionRoll}
-                  style={{ justifyContent: 'center' }}
-                  disabled={isRollingEmotions}
-                >
-                  {isRollingEmotions ? '두 이성이 내면에서 격돌 중...' : '⚖️ 갈등 대결 굴리기'}
+                <button className="btn-medieval" onClick={executeEmotionRoll} style={{ justifyContent: 'center' }} disabled={isRollingEmotions}>
+                  {isRollingEmotions ? '갈등 격돌 중...' : '⚖️ 갈등 굴림 실행'}
                 </button>
-
                 {emotionRollResult && (
                   <div style={{ border: '1px solid var(--color-gold)', padding: '12px', background: 'rgba(0,0,0,0.01)', marginTop: '4px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', marginBottom: '8px' }}>
                       <div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textAlign: 'center' }}>{emotionA.label} d20</div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{emotionA.label}</div>
                         <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', textAlign: 'center' }}>{emotionRollResult.rollA}</div>
                       </div>
-                      <div style={{ fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>vs</div>
+                      <div style={{ fontWeight: 'bold' }}>vs</div>
                       <div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textAlign: 'center' }}>{emotionB.label} d20</div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{emotionB.label}</div>
                         <div style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center' }}>{emotionRollResult.rollB}</div>
                       </div>
                     </div>
-                    {!emotionRollResult.isRolling && (
-                      <div style={{ textAlign: 'center', borderTop: '1px dashed var(--color-grey-light)', paddingTop: '8px' }}>
-                        <h4 style={{ color: emotionRollResult.color, fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '4px' }}>
-                          {emotionRollResult.textResult}
-                        </h4>
-                      </div>
-                    )}
+                    {!emotionRollResult.isRolling && <div style={{ textAlign: 'center', borderTop: '1px dashed var(--color-grey-light)', paddingTop: '8px', color: emotionRollResult.color, fontWeight: 'bold', fontSize: '0.85rem' }}>{emotionRollResult.textResult}</div>}
                   </div>
                 )}
               </div>
             </section>
 
-            {/* 4. 그룹 영감 롤러 (Group Inspiration) */}
+            {/* 4. Group Inspiration */}
             <section className="cs-section" style={{ flex: '1 1 300px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
-                <h3>📢 기사단 그룹 영감 고취 (p.81)</h3>
+                <h3>📢 기사단 그룹 영감 고취</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
-                  동료 기사단 무리 전체에게 동일한 열정(예: Honor)에 대고 웅변을 펼쳐, 무리 전체의 사기를 영광스럽게 일괄 고양합니다.
-                </p>
-
-                {/* Input for shared passion */}
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>단 한 번의 연설로 동료 기사단 전체 사기를 일괄 고취시킵니다.</p>
                 <div className="cs-field">
-                  <span className="cs-field-label">공유하는 대의/열망 이름:</span>
-                  <input 
-                    type="text" 
-                    value={groupPassionName} 
-                    onChange={e => {
-                      setGroupPassionName(e.target.value);
-                      setGroupRollResult(null);
-                    }}
-                    style={{ width: '100%' }}
-                  />
+                  <span className="cs-field-label">대의/열망 이름:</span>
+                  <input type="text" value={groupPassionName} onChange={e => { setGroupPassionName(e.target.value); setGroupRollResult(null); }} style={{ width: '100%' }} />
                 </div>
-
-                {/* List of squad members */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '6px', background: 'rgba(0,0,0,0.01)', border: '1px solid var(--color-grey-light)' }}>
                   {groupKnights.map((k, idx) => (
-                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem' }}>
                       <span style={{ fontWeight: 'bold' }}>{k.name}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>대의 값:</span>
-                        <input 
-                          type="number" 
-                          value={k.passionScore}
-                          onChange={e => {
-                            const val = parseInt(e.target.value) || 10;
-                            setGroupKnights(prev => prev.map((item, i) => i === idx ? { ...item, passionScore: val } : item));
-                            setGroupRollResult(null);
-                          }}
-                          style={{ width: '50px', padding: '2px', textAlign: 'center', fontSize: '0.8rem' }}
-                        />
-                      </div>
+                      <input type="number" value={k.passionScore} onChange={e => { const val = parseInt(e.target.value) || 10; setGroupKnights(prev => prev.map((item, i) => i === idx ? { ...item, passionScore: val } : item)); setGroupRollResult(null); }} style={{ width: '55px', textAlign: 'center' }} />
                     </div>
                   ))}
                 </div>
-
-                <button 
-                  className="btn-medieval" 
-                  onClick={executeGroupRoll}
-                  style={{ justifyContent: 'center' }}
-                  disabled={isRollingGroup}
-                >
-                  {isRollingGroup ? '웅장한 대기사 선언 연설 중...' : '📢 군대 연설 판정 (Group d20)'}
-                </button>
-
+                <button className="btn-medieval" onClick={executeGroupRoll} style={{ justifyContent: 'center' }} disabled={isRollingGroup}>📢 군대 연설 굴리기</button>
                 {groupRollResult && (
                   <div style={{ border: '1px solid var(--color-gold)', padding: '12px', background: 'rgba(0,0,0,0.01)', marginTop: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>연설 주사위 굴림:</span>
-                      <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-crimson)' }}>{groupRollResult.roll}</span>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>굴림 눈:</span>
+                      <span style={{ fontSize: '1.4rem', fontWeight: 'bold', color: 'var(--color-crimson)' }}>{groupRollResult.roll}</span>
                     </div>
-
                     {!groupRollResult.isRolling && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                         {groupRollResult.details.map((k, idx) => (
-                          <div key={idx} style={{ fontSize: '0.75rem', borderBottom: '1px dashed var(--color-grey-light)', paddingBottom: '3px', display: 'flex', justifyContent: 'space-between' }}>
+                          <div key={idx} style={{ fontSize: '0.75rem', borderBottom: '1px dashed var(--color-grey-light)', paddingBottom: '2px', display: 'flex', justifyContent: 'space-between' }}>
                             <span>{k.name}</span>
                             <span style={{ fontWeight: 'bold', color: k.result.includes('성공') ? 'var(--color-success)' : 'var(--color-crimson)' }}>{k.result}</span>
                           </div>
                         ))}
-                        <div style={{ marginTop: '8px', borderTop: '1px solid var(--color-gold-light)', paddingTop: '8px', textAlign: 'center' }}>
-                          <h4 style={{ color: groupRollResult.color, fontWeight: 'bold', fontSize: '0.9rem' }}>
-                            그룹 평균 대결론: {groupRollResult.finalGroupOutcome}
-                          </h4>
-                          <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', marginTop: '3px' }}>
-                            {groupRollResult.groupDesc}
-                          </p>
+                        <div style={{ marginTop: '8px', borderTop: '1px solid var(--color-gold-light)', paddingTop: '6px', textAlign: 'center' }}>
+                          <h4 style={{ color: groupRollResult.color, fontWeight: 'bold', fontSize: '0.88rem' }}>평균 결과: {groupRollResult.finalGroupOutcome}</h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-ink-light)' }}>{groupRollResult.groupDesc}</p>
                         </div>
                       </div>
                     )}
@@ -1497,58 +1622,30 @@ export default function SoloOracles({ character, setCharacter }) {
               </div>
             </section>
 
-            {/* 5. 사랑의 자기성찰 판정기 (Introspection Roller) */}
+            {/* 5. Introspection Roller */}
             <section className="cs-section" style={{ flex: '1 1 300px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
-                <h3>🌌 사랑의 황홀경 daze 판정기 (p.81)</h3>
+                <h3>🌌 사랑의 몽상: 넋을 잃음 판정 (p.81)</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
-                  Amor/Love 성정을 깊이 지닌 성기사가 매일 겪는 몽상(Introspection) 상태에 빠질지 가늠합니다.
-                </p>
-
-                {/* Love Select */}
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>그리워하는 대상의 넋을 잃음(Introspection) 여부를 판정합니다.</p>
                 <div className="cs-field">
-                  <span className="cs-field-label">그리워하는 대상 (Amor/Love):</span>
-                  <select 
-                    value={selectedAmorKey} 
-                    onChange={e => {
-                      setSelectedAmorKey(e.target.value);
-                      setIntrospectionResult(null);
-                    }}
-                    style={{ width: '100%' }}
-                  >
-                    {getPassionKeys().map(key => (
+                  <span className="cs-field-label">그리움 대상 (Amor/Love):</span>
+                  <select value={selectedAmorKey} onChange={e => { setSelectedAmorKey(e.target.value); setIntrospectionResult(null); }} style={{ width: '100%' }}>
+                    {character?.passions && Object.keys(character.passions).map(key => (
                       <option key={key} value={key}>{passionNamesKo[key] || key}</option>
                     ))}
                   </select>
-                  <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', display: 'block', marginTop: '4px', textAlign: 'center' }}>
-                    (대상 열정 값: {getPassionValue(selectedAmorKey)})
-                  </span>
                 </div>
-
-                <button 
-                  className="btn-medieval" 
-                  onClick={executeIntrospectionRoll}
-                  style={{ justifyContent: 'center' }}
-                  disabled={isRollingIntro}
-                >
-                  {isRollingIntro ? '레이디의 손길만을 꿈꾸는 중...' : '🌌 몽상 자극 주사위 굴리기 (d20)'}
-                </button>
-
+                <button className="btn-medieval" onClick={executeIntrospectionRoll} style={{ justifyContent: 'center' }} disabled={isRollingIntro}>🌌 몽상 자극 굴리기</button>
                 {introspectionResult && (
-                  <div style={{ border: '1px solid var(--color-gold)', padding: '12px', background: 'rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
+                  <div style={{ border: '1px solid var(--color-gold)', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 굴림</span>
                     <D20Face value={introspectionResult.roll} isRolling={isRollingIntro} color={introspectionResult.color} />
-                    
                     {!introspectionResult.isRolling && (
-                      <div style={{ marginTop: '10px', textAlign: 'center' }}>
-                        <h4 style={{ color: introspectionResult.color, fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '4px' }}>
-                          {introspectionResult.title}
-                        </h4>
-                        <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', lineHeight: '1.4' }}>
-                          {introspectionResult.desc}
-                        </p>
+                      <div style={{ marginTop: '8px', textAlign: 'center' }}>
+                        <h4 style={{ color: introspectionResult.color, fontWeight: 'bold', fontSize: '0.88rem', marginBottom: '4px' }}>{introspectionResult.title}</h4>
+                        <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', lineHeight: '1.4' }}>{introspectionResult.desc}</p>
                       </div>
                     )}
                   </div>
@@ -1556,6 +1653,439 @@ export default function SoloOracles({ character, setCharacter }) {
               </div>
             </section>
           </div>
+        </>
+      )}
+
+      {/* ========================================================
+          SUB-TAB 3: CHAPTER 4 & 5 REPUTATION GLORY & MELEE TACTICS
+          ======================================================== */}
+      {activeSubTab === 'reputation_combat' && (
+        <>
+          {/* Section 1: Glory & Standing calculators */}
+          <div className="cs-row">
+            
+            {/* 1. 명예(Glory) 계산기 */}
+            <section className="cs-section" style={{ flex: '1 1 450px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+                <h3><Award size={16} style={{ marginRight: '6px' }} />명예(Glory) 계산기 (Chapter 4)</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
+                  TRPG 시나리오 중 거둔 기사로서의 전투 위업(Table 4-4)을 정밀 계산하여 기사 명성도에 가중합니다.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                  <div className="cs-field">
+                    <span className="cs-field-label">물리친 적 유형 (Table 4-4):</span>
+                    <select 
+                      value={selectedOpponentType} 
+                      onChange={e => {
+                        setSelectedOpponentType(e.target.value);
+                        setGloryActionApplied(false);
+                      }}
+                      style={{ width: '100%', padding: '6px' }}
+                    >
+                      {Object.keys(humanOpponents).map(key => (
+                        <option key={key} value={key}>{humanOpponents[key].label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="cs-field">
+                    <span className="cs-field-label">결투 형태:</span>
+                    <select 
+                      value={combatType} 
+                      onChange={e => {
+                        setCombatType(e.target.value);
+                        setGloryActionApplied(false);
+                      }}
+                      style={{ width: '100%', padding: '6px' }}
+                    >
+                      <option value="mortal">생사 결투 (Mortal / For Life)</option>
+                      <option value="love">시합 결투 (Joust / For Love - 1/10배)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Additional Glory modifiers checklist */}
+                <div style={{ background: 'rgba(0,0,0,0.01)', border: '1px solid var(--color-grey-light)', padding: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>추가 명예 획득 사유 (중복 선택 가능):</span>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={damage6d6} onChange={e => { setDamage6d6(e.target.checked); setGloryActionApplied(false); }} />
+                      단일 피해 6d6 이상 (+10)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={halfGiant} onChange={e => { setHalfGiant(e.target.checked); setGloryActionApplied(false); }} />
+                      상대가 거인/반거인 (+20)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={passionInspiration} onChange={e => { setPassionInspiration(e.target.checked); setGloryActionApplied(false); }} />
+                      열정 영감 고취 상태 (+10)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={critPassionInspiration} onChange={e => { setCritPassionInspiration(e.target.checked); setGloryActionApplied(false); }} />
+                      영감 대성공/성사 성공 (+20)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={critMiracle} onChange={e => { setCritMiracle(e.target.checked); setGloryActionApplied(false); }} />
+                      종교적 성사 대성공 (+50)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={magicEquipment} onChange={e => { setMagicEquipment(e.target.checked); setGloryActionApplied(false); }} />
+                      마법 말/갑옷/무기 소지 (+25)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={fantasticItem} onChange={e => { setFantasticItem(e.target.checked); setGloryActionApplied(false); }} />
+                      환상종/전설적 아티팩트 소지 (+50)
+                    </label>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(179,143,67,0.04)', padding: '10px', border: '1px solid var(--color-gold)' }}>
+                  <div>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>계산된 총 획득 명예</span>
+                    <div style={{ fontSize: '1.6rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>
+                      + {getCalculatedGlory()} <span style={{ fontSize: '0.9rem' }}>Glory</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn-medieval btn-medieval-primary" 
+                    onClick={applyGloryToSheet}
+                    disabled={gloryActionApplied}
+                    style={{ margin: 0, height: '42px' }}
+                  >
+                    {gloryActionApplied ? '시트 반영 완료 ✓' : '기사 시트에 명예 적용'}
+                  </button>
+                </div>
+
+                {/* 1-2. 결혼 명예 계산기 (Marriage Glory) */}
+                <div style={{ borderTop: '1px dashed var(--color-grey-light)', paddingTop: '12px', marginTop: '4px' }}>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-ink)', marginBottom: '8px' }}>
+                    👰 영예로운 결혼 명예 (Marriage Glory - p.87)
+                  </h4>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label">배우자 명예량:</span>
+                      <input 
+                        type="number" 
+                        value={spouseGlory} 
+                        onChange={e => { setSpouseGlory(parseInt(e.target.value) || 0); setMarriageGloryActionApplied(false); }} 
+                        style={{ width: '100%', fontSize: '0.8rem' }}
+                      />
+                    </div>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer', height: '36px', marginTop: '14px' }}>
+                      <input 
+                        type="checkbox" 
+                        checked={spouseIsPagan} 
+                        onChange={e => { setSpouseIsPagan(e.target.checked); setMarriageGloryActionApplied(false); }}
+                      />
+                      개종 이교도 배우자
+                    </label>
+
+                    {spouseIsPagan && (
+                      <div className="cs-field" style={{ margin: 0 }}>
+                        <span className="cs-field-label">배우자 존엄(Honor):</span>
+                        <input 
+                          type="number" 
+                          value={spouseHonor} 
+                          onChange={e => { setSpouseHonor(parseInt(e.target.value) || 0); setMarriageGloryActionApplied(false); }}
+                          style={{ width: '100%', fontSize: '0.8rem' }}
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(0,0,0,0.01)', padding: '8px', border: '1px solid var(--color-grey-light)', marginTop: '8px' }}>
+                    <span style={{ fontSize: '0.75rem' }}>
+                      결혼 획득 명예: <strong style={{ color: 'var(--color-crimson)' }}>+{getCalculatedMarriageGlory()} Glory</strong> (최대 1,000 제한)
+                    </span>
+                    <button 
+                      className="btn-medieval" 
+                      onClick={applyMarriageGloryToSheet} 
+                      disabled={marriageGloryActionApplied} 
+                      style={{ padding: '3px 8px', fontSize: '0.75rem', height: '28px', margin: 0 }}
+                    >
+                      {marriageGloryActionApplied ? '적용 완료 ✓' : '결혼 명예 반영'}
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* 2. 명망(Standing) 선물 & 청탁 판정기 */}
+            <section className="cs-section" style={{ flex: '1 1 450px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
+                <h3><Coins size={16} style={{ marginRight: '6px' }} />명망(Standing) 선물 &amp; 청탁기 (p.92)</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
+                  영주, 성직자, 길드에 헌납금(£)을 바쳐 호의를 얻거나, 판정을 통해 영주의 군사 지원 등의 도움(Favor)을 청탁합니다.
+                </p>
+
+                <div className="cs-field">
+                  <span className="cs-field-label">상호작용할 명망 집단:</span>
+                  <select 
+                    value={selectedStandingKey} 
+                    onChange={e => {
+                      setSelectedStandingKey(e.target.value);
+                      setGiftRollResult(null);
+                      setStandingRollResult(null);
+                      setStandingActionApplied(false);
+                    }}
+                    style={{ width: '100%', padding: '6px' }}
+                  >
+                    {Object.keys(standingNamesKo).map(key => (
+                      <option key={key} value={key}>
+                        {standingNamesKo[key]} (현재 수치: {getStandingValue(key)})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Gift Donation section */}
+                <div style={{ background: 'rgba(0,0,0,0.01)', border: '1px solid var(--color-grey-light)', padding: '12px' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '8px' }}>
+                    💰 소지금을 바쳐 명망 상승 (일반 £10당 +1, 샤를마뉴 국왕 £100당 +1)
+                  </span>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', gap: '8px', alignItems: 'center' }}>
+                    <div className="cs-field" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px' }}>
+                      <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>헌납 금액:</span>
+                      <input 
+                        type="number" 
+                        value={giftAmount} 
+                        min={1}
+                        onChange={e => {
+                          setGiftAmount(Math.max(1, parseInt(e.target.value) || 1));
+                          setGiftRollResult(null);
+                          setStandingActionApplied(false);
+                        }}
+                        style={{ width: '100%', fontWeight: 'bold' }}
+                      />
+                      <strong style={{ fontSize: '1rem' }}>£</strong>
+                    </div>
+
+                    <button 
+                      className="btn-medieval btn-medieval-primary" 
+                      onClick={handleGiftDonation}
+                      disabled={standingActionApplied}
+                      style={{ margin: 0, height: '36px', fontSize: '0.78rem', justifyContent: 'center' }}
+                    >
+                      {standingActionApplied ? '기부 반영됨' : '은화 기부 적용'}
+                    </button>
+                  </div>
+
+                  {giftRollResult && (
+                    <div style={{ marginTop: '8px', fontSize: '0.76rem', color: 'var(--color-success)', background: 'rgba(16, 185, 129, 0.04)', padding: '6px', borderLeft: '3px solid var(--color-success)' }}>
+                      <strong>£{giftRollResult.amount} 기부 완료!</strong> 명망 수치가 <strong>+{giftRollResult.pointsEarned}</strong> 상승했습니다.<br />
+                      {giftRollResult.rollText && <span style={{ fontSize: '0.7rem', color: 'var(--color-ink-light)' }}>{giftRollResult.rollText}</span>}
+                    </div>
+                  )}
+                </div>
+
+                {/* Standing roll request section */}
+                <div style={{ borderTop: '1px dashed var(--color-grey-light)', paddingTop: '10px' }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', display: 'block', marginBottom: '8px' }}>
+                    👑 해당 평판으로 집단에 도움 청탁 굴림 (Standing vs d20)
+                  </span>
+
+                  <button 
+                    className="btn-medieval" 
+                    onClick={executeStandingRoll}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                    disabled={isRollingStanding}
+                  >
+                    {isRollingStanding ? '알현 요청을 조율하는 중...' : '명망 호의 청탁 굴리기'}
+                  </button>
+
+                  {standingRollResult && (
+                    <div style={{ border: `1px solid ${standingRollResult.color}`, padding: '12px', background: 'rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>알현 주사위 굴림</span>
+                      <D20Face value={standingRollResult.roll} isRolling={isRollingStanding} color={standingRollResult.color} />
+                      
+                      {!standingRollResult.isRolling && (
+                        <div style={{ marginTop: '8px', textAlign: 'center' }}>
+                          <h4 style={{ color: standingRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
+                            {standingRollResult.outcome} (명망 평가: {standingRollResult.baseVal})
+                          </h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-ink-light)' }}>
+                            {standingRollResult.desc}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+              </div>
+            </section>
+          </div>
+
+          {/* Section 2: Melee Clash Simulator (Chapter 5) */}
+          <section className="cs-section" style={{ width: '100%' }}>
+            <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
+              <h3>⚔️ 전술적 무기 격돌 시뮬레이터 (Tactical Melee Clash Simulator - p.102-105)</h3>
+            </div>
+            <div className="cs-section-inner">
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
+                기사와 이교도/정적의 1대1 무기 대결을 룰북 챕터 5의 무기별 특성(검의 타이 브레이커, 보병 창의 돌격 무력화, 할버드 기마 대항, 펌블 파괴 등)을 적용해 opposed roll로 정밀 모사합니다.
+              </p>
+
+              {/* Selection board */}
+              <div className="cs-row" style={{ gap: '16px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
+                
+                {/* User side */}
+                <div style={{ flex: '1 1 200px' }}>
+                  <h4 style={{ color: 'var(--color-success)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-success)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    🛡️ 성기사 (기사단 플레이어)
+                  </h4>
+                  
+                  <div className="cs-field">
+                    <span className="cs-field-label">선택한 주무기:</span>
+                    <select value={playerWeapon} onChange={e => { setPlayerWeapon(e.target.value); setClashResult(null); }} style={{ width: '100%' }}>
+                      {Object.keys(weaponProperties).map(key => (
+                        <option key={key} value={key}>{weaponProperties[key].label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label">기본 숙련 Level:</span>
+                      <input 
+                        type="number" 
+                        value={playerSkillOverride} 
+                        onChange={e => { setPlayerSkillOverride(parseInt(e.target.value) || 1); setClashResult(null); }}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem', cursor: 'pointer', marginTop: '14px' }}>
+                      <input type="checkbox" checked={playerMounted} onChange={e => { setPlayerMounted(e.target.checked); setClashResult(null); }} />
+                      🐎 군마 기마 상태
+                    </label>
+                  </div>
+                </div>
+
+                {/* Special Clash options */}
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '0 0 140px', gap: '6px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textAlign: 'center' }}>전투 세팅</span>
+                  
+                  {(playerMounted || opponentMounted) && (playerWeapon === 'lance' || opponentWeapon === 'lance') && (
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(0,0,0,0.02)', padding: '4px 8px', border: '1px solid var(--color-gold-light)' }}>
+                      <input type="checkbox" checked={isCharging} onChange={e => { setIsCharging(e.target.checked); setClashResult(null); }} />
+                      ⚡ 랜스 돌격차징
+                    </label>
+                  )}
+                  
+                  <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-gold-dark)', margin: '8px 0' }}>VS</div>
+                </div>
+
+                {/* Opponent side */}
+                <div style={{ flex: '1 1 200px' }}>
+                  <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-crimson)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    👿 이교도 적수 / 야만인 족장
+                  </h4>
+                  
+                  <div className="cs-field">
+                    <span className="cs-field-label">장착 무기:</span>
+                    <select value={opponentWeapon} onChange={e => { setOpponentWeapon(e.target.value); setClashResult(null); }} style={{ width: '100%' }}>
+                      {Object.keys(weaponProperties).map(key => (
+                        <option key={key} value={key}>{weaponProperties[key].label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label">적 무기 숙련도:</span>
+                      <input 
+                        type="number" 
+                        value={opponentSkill} 
+                        onChange={e => { setOpponentSkill(parseInt(e.target.value) || 1); setClashResult(null); }}
+                        style={{ width: '100%' }}
+                      />
+                    </div>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.78rem', cursor: 'pointer', marginTop: '14px' }}>
+                      <input type="checkbox" checked={opponentMounted} onChange={e => { setOpponentMounted(e.target.checked); setClashResult(null); }} />
+                      🐎 기마 기마 상태
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Clash button */}
+              <button 
+                className="btn-medieval btn-medieval-primary" 
+                onClick={executeClashMatch} 
+                disabled={isRollingClash}
+                style={{ width: '100%', justifyContent: 'center', height: '44px', marginTop: '12px', fontSize: '0.95rem' }}
+              >
+                {isRollingClash ? '무기와 갑옷이 격돌하는 비명 소리...' : '⚔️ 전투 무기 격돌 주사위 던지기!'}
+              </button>
+
+              {/* Clash Result panel */}
+              {clashResult && (
+                <div style={{ border: `2px solid ${clashResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '16px', marginTop: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: '16px' }}>
+                    
+                    {/* Player rolled */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-success)' }}>기사 굴림 ({clashResult.pTarget} 이하)</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                        <span style={{ fontSize: '1.6rem', fontWeight: 'bold' }}>{clashResult.rollP}</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>({clashResult.pGrade})</span>
+                      </div>
+                      {clashResult.pModName && <span style={{ fontSize: '0.68rem', color: 'var(--color-success)', marginTop: '2px' }}>{clashResult.pModName}</span>}
+                      {clashResult.pWeaponState !== 'Intact' && (
+                        <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-crimson)', background: 'rgba(239,68,68,0.05)', padding: '2px 6px', marginTop: '4px', border: '1px solid var(--color-crimson)' }}>
+                          무기 상태: {clashResult.pWeaponState === 'Dropped' ? '⚠️ 놓침 (Dropped)' : '💥 완파 (Broken!)'}
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>vs</div>
+
+                    {/* Opponent rolled */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-crimson)' }}>적군 굴림 ({clashResult.oTarget} 이하)</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                        <span style={{ fontSize: '1.6rem', fontWeight: 'bold' }}>{clashResult.rollO}</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>({clashResult.oGrade})</span>
+                      </div>
+                      {clashResult.oModName && <span style={{ fontSize: '0.68rem', color: 'var(--color-crimson)', marginTop: '2px' }}>{clashResult.oModName}</span>}
+                      {clashResult.oWeaponState !== 'Intact' && (
+                        <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-crimson)', background: 'rgba(239,68,68,0.05)', padding: '2px 6px', marginTop: '4px', border: '1px solid var(--color-crimson)' }}>
+                          무기 상태: {clashResult.oWeaponState === 'Dropped' ? '⚠️ 놓침 (Dropped)' : '💥 완파 (Broken!)'}
+                        </span>
+                      )}
+                    </div>
+
+                  </div>
+
+                  {/* Clash narration */}
+                  {!clashResult.isRolling && (
+                    <div style={{ borderTop: '1px solid var(--color-gold-light)', marginTop: '12px', paddingTop: '12px', textAlign: 'center' }}>
+                      <h4 style={{ color: clashResult.color, fontWeight: 'bold', fontSize: '1.05rem', marginBottom: '6px' }}>
+                        {clashResult.clashOutcome}
+                      </h4>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', lineHeight: '1.5', whiteSpace: 'pre-line' }}>
+                        {clashResult.detailDesc}
+                      </p>
+                    </div>
+                  )}
+
+                </div>
+              )}
+            </div>
+          </section>
         </>
       )}
 
