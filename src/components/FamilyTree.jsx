@@ -423,13 +423,17 @@ export default function FamilyTree({ character, setCharacter }) {
         
         <div className="ft-card-header">
           <span className="ft-relation">{member.relation}</span>
-          <span 
-            className="ft-status-badge"
-            style={{ backgroundColor: statusColor + '15', color: statusColor, borderColor: statusColor }}
-          >
-            <span className="ft-status-dot" style={{ backgroundColor: statusColor }}></span>
-            {member.status}
-          </span>
+          {member.status !== '생존' && (
+            <span 
+              className="ft-status-text"
+              style={{ color: statusColor, fontWeight: 'bold', fontSize: '0.62rem', letterSpacing: '-0.02em', fontFamily: 'var(--font-korean)' }}
+            >
+              {member.status === '사망' && '🕯️ 영면'}
+              {member.status === '질병' && '🩸 병환'}
+              {member.status === '실종' && '🌫️ 행방불명'}
+              {member.status === '포로' && '⛓️ 억류'}
+            </span>
+          )}
         </div>
 
         <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none' }}>
