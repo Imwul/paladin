@@ -423,7 +423,8 @@ export default function FamilyTree({ character, setCharacter }) {
         className={`ft-card ${isKnight ? 'ft-card-knight' : ''} ${isDeceased ? 'ft-card-deceased' : ''}`}
         data-node-id={member.id}
       >
-        {isKnight && <div className="ft-crown"><Crown size={15} /></div>}
+
+
         
         <div className="ft-card-header">
           <span className="ft-relation">{member.relation}</span>
@@ -453,7 +454,8 @@ export default function FamilyTree({ character, setCharacter }) {
           </div>
         )}
 
-        {member.note && <p className="ft-note">{member.note}</p>}
+
+
 
         {/* Hover overlay with action buttons */}
         <div className="ft-card-overlay">

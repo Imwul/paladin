@@ -1667,13 +1667,14 @@ input[type="number"] {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
-  width: 190px;
+  gap: 8px;
+  min-width: 230px;
+  width: auto;
   flex-shrink: 0;
   border-right: 3px double rgba(139, 105, 20, 0.35); /* Royal double line divider */
-  padding-right: 12px;
+  padding-right: 22px;
   font-family: var(--font-korean-serif) !important; /* Elegant Korean Serif for headers */
-  font-size: 0.78rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--color-gold-dark);
   white-space: nowrap;
@@ -1682,9 +1683,9 @@ input[type="number"] {
 .ft-gen-badge {
   background: var(--color-gold-dark); /* Old gold tone badge */
   color: #fff;
-  padding: 1px 6px;
+  padding: 2px 7px;
   border-radius: 4px;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-family: var(--font-serif) !important;
   box-shadow: 0 1px 3px rgba(139, 105, 20, 0.25);
 }
@@ -1730,8 +1731,8 @@ input[type="number"] {
 }
 
 .ft-card {
-  width: 156px;
-  padding: 10px 10px 14px 10px; /* Safe padding-bottom to prevent text clipping! */
+  width: 172px;
+  padding: 12px 12px 14px 12px;
   border: 3px double var(--color-gold-light); /* Historical double gold border */
   border-radius: 6px;
   background: linear-gradient(145deg, #fdfaf2 0%, #f5ecd3 100%) !important; /* Warm antique paper scroll texture */
@@ -1740,7 +1741,7 @@ input[type="number"] {
     0 3px 8px rgba(46, 31, 15, 0.08);
   position: relative;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: visible; /* Prevent absolute elements like crown from being clipped! */
+  overflow: visible;
   z-index: 2;
 }
 
@@ -1771,39 +1772,16 @@ input[type="number"] {
     0 6px 18px rgba(201, 168, 76, 0.25);
 }
 
-.ft-crown {
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #fff;
-  background: var(--color-gold);
-  border: 1.5px solid var(--color-gold-dark);
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 1.5px 3px rgba(0,0,0,0.15);
-  animation: floatCrown 3s ease-in-out infinite;
-  z-index: 6;
-}
-
-@keyframes floatCrown {
-  0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -1.5px); }
-}
-
 .ft-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
+  width: 100%;
 }
 
 .ft-relation {
-  font-size: 0.62rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-gold-dark);
   font-family: var(--font-korean-serif) !important;
@@ -1816,23 +1794,23 @@ input[type="number"] {
   gap: 2px;
   padding: 1px 4px;
   border-radius: 10px;
-  font-size: 0.58rem;
+  font-size: 0.72rem;
   font-weight: 700;
   border: 1px solid;
   letter-spacing: -0.03em;
 }
 
 .ft-status-dot {
-  width: 3px;
-  height: 3px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
 }
 
 .ft-name {
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   font-weight: 700;
   color: var(--color-ink);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   font-family: var(--font-korean) !important;
   letter-spacing: -0.03em !important;
   line-height: 1.25;
@@ -1851,44 +1829,26 @@ input[type="number"] {
 
 .ft-name-en {
   display: block;
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--color-grey);
-  margin-top: 1px;
+  margin-top: 2px;
   font-family: var(--font-serif) !important;
 }
 
 .ft-years {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: var(--color-grey);
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 3px;
   font-family: var(--font-serif) !important;
-  margin-bottom: 2px;
+  margin-bottom: 0;
   text-align: center;
   width: 100%;
 }
 
-.ft-note {
-  font-size: 0.64rem;
-  color: var(--color-ink-light);
-  line-height: 1.3;
-  margin-top: 3px;
-  border-top: 1px solid rgba(46, 31, 15, 0.06);
-  padding-top: 3px;
-  height: 34px; /* Increased height to comfortably fit 2 lines of text! */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  word-break: keep-all;
-  letter-spacing: -0.04em !important;
-  text-align: center;
-  width: 100%;
-}
 
 /* Card Hover overlay controls */
 .ft-card-overlay {
@@ -2075,10 +2035,8 @@ input[type="number"] {
   color: #8c857b !important;
 }
 
-.ft-card-deceased .ft-note {
-  border-top-color: rgba(0, 0, 0, 0.04) !important;
-  color: #6e675d !important;
-}
+
+
 
 .ft-tombstone {
   animation: floatTombstone 3s ease-in-out infinite;
