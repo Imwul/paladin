@@ -395,7 +395,7 @@ export default function App() {
         {activeTab === 'character' && <CharacterSheet character={character} setCharacter={setCharacter} />}
         {activeTab === 'family' && <FamilyWinter character={character} setCharacter={setCharacter} />}
         {activeTab === 'journal' && <ChronologyJournal character={character} setCharacter={setCharacter} />}
-        {activeTab === 'oracles' && <SoloOracles setCharacter={setCharacter} />}
+        {activeTab === 'oracles' && <SoloOracles character={character} setCharacter={setCharacter} />}
         {activeTab === 'lore' && <LoreEncyclopedia />}
       </div>
 
