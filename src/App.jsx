@@ -370,22 +370,22 @@ export default function App() {
       {/* Navigation tab bar */}
       <div className="tab-navigation">
         <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-          <BookOpen size={16} /> 대시보드
+          <BookOpen size={16} /> 성기사의 대시보드
         </button>
         <button className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`} onClick={() => setActiveTab('character')}>
-          <User size={16} /> 기사 시트
+          <User size={16} /> 기사 캐릭터 시트
         </button>
         <button className={`tab-btn ${activeTab === 'family' ? 'active' : ''}`} onClick={() => setActiveTab('family')}>
-          <Shield size={16} /> 가문 &amp; 겨울 정산
+          <Shield size={16} /> 가문 역사와 겨울 정산
         </button>
         <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> 역사 연대기 &amp; 일지
+          <Compass size={16} /> 모험 역사 연대기 &amp; 일지
         </button>
         <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
-          <Sparkles size={16} /> 솔로 오라클
+          <Sparkles size={16} /> 운명의 주사위 &amp; 오라클
         </button>
         <button className={`tab-btn ${activeTab === 'lore' ? 'active' : ''}`} onClick={() => setActiveTab('lore')}>
-          <Library size={16} /> 제국 백과사전
+          <Library size={16} /> 제국 백과사전 &amp; 아카이브
         </button>
       </div>
 

@@ -66,7 +66,7 @@ const D20Face = ({ value, isRolling, color }) => {
 };
 
 export default function SoloOracles({ character, setCharacter }) {
-  const [activeSubTab, setActiveSubTab] = useState('general'); // 'general' | 'personality' | 'reputation_combat'
+  const [activeSubTab, setActiveSubTab] = useState('general'); // 'general' | 'personality' | 'reputation' | 'combat_skills'
 
   // ==========================================
   // GENERAL SUB-TAB STATES
@@ -1358,27 +1358,34 @@ export default function SoloOracles({ character, setCharacter }) {
         </div>
         
         {/* Expanded sub-tabs */}
-        <div className="sub-tab-navigation" style={{ display: 'flex', gap: '8px', margin: 0 }}>
+        <div className="sub-tab-navigation" style={{ display: 'flex', gap: '8px', margin: 0, flexWrap: 'wrap' }}>
           <button 
             className={`tab-btn btn-medieval ${activeSubTab === 'general' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('general')}
-            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '130px', justifyContent: 'center' }}
+            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '140px', justifyContent: 'center' }}
           >
-            <Dices size={14} style={{ marginRight: '4px' }} /> 일반 판정 &amp; 오라클
+            <Dices size={14} style={{ marginRight: '4px' }} /> 일반 판정 및 운명 신탁
           </button>
           <button 
             className={`tab-btn btn-medieval ${activeSubTab === 'personality' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('personality')}
-            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '160px', justifyContent: 'center' }}
+            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center' }}
           >
-            <Sparkles size={14} style={{ marginRight: '4px' }} /> 챕터 3: 성격 &amp; 열정
+            <Sparkles size={14} style={{ marginRight: '4px' }} /> 성격 특성과 기사적 열정
           </button>
           <button 
-            className={`tab-btn btn-medieval ${activeSubTab === 'reputation_combat' ? 'active' : ''}`} 
-            onClick={() => setActiveSubTab('reputation_combat')}
-            style={{ padding: '6px 12px', fontSize: '0.8rem', minWidth: '170px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
+            className={`tab-btn btn-medieval ${activeSubTab === 'reputation' ? 'active' : ''}`} 
+            onClick={() => setActiveSubTab('reputation')}
+            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
           >
-            <Award size={14} style={{ marginRight: '4px' }} /> 챕터 4&amp;5: 명예 &amp; 전투 스킬
+            <Award size={14} style={{ marginRight: '4px' }} /> 명예 계산과 명망 알현
+          </button>
+          <button 
+            className={`tab-btn btn-medieval ${activeSubTab === 'combat_skills' ? 'active' : ''}`} 
+            onClick={() => setActiveSubTab('combat_skills')}
+            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
+          >
+            <Shield size={14} style={{ marginRight: '4px' }} /> 1대1 무기 격돌 및 전투 기술
           </button>
         </div>
       </div>
@@ -1870,7 +1877,7 @@ export default function SoloOracles({ character, setCharacter }) {
       {/* ========================================================
           SUB-TAB 3: CHAPTER 4 & 5 REPUTATION GLORY & MELEE TACTICS
           ======================================================== */}
-      {activeSubTab === 'reputation_combat' && (
+      {activeSubTab === 'reputation' && (
         <>
           {/* Section 1: Glory & Standing calculators */}
           <div className="cs-row">
@@ -2136,7 +2143,11 @@ export default function SoloOracles({ character, setCharacter }) {
               </div>
             </section>
           </div>
+        </>
+      )}
 
+      {activeSubTab === 'combat_skills' && (
+        <>
           {/* Section 2: Melee Clash Simulator (Chapter 5) */}
           <section className="cs-section" style={{ width: '100%' }}>
             <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
