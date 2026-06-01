@@ -81,6 +81,44 @@ export default function SoloOracles({ setCharacter }) {
   const [isRollingOracle, setIsRollingOracle] = useState(false);
   const [isRollingName, setIsRollingName] = useState(false);
 
+  // 🎲 d20 판정 수동/직접 입력 처리
+  const resolveD20 = (roll, skill) => {
+    if (roll === 20) return rollGrades.FUMBLE;
+    if (roll === 1) return rollGrades.CRITICAL;
+    if (roll === skill) return rollGrades.CRITICAL;
+    if (roll < skill) return rollGrades.SUCCESS;
+    return rollGrades.FAILURE;
+  };
+
+  const handleManualD20Result = (val) => {
+    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
+    setD20Result(num);
+    setRollResolution(resolveD20(num, targetSkill));
+  };
+
+  const handleTargetSkillChange = (val) => {
+    const skill = parseInt(val) || 1;
+    setTargetSkill(skill);
+    if (d20Result) {
+      setRollResolution(resolveD20(d20Result, skill));
+    }
+  };
+
+  // 🎲 예/아니오 오라클 수동/직접 입력 처리
+  const getOracleAnswerFromRoll = (roll) => {
+    if (roll <= 2) return yesNoOracle[0];
+    if (roll <= 8) return yesNoOracle[1];
+    if (roll <= 12) return yesNoOracle[2];
+    if (roll <= 18) return yesNoOracle[3];
+    return yesNoOracle[4];
+  };
+
+  const handleManualOracleRoll = (val) => {
+    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
+    const match = getOracleAnswerFromRoll(num);
+    setOracleAnswer({ roll: num, ...match });
+  };
+
   const rollD20 = () => {
     if (isRollingD20) return;
     setIsRollingD20(true);
@@ -94,13 +132,7 @@ export default function SoloOracles({ setCharacter }) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
         setD20Result(finalRoll);
-        let resolution = null;
-        if (finalRoll === 20) resolution = rollGrades.FUMBLE;
-        else if (finalRoll === 1) resolution = rollGrades.CRITICAL;
-        else if (finalRoll === targetSkill) resolution = rollGrades.CRITICAL;
-        else if (finalRoll < targetSkill) resolution = rollGrades.SUCCESS;
-        else resolution = rollGrades.FAILURE;
-        setRollResolution(resolution);
+        setRollResolution(resolveD20(finalRoll, targetSkill));
         setIsRollingD20(false);
       }
     }, 50);
@@ -143,23 +175,13 @@ export default function SoloOracles({ setCharacter }) {
     let counter = 0;
     const interval = setInterval(() => {
       const tempRoll = Math.floor(Math.random() * 20) + 1;
-      let tempMatch = null;
-      if (tempRoll <= 2) tempMatch = yesNoOracle[0];
-      else if (tempRoll <= 8) tempMatch = yesNoOracle[1];
-      else if (tempRoll <= 12) tempMatch = yesNoOracle[2];
-      else if (tempRoll <= 18) tempMatch = yesNoOracle[3];
-      else tempMatch = yesNoOracle[4];
+      const tempMatch = getOracleAnswerFromRoll(tempRoll);
       setOracleAnswer({ roll: tempRoll, ...tempMatch });
       counter++;
       if (counter > 24) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        let match = null;
-        if (finalRoll <= 2) match = yesNoOracle[0];
-        else if (finalRoll <= 8) match = yesNoOracle[1];
-        else if (finalRoll <= 12) match = yesNoOracle[2];
-        else if (finalRoll <= 18) match = yesNoOracle[3];
-        else match = yesNoOracle[4];
+        const match = getOracleAnswerFromRoll(finalRoll);
         setOracleAnswer({ roll: finalRoll, ...match });
         setIsRollingOracle(false);
       }
@@ -224,10 +246,28 @@ export default function SoloOracles({ setCharacter }) {
         <section className="cs-section">
           <div className="sheet-ribbon"><h3><Dices size={16} style={{ marginRight: '6px' }} />d20 판정기</h3></div>
           <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div className="cs-field">
-              <span className="cs-field-label">기준값:</span>
-              <input type="number" value={targetSkill} min={1} max={20}
-                onChange={e => setTargetSkill(parseInt(e.target.value) || 1)} style={{ maxWidth: '80px' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="cs-field" style={{ margin: 0 }}>
+                <span className="cs-field-label">기준값:</span>
+                <input 
+                  type="number" 
+                  value={targetSkill} 
+                  min={1} max={20}
+                  onChange={e => handleTargetSkillChange(e.target.value)} 
+                  style={{ width: '100%' }} 
+                />
+              </div>
+              <div className="cs-field" style={{ margin: 0 }}>
+                <span className="cs-field-label" style={{ color: 'var(--color-gold-dark)' }}>🎲 직접 입력 (d20):</span>
+                <input 
+                  type="number" 
+                  value={d20Result || ''} 
+                  min={1} max={20}
+                  placeholder="눈 입력"
+                  onChange={e => handleManualD20Result(e.target.value)} 
+                  style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center' }} 
+                />
+              </div>
             </div>
             <button className="btn-medieval btn-medieval-primary" onClick={rollD20} style={{ justifyContent: 'center' }} disabled={isRollingD20}>
               {isRollingD20 ? "주사위 굴리는 중..." : "d20 판정 던지기"}
@@ -281,12 +321,25 @@ export default function SoloOracles({ setCharacter }) {
         <section className="cs-section">
           <div className="sheet-ribbon"><h3><HelpCircle size={16} style={{ marginRight: '6px' }} />예/아니오 오라클</h3></div>
           <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)', margin: 0 }}>
               상황에 대한 질문을 떠올리고 운명에 물어보세요:
             </p>
-            <button className="btn-medieval" onClick={askOracle} style={{ justifyContent: 'center' }} disabled={isRollingOracle}>
-              {isRollingOracle ? "신탁 묻는 중..." : "오라클에 묻기"}
-            </button>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 100px', gap: '8px', alignItems: 'center' }}>
+              <button className="btn-medieval" onClick={askOracle} style={{ justifyContent: 'center', height: '38px', margin: 0 }} disabled={isRollingOracle}>
+                {isRollingOracle ? "신탁 묻는 중..." : "오라클에 묻기"}
+              </button>
+              <div className="cs-field" style={{ margin: 0, height: '38px', padding: '0 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="cs-field-label" style={{ fontSize: '0.72rem', whiteSpace: 'nowrap', color: 'var(--color-gold-dark)' }}>🎲 d20:</span>
+                <input 
+                  type="number" 
+                  value={oracleAnswer?.roll || ''} 
+                  min={1} max={20}
+                  placeholder="눈"
+                  onChange={e => handleManualOracleRoll(e.target.value)} 
+                  style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', padding: '4px' }} 
+                />
+              </div>
+            </div>
             {oracleAnswer && (
               <div style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.03)', padding: '12px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginBottom: '4px' }}>신탁 주사위</span>

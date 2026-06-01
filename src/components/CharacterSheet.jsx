@@ -297,8 +297,43 @@ const passions = [
   { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
   { key: "hateSarasens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
   { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
-  { key: "amor", label: "Amor [연인에 대한 로맨스]", defaultVal: 0 }
+  { key: "amor", label: "연인에 대한 로맨스 (Amor)", defaultVal: 0 }
 ];
+
+// 🎲 룰북 주사위 눈 대응 매핑 함수 (Page 25-30)
+const getSaintIndexFromRoll = (roll) => {
+  const r = Math.min(20, Math.max(1, parseInt(roll) || 1));
+  return r - 1; // Saint Table 1-3 is a direct 1-to-20 mapping
+};
+
+const getCharIndexFromRoll = (roll) => {
+  const r = Math.min(20, Math.max(1, parseInt(roll) || 1));
+  if (r <= 2) return 0; // 1-2: Keen of eye
+  if (r === 3) return 1; // 3: Healers
+  if (r === 4) return 2; // 4: Never forget
+  if (r <= 6) return 3; // 5-6: Born in saddle
+  if (r <= 8) return 4; // 7-8: Nature
+  if (r <= 10) return 5; // 9-10: Otters
+  if (r === 11) return 6; // 11: Courtesy
+  if (r === 12) return 7; // 12: Dancing
+  if (r === 13) return 8; // 13: Eloquence
+  if (r === 14) return 9; // 14: Falconry
+  if (r === 15) return 10; // 15: Gaming
+  if (r === 16) return 11; // 16: Intrigue
+  if (r === 17) return 12; // 17: Instruments
+  if (r === 18) return 13; // 18: Singing
+  if (r === 19) return 14; // 19: Tacticians
+  return 14; // 20: Player's choice (default to Tacticians)
+};
+
+const getFatherIndexFromRoll = (roll) => {
+  const r = Math.min(20, Math.max(1, parseInt(roll) || 1));
+  if (r === 1) return 4; // 1: Lord or Officer
+  if (r <= 3) return 1; // 2-3: Banneret Knight
+  if (r <= 8) return 0; // 4-8: Vassal Knight
+  if (r <= 15) return 2; // 9-15: Bachelor Knight
+  return 3; // 16-20: Mercenary Knight
+};
 
 export default function CharacterSheet({ character, setCharacter }) {
   const [isGenOpen, setIsGenOpen] = useState(false);
@@ -312,14 +347,39 @@ export default function CharacterSheet({ character, setCharacter }) {
   const [customStr, setCustomStr] = useState(13);
   const [customCon, setCustomCon] = useState(12);
   const [customApp, setCustomApp] = useState(11);
+
+  // 🎲 주사위 롤링 연동 상태 (d20 눈 입력바)
+  const [customSaintRoll, setCustomSaintRoll] = useState(18); // St. Michael default
+  const [customCharRoll, setCustomCharRoll] = useState(5); // Born in the saddle default
+  const [customFatherRoll, setCustomFatherRoll] = useState(4); // Vassal Knight default
+
   const [customSaintIndex, setCustomSaintIndex] = useState(17); // St. Michael default
   const [customCharIndex, setCustomCharIndex] = useState(3); // Born in the saddle default
   const [customFatherIndex, setCustomFatherIndex] = useState(0); // Vassal Knight default
   const [customBlessing, setCustomBlessing] = useState('용맹의 징표');
 
+  const handleSaintRollChange = (val) => {
+    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
+    setCustomSaintRoll(num);
+    setCustomSaintIndex(num - 1);
+  };
+
+  const handleCharRollChange = (val) => {
+    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
+    setCustomCharRoll(num);
+    setCustomCharIndex(getCharIndexFromRoll(num));
+  };
+
+  const handleFatherRollChange = (val) => {
+    const num = Math.min(20, Math.max(1, parseInt(val) || 1));
+    setCustomFatherRoll(num);
+    setCustomFatherIndex(getFatherIndexFromRoll(num));
+  };
+
   const handleRollAttributes = () => {
     const roll3d6 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 3;
     const roll2d6Plus6 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 8;
+    const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
     setCustomStr(roll3d6());
     setCustomDex(roll3d6());
@@ -327,9 +387,18 @@ export default function CharacterSheet({ character, setCharacter }) {
     setCustomSiz(roll2d6Plus6());
     setCustomCon(roll2d6Plus6());
     
-    setCustomSaintIndex(Math.floor(Math.random() * patronSaints.length));
-    setCustomCharIndex(Math.floor(Math.random() * familyCharacteristics.length));
-    setCustomFatherIndex(Math.floor(Math.random() * fathersClasses.length));
+    const saintRoll = rollD20();
+    const charRoll = rollD20();
+    const fatherRoll = rollD20();
+
+    setCustomSaintRoll(saintRoll);
+    setCustomSaintIndex(saintRoll - 1);
+
+    setCustomCharRoll(charRoll);
+    setCustomCharIndex(getCharIndexFromRoll(charRoll));
+
+    setCustomFatherRoll(fatherRoll);
+    setCustomFatherIndex(getFatherIndexFromRoll(fatherRoll));
   };
 
   const handleApplyPreset = () => {
@@ -689,42 +758,86 @@ export default function CharacterSheet({ character, setCharacter }) {
                   </div>
 
                   <div className="ft-form-group">
-                    <label className="ft-label">가문 수호 성인 (Patron Saint) 선택:</label>
-                    <select 
-                      className="cs-roll-select"
-                      value={customSaintIndex}
-                      onChange={e => setCustomSaintIndex(Number(e.target.value))}
-                    >
-                      {patronSaints.map((saint, idx) => (
-                        <option key={saint.name} value={idx}>{saint.name} (효과: {saint.benefit})</option>
-                      ))}
-                    </select>
+                    <label className="ft-label">가문 수호 성인 (Table 1-3 d20 굴림 입력):</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                      <input 
+                        type="number" 
+                        className="ft-input" 
+                        min="1" max="20"
+                        value={customSaintRoll}
+                        onChange={e => handleSaintRollChange(Number(e.target.value))}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <select 
+                        className="cs-roll-select"
+                        value={customSaintIndex}
+                        onChange={e => {
+                          const idx = Number(e.target.value);
+                          setCustomSaintIndex(idx);
+                          setCustomSaintRoll(idx + 1);
+                        }}
+                      >
+                        {patronSaints.map((saint, idx) => (
+                          <option key={saint.name} value={idx}>{saint.name} (효과: {saint.benefit})</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div className="ft-form-group">
-                    <label className="ft-label">가문 특성 (Family Characteristic) 선택:</label>
-                    <select 
-                      className="cs-roll-select"
-                      value={customCharIndex}
-                      onChange={e => setCustomCharIndex(Number(e.target.value))}
-                    >
-                      {familyCharacteristics.map((char, idx) => (
-                        <option key={char.name} value={idx}>{char.name} (효과: {char.benefit})</option>
-                      ))}
-                    </select>
+                    <label className="ft-label">가문 특성 (Table 1-1 d20 굴림 입력):</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                      <input 
+                        type="number" 
+                        className="ft-input" 
+                        min="1" max="20"
+                        value={customCharRoll}
+                        onChange={e => handleCharRollChange(Number(e.target.value))}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <select 
+                        className="cs-roll-select"
+                        value={customCharIndex}
+                        onChange={e => {
+                          const idx = Number(e.target.value);
+                          setCustomCharIndex(idx);
+                          const repRolls = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+                          setCustomCharRoll(repRolls[idx] || 20);
+                        }}
+                      >
+                        {familyCharacteristics.map((char, idx) => (
+                          <option key={char.name} value={idx}>{char.name} (효과: {char.benefit})</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div className="ft-form-group">
-                    <label className="ft-label">부친의 신분 (Father's Class):</label>
-                    <select 
-                      className="cs-roll-select"
-                      value={customFatherIndex}
-                      onChange={e => setCustomFatherIndex(Number(e.target.value))}
-                    >
-                      {fathersClasses.map((f, idx) => (
-                        <option key={f.name} value={idx}>{f.name} (효과: {f.benefit})</option>
-                      ))}
-                    </select>
+                    <label className="ft-label">부친의 신분 (Table 1-4 d20 굴림 입력):</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                      <input 
+                        type="number" 
+                        className="ft-input" 
+                        min="1" max="20"
+                        value={customFatherRoll}
+                        onChange={e => handleFatherRollChange(Number(e.target.value))}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <select 
+                        className="cs-roll-select"
+                        value={customFatherIndex}
+                        onChange={e => {
+                          const idx = Number(e.target.value);
+                          setCustomFatherIndex(idx);
+                          const repRolls = [4, 2, 9, 16, 1]; // Vassal, Banneret, Bachelor, Mercenary, Lord
+                          setCustomFatherRoll(repRolls[idx] || 4);
+                        }}
+                      >
+                        {fathersClasses.map((f, idx) => (
+                          <option key={f.name} value={idx}>{f.name} (효과: {f.benefit})</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
 
                   <div className="ft-form-group">
