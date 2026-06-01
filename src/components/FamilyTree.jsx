@@ -26,6 +26,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [formStatus, setFormStatus] = useState('생존');
   const [formLifeYears, setFormLifeYears] = useState('');
   const [formNote, setFormNote] = useState('');
+  const [formDeathCause, setFormDeathCause] = useState('');
   const [formParentId, setFormParentId] = useState('');
   const [formSpouseId, setFormSpouseId] = useState('');
 
@@ -36,9 +37,9 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // Default Template for reset
   const defaultMembers = [
-    { id: 'godefroy', name: '고드프루아 경 (Sir Godefroy)', relation: '시조', generation: 0, status: '사망', lifeYears: '702~765', note: '아르덴 가문의 위대한 기틀을 세운 초대 시조.' },
-    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '725~770', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
-    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '745~768', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
+    { id: 'godefroy', name: '고드프루아 경 (Sir Godefroy)', relation: '시조', generation: 0, status: '사망', lifeYears: '702~765', deathCause: '노환', note: '아르덴 가문의 위대한 기틀을 세운 초대 시조.' },
+    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '725~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
+    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '745~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
     { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
     { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
     { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
@@ -160,6 +161,7 @@ export default function FamilyTree({ character, setCharacter }) {
     setFormStatus('생존');
     setFormLifeYears('');
     setFormNote('');
+    setFormDeathCause('');
     setFormParentId(defaultParentId);
     setFormSpouseId(defaultSpouseId);
     setIsModalOpen(true);
@@ -175,6 +177,7 @@ export default function FamilyTree({ character, setCharacter }) {
     setFormStatus(member.status);
     setFormLifeYears(member.lifeYears || '');
     setFormNote(member.note || '');
+    setFormDeathCause(member.deathCause || '');
     setFormParentId(member.parentId || '');
     setFormSpouseId(member.spouseId || '');
     setIsModalOpen(true);
@@ -200,6 +203,7 @@ export default function FamilyTree({ character, setCharacter }) {
         status: formStatus,
         lifeYears: formLifeYears,
         note: formNote,
+        deathCause: formStatus === '사망' ? formDeathCause : undefined,
         parentId: formParentId || undefined,
         spouseId: formSpouseId || undefined
       };
@@ -229,6 +233,7 @@ export default function FamilyTree({ character, setCharacter }) {
             status: formStatus,
             lifeYears: formLifeYears,
             note: formNote,
+            deathCause: formStatus === '사망' ? formDeathCause : undefined,
             parentId: formParentId || undefined,
             spouseId: formSpouseId || undefined
           };
@@ -451,6 +456,11 @@ export default function FamilyTree({ character, setCharacter }) {
         {member.lifeYears && (
           <div className="ft-years">
             {member.lifeYears}
+            {isDeceased && member.deathCause && (
+              <span className="ft-death-cause" style={{ fontSize: '0.68rem', color: 'var(--color-crimson)', marginLeft: '3px', fontStyle: 'italic', fontWeight: 600 }}>
+                ({member.deathCause})
+              </span>
+            )}
           </div>
         )}
 
@@ -629,6 +639,19 @@ export default function FamilyTree({ character, setCharacter }) {
                   />
                 </div>
               </div>
+
+              {formStatus === '사망' && (
+                <div className="ft-form-group view-animate">
+                  <label className="ft-label">사망 원인 (예: 파비아 공성전, 노환, 사고):</label>
+                  <input 
+                    type="text" 
+                    className="ft-input" 
+                    value={formDeathCause} 
+                    onChange={e => setFormDeathCause(e.target.value)}
+                    placeholder="예: 파비아 공성전, 노환, 사고 등 짧게 입력"
+                  />
+                </div>
+              )}
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="ft-form-group">
