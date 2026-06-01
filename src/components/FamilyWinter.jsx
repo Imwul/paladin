@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle } from 'lucide-react';
+import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
 import { greatFamilies } from '../data/lore';
 import FamilyTree from './FamilyTree';
 
@@ -52,11 +52,315 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [selectedHighSkill, setSelectedHighSkill] = useState('');
   const [trainingApplied, setTrainingApplied] = useState(false);
 
-  // Step 9 & 10 states
-  const [calculatedAnnualGlory, setCalculatedAnnualGlory] = useState(null);
-  const [gloryApplied, setGloryApplied] = useState(false);
-  const [gloryBonusPoints, setGloryBonusPoints] = useState(0);
-  const [bonusSpent, setBonusSpent] = useState(0);
+  // 📜 조상 연대기 발전기 (Page 45-49) States
+  const [isAncestorGenOpen, setIsAncestorGenOpen] = useState(false);
+  const [ancestorRollLog, setAncestorRollLog] = useState([]);
+  const [grandfatherGlory, setGrandfatherGlory] = useState(2500);
+  const [grandfatherDeathYear, setGrandfatherDeathYear] = useState(747);
+  const [grandfatherDeathCause, setGrandfatherDeathCause] = useState('노환');
+  const [grandfatherHates, setGrandfatherHates] = useState({ saxons: 0, moors: 0 });
+  
+  const [fatherGlory, setFatherGlory] = useState(2500);
+  const [fatherDeathYear, setFatherDeathYear] = useState(766);
+  const [fatherDeathCause, setFatherDeathCause] = useState('작센 원정 중 용맹 전사');
+  const [fatherHates, setFatherHates] = useState({ saxons: 0, moors: 0 });
+  const [ancestorApplied, setAncestorApplied] = useState(false);
+
+  const rollAncestorHistory = () => {
+    const logs = [];
+    const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+    const rollD6 = () => Math.floor(Math.random() * 6) + 1;
+    const rollD3 = () => Math.floor(Math.random() * 3) + 1;
+
+    logs.push("📜 [조조부의 생애: 연대기 시작 723년]");
+    let gfGlory = 2500;
+    let gfHateSaxons = 0;
+    let gfHateMoors = 0;
+    let gfDead = false;
+    let gfDeathYr = 747;
+    let gfCause = '노환';
+
+    for (let yr = 723; yr <= 747; yr++) {
+      if (gfDead) continue;
+      
+      let event = "";
+      if (yr === 723) {
+        event = "작센 원정에 종군하였습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "작센 전사 (Combat)";
+          gfGlory += 1000;
+          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          gfGlory += 200; 
+          gfHateSaxons += rollD3();
+          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 영웅적 전공을 세우며 생존! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
+        } else {
+          gfGlory += 50; 
+          gfHateSaxons += rollD3();
+          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
+        }
+      } else if (yr === 725) {
+        event = "오툉 공성전에 수비대로 참전하였습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "오툉 공성전 전사 (Combat)";
+          gfGlory += 1000;
+          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 무어인들과 싸우다 장렬히 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          gfGlory += 100;
+          gfHateMoors += rollD3();
+          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 적들의 공세를 저지하며 활약! (+100 Glory, 무어인 증오 +${gfHateMoors})`);
+        } else {
+          gfGlory += 25;
+          gfHateMoors += rollD3();
+          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${gfHateMoors})`);
+        }
+      } else if (yr === 728) {
+        event = "작센 및 프리지아 원정에 나섰습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "작센 전사 (Combat)";
+          gfGlory += 1000;
+          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          gfGlory += 200;
+          gfHateSaxons += rollD3();
+          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 작센 추장들과 대결해 승리! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
+        } else {
+          gfGlory += 50;
+          gfHateSaxons += rollD3();
+          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
+        }
+      } else {
+        const d20 = rollD20();
+        if (d20 === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          const deathCauseRoll = rollD20();
+          if (deathCauseRoll <= 3) gfCause = "전투 중 사망 (Battle)";
+          else if (deathCauseRoll <= 6) gfCause = "가문 결투 중 사망 (Feud)";
+          else if (deathCauseRoll <= 8) gfCause = "적의 습격으로 사망 (Raid)";
+          else if (deathCauseRoll <= 10) gfCause = "사냥 중 사고사 (Hunting Accident)";
+          else if (deathCauseRoll <= 13) gfCause = "마차 사고 등 사고사 (Accident)";
+          else if (deathCauseRoll <= 14) gfCause = "행방불명 (Disappeared)";
+          else if (deathCauseRoll <= 18) gfCause = "돌발적인 질병사 (Illness)";
+          else gfCause = "노환 (Old Age)";
+          
+          logs.push(`💀 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 비보! 할아버님께서 [${gfCause}]로 서거하셨습니다.`);
+        } else if (d20 >= 18 && d20 <= 19) {
+          gfGlory += 50;
+          logs.push(`✨ ${yr}년: 평화로운 해 -> 주사위 ${d20} - 봉토 순찰 중 영광스러운 모험 전공! (+50 Glory)`);
+        } else if (d20 === 20) {
+          const survival = rollD20();
+          if (survival <= 2) {
+            gfDead = true;
+            gfDeathYr = yr;
+            gfCause = "작센 습격 수비 전사 (Combat)";
+            gfGlory += 1000;
+            logs.push(`🔥 ${yr}년: 영지에 작센인들의 기습이 있었습니다! -> 수비전 전사! (+1000 Glory)`);
+          } else {
+            gfGlory += 25;
+            gfHateSaxons += rollD3();
+            logs.push(`🔥 ${yr}년: 영지에 작센인들의 기습이 있었습니다! -> 주사위 ${survival} - 무사히 막아냈습니다. (작센인 증오 +${gfHateSaxons})`);
+          }
+        } else {
+          logs.push(`🏰 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 영지 수비대 근무를 원활하게 수행하셨습니다.`);
+        }
+      }
+    }
+
+    if (!gfDead) {
+      gfDeathYr = 747;
+      gfCause = "평화로운 영면 (Old Age)";
+      logs.push("💀 747년: 할아버님께서 노환으로 편안히 영면에 드셨습니다.");
+    }
+
+    setGrandfatherGlory(gfGlory);
+    setGrandfatherDeathYear(gfDeathYr);
+    setGrandfatherDeathCause(gfCause);
+    setGrandfatherHates({ saxons: gfHateSaxons, moors: gfHateMoors });
+
+    let inheritedSaxons = gfHateSaxons > 10 ? gfHateSaxons : 0;
+    let inheritedMoors = gfHateMoors > 10 ? gfHateMoors : 0;
+
+    logs.push("");
+    logs.push("📜 [부친의 생애: 연대기 시작 748년]");
+    let fGlory = 2500 + Math.floor(gfGlory / 10);
+    logs.push(`🎁 748년: 부친(724년생)께서 성인식을 마치고 조부의 영광 1/10을 물려받아 ${fGlory} Glory로 임관하셨습니다.`);
+    
+    let fHateSaxons = inheritedSaxons;
+    let fHateMoors = inheritedMoors;
+    let fDead = false;
+    let fDeathYr = 766;
+    let fCause = '노환';
+
+    for (let yr = 748; yr <= 766; yr++) {
+      if (fDead) continue;
+
+      if (yr === 753) {
+        event = "작센 토벌 원정에 참여하였습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "작센 전사 (Combat)";
+          fGlory += 1000;
+          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          fGlory += 200;
+          fHateSaxons += rollD3();
+          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 영웅적인 활약으로 영지를 점령! (+200 Glory, 작센인 증오 +${fHateSaxons})`);
+        } else {
+          fGlory += 50;
+          fHateSaxons += rollD3();
+          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${fHateSaxons})`);
+        }
+      } else if (yr === 755) {
+        event = "롬바르디아(파비아) 공성전에 참전하였습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "파비아 공성전 전사 (Combat)";
+          fGlory += 1000;
+          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 파비아 성벽 아래에서 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          fGlory += 100;
+          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 성문을 부수는 결사대를 지원해 명예 획득! (+100 Glory)`);
+        } else {
+          fGlory += 50;
+          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다.`);
+        }
+      } else if (yr === 759) {
+        event = "나르본 공성전(무어인 토벌)에 참여하였습니다.";
+        const survival = rollD20();
+        if (survival <= 2) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "나르본 공성전 전사 (Combat)";
+          fGlory += 1000;
+          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 나르본 공성 중 장렬히 전사하셨습니다! (+1000 Glory)`);
+        } else if (survival <= 5) {
+          fGlory += 100;
+          fHateMoors += rollD3();
+          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 이교도의 돌격을 격퇴하고 기치를 꽂음! (+100 Glory, 무어인 증오 +${fHateMoors})`);
+        } else {
+          fGlory += 50;
+          fHateMoors += rollD3();
+          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${fHateMoors})`);
+        }
+      } else {
+        const d20 = rollD20();
+        if (d20 === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          const deathCauseRoll = rollD20();
+          if (deathCauseRoll <= 3) fCause = "전투 중 사망 (Battle)";
+          else if (deathCauseRoll <= 6) fCause = "가문 결투 중 사망 (Feud)";
+          else if (deathCauseRoll <= 8) fCause = "적의 습격으로 사망 (Raid)";
+          else if (deathCauseRoll <= 10) fCause = "사냥 중 사고사 (Hunting Accident)";
+          else if (deathCauseRoll <= 13) fCause = "낙마 등 사고사 (Accident)";
+          else if (deathCauseRoll <= 14) fCause = "행방불명 (Disappeared)";
+          else if (deathCauseRoll <= 18) fCause = "질병사 (Illness)";
+          else fCause = "노환 (Old Age)";
+          
+          logs.push(`💀 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 비보! 아버님께서 [${fCause}]로 서거하셨습니다.`);
+        } else if (d20 >= 18 && d20 <= 19) {
+          fGlory += 50;
+          logs.push(`✨ ${yr}년: 평화로운 해 -> 주사위 ${d20} - 국경 경비 중 산적 소탕 공적! (+50 Glory)`);
+        } else if (d20 === 20) {
+          const survival = rollD20();
+          if (survival <= 2) {
+            fDead = true;
+            fDeathYr = yr;
+            fCause = "영지 방어 중 전사 (Combat)";
+            fGlory += 1000;
+            logs.push(`🔥 ${yr}년: 작센 습격 수비전 -> 수비전 전사! (+1000 Glory)`);
+          } else {
+            fGlory += 25;
+            fHateSaxons += rollD3();
+            logs.push(`🔥 ${yr}년: 작센 습격 수비전 -> 주사위 ${survival} - 방어 성공! (작센인 증오 +${fHateSaxons})`);
+          }
+        } else {
+          logs.push(`🏰 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 영지 수비대 근무를 성실히 수행하셨습니다.`);
+        }
+      }
+    }
+
+    if (!fDead) {
+      fDeathYr = 766;
+      fCause = "작센 원정 중 용맹 전사 (Combat)";
+      fGlory += 1000;
+      logs.push("💀 766년: 아버님께서 아르덴 대공의 국경 사수에 참전하여 장렬히 전사하셨습니다. (+1000 Glory)");
+    }
+
+    setFatherGlory(fGlory);
+    setFatherDeathYear(fDeathYr);
+    setFatherDeathCause(fCause);
+    setFatherHates({ saxons: fHateSaxons, moors: fHateMoors });
+
+    logs.push("");
+    logs.push("🎉 [연대기 결과 요약]");
+    logs.push(`• 조부 최종 명예: ${gfGlory} Glory (생존기간: 700~${gfDeathYr}, 사인: ${gfCause})`);
+    logs.push(`• 부친 최종 명예: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
+    logs.push(`• 조상으로부터 플레이어 캐릭터(롤랑 경)에게 계승될 유산:`);
+    logs.push(`  - 계승 명예: +${Math.floor(fGlory / 10)} Glory (부친 명예의 1/10)`);
+    if (fHateSaxons > 10) logs.push(`  - 계승 증오: 작센인에 대한 증오 Passion [${fHateSaxons}]`);
+    if (fHateMoors > 10) logs.push(`  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fHateMoors}]`);
+
+    setAncestorRollLog(logs);
+    setAncestorApplied(false);
+  };
+
+  const applyAncestorLegacy = () => {
+    if (ancestorApplied) return;
+    
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      
+      const inheritedGlory = Math.floor(fatherGlory / 10);
+      updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + inheritedGlory;
+
+      if (fatherHates.saxons > 10) {
+        updated.passions.hateSaxons = fatherHates.saxons;
+      }
+      if (fatherHates.moors > 10) {
+        updated.passions.hateMoors = fatherHates.moors;
+      }
+
+      if (updated.family && updated.family.members) {
+        updated.family.members = updated.family.members.map(m => {
+          if (m.id === 'godefroy') {
+            return {
+              ...m,
+              lifeYears: `700~${grandfatherDeathYear}`,
+              note: `아르덴 가문의 위대한 기틀을 세운 초대 시조. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
+            };
+          }
+          if (m.id === 'gerard') {
+            return {
+              ...m,
+              lifeYears: `724~${fatherDeathYear}`,
+              note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 명예 ${fatherGlory} Glory.`
+            };
+          }
+          return m;
+        });
+      }
+
+      return updated;
+    });
+
+    setAncestorApplied(true);
+    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!\n(계승 명예: +${Math.floor(fatherGlory / 10)} Glory)`);
+  };
 
   const handleFamilyChange = (field, value) => {
     setCharacter(prev => ({ ...prev, family: { ...prev.family, [field]: value } }));
@@ -648,6 +952,88 @@ export default function FamilyWinter({ character, setCharacter }) {
                 <textarea className="form-input" rows={2} value={character.family.enemies || ''} style={{ width: '100%', padding: '6px' }}
                   onChange={e => handleFamilyChange('enemies', e.target.value)} />
               </div>
+            </div>
+
+            {/* 📜 룰북 기반 조상 연대기 발전기 */}
+            <div style={{ marginTop: '20px', borderTop: '2px dashed var(--color-gold-light)', paddingTop: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h4 style={{ margin: 0, color: 'var(--color-royal-blue)', fontFamily: 'var(--font-korean)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem' }}>
+                  <Sparkles size={16} />
+                  📜 룰북 조상 연대기 발전기 (Page 45-49)
+                </h4>
+                <button
+                  type="button"
+                  className="btn-medieval btn-medieval-primary"
+                  style={{ fontSize: '0.8rem', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  onClick={() => setIsAncestorGenOpen(!isAncestorGenOpen)}
+                >
+                  <Sparkles size={12} />
+                  {isAncestorGenOpen ? '연대기 닫기' : '연대기 도우미 열기'}
+                </button>
+              </div>
+
+              {isAncestorGenOpen && (
+                <div className="view-animate" style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', border: '1px solid var(--color-gold-light)', borderRadius: '8px', padding: '14px', marginTop: '10px' }}>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--color-grey)', margin: '0 0 12px 0', lineHeight: 1.45 }}>
+                    룰북 규칙서 25~30쪽 및 45~49쪽 고증 규칙에 따라, 조부(723년~)와 부친(748년~)의 전공 및 사망 원인을 대진표식으로 시뮬레이션합니다.<br />
+                    • 조부는 2,500 Glory에서 출발해 매년의 모험과 삭센/무어 원정 참전 주사위를 굴립니다.<br />
+                    • 부친은 2,500 Glory + 조부의 최종 영광의 1/10을 상속받아 평생의 업적을 쌓습니다.<br />
+                    • 생성된 영광과 증오 속성은 1/10의 비율로 캐릭터 시트에 정식으로 계승 반영됩니다.
+                  </p>
+
+                  <div style={{ display: 'flex', gap: '10px', marginBottom: '14px' }}>
+                    <button
+                      type="button"
+                      className="btn-medieval"
+                      style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                      onClick={rollAncestorHistory}
+                    >
+                      <RefreshCw size={14} />
+                      조상 연대기 주사위 롤링 (Auto-Roll)
+                    </button>
+                    {ancestorRollLog.length > 0 && !ancestorApplied && (
+                      <button
+                        type="button"
+                        className="btn-medieval btn-medieval-primary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                        onClick={applyAncestorLegacy}
+                      >
+                        <Check size={14} />
+                        연대기 유산 적용하기 (Glory & 증오 계승)
+                      </button>
+                    )}
+                  </div>
+
+                  {ancestorRollLog.length > 0 && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
+                        <div>
+                          <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조조부 (Godefroy 경)</h5>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
+                            • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
+                            • 생몰년도: 700년 ~ {grandfatherDeathYear}년<br />
+                            • 사인: {grandfatherDeathCause}<br />
+                            • 누적 증오: 작센인 ({grandfatherHates.saxons}), 무어인 ({grandfatherHates.moors})
+                          </span>
+                        </div>
+                        <div>
+                          <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
+                            • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
+                            • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
+                            • 사인: {fatherDeathCause}<br />
+                            • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
+                          </span>
+                        </div>
+                      </div>
+
+                      <div style={{ maxHeight: '180px', overflowY: 'auto', backgroundColor: '#faf6eb', border: '1.2px solid rgba(201, 168, 76, 0.3)', padding: '10px', borderRadius: '6px', fontFamily: 'monospace', fontSize: '0.74rem', whiteSpace: 'pre-wrap', color: '#5a4933', scrollbarWidth: 'thin' }}>
+                        {ancestorRollLog.join('\n')}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </section>
