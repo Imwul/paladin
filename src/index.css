@@ -1917,6 +1917,7 @@ input[type="number"] {
 .ft-modal {
   width: 100%;
   max-width: 480px;
+  max-height: 92vh;
   background-color: var(--color-parchment);
   background-image: 
     repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(195, 161, 101, 0.02) 40px, rgba(195, 161, 101, 0.02) 41px),
@@ -1967,6 +1968,8 @@ input[type="number"] {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .ft-form-group {
