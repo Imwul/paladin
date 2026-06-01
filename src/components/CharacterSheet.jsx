@@ -42,7 +42,7 @@ const weaponSkills = [
 ];
 
 const personalFields = [
-  { key: 'name', label: '기사 이름', cat: 'personal' },
+  { key: 'name', label: '이름', cat: 'personal' },
   { key: 'age', label: '나이', cat: 'personal', type: 'number' },
   { key: 'sonNumber', label: '자녀 서열', cat: 'personal' },
   { key: 'blessing', label: '성스러운 축복', cat: 'personal' },
@@ -51,8 +51,8 @@ const personalFields = [
   { key: 'culture', label: '문화권', cat: 'personal' },
   { key: 'lineage', label: '가문/혈통', cat: 'personal' },
   { key: 'liegeLord', label: '섬기는 주군', cat: 'personal' },
-  { key: 'fathersClass', label: '부친의 계급', cat: 'personal' },
-  { key: 'personalClass', label: '기사의 신분', cat: 'personal' },
+  { key: 'fathersClass', label: '부친의 신분', cat: 'personal' },
+  { key: 'personalClass', label: '현재 신분', cat: 'personal' },
 ];
 
 const passions = [
