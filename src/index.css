@@ -1690,7 +1690,7 @@ input[type="number"] {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: flex-start;
+  justify-content: center; /* Fluid center alignment as members are dynamically added! */
   align-items: center;
   flex: 1;
   padding-left: 16px;
@@ -1735,7 +1735,7 @@ input[type="number"] {
   box-shadow: 0 1.5px 5px rgba(46, 31, 15, 0.03);
   position: relative;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  overflow: hidden;
+  overflow: visible; /* Prevent absolute elements like crown from being clipped! */
   z-index: 2;
 }
 
