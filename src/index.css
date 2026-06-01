@@ -1717,8 +1717,8 @@ input[type="number"] {
 }
 
 .ft-card {
-  width: 136px;
-  padding: 8px;
+  width: 156px;
+  padding: 10px;
   border: 1.5px solid var(--color-grey-light);
   border-radius: 6px;
   background: linear-gradient(135deg, #ffffff 0%, #fffefc 100%);
