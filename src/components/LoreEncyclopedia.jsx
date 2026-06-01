@@ -372,7 +372,8 @@ export default function LoreEncyclopedia() {
                     ))}
                   </div>
                 </div>
-
+              </div>
+            </section>
           )}
         </div>
       )}
