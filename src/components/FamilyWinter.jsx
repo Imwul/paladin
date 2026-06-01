@@ -3208,15 +3208,25 @@ export default function FamilyWinter({ character, setCharacter }) {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'family' ? 'bold' : 'normal', color: activeSubTab === 'family' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
-          onClick={() => setActiveSubTab('family')}>가문 정보 시트</button>
-        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'tree' ? 'bold' : 'normal', color: activeSubTab === 'tree' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
-          onClick={() => setActiveSubTab('tree')}>가족 관계도 (Lineage)</button>
-        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
-        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'winter' ? 'bold' : 'normal', color: activeSubTab === 'winter' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
-          onClick={() => setActiveSubTab('winter')}>공식 겨울 정산 (10단계 마법사)</button>
+      <div className="sub-tab-navigation" style={{ margin: '12px 0 16px 0' }}>
+        <button 
+          className={`sub-tab-btn ${activeSubTab === 'family' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('family')}
+        >
+          <Shield size={14} /> 가문 역사와 영지 정보 시트
+        </button>
+        <button 
+          className={`sub-tab-btn ${activeSubTab === 'tree' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('tree')}
+        >
+          <Heart size={14} /> 가족 대서사 계보도 (Lineage)
+        </button>
+        <button 
+          className={`sub-tab-btn ${activeSubTab === 'winter' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('winter')}
+        >
+          <RotateCcw size={14} /> 겨울 나기와 봉토 경제 경영
+        </button>
       </div>
 
       {/* SUB TAB: FAMILY DETAILS */}
