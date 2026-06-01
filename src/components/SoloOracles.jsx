@@ -187,6 +187,37 @@ export default function SoloOracles({ character, setCharacter }) {
   const [enemyCommanderSkill, setEnemyCommanderSkill] = useState(12);
   const [playerBattleSkillOverride, setPlayerBattleSkillOverride] = useState(10);
 
+  // 6. 성스러운 기적과 사법 신탁 및 연애 (Chapter 9 - Magic & Miracles) States
+  const [prayerResult, setPrayerResult] = useState(null);
+  const [isRollingPrayer, setIsRollingPrayer] = useState(false);
+  const [selectedPrayerModifier, setSelectedPrayerModifier] = useState(0);
+
+  const [conversionResult, setConversionResult] = useState(null);
+  const [isRollingConversion, setIsRollingConversion] = useState(false);
+  const [paganCommanderName, setPaganCommanderName] = useState('작센 귀족');
+
+  const [trialResult, setTrialResult] = useState(null);
+  const [isRollingTrial, setIsRollingTrial] = useState(false);
+  const [selectedTrialType, setSelectedTrialType] = useState('combat'); // 'combat' | 'ordeal_iron' | 'ordeal_water'
+
+  const [courtshipResult, setCourtshipResult] = useState(null);
+  const [isRollingCourtship, setIsRollingCourtship] = useState(false);
+  const [selectedLadyAmorType, setSelectedLadyAmorType] = useState('passive'); // 'passive' | 'active_romance'
+  const [targetLadyName, setTargetLadyName] = useState('로트링겐 영애');
+  const [ladyLoveStat, setLadyLoveStat] = useState(12);
+
+  const [dreamResult, setDreamResult] = useState(null);
+  const [isRollingDream, setIsRollingDream] = useState(false);
+
+  const [magicApplied, setMagicApplied] = useState(false);
+  const [magicGloryTotal, setMagicGloryTotal] = useState(0);
+
+  // 서사적 기행록용 연대기 States (Narrative building)
+  const [magicLogs, setMagicLogs] = useState([]);
+  const [prayerIntention, setPrayerIntention] = useState('가문의 위기 극복과 전장 생존');
+  const [trialAccusation, setTrialAccusation] = useState('이단 혐의 및 작센과의 밀통 밀고');
+  const [courtshipGift, setCourtshipGift] = useState('비단 스카프와 향기로운 장미 백합');
+
   // Mappings
   const allSkills = [
     // 일반 스킬 (Common Skills)
@@ -1574,6 +1605,344 @@ export default function SoloOracles({ character, setCharacter }) {
     setBattleApplied(false);
   };
 
+  // ==========================================
+  // 6. MAGIC & MIRACLES (CHAPTER 9) LOGIC
+  // ==========================================
+  const rollPrayerAndMiracle = () => {
+    if (isRollingPrayer) return;
+    setIsRollingPrayer(true);
+    setPrayerResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      const isReligious = character?.skills?.religion >= 16; 
+      const finalVal = 10 + selectedPrayerModifier + (isReligious ? 5 : 0);
+
+      const isSuccess = roll <= finalVal;
+      const isCrit = roll === finalVal;
+      const isFumble = roll === 20 && finalVal < 20;
+
+      let outcome = '';
+      let desc = '';
+      let color = '';
+      let glory = 0;
+
+      if (isCrit) {
+        outcome = '성스러운 기적 발현 (Divine Miracle! - Critical)';
+        desc = `기사가 [${prayerIntention}]을(를) 바라고 무릎을 꿇자, 하늘의 장막이 걷히고 영광스러운 가호가 비추며 기사의 상처가 씻은 듯이 나았습니다! 다가올 전투 라운드에 +10 절대 가호를 입습니다.`;
+        color = 'var(--color-success)';
+        glory = 50;
+      } else if (isFumble) {
+        outcome = '신의 분노와 불경 (Divine Displeasure - Fumble)';
+        desc = `[${prayerIntention}]을(를) 부르짖었으나 기사의 불경스러운 마음이 탄로 나 하늘의 분노와 거절을 입었습니다. 다음 스킬 및 전투 판정에 -3 불이익이 주어집니다.`;
+        color = 'var(--color-danger)';
+      } else if (isSuccess) {
+        outcome = '기도 성사 (Prayer Answered - Success)';
+        desc = `[${prayerIntention}]의 간절한 외침이 하늘에 닿았습니다. 기사의 마음에 영적 평화가 깃들며, 다음 판정에 +3 영적 보정을 부여받습니다.`;
+        color = 'var(--color-royal-blue)';
+        glory = 10;
+      } else {
+        outcome = '침묵 (No Response - Failure)';
+        desc = `[${prayerIntention}]을(를) 향한 간구는 무거운 침묵 속에 가라앉았습니다. 더 헌신적인 참회와 고행의 행로가 요구됩니다.`;
+        color = 'var(--color-grey)';
+      }
+
+      setPrayerResult({ roll, outcome, desc, color, glory });
+      setMagicGloryTotal(prev => prev + glory);
+      setIsRollingPrayer(false);
+
+      // Add to narrative chronicle
+      setMagicLogs(prev => [
+        {
+          id: Date.now(),
+          type: 'prayer',
+          title: '🛐 성스러운 기도와 기적',
+          detail: `간구 지향: "${prayerIntention}" | 결과: d20: ${roll} -> ${outcome}`,
+          narrative: desc,
+          glory: glory,
+          timestamp: new Date().toLocaleTimeString()
+        },
+        ...prev
+      ]);
+    }, 800);
+  };
+
+  const rollPaganConversion = () => {
+    if (isRollingConversion) return;
+    setIsRollingConversion(true);
+    setConversionResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      const targetVal = character?.skills?.religion || 10;
+      const isSuccess = roll <= targetVal;
+      const isCrit = roll === targetVal;
+      const isFumble = roll === 20 && targetVal < 20;
+
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+
+      if (isCrit) {
+        outcome = '기적적인 개종 성사 (Miraculous Conversion - Critical)';
+        desc = `이교 장수 ${paganCommanderName}(이)가 기사의 흔들림 없는 숭고한 믿음과 십자가의 광채에 압도되어 무기를 내려놓고 즉시 개종하여 세례를 약속했습니다! 제국에 찬송이 울려 퍼집니다.`;
+        glory = 100;
+      } else if (isFumble) {
+        outcome = '기만적 배신 (Pagan Hostility - Fumble)';
+        desc = `개종을 권유받은 ${paganCommanderName}(이)가 위선적인 조롱으로 기사를 기만하며 기습 공격을 감행해 가문의 명예를 실추시키고 깊은 불명예를 안겼습니다.`;
+        glory = -20;
+      } else if (isSuccess) {
+        outcome = '진실한 개종 (True Conversion - Success)';
+        desc = `이교도 장수 ${paganCommanderName}(이)가 무릎을 꿇고 거짓된 우상을 버린 채 성부와 성자와 성령의 이름으로 개종을 서약했습니다.`;
+        glory = 50;
+      } else {
+        outcome = '완강한 거부 (Conversion Refused - Failure)';
+        desc = `${paganCommanderName}는 "나의 고결한 옛 선조들의 신을 배신할 수 없다"며 기사의 권고를 칼같이 거절했습니다.`;
+      }
+
+      setConversionResult({ roll, outcome, desc, glory });
+      setMagicGloryTotal(prev => prev + glory);
+      setIsRollingConversion(false);
+
+      // Add to narrative chronicle
+      setMagicLogs(prev => [
+        {
+          id: Date.now(),
+          type: 'conversion',
+          title: '⛪ 이교 장수 개종 판정',
+          detail: `대상: "${paganCommanderName}" | 결과: d20: ${roll} -> ${outcome}`,
+          narrative: desc,
+          glory: glory,
+          timestamp: new Date().toLocaleTimeString()
+        },
+        ...prev
+      ]);
+    }, 800);
+  };
+
+  const rollJudicialTrial = () => {
+    if (isRollingTrial) return;
+    setIsRollingTrial(true);
+    setTrialResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      let targetVal = 10;
+      let typeLabel = '';
+
+      if (selectedTrialType === 'combat') {
+        targetVal = character?.skills?.sword || 13;
+        typeLabel = '사법 결투 (Trial by Combat)';
+      } else if (selectedTrialType === 'ordeal_iron') {
+        targetVal = character?.attributes?.con || 12;
+        typeLabel = '달군 철 시련 (Trial by Hot Iron)';
+      } else {
+        targetVal = character?.attributes?.con || 12;
+        typeLabel = '끓는 물 시련 (Trial by Hot Water)';
+      }
+
+      const isSuccess = roll <= targetVal;
+      const isCrit = roll === targetVal;
+      const isFumble = roll === 20 && targetVal < 20;
+
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+
+      if (isCrit) {
+        outcome = '완벽한 결백 입증 (Divine Vindicated - Critical)';
+        desc = `기사에게 씌워진 [${trialAccusation}]에 대해 신성한 법정에서 신께서 완벽한 무고함을 친히 선포하셨습니다! 모함한 원수들이 즉시 파문과 추방을 입으며 명예가 드높아졌습니다.`;
+        glory = 50;
+      } else if (isFumble) {
+        outcome = '신의 정죄와 유죄 선고 (Guilty Verdict - Fumble)';
+        desc = `[${trialAccusation}]의 신명 재판 도중 비참한 부상이나 패배가 깃들어 사법 심관들이 공식 유죄를 선포했습니다! 징벌적 불이익과 씻을 수 없는 치욕을 뒤집어씁니다.`;
+        glory = -50;
+      } else if (isSuccess) {
+        outcome = '무죄 선포 (Innocent - Success)';
+        desc = `[${trialAccusation}]의 사법적 시련을 훌륭히 견뎌내어, 3일 후 깨끗하게 아문 상처(혹은 결투 승리)를 본 판관들로부터 '결백(Innocent)' 판정을 쟁취했습니다!`;
+        glory = 25;
+      } else {
+        outcome = '의혹 미해소 (Guilty by default - Failure)';
+        desc = `시련을 입증하는 데 실패하여 [${trialAccusation}] 혐의가 기소 인정되었습니다. 주군에게 거액의 배상금을 헌납하거나 참회의 순례길을 떠나야 합니다.`;
+      }
+
+      setTrialResult({ roll, outcome, desc, glory });
+      setMagicGloryTotal(prev => prev + glory);
+      setIsRollingTrial(false);
+
+      // Add to narrative chronicle
+      setMagicLogs(prev => [
+        {
+          id: Date.now(),
+          type: 'trial',
+          title: `⚖️ 신명 사법 시련: ${typeLabel}`,
+          detail: `혐의: "${trialAccusation}" | 결과: d20: ${roll} -> ${outcome}`,
+          narrative: desc,
+          glory: glory,
+          timestamp: new Date().toLocaleTimeString()
+        },
+        ...prev
+      ]);
+    }, 800);
+  };
+
+  const rollLadyCourtship = () => {
+    if (isRollingCourtship) return;
+    setIsRollingCourtship(true);
+    setCourtshipResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      let targetVal = 10;
+      if (selectedLadyAmorType === 'passive') {
+        targetVal = ladyLoveStat;
+      } else {
+        targetVal = character?.skills?.romance || 10;
+      }
+
+      const isSuccess = roll <= targetVal;
+      const isCrit = roll === targetVal;
+      const isFumble = roll === 20 && targetVal < 20;
+
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+      let amorIncrease = 0;
+
+      if (selectedLadyAmorType === 'passive') {
+        if (isCrit) {
+          outcome = '낭만적인 넋을 잃음 (Fallen Madly in Love - Critical)';
+          desc = `고결하고 눈부신 ${targetLadyName}의 우아한 자태에 눈이 멀어 기사의 영혼이 마법처럼 격렬한 사랑(Amor)에 사로잡혔습니다. 사랑의 주술을 입어 그녀를 향한 Amor 성향이 폭등합니다!`;
+          glory = 20;
+          amorIncrease = 5;
+        } else if (isFumble) {
+          outcome = '사랑의 저주와 불경 (Love Rejected - Fumble)';
+          desc = `${targetLadyName}에게 낭만을 구했으나, 어설픈 행동과 오만방자한 태도로 가문의 비웃음을 사고 구애의 기회가 영구히 가로막혔습니다.`;
+          glory = -10;
+        } else if (isSuccess) {
+          outcome = '사랑의 감성 고양 (Infatuated - Success)';
+          desc = `${targetLadyName}의 순결하고 우아한 태도에 마음을 빼앗겨 기사로서 품을 수 있는 고귀한 열망과 Amor가 영혼 속에 진실하게 싹텄습니다.`;
+          glory = 10;
+          amorIncrease = 2;
+        } else {
+          outcome = '무덤덤함 (Indifference - Failure)';
+          desc = `${targetLadyName}는 눈부신 미소만 스쳐 보냈을 뿐, 무덤덤하게 시선을 돌려 기사의 마음에 아무런 상흔을 남기지 않았습니다.`;
+        }
+      } else {
+        if (isCrit) {
+          outcome = '기사적 연애 대성공 (Deliberate Courtship - Critical)';
+          desc = `적절한 교양 서정시와 [${courtshipGift}]을(를) 선물로 바쳐 ${targetLadyName}의 영혼을 깊은 눈물의 감동으로 가득 채웠습니다! 그녀는 감사의 징표로 기사에게 향기로운 리본을 건넸습니다.`;
+          glory = 50;
+          amorIncrease = 4;
+        } else if (isFumble) {
+          outcome = '사랑의 파멸 (Courtship Ruined - Fumble)';
+          desc = `[${courtshipGift}]을(를) 바치려다 처참한 궁정 예법 위반으로 ${targetLadyName}의 명예를 더럽히고 궁정에서 영구 퇴출당했습니다! 양가에 대대적인 원한이 서립니다.`;
+          glory = -30;
+        } else if (isSuccess) {
+          outcome = '구애 성공 (Lady Courted - Success)';
+          desc = `기품 있는 예절과 헌신적인 Chanson을 지어 부르고 [${courtshipGift}]을(를) 건네어 ${targetLadyName}의 숭고한 호감과 연애 애정을 얻는 데 드디어 성공했습니다!`;
+          glory = 20;
+          amorIncrease = 1;
+        } else {
+          outcome = '매력 발산 실패 (Courtship Rejected - Failure)';
+          desc = `[${courtshipGift}]을(를) 건네었으나 ${targetLadyName}의 마음의 빗장을 열기에 기사로서의 무훈과 세련된 교양의 깊이가 여전히 못 미쳤습니다.`;
+        }
+      }
+
+      setCourtshipResult({ roll, outcome, desc, glory, amorIncrease });
+      setMagicGloryTotal(prev => prev + glory);
+      setIsRollingCourtship(false);
+
+      // Add to narrative chronicle
+      setMagicLogs(prev => [
+        {
+          id: Date.now(),
+          type: 'courtship',
+          title: `🌹 궁정 구애: ${selectedLadyAmorType === 'passive' ? '넋을 잃음' : '적극적 연애'}`,
+          detail: `상대: "${targetLadyName}" | 공물: "${courtshipGift}" | 결과: d20: ${roll} -> ${outcome}`,
+          narrative: desc,
+          glory: glory,
+          timestamp: new Date().toLocaleTimeString()
+        },
+        ...prev
+      ]);
+    }, 800);
+  };
+
+  const rollDreamsAndOmens = () => {
+    if (isRollingDream) return;
+    setIsRollingDream(true);
+    setDreamResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      let outcome = '';
+      let desc = '';
+
+      if (roll <= 3) {
+        outcome = '불길한 피의 징조 (Omen of Blood)';
+        desc = '어둠 속에서 가문의 웅장한 방패가 불타오르고, 전장에 피가 강물처럼 흘러넘치는 참담한 전쟁 꿈을 꿨습니다. 다음 전투의 첫 1회 타격에 -3 절대 보정치를 적용받습니다.';
+      } else if (roll <= 8) {
+        outcome = '성모님의 신성한 가호 (Omen of Protection)';
+        desc = '온화한 성모님께서 빛의 망토로 기사를 덮으며 피 묻은 가슴을 씻겨주시는 자애로운 꿈을 꾸었습니다! 다음 모험 중 직면할 생사 위기를 1회에 한해 완전 방어(자동 아머 세이브)할 수 있습니다.';
+      } else if (roll <= 14) {
+        outcome = '평온한 예언 (Quiet Dream)';
+        desc = '비가 평화롭게 쏟아지는 밀밭과 영지의 백성들이 풍성한 추수를 거두는 평화로운 꿈을 꾸었습니다. 특별한 징조는 없습니다.';
+      } else if (roll <= 18) {
+        outcome = '용맹의 고취 (Dream of Valor)';
+        desc = '전설 속의 황금 사자가 군단 깃발에 올라타 포효하는 웅장한 환시를 보았습니다! 다음 용맹(Valorous) 성향 시험 판정에 +5 절대 보정을 부여받습니다.';
+      } else {
+        outcome = '천사의 영감 계시 (Angelic Revelation)';
+        desc = '천사 가브리엘이 기사의 꿈속에 내려와, 다가올 이교도 군단의 은밀한 약점과 승리의 행로를 귓속말로 귀띔해주셨습니다! 다음 모험/전투 판정 1회에 주사위 재굴림 권능을 얻습니다.';
+      }
+
+      setDreamResult({ roll, outcome, desc });
+      setIsRollingDream(false);
+
+      // Add to narrative chronicle
+      setMagicLogs(prev => [
+        {
+          id: Date.now(),
+          type: 'dream',
+          title: '🌌 전야의 꿈과 징조',
+          detail: `결과: d20: ${roll} -> ${outcome}`,
+          narrative: desc,
+          glory: 0,
+          timestamp: new Date().toLocaleTimeString()
+        },
+        ...prev
+      ]);
+    }, 800);
+  };
+
+  const applyMagicToSheet = () => {
+    if (magicApplied) return;
+
+    setCharacter(prev => {
+      const updated = { ...prev };
+      
+      if (!updated.gear) updated.gear = {};
+      const currentGlory = updated.gear.gloryTotal || 1000;
+      updated.gear.gloryTotal = currentGlory + magicGloryTotal;
+
+      return updated;
+    });
+
+    setMagicApplied(true);
+    alert(`[신앙과 기적 정산 완료]: 성스러운 위업 및 모험에서 거둔 영예가 공식 적용되었습니다.\n• 획득 명예: +${magicGloryTotal} Glory`);
+  };
+
+  const resetMagicSimulator = () => {
+    setPrayerResult(null);
+    setConversionResult(null);
+    setTrialResult(null);
+    setCourtshipResult(null);
+    setDreamResult(null);
+    setMagicGloryTotal(0);
+    setMagicApplied(false);
+    setMagicLogs([]);
+  };
+
   const getOracleAnswerFromRollText = (ans) => {
     if (!ans) return '';
     return ans.result + ': ' + ans.desc;
@@ -1625,6 +1994,12 @@ export default function SoloOracles({ character, setCharacter }) {
             onClick={() => setActiveSubTab('combat_skills')}
           >
             <Shield size={14} /> 1대1 무기 격돌 및 전투 기술
+          </button>
+          <button 
+            className={`sub-tab-btn ${activeSubTab === 'miracles_amor' ? 'active' : ''}`} 
+            onClick={() => setActiveSubTab('miracles_amor')}
+          >
+            <Heart size={14} /> 신앙 기적과 사법 재판 및 연애
           </button>
         </div>
       </div>
@@ -2862,6 +3237,325 @@ export default function SoloOracles({ character, setCharacter }) {
                 </div>
 
               </div>
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ========================================================
+          SUB-TAB 5: PRAYER, DIVINE MIRACLES, TRIALS & COURTSHIP
+          ======================================================== */}
+      {activeSubTab === 'miracles_amor' && (
+        <>
+          <div className="cs-row">
+            {/* 1. 성스러운 기도와 기적 (Prayers & Miracles) */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
+                <h3>✝️ 성스러운 기도와 신앙의 기적</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
+                  주님과 성 교회를 위해 간절히 무릎 꿇고 머리를 숙여, 전장의 불타는 시련을 극복하고 성스러운 가호와 징조를 요청합니다. (Religion 16 이상 기사는 +5 신앙의 가중치를 입습니다)
+                </p>
+                <div className="cs-field">
+                  <span className="cs-field-label">기도의 세부 지향 (나만의 서사):</span>
+                  <input 
+                    type="text" 
+                    value={prayerIntention} 
+                    onChange={e => { setPrayerIntention(e.target.value); setPrayerResult(null); }}
+                    placeholder="예: 가문의 가혹한 운명 극복과 전장 생존"
+                    style={{ fontSize: '0.8rem' }}
+                  />
+                </div>
+                <div className="cs-field">
+                  <span className="cs-field-label">기도의 환경적 보정:</span>
+                  <select value={selectedPrayerModifier} onChange={e => { setSelectedPrayerModifier(parseInt(e.target.value)); setPrayerResult(null); }}>
+                    <option value={0}>일반 야영지 기도 (보정 없음)</option>
+                    <option value={2}>장엄한 대성당 십자가 앞 기도 (+2)</option>
+                    <option value={5}>기적을 간직한 전설의 성유물 앞 기도 (+5)</option>
+                    <option value={-3}>화살이 빗발치는 긴박한 전장 한가운데 (-3)</option>
+                  </select>
+                </div>
+                <button className="btn-medieval btn-medieval-primary" onClick={rollPrayerAndMiracle} disabled={isRollingPrayer} style={{ width: '100%', justifyContent: 'center' }}>
+                  {isRollingPrayer ? '성령의 계시를 기다리는 중...' : '🛐 성스러운 기도 굴리기 (d20)'}
+                </button>
+                {prayerResult && (
+                  <div style={{ border: '1.5px solid ' + prayerResult.color, padding: '10px', background: 'rgba(0,0,0,0.01)', marginTop: '8px', borderRadius: '4px' }}>
+                    <strong style={{ color: prayerResult.color, fontSize: '0.86rem', display: 'block', marginBottom: '4px' }}>
+                      기도 결과 (d20: {prayerResult.roll}): {prayerResult.outcome}
+                    </strong>
+                    <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45 }}>
+                      {prayerResult.desc}
+                    </p>
+                    {prayerResult.glory > 0 && (
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-success)', fontWeight: 'bold', display: 'block', marginTop: '4px' }}>
+                        • 획득한 신앙 영예: +{prayerResult.glory} Glory
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* 2. 이교도 개종 판정기 (Pagan Conversion) */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+                <h3>⛪ 이교 장수 개종 및 귀순 판정기</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
+                  전장이나 사법 결투에서 사로잡거나 굴복시킨 작센/사라센 귀족 장수를 기독교의 십자가 아래 신실히 세례 받도록 설파합니다. (기준: 기사의 Religion 종교 스킬)
+                </p>
+                <div className="cs-field">
+                  <span className="cs-field-label">개종시킬 적장 이름:</span>
+                  <input 
+                    type="text" 
+                    value={paganCommanderName} 
+                    onChange={e => { setPaganCommanderName(e.target.value); setConversionResult(null); }}
+                    placeholder="예: 뷔두킨트 백작"
+                    style={{ fontSize: '0.8rem' }}
+                  />
+                </div>
+                <button className="btn-medieval" onClick={rollPaganConversion} disabled={isRollingConversion} style={{ width: '100%', justifyContent: 'center' }}>
+                  {isRollingConversion ? '참회와 교리를 해설하는 중...' : '✝️ 이교도 귀순/개종 판정 (d20 vs 종교 스킬)'}
+                </button>
+                {conversionResult && (
+                  <div style={{ border: '1.5px solid var(--color-gold)', padding: '10px', background: '#faf6eb', marginTop: '8px', borderRadius: '4px' }}>
+                    <strong style={{ color: 'var(--color-crimson)', fontSize: '0.86rem', display: 'block', marginBottom: '4px' }}>
+                      설파 결과 (d20: {conversionResult.roll}): {conversionResult.outcome}
+                    </strong>
+                    <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45 }}>
+                      {conversionResult.desc}
+                    </p>
+                    {conversionResult.glory !== 0 && (
+                      <span style={{ fontSize: '0.72rem', color: conversionResult.glory > 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 'bold', display: 'block', marginTop: '4px' }}>
+                        • 명예 획득 변동: {conversionResult.glory > 0 ? '+' : ''}{conversionResult.glory} Glory
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="cs-row" style={{ marginTop: '16px' }}>
+            {/* 3. 사법 시련 및 결투 재판 (Judicial Ordeals & Combat Trials) */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
+                <h3>⚖️ 사법 결투 및 신명 시련 시뮬레이터</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
+                  주군 혹은 시기심 가득한 경쟁 가문의 부당한 고소에 직면하여, 고대 전례에 따른 신들의 심판(사법 결투, 달군 철판, 끓는 성수 시련)을 열어 기사의 완전 무죄와 가문 무고를 입증합니다.
+                </p>
+                <div className="cs-field">
+                  <span className="cs-field-label">피소 및 고소당한 혐의 사건명:</span>
+                  <input 
+                    type="text" 
+                    value={trialAccusation} 
+                    onChange={e => { setTrialAccusation(e.target.value); setTrialResult(null); }}
+                    placeholder="예: 사라센 첩자와 내통했다는 간신들의 모략"
+                    style={{ fontSize: '0.8rem' }}
+                  />
+                </div>
+                <div className="cs-field">
+                  <span className="cs-field-label">사법 입증 시험 방식:</span>
+                  <select value={selectedTrialType} onChange={e => { setSelectedTrialType(e.target.value); setTrialResult(null); }}>
+                    <option value="combat">사법 기사 결투 (d20 vs 기사의 검술 스킬)</option>
+                    <option value="ordeal_iron">뜨거운 달군 철판 시련 (d20 vs 기사의 체력 속성)</option>
+                    <option value="ordeal_water">끓는 가마솥 성수 시련 (d20 vs 기사의 체력 속성)</option>
+                  </select>
+                </div>
+                <button className="btn-medieval" onClick={rollJudicialTrial} disabled={isRollingTrial} style={{ width: '100%', justifyContent: 'center' }}>
+                  {isRollingTrial ? '주님의 거룩한 재판이 열리는 중...' : '⚖️ 결백 입증 신명 시련 개시'}
+                </button>
+                {trialResult && (
+                  <div style={{ border: '1.5px solid var(--color-grey)', padding: '10px', background: '#faf6eb', marginTop: '8px', borderRadius: '4px' }}>
+                    <strong style={{ color: 'var(--color-ink)', fontSize: '0.86rem', display: 'block', marginBottom: '4px' }}>
+                      재판 결과 (d20: {trialResult.roll}): {trialResult.outcome}
+                    </strong>
+                    <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45 }}>
+                      {trialResult.desc}
+                    </p>
+                    {trialResult.glory !== 0 && (
+                      <span style={{ fontSize: '0.72rem', color: trialResult.glory > 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 'bold', display: 'block', marginTop: '4px' }}>
+                        • 정산 영예 변동: {trialResult.glory > 0 ? '+' : ''}{trialResult.glory} Glory
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* 4. 궁정 연애 & 꿈과 예지 */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
+                <h3>🌹 궁정 고결한 연애 &amp; 밤의 신성한 예지</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* Courtship */}
+                <div>
+                  <strong style={{ fontSize: '0.82rem', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '4px' }}>궁정 연애 및 숙녀 구애 (Amor &amp; Romance)</strong>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--color-grey)', margin: '0 0 8px 0', lineHeight: 1.35 }}>
+                    고귀한 혈통의 숙녀에게 Chanson(서정시)을 바치고 넋을 잃는 사랑의 포로가 되거나 헌신적인 사랑을 고백합니다.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '6px', marginBottom: '6px' }}>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>대상 숙녀 성함:</span>
+                      <input 
+                        type="text" 
+                        value={targetLadyName} 
+                        onChange={e => { setTargetLadyName(e.target.value); setCourtshipResult(null); }}
+                        style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                      />
+                    </div>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>숙녀의 자태(수치):</span>
+                      <input 
+                        type="number" 
+                        value={ladyLoveStat} 
+                        onChange={e => { setLadyLoveStat(parseInt(e.target.value) || 12); setCourtshipResult(null); }}
+                        style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                      />
+                    </div>
+                  </div>
+                  <div className="cs-field" style={{ marginBottom: '8px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>바치는 시와 고결한 예물:</span>
+                    <input 
+                      type="text" 
+                      value={courtshipGift} 
+                      onChange={e => { setCourtshipGift(e.target.value); setCourtshipResult(null); }}
+                      placeholder="예: 붉은 리본 백합화와 헌신적인 사랑의 Chanson"
+                      style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                    />
+                  </div>
+                  <div className="cs-field" style={{ marginBottom: '8px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>연애 구애의 형식:</span>
+                    <select 
+                      value={selectedLadyAmorType} 
+                      onChange={e => { setSelectedLadyAmorType(e.target.value); setCourtshipResult(null); }}
+                      style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                    >
+                      <option value="passive">넋을 잃음 (Amor 판정, 대상 자태 d20 이하 성공)</option>
+                      <option value="active_romance">적극적 구애 수련 (Romance 판정, 기사 스킬 이하 성공)</option>
+                    </select>
+                  </div>
+                  <button className="btn-medieval" onClick={rollLadyCourtship} disabled={isRollingCourtship} style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '6px' }}>
+                    {isRollingCourtship ? 'Chansons를 읊으며 무릎 꿇는 중...' : '🌹 숙녀의 마음을 구하는 연애 주사위'}
+                  </button>
+                  {courtshipResult && (
+                    <div style={{ border: '1px solid var(--color-gold)', padding: '8px', background: '#faf6eb', marginTop: '6px', fontSize: '0.74rem', borderRadius: '4px' }}>
+                      <strong>d20: {courtshipResult.roll} - {courtshipResult.outcome}</strong>
+                      <p style={{ margin: '2px 0 0 0', lineHeight: 1.35 }}>{courtshipResult.desc}</p>
+                      {courtshipResult.amorIncrease > 0 && (
+                        <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', display: 'block', marginTop: '2px' }}>
+                          💘 숙녀에 대한 가문적 애정도(Amor)가 즉시 +{courtshipResult.amorIncrease} 증가했습니다!
+                        </span>
+                      )}
+                      {courtshipResult.glory !== 0 && (
+                        <span style={{ color: 'var(--color-success)', fontWeight: 'bold', display: 'block' }}>
+                          • 기사 명예 변동: {courtshipResult.glory > 0 ? '+' : ''}{courtshipResult.glory} Glory
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Dreams & Omens */}
+                <div style={{ borderTop: '1px dashed var(--color-grey-light)', paddingTop: '10px', marginTop: '4px' }}>
+                  <strong style={{ fontSize: '0.82rem', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '4px' }}>밤의 신성한 예지와 징조 (Dreams &amp; Omens)</strong>
+                  <button className="btn-medieval" onClick={rollDreamsAndOmens} disabled={isRollingDream} style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '6px' }}>
+                    {isRollingDream ? '밤하늘의 징조와 은하를 해석하는 중...' : '🌌 전야의 꿈과 신성한 예언 (d20)'}
+                  </button>
+                  {dreamResult && (
+                    <div style={{ border: '1px solid var(--color-grey)', padding: '8px', background: '#f5ecd5', marginTop: '6px', fontSize: '0.74rem', borderRadius: '4px' }}>
+                      <strong>예지 판정 (d20: {dreamResult.roll}) - {dreamResult.outcome}</strong>
+                      <p style={{ margin: '2px 0 0 0', lineHeight: 1.35 }}>{dreamResult.desc}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* 누적 명예 정산 및 캐릭터 시트 연동 */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139,105,20,0.03)', padding: '14px', border: '1.5px solid var(--color-gold)', marginTop: '16px', borderRadius: '4px' }}>
+            <div>
+              <strong style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⛪ 성스러운 신앙 및 연애 모험 영예 정산</strong>
+              <div style={{ fontSize: '0.84rem', marginTop: '4px' }}>누적 명예 획득: <strong style={{ color: 'var(--color-success)' }}>+{magicGloryTotal} Glory</strong></div>
+            </div>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn-medieval btn-medieval-primary" onClick={applyMagicToSheet} disabled={magicApplied || magicGloryTotal === 0} style={{ fontSize: '0.82rem' }}>
+                {magicApplied ? '✓ 시트 반영 완료' : '📈 영예 시트 데이터 반영'}
+              </button>
+              <button className="btn-medieval" onClick={resetMagicSimulator} style={{ fontSize: '0.78rem' }}>
+                🔄 시뮬레이터 및 서사 로그 초기화
+              </button>
+            </div>
+          </div>
+
+          {/* 5. 나의 기사적 연대기 (My Knightly Chronicle - Dynamic narrative flow) */}
+          <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
+            <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+              <h3>📜 나의 기사단 성스러운 모험 연대기 (My Knightly Chronicle)</h3>
+            </div>
+            <div className="cs-section-inner" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--color-grey)' }}>
+                  기사의 모험 주사위 굴림을 통해 실시간으로 작성되는 서사적인 행적 연대기입니다.
+                </span>
+                {magicLogs.length > 0 && (
+                  <button 
+                    className="btn-medieval" 
+                    style={{ fontSize: '0.76rem', padding: '4px 8px' }}
+                    onClick={() => {
+                      const text = magicLogs.map(log => `[${log.timestamp}] ${log.title}\n- 요약: ${log.detail}\n- 묘사: ${log.narrative}\n- 명예 변동: ${log.glory >= 0 ? '+' : ''}${log.glory} Glory\n`).join('\n');
+                      navigator.clipboard.writeText(text);
+                      alert('기사의 위대한 모험 서사가 클립보드에 통째로 복사되었습니다! 소설 집필이나 캠페인 세션 노트에 활용하세요.');
+                    }}
+                  >
+                    📋 전체 서사 텍스트 복사
+                  </button>
+                )}
+              </div>
+
+              {magicLogs.length === 0 ? (
+                <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', fontSize: '0.86rem' }}>
+                  "아직 성스럽고 고결한 가문의 역사적 기행이 개시되지 않았습니다.<br />
+                  상단의 신앙 기도, 이교도 개종, 신명 시련, 혹은 숙녀에 대한 궁정 예법 구애를 거쳐 기사 가문의 위대한 서사를 직조해 나가십시오."
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
+                  {magicLogs.map((log) => (
+                    <div 
+                      key={log.id} 
+                      style={{ 
+                        borderLeft: `3px solid ${log.type === 'prayer' ? 'var(--color-royal-blue)' : log.type === 'conversion' ? 'var(--color-gold)' : log.type === 'trial' ? 'var(--color-grey)' : 'var(--color-crimson)'}`, 
+                        padding: '10px 14px', 
+                        background: '#faf6eb', 
+                        borderRadius: '0 4px 4px 0',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <span style={{ fontWeight: 'bold', fontSize: '0.86rem', color: 'var(--color-ink)' }}>{log.title}</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{log.timestamp}</span>
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '4px' }}>
+                        {log.detail}
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '0 0 6px 0', lineHeight: 1.45, fontStyle: 'italic' }}>
+                        "{log.narrative}"
+                      </p>
+                      {log.glory !== 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '0.74rem', color: log.glory > 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 'bold' }}>
+                          {log.glory > 0 ? '영예 획득' : '명예 실추'}: {log.glory > 0 ? '+' : ''}{log.glory} Glory
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         </>
