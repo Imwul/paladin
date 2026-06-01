@@ -1814,16 +1814,39 @@ input[type="number"] {
   font-family: var(--font-korean) !important;
   letter-spacing: -0.03em !important;
   line-height: 1.25;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.ft-name-ko {
+  display: block;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ft-name-en {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--color-grey);
+  margin-top: 1px;
+  font-family: var(--font-serif) !important;
 }
 
 .ft-years {
   font-size: 0.65rem;
   color: var(--color-grey);
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 3px;
   font-family: var(--font-serif) !important;
   margin-bottom: 2px;
+  text-align: center;
+  width: 100%;
 }
 
 .ft-note {
@@ -1841,6 +1864,8 @@ input[type="number"] {
   -webkit-box-orient: vertical;
   word-break: keep-all;
   letter-spacing: -0.04em !important;
+  text-align: center;
+  width: 100%;
 }
 
 /* Card Hover overlay controls */

@@ -1,6 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull } from 'lucide-react';
 
+const splitName = (fullName) => {
+  if (!fullName) return { ko: '', en: '' };
+  const regex = /([^(]+)\s*(?:\(([^)]+)\))?/;
+  const match = fullName.match(regex);
+  if (match) {
+    return {
+      ko: match[1].trim(),
+      en: match[2] ? match[2].trim() : ''
+    };
+  }
+  return { ko: fullName, en: '' };
+};
+
 export default function FamilyTree({ character, setCharacter }) {
   const [editingMember, setEditingMember] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -420,12 +433,15 @@ export default function FamilyTree({ character, setCharacter }) {
         </div>
 
         <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none' }}>
-          {member.name}
+          <span className="ft-name-ko">{splitName(member.name).ko}</span>
+          {splitName(member.name).en && (
+            <span className="ft-name-en">{splitName(member.name).en}</span>
+          )}
         </h4>
         
         {member.lifeYears && (
           <div className="ft-years">
-            <Calendar size={11} /> {member.lifeYears}
+            {member.lifeYears}
           </div>
         )}
 
