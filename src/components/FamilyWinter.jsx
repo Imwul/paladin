@@ -85,58 +85,58 @@ export default function FamilyWinter({ character, setCharacter }) {
       
       let event = "";
       if (yr === 723) {
-        event = "작센 원정에 종군하였습니다.";
+        event = "작센 영토 공격: 카롤루스 마르텔이 가이스마르와 프리츨라 인근의 작센 신성한 나무(holy trees)들을 파괴한 역사적 원정에 종군했습니다.";
         const survival = rollD20();
         if (survival <= 2) {
           gfDead = true;
           gfDeathYr = yr;
           gfCause = "작센 전사 (Combat)";
           gfGlory += 1000;
-          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           gfGlory += 200; 
           gfHateSaxons += rollD3();
-          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 영웅적 전공을 세우며 생존! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
+          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 영웅적 전공을 세우며 생존! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
         } else {
           gfGlory += 50; 
           gfHateSaxons += rollD3();
-          logs.push(`🛡️ 723년: ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
+          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
         }
       } else if (yr === 725) {
-        event = "오툉 공성전에 수비대로 참전하였습니다.";
+        event = "오툉 포위전: 무어인들이 Nîmes과 Carcassonne을 함락시키고 론 강을 따라 오툉(Autun)까지 대약탈을 감행하여, 오툉 수비대로서 결사 항전했습니다. 소문에 따르면 아키텐의 오도 공작이 아키텐 대신 프랑크를 침공하라고 무어인을 매수했다고 합니다.";
         const survival = rollD20();
         if (survival <= 2) {
           gfDead = true;
           gfDeathYr = yr;
           gfCause = "오툉 공성전 전사 (Combat)";
           gfGlory += 1000;
-          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 무어인들과 싸우다 장렬히 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 무어인들과 싸우다 장렬히 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           gfGlory += 100;
           gfHateMoors += rollD3();
-          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 적들의 공세를 저지하며 활약! (+100 Glory, 무어인 증오 +${gfHateMoors})`);
+          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 적들의 공세를 저지하며 활약! (+100 Glory, 무어인 증오 +${gfHateMoors})`);
         } else {
           gfGlory += 25;
           gfHateMoors += rollD3();
-          logs.push(`🏰 725년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${gfHateMoors})`);
+          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${gfHateMoors})`);
         }
       } else if (yr === 728) {
-        event = "작센 및 프리지아 원정에 나섰습니다.";
+        event = "작센 및 아키텐 대원정: 카롤루스 마르텔이 작센과 프리지아에서 원정을 벌이고, 독립을 선포하며 무어인과 연맹을 맺은 아키텐의 오도 공작을 제압하기 위해 대원정에 나섰습니다.";
         const survival = rollD20();
         if (survival <= 2) {
           gfDead = true;
           gfDeathYr = yr;
           gfCause = "작센 전사 (Combat)";
           gfGlory += 1000;
-          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           gfGlory += 200;
           gfHateSaxons += rollD3();
-          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 작센 추장들과 대결해 승리! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
+          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 작센 추장들과 대결해 승리! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
         } else {
           gfGlory += 50;
           gfHateSaxons += rollD3();
-          logs.push(`🛡️ 728년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
+          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
         }
       } else {
         const d20 = rollD20();
@@ -205,56 +205,56 @@ export default function FamilyWinter({ character, setCharacter }) {
       if (fDead) continue;
 
       if (yr === 753) {
-        event = "작센 토벌 원정에 참여하였습니다.";
+        event = "작센 대토벌: 단신왕 피핀(Pepin the Short)이 이교도 작센인들의 연이은 배반과 국경 습격을 징벌하고 영토를 평정하기 위해 일으킨 대대적인 원정에 참전했습니다.";
         const survival = rollD20();
         if (survival <= 2) {
           fDead = true;
           fDeathYr = yr;
           fCause = "작센 전사 (Combat)";
           fGlory += 1000;
-          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           fGlory += 200;
           fHateSaxons += rollD3();
-          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 영웅적인 활약으로 영지를 점령! (+200 Glory, 작센인 증오 +${fHateSaxons})`);
+          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 영웅적인 활약으로 영지를 점령! (+200 Glory, 작센인 증오 +${fHateSaxons})`);
         } else {
           fGlory += 50;
           fHateSaxons += rollD3();
-          logs.push(`🛡️ 753년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${fHateSaxons})`);
+          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${fHateSaxons})`);
         }
       } else if (yr === 755) {
-        event = "롬바르디아(파비아) 공성전에 참전하였습니다.";
+        event = "롬바르디아 원정: 피핀 국왕이 교황 스테파노 2세의 구원 요청을 정식으로 승인하여, 알프스를 넘어 롬바르디아 왕 아이스툴프의 수도인 파비아(Pavia)를 포위 공성하는 이탈리아 원정에 참여했습니다.";
         const survival = rollD20();
         if (survival <= 2) {
           fDead = true;
           fDeathYr = yr;
           fCause = "파비아 공성전 전사 (Combat)";
           fGlory += 1000;
-          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 파비아 성벽 아래에서 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 파비아 성벽 아래에서 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           fGlory += 100;
-          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 성문을 부수는 결사대를 지원해 명예 획득! (+100 Glory)`);
+          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 성문을 부수는 결사대를 지원해 명예 획득! (+100 Glory)`);
         } else {
           fGlory += 50;
-          logs.push(`🇮🇹 755년: ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다.`);
+          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다.`);
         }
       } else if (yr === 759) {
-        event = "나르본 공성전(무어인 토벌)에 참여하였습니다.";
+        event = "나르본 공성전(무어인 토벌): 남부 셉티마니아의 요충지이자 무어인(사라센)이 점령하고 있던 나르본(Narbonne)을 7년간의 끈질긴 포위 공성전 끝에 마침내 완전히 탈환하고 영토를 수복하는 대역사적 승리에 동참했습니다.";
         const survival = rollD20();
         if (survival <= 2) {
           fDead = true;
           fDeathYr = yr;
           fCause = "나르본 공성전 전사 (Combat)";
           fGlory += 1000;
-          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 나르본 공성 중 장렬히 전사하셨습니다! (+1000 Glory)`);
+          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 나르본 공성 중 장렬히 전사하셨습니다! (+1000 Glory)`);
         } else if (survival <= 5) {
           fGlory += 100;
           fHateMoors += rollD3();
-          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 이교도의 돌격을 격퇴하고 기치를 꽂음! (+100 Glory, 무어인 증오 +${fHateMoors})`);
+          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 이교도의 돌격을 격퇴하고 기치를 꽂음! (+100 Glory, 무어인 증오 +${fHateMoors})`);
         } else {
           fGlory += 50;
           fHateMoors += rollD3();
-          logs.push(`⚔️ 759년: ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${fHateMoors})`);
+          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${fHateMoors})`);
         }
       } else {
         const d20 = rollD20();
