@@ -404,6 +404,43 @@ export default function LoreEncyclopedia() {
                   </p>
                 </div>
 
+                {/* Appendix Three: Genealogical Lineage */}
+                {selectedFamily.genealogy && (
+                  <div style={{ borderTop: '1px solid var(--color-grey-light)', paddingTop: '12px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      👑 룰북 공식 영웅 계보 및 혈통도 (Appendix Three: Genealogy)
+                    </h4>
+                    <div 
+                      style={{ 
+                        background: '#fffef9', 
+                        border: '1.5px solid var(--color-gold)', 
+                        borderRadius: '6px', 
+                        padding: '12px', 
+                        boxShadow: '0 2px 6px rgba(201,168,76,0.06)' 
+                      }}
+                    >
+                      <div 
+                        style={{ 
+                          display: 'flex', 
+                          flexDirection: 'column', 
+                          gap: '6px', 
+                          fontSize: '0.84rem', 
+                          lineHeight: '1.5', 
+                          color: 'var(--color-ink)', 
+                          fontFamily: 'var(--font-korean-serif)' 
+                        }}
+                      >
+                        {selectedFamily.genealogy.split('\n').map((line, idx) => (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '4px' }}>
+                            <span style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>✦</span>
+                            <div>{line.replace('• ', '')}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
               </div>
             </section>
           )}

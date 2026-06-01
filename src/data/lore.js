@@ -17,7 +17,8 @@ export const greatFamilies = [
     traitsEN: "Highly proud, pious, and born to rule. They value absolute loyalty to the Crown.",
     traitsKO: "극도로 높은 자부심, 강렬한 종교적 경건함, 지배자로 태어난 타고난 위엄을 지니고 있습니다. 왕관에 대한 절대적 충성을 가장 무겁게 여깁니다.",
     crestDescEN: "Gules, an imperial eagle displayed or, beak and talons azure.",
-    crestDescKO: "붉은 바탕에 황금색 제국 독수리, 파란색 부리와 발톱."
+    crestDescKO: "붉은 바탕에 황금색 제국 독수리, 파란색 부리와 발톱.",
+    genealogy: "• 시조: 헤르스탈의 피핀 & 알파이다\n• 부친: 샤를 마르텔 (Charles Martel - 망치왕) & 로트루드\n• 후손: 피핀 3세 (Pepin the Short - 단신왕) & 베르트라다 (평발왕비)\n• 직계 자녀: 샤를마뉴 대제 (Charlemagne - 서로마 황제), 카를로만 (Carloman)\n• 방계 친족: 숙부 베르나르 경 (Sir Bernard)"
   },
   {
     key: "ardennes",
@@ -32,7 +33,8 @@ export const greatFamilies = [
     traitsEN: "Highly prudent and patient. Deeply knowledgeable in folklore and faerie lore.",
     traitsKO: "신중함과 끈질긴 인내심이 돋보입니다. 숲속에 잠든 민간 요정 전설과 조상들의 전통 지식에 매우 박식합니다.",
     crestDescEN: "Argent, a wild boar rampant sable, armed gules.",
-    crestDescKO: "은색 바탕에 포효하는 검은색 야생 멧돼지, 붉은 이빨과 발톱."
+    crestDescKO: "은색 바탕에 포효하는 검은색 야생 멧돼지, 붉은 이빨과 발톱.",
+    genealogy: "• 시조: 오리돈의 람베르트 (Lambert of Oridon)\n• 부친: 아르덴의 티에리 1세 (Thierry I, 736-793) & 에노의 리쉴드\n• 형제: 아를롱의 갈레랑 (Galeran of Arlon, 734)\n• 자녀: 아르덴의 티에리 2세 (Thierry II, 780), 베라르 (Berard), 갈로팽 (Galopin, 766), 아믈레브의 리샤르, 바스토뉴의 기욤"
   },
   {
     key: "monglane",
@@ -47,7 +49,8 @@ export const greatFamilies = [
     traitsEN: "Extremely valorous, honest, and vengeful against pagans. Renowned for massive physical size and combat prowess.",
     traitsKO: "극단적으로 용맹하고 타협이 없는 정직함을 지녔으며, 이교도에 대한 끓어오르는 증오를 품고 있습니다. 압도적인 체구와 전장의 분쇄 능력을 자랑합니다.",
     crestDescEN: "Azure, a tower triple-towered argent, overlooking a sea gules.",
-    crestDescKO: "푸른 바탕에 은색의 3중 성탑, 아래로는 붉게 물든 바다."
+    crestDescKO: "푸른 바탕에 은색의 3중 성탑, 아래로는 붉게 물든 바다.",
+    genealogy: "• 시조: 몽글란의 가린 (Garin of Monglane) & 바이에른의 클라리사\n• 자녀: 안주의 가린 (Garin of Anjou), 아키텐의 에르망가르드\n• 손자: 비엔의 제라르 (Gerard of Vienne), 기욤 경 (오렌지의 기욤 - 나르본 백작), 기 경, 용맹한 비비앙 경"
   },
   {
     key: "mayence",
@@ -62,7 +65,8 @@ export const greatFamilies = [
     traitsEN: "Highly deceitful, proud, and experts in intrigue and politics. Often harbor deep grudges.",
     traitsKO: "대단히 기만적이고 오만하며, 음모와 사교계의 정치 공작에 비할 바 없는 달인들입니다. 한 번 품은 원한은 대를 이어 갚습니다.",
     crestDescEN: "Or, three serpents coiling sable, crowned and langued gules.",
-    crestDescKO: "황금색 바탕에 서로 휘감긴 세 마리의 검은 독사, 붉은 왕관과 튀어나온 혀."
+    crestDescKO: "황금색 바탕에 서로 휘감긴 세 마리의 검은 독사, 붉은 왕관และ 튀어나온 혀.",
+    genealogy: "• 시조: 마옌스의 그리포 (Grifo of Mayence)\n• 대표 백작: 가늘롱 백작 (Count Ganelon - 롤랑의 배신자)\n• 숙부: 하드라드 (Hardrad)\n• 친족/수호 기사: 피나벨 경 (Sir Pinabel - 제국 대결투의 사수)"
   },
   {
     key: "agilolfings",
@@ -77,7 +81,8 @@ export const greatFamilies = [
     traitsEN: "Proud and independent-minded, yet fiercely loyal to brothers-in-arms.",
     traitsKO: "자주적인 독립 정신이 매우 강하고 오만하지만, 한 번 맺은 형제 기사의 맹세에는 목숨을 바쳐 든든하게 응합니다.",
     crestDescEN: "Per pale, azure a crescent argent, and gules a lion rampant or.",
-    crestDescKO: "좌우 분할, 왼쪽은 파란 바탕에 은색 초승달, 오른쪽은 붉은 바탕에 황금 사자."
+    crestDescKO: "좌우 분할, 왼쪽은 파란 바탕에 은색 초승달, 오른쪽은 붉은 바탕에 황금 사자.",
+    genealogy: "• 시조: 바이에른의 오딜로 공작 & 칠트루드 (피핀의 누이)\n• 직계: 타실로 3세 공작 & 롬바르디아의 리우트베르가\n• 방계: 덴마크 국왕 고드프리드 1세\n• 전설의 기사: 덴마크인 오지에 (Ogier the Dane) & 벨리센드 공주\n• 제국 고문: 바이에른의 네모 공작 (Duke Naymo)"
   },
   {
     key: "aigremont",
@@ -92,7 +97,8 @@ export const greatFamilies = [
     traitsEN: "Extremely valorous, independent, forgiving to family, and possessing high hospitality.",
     traitsKO: "대단히 용맹스럽고 독립적이며, 자기 혈육에 대해서는 한없이 관대하고 타인에게는 환대를 아끼지 않는 영웅적인 면모를 보입니다.",
     crestDescEN: "Gules, a four-headed horse rampant argent, on a chief azure three mullets or.",
-    crestDescKO: "붉은 바탕에 기어오르는 네 개의 머리를 가진 은색 말, 파란색 상단부에는 세 개의 황금색 별."
+    crestDescKO: "붉은 바탕에 기어오르는 네 개의 머리를 가진 은색 말, 파란색 상단부에는 세 개의 황금색 별.",
+    genealogy: "• 부친: 도르돈의 에몽 백작 (Count Aymon) & 클레르몽의 베아트리스\n• 전설의 네 아들: 몽토방의 르노 (Sir Renaud), 알라르, 리샤르, 기샤르\n• 숙부: 에그레몽의 보브 공작 (Duke Beuves)\n• 친족 영웅: 모지 경 (Sir Maugis - 대마법사 사촌), 브라다만테 (여전사) & 무어인 로제로"
   },
   {
     key: "doon_mayence",
@@ -107,12 +113,13 @@ export const greatFamilies = [
     traitsEN: "Highly energetic, valorous, arbitrary, and possessing huge physical size. They disregard court etiquette.",
     traitsKO: "열정적이고 용맹하며, 독단적인 결단을 내리는 거침없는 성격을 보여줍니다. 대단히 강인한 신체를 지녔으며 귀찮은 에티켓은 경시하는 경향이 있습니다.",
     crestDescEN: "Sable, a double-headed axe argent between two wings expanded or.",
-    crestDescKO: "검은 바탕에 은색의 양날 도끼, 양옆에는 날개를 펼친 황금색 독수리 날개."
+    crestDescKO: "검은 바탕에 은색의 양날 도끼, 양옆에는 날개를 펼친 황금색 독수리 날개.",
+    genealogy: "• 시조: 마옌스의 도온 (Doon de Mayence, 685-735) & 플랑드린\n• 직계: 라 로슈의 도온 (Doon de La Roche) & 올리브 공주\n• 전사 자녀: 위고 경 (Sir Hugo, 733), 라 로슈의 드로고 (Drogo)"
   },
   {
     key: "nanteuil",
     nameEN: "House of Nanteuil",
-    nameKO: "낭퇴유 가문 (법률과 행정의 명문)",
+    nameKO: "낭퇴유 가문 (법률 and 행정의 명문)",
     mottoEN: "Justice and the Written Word",
     mottoKO: "정의와 기록된 율법",
     crestSymbol: "⚖️📜🖋️",
@@ -122,7 +129,8 @@ export const greatFamilies = [
     traitsEN: "Highly just, honest, and literate. Possess high stewardship and courtesy.",
     traitsKO: "정의로움과 타오르는 정직함이 돋보이며, 문해력을 갖춘 보기 드문 지식인들입니다. 영지 관리와 예법 기술의 정수를 보여줍니다.",
     crestDescEN: "Argent, a balance held by a hand vested gules, issuing from a cloud azure.",
-    crestDescKO: "은색 바탕에 푸른 구름 속에서 나타나 저울을 들고 있는 붉은 소매의 사법의 손."
+    crestDescKO: "은색 바탕에 푸른 구름 속에서 나타나 저울을 들고 있는 붉은 소매의 사법의 손.",
+    genealogy: "• 시조: 낭퇴유의 기 백작 (Count Guy of Nanteuil) & 아이글렌틴 (에몽 백작의 딸)\n• 직계 자녀: 낭퇴유의 트리스탄 (Tristan de Nanteuil - 율법과 고난의 기사)"
   }
 ];
 
