@@ -487,7 +487,7 @@ export default function SoloOracles({ character, setCharacter }) {
         let opposedOutcome = '';
 
         if (finalRoll === 20) {
-          outcome = '펌블 (Fumble) ⚠️';
+          outcome = '대실패 (Fumble) ⚠️';
           desc = `최악의 성향 무너짐! 즉시 반대 성향 [${opposedKo}]에 경험치 성장 체크를 기록하며, 본래 의지와 달리 반대 성향의 충동에 완전히 휩쓸려 충동적으로 행동해야 합니다.`;
           color = 'var(--color-crimson)';
           oppositeCheckRequired = true;
@@ -589,7 +589,7 @@ export default function SoloOracles({ character, setCharacter }) {
         let color = '';
 
         if (finalRoll === 20) {
-          outcome = '펌블 (Fumble) 💀';
+          outcome = '대실패 (Fumble) 💀';
           state = 'madness';
           desc = `광란(Madness) 대폭발! 주군의 명령이나 연인의 사랑을 저버리는 끔찍한 절망 속에 기사는 온 정신이 무너져 즉각 '광기 상태'에 돌입합니다. 신체적 능력치가 일시 감퇴하며 광기 전용 솔로 시나리오(p.431)로 돌입해야 합니다. 열정 수치 -1 하락 페널티가 부여됩니다.`;
           color = 'var(--color-crimson)';
@@ -1003,7 +1003,7 @@ export default function SoloOracles({ character, setCharacter }) {
         let color = '';
 
         if (finalRoll === 20) {
-          outcome = '펌블 (Fumble) ☠️';
+          outcome = '대실패 (Fumble) ☠️';
           desc = `청탁 대참사! 오만방자하거나 예의를 지키지 못해 집단의 격한 분노를 샀습니다. Standing 수치가 즉각 1점 차감되며 상당한 배척을 받게 됩니다.`;
           color = 'var(--color-crimson)';
           
@@ -1257,7 +1257,7 @@ export default function SoloOracles({ character, setCharacter }) {
         let isSuccess = false;
 
         if (finalRoll === 20) {
-          outcome = '펌블 (Fumble) ☠️';
+          outcome = '대실패 (Fumble) ☠️';
           desc = '최악의 참패! 기술적 실수나 예상치 못한 변수로 임무에 치명적인 곤경을 겪습니다.';
           color = 'var(--color-crimson)';
         } else if (finalRoll === 1 || finalRoll === finalTarget) {
@@ -1419,12 +1419,12 @@ export default function SoloOracles({ character, setCharacter }) {
 
       // Determine outcomes
       if (pCrit) pOutcome = '대성공 (Critical!)';
-      else if (pFumble) pOutcome = '펌블 (Fumble!)';
+      else if (pFumble) pOutcome = '대실패 (Fumble!)';
       else if (pSuccess) pOutcome = '성공 (Success)';
       else pOutcome = '실패 (Failure)';
 
       if (eCrit) eOutcome = '대성공 (Critical!)';
-      else if (eFumble) eOutcome = '펌블 (Fumble!)';
+      else if (eFumble) eOutcome = '대실패 (Fumble!)';
       else if (eSuccess) eOutcome = '성공 (Success)';
       else eOutcome = '실패 (Failure)';
 
@@ -1639,7 +1639,7 @@ export default function SoloOracles({ character, setCharacter }) {
         color = 'var(--color-success)';
         glory = 50;
       } else if (isFumble) {
-        outcome = '신의 분노와 불경 (Divine Displeasure - Fumble)';
+        outcome = '신의 분노와 불경 (Divine Displeasure - 대실패)';
         desc = `[${prayerIntention}]을(를) 부르짖었으나 기사의 불경스러운 마음이 탄로 나 하늘의 분노와 거절을 입었습니다. 다음 스킬 및 전투 판정에 -3 불이익이 주어집니다.`;
         color = 'var(--color-danger)';
       } else if (isSuccess) {
@@ -1694,7 +1694,7 @@ export default function SoloOracles({ character, setCharacter }) {
         desc = `이교 장수 ${paganCommanderName}(이)가 기사의 흔들림 없는 숭고한 믿음과 십자가의 광채에 압도되어 무기를 내려놓고 즉시 개종하여 세례를 약속했습니다! 제국에 찬송이 울려 퍼집니다.`;
         glory = 100;
       } else if (isFumble) {
-        outcome = '기만적 배신 (Pagan Hostility - Fumble)';
+        outcome = '기만적 배신 (Pagan Hostility - 대실패)';
         desc = `개종을 권유받은 ${paganCommanderName}(이)가 위선적인 조롱으로 기사를 기만하며 기습 공격을 감행해 가문의 명예를 실추시키고 깊은 불명예를 안겼습니다.`;
         glory = -20;
       } else if (isSuccess) {
@@ -1760,7 +1760,7 @@ export default function SoloOracles({ character, setCharacter }) {
         desc = `기사에게 씌워진 [${trialAccusation}]에 대해 신성한 법정에서 신께서 완벽한 무고함을 친히 선포하셨습니다! 모함한 원수들이 즉시 파문과 추방을 입으며 명예가 드높아졌습니다.`;
         glory = 50;
       } else if (isFumble) {
-        outcome = '신의 정죄와 유죄 선고 (Guilty Verdict - Fumble)';
+        outcome = '신의 정죄와 유죄 선고 (Guilty Verdict - 대실패)';
         desc = `[${trialAccusation}]의 신명 재판 도중 비참한 부상이나 패배가 깃들어 사법 심관들이 공식 유죄를 선포했습니다! 징벌적 불이익과 씻을 수 없는 치욕을 뒤집어씁니다.`;
         glory = -50;
       } else if (isSuccess) {
@@ -1822,7 +1822,7 @@ export default function SoloOracles({ character, setCharacter }) {
           glory = 20;
           amorIncrease = 5;
         } else if (isFumble) {
-          outcome = '사랑의 저주와 불경 (Love Rejected - Fumble)';
+          outcome = '사랑의 저주와 불경 (Love Rejected - 대실패)';
           desc = `${targetLadyName}에게 낭만을 구했으나, 어설픈 행동과 오만방자한 태도로 가문의 비웃음을 사고 구애의 기회가 영구히 가로막혔습니다.`;
           glory = -10;
         } else if (isSuccess) {
@@ -1841,7 +1841,7 @@ export default function SoloOracles({ character, setCharacter }) {
           glory = 50;
           amorIncrease = 4;
         } else if (isFumble) {
-          outcome = '사랑의 파멸 (Courtship Ruined - Fumble)';
+          outcome = '사랑의 파멸 (Courtship Ruined - 대실패)';
           desc = `[${courtshipGift}]을(를) 바치려다 처참한 궁정 예법 위반으로 ${targetLadyName}의 명예를 더럽히고 궁정에서 영구 퇴출당했습니다! 양가에 대대적인 원한이 서립니다.`;
           glory = -30;
         } else if (isSuccess) {
@@ -2425,7 +2425,7 @@ export default function SoloOracles({ character, setCharacter }) {
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
                           {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('checked')} style={{ fontSize: '0.75rem', padding: '4px 8px' }}>✓ 신조대로 행동</button>}
                           {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('act_opposite')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>✗ 유혹 굴복 페널티</button>}
-                          {traitRollResult.oppositeCheckRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('fumble')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>☠️ 펌블 굴복</button>}
+                          {traitRollResult.oppositeCheckRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('fumble')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>☠️ 대실패 굴복</button>}
                         </div>
                       </div>
                     )}
