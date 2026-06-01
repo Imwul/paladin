@@ -98,7 +98,15 @@ const initialCharacterState = {
     patronSaint: "성 데니스 (St. Denis)",
     honor: 16,
     allies: "몽글란 가문 (House of Monglane)",
-    enemies: "마옌스 가문 (반역자 무리)"
+    enemies: "마옌스 가문 (반역자 무리)",
+    members: [
+      { id: 'godefroy', name: '고드프루아 경 (Sir Godefroy)', relation: '시조', generation: 0, status: '사망', lifeYears: '702~765', note: '아르덴 가문의 위대한 기틀을 세운 초대 시조.' },
+      { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '725~770', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
+      { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '745~768', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
+      { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
+      { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
+      { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
+    ]
   },
   journal: {
     768: {
@@ -142,7 +150,11 @@ const mergeWithDefault = (data) => {
       warhorse: { ...initialCharacterState.horses?.warhorse, ...data.horses?.warhorse }
     },
     gear: { ...initialCharacterState.gear, ...data.gear },
-    family: { ...initialCharacterState.family, ...data.family },
+    family: { 
+      ...initialCharacterState.family, 
+      ...data.family,
+      members: data.family?.members || initialCharacterState.family.members 
+    },
     journal: { ...initialCharacterState.journal, ...data.journal },
     passions: { ...initialCharacterState.passions, ...data.passions },
     passionsChecked: { ...initialCharacterState.passionsChecked || {}, ...data.passionsChecked },

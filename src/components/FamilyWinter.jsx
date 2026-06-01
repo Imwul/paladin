@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle } from 'lucide-react';
 import { greatFamilies } from '../data/lore';
+import FamilyTree from './FamilyTree';
 
 export default function FamilyWinter({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('family');
@@ -599,9 +600,12 @@ export default function FamilyWinter({ character, setCharacter }) {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
         <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'family' ? 'bold' : 'normal', color: activeSubTab === 'family' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
           onClick={() => setActiveSubTab('family')}>가문 정보 시트</button>
+        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
+        <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'tree' ? 'bold' : 'normal', color: activeSubTab === 'tree' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
+          onClick={() => setActiveSubTab('tree')}>가족 관계도 (Lineage)</button>
         <span style={{ color: 'var(--color-gold-light)' }}>|</span>
         <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: activeSubTab === 'winter' ? 'bold' : 'normal', color: activeSubTab === 'winter' ? 'var(--color-crimson)' : 'var(--color-ink-light)' }}
           onClick={() => setActiveSubTab('winter')}>공식 겨울 정산 (10단계 마법사)</button>
@@ -647,6 +651,11 @@ export default function FamilyWinter({ character, setCharacter }) {
             </div>
           </div>
         </section>
+      )}
+
+      {/* SUB TAB: FAMILY TREE */}
+      {activeSubTab === 'tree' && (
+        <FamilyTree character={character} setCharacter={setCharacter} />
       )}
 
       {/* SUB TAB: 10-STEP WINTER PHASE WIZARD */}
