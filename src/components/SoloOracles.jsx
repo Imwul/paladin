@@ -161,7 +161,59 @@ export default function SoloOracles({ character, setCharacter }) {
   const [clashResult, setClashResult] = useState(null);
   const [isRollingClash, setIsRollingClash] = useState(false);
 
+  // 4. 스킬 판정 및 수련기 관련 State
+  const [selectedSkillKey, setSelectedSkillKey] = useState('awareness');
+  const [skillMod, setSkillMod] = useState(0);
+  const [skillRollResult, setSkillRollResult] = useState(null);
+  const [isRollingSkill, setIsRollingSkill] = useState(false);
+  const [skillCheckApplied, setSkillCheckApplied] = useState(false);
+
+  // 스킬 향상 수련기 관련 State
+  const [selectedImproveKey, setSelectedImproveKey] = useState('awareness');
+  const [improveRollResult, setImproveRollResult] = useState(null);
+  const [isRollingImprove, setIsRollingImprove] = useState(false);
+  const [improveApplied, setImproveApplied] = useState(false);
+
   // Mappings
+  const allSkills = [
+    // 일반 스킬 (Common Skills)
+    { key: "awareness", label: "경계 (Awareness)", category: "common" },
+    { key: "chirurgery", label: "의술 (Chirurgery)", category: "common" },
+    { key: "faerieLore", label: "요정 전설 (Faerie Lore)", category: "common" },
+    { key: "firstAid", label: "응급처치 (First Aid)", category: "common" },
+    { key: "folkLore", label: "민간 전설 (Folk Lore)", category: "common" },
+    { key: "horsemanship", label: "마술 (Horsemanship)", category: "common" },
+    { key: "hunting", label: "수렵 (Hunting)", category: "common" },
+    { key: "industry", label: "근면 (Industry)", category: "common" },
+    { key: "recognize", label: "신분 식별 (Recognize)", category: "common" },
+    { key: "religion", label: "종교 지식 (Religion)", category: "common" },
+    { key: "stewardship", label: "영지 관리 (Stewardship)", category: "common" },
+    { key: "swimming", label: "수영 (Swimming)", category: "common" },
+
+    // 궁정 스킬 (Courtly Skills)
+    { key: "courtesy", label: "예의 (Courtesy)", category: "courtly" },
+    { key: "dancing", label: "무용 (Dancing)", category: "courtly" },
+    { key: "eloquence", label: "웅변 (Eloquence)", category: "courtly" },
+    { key: "falconry", label: "매사냥 (Falconry)", category: "courtly" },
+    { key: "gaming", label: "유희 (Gaming)", category: "courtly" },
+    { key: "heraldry", label: "문장학 (Heraldry)", category: "courtly" },
+    { key: "intrigue", label: "음모 (Intrigue)", category: "courtly" },
+    { key: "playInstruments", label: "악기 연주 (Play Instruments)", category: "courtly" },
+    { key: "readingWriting", label: "독서 및 집필 (Reading & Writing)", category: "courtly" },
+    { key: "romance", label: "로맨스 (Romance)", category: "courtly" },
+    { key: "singing", label: "가창 (Singing)", category: "courtly" },
+
+    // 전투/무기 스킬 (Combat/Weapon Skills)
+    { key: "battle", label: "전술 (Battle)", category: "combat" },
+    { key: "siege", label: "공성 (Siege)", category: "combat" },
+    { key: "sword", label: "검 (Sword)", category: "combat" },
+    { key: "lance", label: "마창 (Lance)", category: "combat" },
+    { key: "axe", label: "도끼 (Axe)", category: "combat" },
+    { key: "spear", label: "창 / 폴암 (Spear)", category: "combat" },
+    { key: "dagger", label: "단검 (Dagger)", category: "combat" },
+    { key: "bludgeon", label: "둔기 (Bludgeon)", category: "combat" },
+    { key: "unarmed", label: "맨손 격투 (Unarmed)", category: "combat" }
+  ];
   const traitPairs = [
     { left: 'chaste', leftKo: '정숙 (Chaste)', right: 'lustful', rightKo: '음탕 (Lustful)' },
     { left: 'energetic', leftKo: '열정 (Energetic)', right: 'lazy', rightKo: '나태 (Lazy)' },
@@ -1127,6 +1179,165 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 50);
   };
 
+  // 4. 스킬 판정 (Skill Roll) 및 성장 (Improvement) 로직 (Chapter 5)
+  const executeSkillRoll = () => {
+    if (isRollingSkill) return;
+    setIsRollingSkill(true);
+    setSkillRollResult(null);
+    setSkillCheckApplied(false);
+
+    const skillVal = character?.skills?.[selectedSkillKey] || 0;
+    const finalTarget = skillVal + parseInt(skillMod);
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      setSkillRollResult({
+        roll: tempRoll,
+        isRolling: true
+      });
+      counter++;
+      if (counter > 15) {
+        clearInterval(interval);
+        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        
+        let outcome = '';
+        let desc = '';
+        let color = '';
+        let isSuccess = false;
+
+        if (finalRoll === 20) {
+          outcome = '펌블 (Fumble) ☠️';
+          desc = '최악의 참패! 기술적 실수나 예상치 못한 변수로 임무에 치명적인 곤경을 겪습니다.';
+          color = 'var(--color-crimson)';
+        } else if (finalRoll === 1 || finalRoll === finalTarget) {
+          outcome = '결정적 성공 (Critical Success) 🌟';
+          desc = '기적적인 완성도! 완벽한 조화와 실력으로 모두를 경탄시키며, 즉각 스킬 체크를 획득합니다.';
+          color = 'var(--color-success)';
+          isSuccess = true;
+        } else if (finalRoll < finalTarget) {
+          outcome = '성공 (Success) ✓';
+          desc = '능숙한 실행! 목적한 바를 원활하게 수행하고 가치 있는 스킬 체크를 얻습니다.';
+          color = 'var(--color-royal-blue)';
+          isSuccess = true;
+        } else {
+          outcome = '실패 (Failure) 🕯️';
+          desc = '역량 부족! 기량을 완벽히 발휘하지 못해 난관을 헤쳐나가지 못했습니다.';
+          color = 'var(--color-grey)';
+        }
+
+        const skillName = allSkills.find(s => s.key === selectedSkillKey)?.label || selectedSkillKey;
+
+        setSkillRollResult({
+          roll: finalRoll,
+          outcome,
+          desc,
+          color,
+          isSuccess,
+          skillVal,
+          finalTarget,
+          skillName,
+          isRolling: false
+        });
+        setIsRollingSkill(false);
+      }
+    }, 50);
+  };
+
+  const applySkillCheckToSheet = () => {
+    if (skillCheckApplied || !skillRollResult?.isSuccess) return;
+    setCharacter(prev => {
+      const updated = { ...prev };
+      if (!updated.skillsChecked) updated.skillsChecked = {};
+      updated.skillsChecked[selectedSkillKey] = true;
+      return updated;
+    });
+    setSkillCheckApplied(true);
+    alert(`[스킬 경험치 반영]: ${skillRollResult.skillName}의 경험치 체크(✓)가 기사 시트에 성공적으로 동기화 마킹되었습니다!`);
+  };
+
+  const executeImprovementRoll = () => {
+    if (isRollingImprove) return;
+    setIsRollingImprove(true);
+    setImproveRollResult(null);
+    setImproveApplied(false);
+
+    const skillVal = character?.skills?.[selectedImproveKey] || 0;
+
+    let counter = 0;
+    const interval = setInterval(() => {
+      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      setImproveRollResult({
+        roll: tempRoll,
+        isRolling: true
+      });
+      counter++;
+      if (counter > 15) {
+        clearInterval(interval);
+        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        
+        let outcome = '';
+        let desc = '';
+        let color = '';
+        let isSuccess = false;
+
+        if (skillVal >= 20) {
+          outcome = '수련 최고 한계치 도달';
+          desc = '이미 20 이상의 신의 기량에 도달하여, 일반 겨울철 수련으로는 더 이상 스킬을 올릴 수 없습니다.';
+          color = 'var(--color-grey)';
+        } else if (finalRoll > skillVal || finalRoll === 20) {
+          outcome = '수련 대성공! (스킬 +1 상승) 📈';
+          desc = `귀중한 깨달음! 주사위 눈 [ ${finalRoll} ]이 현재 기술 레벨 [ ${skillVal} ]의 장벽을 훌륭히 초과하여, 영구적인 기량 상승을 쟁취했습니다.`;
+          color = 'var(--color-success)';
+          isSuccess = true;
+        } else {
+          outcome = '수련 유지 (스킬 변화 없음) 🕯️';
+          desc = `배움의 깊이 축적! 주사위 눈 [ ${finalRoll} ]이 현재 기술 [ ${skillVal} ]의 한계를 넘지 못해 수치 상 변화는 없지만 기사의 내공에 쌓입니다. 경험치 체크는 규정에 따라 소실됩니다.`;
+          color = 'var(--color-grey)';
+        }
+
+        const skillName = allSkills.find(s => s.key === selectedImproveKey)?.label || selectedImproveKey;
+
+        setImproveRollResult({
+          roll: finalRoll,
+          outcome,
+          desc,
+          color,
+          isSuccess,
+          skillVal,
+          skillName,
+          isRolling: false
+        });
+        setIsRollingImprove(false);
+      }
+    }, 50);
+  };
+
+  const applyImprovementToSheet = () => {
+    if (improveApplied) return;
+    
+    setCharacter(prev => {
+      const updated = { ...prev };
+      
+      // 경험치 체크 강제 지움
+      if (updated.skillsChecked) {
+        updated.skillsChecked[selectedImproveKey] = false;
+      }
+      
+      // 성공했을 경우 수치 +1 증가 (최대 20)
+      if (improveRollResult?.isSuccess) {
+        const currentVal = updated.skills[selectedImproveKey] || 0;
+        updated.skills[selectedImproveKey] = Math.min(20, currentVal + 1);
+      }
+      
+      return updated;
+    });
+
+    setImproveApplied(true);
+    const addedText = improveRollResult?.isSuccess ? '스킬 레벨이 영구히 +1 상승하고 ' : '';
+    alert(`[시트 수련 반영]: ${improveRollResult?.skillName} 스킬에 대해 ${addedText}경험치 체크(✓)를 정상 해제(소모)하였습니다.`);
+  };
+
   const getOracleAnswerFromRollText = (ans) => {
     if (!ans) return '';
     return ans.result + ': ' + ans.desc;
@@ -2084,6 +2295,172 @@ export default function SoloOracles({ character, setCharacter }) {
 
                 </div>
               )}
+            </div>
+          </section>
+
+          {/* Section 3: Skill Roller & Improvement (Chapter 5) */}
+          <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
+            <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+              <h3>🔮 기사 스킬 판정 및 수련 수려기 (Chapter 5 - p.105)</h3>
+            </div>
+            <div className="cs-section-inner">
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
+                기사의 일반 능력, 궁정 교양, 전투 무술 기술들을 굴려 성공 체크를 남기거나, 겨울 단계에서 훈련 d20 굴림(d20 > 현재 레벨)을 통해 영구히 스킬 레벨을 단련합니다.
+              </p>
+
+              <div className="cs-row" style={{ gap: '16px' }}>
+                
+                {/* 3-1. 일반 기사 스킬 d20 판정기 */}
+                <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
+                  <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-royal-blue)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    🎲 기사 기술 d20 판정 굴림
+                  </h4>
+
+                  <div className="cs-field">
+                    <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>판정할 기술:</span>
+                    <select 
+                      value={selectedSkillKey} 
+                      onChange={e => {
+                        setSelectedSkillKey(e.target.value);
+                        setSkillRollResult(null);
+                        setSkillCheckApplied(false);
+                      }} 
+                      style={{ width: '100%', padding: '6px' }}
+                    >
+                      {allSkills.map(s => (
+                        <option key={s.key} value={s.key}>
+                          {s.label} (현재 Level: {character?.skills?.[s.key] || 0})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="cs-field" style={{ marginTop: '8px' }}>
+                    <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>상황 보정치:</span>
+                    <input 
+                      type="number" 
+                      value={skillMod} 
+                      onChange={e => {
+                        setSkillMod(parseInt(e.target.value) || 0);
+                        setSkillRollResult(null);
+                      }} 
+                      style={{ width: '100px' }} 
+                    />
+                  </div>
+
+                  <button 
+                    className="btn-medieval" 
+                    onClick={executeSkillRoll} 
+                    style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
+                    disabled={isRollingSkill}
+                  >
+                    {isRollingSkill ? '지혜와 완력을 조율하는 중...' : '🎲 기술 판정 굴리기'}
+                  </button>
+
+                  {skillRollResult && (
+                    <div style={{ border: `1px solid ${skillRollResult.color}`, padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 판정 결과</span>
+                      <D20Face value={skillRollResult.roll} isRolling={isRollingSkill} color={skillRollResult.color} />
+                      
+                      {!skillRollResult.isRolling && (
+                        <div style={{ marginTop: '8px', textAlign: 'center', width: '100%' }}>
+                          <h4 style={{ color: skillRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
+                            {skillRollResult.outcome} (목표: {skillRollResult.finalTarget} 이하)
+                          </h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-ink-light)', marginBottom: '8px' }}>
+                            {skillRollResult.desc}
+                          </p>
+
+                          {skillRollResult.isSuccess && (
+                            <button 
+                              className="btn-medieval" 
+                              onClick={applySkillCheckToSheet} 
+                              disabled={skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false)} 
+                              style={{ width: '100%', padding: '4px 8px', fontSize: '0.75rem', color: 'var(--color-success)', borderColor: 'var(--color-success)', justifyContent: 'center' }}
+                            >
+                              {skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false) 
+                                ? '✓ 시트 경험치 마킹 완료' 
+                                : '📈 기사 시트에 경험치(✓) 기록하기'}
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 3-2. 겨울 단계 스킬 성장 수련기 */}
+                <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
+                  <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-gold-dark)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    📈 겨울철 스킬 수련 훈련 (Skill Improvement)
+                  </h4>
+
+                  <div className="cs-field">
+                    <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>수련할 기술:</span>
+                    <select 
+                      value={selectedImproveKey} 
+                      onChange={e => {
+                        setSelectedImproveKey(e.target.value);
+                        setImproveRollResult(null);
+                        setImproveApplied(false);
+                      }} 
+                      style={{ width: '100%', padding: '6px' }}
+                    >
+                      {allSkills.map(s => {
+                        const isChecked = character?.skillsChecked?.[s.key] || false;
+                        return (
+                          <option key={s.key} value={s.key}>
+                            {s.label} ({isChecked ? '✓ 경험 축적됨' : '❌ 무체크 상태'}) [Lv. {character?.skills?.[s.key] || 0}]
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+
+                  <p style={{ fontSize: '0.74rem', color: 'var(--color-grey)', margin: '8px 0 0 0', lineHeight: '1.4' }}>
+                    * 수련 룰: d20 굴림이 <strong>현재 스킬 레벨을 초과</strong>하거나 <strong>20</strong>이 나오면 레벨이 +1 영구 상승합니다. (수련 완료 시 성공 여부와 상관없이 시트 체크는 소모 해제됩니다)
+                  </p>
+
+                  <button 
+                    className="btn-medieval" 
+                    onClick={executeImprovementRoll} 
+                    style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
+                    disabled={isRollingImprove}
+                  >
+                    {isRollingImprove ? '수련 성과를 점검하는 중...' : '📈 스킬 성장 수련 굴리기'}
+                  </button>
+
+                  {improveRollResult && (
+                    <div style={{ border: `1px solid ${improveRollResult.color}`, padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 수련 굴림 결과</span>
+                      <D20Face value={improveRollResult.roll} isRolling={isRollingImprove} color={improveRollResult.color} />
+                      
+                      {!improveRollResult.isRolling && (
+                        <div style={{ marginTop: '8px', textAlign: 'center', width: '100%' }}>
+                          <h4 style={{ color: improveRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
+                            {improveRollResult.outcome} (현재 레벨: {improveRollResult.skillVal})
+                          </h4>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--color-ink-light)', marginBottom: '8px' }}>
+                            {improveRollResult.desc}
+                          </p>
+
+                          <button 
+                            className="btn-medieval" 
+                            onClick={applyImprovementToSheet} 
+                            disabled={improveApplied} 
+                            style={{ width: '100%', padding: '4px 8px', fontSize: '0.75rem', color: 'var(--color-gold-dark)', borderColor: 'var(--color-gold-dark)', justifyContent: 'center' }}
+                          >
+                            {improveApplied 
+                              ? '✓ 시트 반영 및 체크 초기화 완료' 
+                              : '📈 수련 성과 시트 데이터 연동 적용'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+              </div>
             </div>
           </section>
         </>
