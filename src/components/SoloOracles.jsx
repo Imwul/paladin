@@ -307,10 +307,10 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const weaponProperties = {
     lance: { label: '랜스 (Lance)', damage: '돌격마 피해 (Damage as per Horse)', note: '기마 돌격 시 +5 보정, 보병의 창 방어에 카운터됨' },
-    sword: { label: '검 (One-Handed Sword)', damage: '기본 피해 (Normal)', note: '동률 시 상대방 비-검 파괴, 펌블 시 떨어뜨릴 뿐 부러지지 않음' },
-    two_handed_sword: { label: '양손검 (Two-Handed Sword)', damage: '기본 +1d6 추가 피해', note: '동률 시 상대방 비-검 파괴, 펌블 시 떨어뜨림, 방패 사용 불가능' },
+    sword: { label: '검 (One-Handed Sword)', damage: '기본 피해 (Normal)', note: '동률 시 상대방 비-검 파괴, 대실패(Fumble) 시 떨어뜨릴 뿐 부러지지 않음' },
+    two_handed_sword: { label: '양손검 (Two-Handed Sword)', damage: '기본 +1d6 추가 피해', note: '동률 시 상대방 비-검 파괴, 대실패(Fumble) 시 떨어뜨림, 방패 사용 불가능' },
     spear: { label: '창 (Spear/Polearm)', damage: '기본 피해 (Normal)', note: '보병 상태에서 기마 적 대적 시 +5 창 보정 및 적 랜스 돌격 보너스 무효화' },
-    halberd: { label: '할버드 (Halberd)', damage: '기본 +1d6 추가 피해', note: '보병 상태에서 기마 대적 시 +5 보정, 펌블 시 무기 완파' },
+    halberd: { label: '할버드 (Halberd)', damage: '기본 +1d6 추가 피해', note: '보병 상태에서 기마 대적 시 +5 보정, 대실패(Fumble) 시 무기 완파' },
     dagger: { label: '단검 (Dagger)', damage: '기본 피해 (Normal)', note: '초근접 난전용 무기' },
     unarmed: { label: '맨손 (Unarmed Grapple)', damage: '맨손 그래플링', note: '상대 무기 해제 및 그래플링 상태 돌입' }
   };
@@ -760,7 +760,7 @@ export default function SoloOracles({ character, setCharacter }) {
         const details = groupKnights.map(k => {
           let indRes = '';
           if (finalRoll === 20) {
-            indRes = '펌블 (광기 위험)';
+            indRes = '대실패 (광기 위험)';
             fumblesCount++;
           } else if (finalRoll === 1 || finalRoll === k.passionScore) {
             indRes = '결정적 성공 ( Inspired +10 )';
@@ -787,7 +787,7 @@ export default function SoloOracles({ character, setCharacter }) {
           groupDesc = `충분한 기개! 과반수 이상의 기사가 고취되어 다수가 Inspired 보정 효과를 누리며 영웅적 대열을 갖춥니다!`;
           color = 'var(--color-royal-blue)';
         } else if (fumblesCount > 0) {
-          finalGroupOutcome = '재앙적 펌블 (대혼란)';
+          finalGroupOutcome = '재앙적 대실패 (대혼란)';
           groupDesc = `연설 도중 끔찍한 도발이나 비열함이 노출되어 대혼란과 광기가 무리에 엄습합니다!`;
           color = 'var(--color-crimson)';
         }
@@ -1136,19 +1136,19 @@ export default function SoloOracles({ character, setCharacter }) {
         if (fumbleP) {
           if (playerWeapon === 'sword' || playerWeapon === 'two_handed_sword') {
             pWeaponState = 'Dropped';
-            detailDesc += '⚠️ 기사가 펌블을 범해 무기를 떨어뜨렸습니다 (검의 낙하 안전 룰: 파괴 안됨).\n';
+            detailDesc += '⚠️ 기사가 대실패(Fumble)를 범해 무기를 떨어뜨렸습니다 (검의 낙하 안전 룰: 파괴 안됨).\n';
           } else {
             pWeaponState = 'Broken';
-            detailDesc += '💥 펌블! 기사의 비-검 무기 [' + weaponProperties[playerWeapon].label + ']가 산산조각났습니다!\n';
+            detailDesc += '💥 대실패! 기사의 비-검 무기 [' + weaponProperties[playerWeapon].label + ']가 산산조각났습니다!\n';
           }
         }
         if (fumbleO) {
           if (opponentWeapon === 'sword' || opponentWeapon === 'two_handed_sword') {
             oWeaponState = 'Dropped';
-            detailDesc += '⚠️ 상대방이 펌블을 범해 검을 바닥에 떨어뜨렸습니다.\n';
+            detailDesc += '⚠️ 상대방이 대실패(Fumble)를 범해 검을 바닥에 떨어뜨렸습니다.\n';
           } else {
             oWeaponState = 'Broken';
-            detailDesc += '💥 펌블! 상대의 비-검 무기 [' + weaponProperties[opponentWeapon].label + ']가 부서졌습니다!\n';
+            detailDesc += '💥 대실패! 상대의 비-검 무기 [' + weaponProperties[opponentWeapon].label + ']가 부서졌습니다!\n';
           }
         }
 
@@ -2930,7 +2930,7 @@ export default function SoloOracles({ character, setCharacter }) {
             </div>
             <div className="cs-section-inner">
               <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
-                기사와 이교도/정적의 1대1 무기 대결을 무기별 고유 특성(검의 타이 브레이커, 보병 창의 돌격 무력화, 할버드 기마 대항, 펌블 파괴 등)을 적용해 opposed roll로 정밀 모사합니다.
+                기사와 이교도/정적의 1대1 무기 대결을 무기별 고유 특성(검의 타이 브레이커, 보병 창의 돌격 무력화, 할버드 기마 대항, 대실패(Fumble) 파괴 등)을 적용해 opposed roll로 정밀 모사합니다.
               </p>
 
               {/* Selection board */}
@@ -3922,7 +3922,7 @@ export default function SoloOracles({ character, setCharacter }) {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
                           <strong>기사단 정예 대형방패 &bull; £1</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>펌블 시 무기 파손을 엄격 방어하는 쉴드</div>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>대실패(Fumble) 시 무기 파손을 엄격 방어하는 쉴드</div>
                         </div>
                         <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('기사단 정예 대형방패', 1, 'shield', {})}>
                           구입 £1
@@ -3962,8 +3962,9 @@ export default function SoloOracles({ character, setCharacter }) {
 
               {armoryLogs.length === 0 ? (
                 <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', fontSize: '0.86rem' }}>
-                  "아직 올해 가문 장원에 어떠한 재정 지출이나 전리품 감정이 기록되지 않았습니다.<br />
-                  상단의 생활 수준 유지비를 결제하거나, 보물을 감정하고, 또는 군마를 구입하여 대서사를 채워가세요."
+                  아직 올해 가문 장원에 어떠한 재정 지출이나 전리품 감정이 기록되지 않았습니다.
+                  <br />
+                  상단의 생활 수준 유지비를 결제하거나, 보물을 감정하고, 또는 군마를 구입하여 대서사를 채워가세요.
                 </div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
