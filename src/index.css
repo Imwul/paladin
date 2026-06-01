@@ -1909,16 +1909,18 @@ input[type="number"] {
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   z-index: 2000;
   padding: 20px;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .ft-modal {
   width: 100%;
   max-width: 480px;
-  margin: auto 0;
+  max-height: 85vh;
+  max-height: 85dvh;
+  margin: 0;
   flex-shrink: 0;
   background-color: var(--color-parchment);
   background-image: 
@@ -1933,6 +1935,7 @@ input[type="number"] {
 }
 
 .ft-modal-header {
+  flex-shrink: 0;
   background: linear-gradient(135deg, var(--color-royal-blue) 0%, #1e3158 100%);
   padding: 12px 20px;
   display: flex;
@@ -1970,6 +1973,23 @@ input[type="number"] {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
+  flex-grow: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-light) transparent;
+}
+
+.ft-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ft-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ft-modal-body::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold-light);
+  border-radius: 3px;
 }
 
 .ft-form-group {
@@ -2007,12 +2027,13 @@ input[type="number"] {
 }
 
 .ft-modal-footer {
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 10px;
   border-top: 1px solid var(--color-grey-light);
-  padding-top: 14px;
+  padding: 14px 20px;
+  background-color: rgba(46, 31, 15, 0.02);
 }
 
 /* Deceased Member Custom Visual Styles */

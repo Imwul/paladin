@@ -565,15 +565,15 @@ export default function FamilyTree({ character, setCharacter }) {
       {/* Modal Dialog for Add/Edit Member */}
       {isModalOpen && (
         <div className="ft-modal-overlay">
-          <div className="ft-modal view-animate">
+          <form onSubmit={handleSave} className="ft-modal view-animate">
             <div className="ft-modal-header">
               <h3>{modalMode === 'add' ? '새 가문원 추가' : '가문원 정보 수정'}</h3>
-              <button className="ft-close-btn" onClick={() => setIsModalOpen(false)}>
+              <button type="button" className="ft-close-btn" onClick={() => setIsModalOpen(false)}>
                 <X size={18} />
               </button>
             </div>
             
-            <form onSubmit={handleSave} className="ft-modal-body">
+            <div className="ft-modal-body">
               <div className="ft-form-group">
                 <label className="ft-label">이름 (칭호 포함):</label>
                 <input 
@@ -700,17 +700,17 @@ export default function FamilyTree({ character, setCharacter }) {
                   style={{ resize: 'none' }}
                 />
               </div>
+            </div>
 
-              <div className="ft-modal-footer">
-                <button type="button" className="btn-medieval" onClick={() => setIsModalOpen(false)}>
-                  취소
-                </button>
-                <button type="submit" className="btn-medieval btn-medieval-primary">
-                  {modalMode === 'add' ? '추가하기' : '수정 완료'}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="ft-modal-footer">
+              <button type="button" className="btn-medieval" onClick={() => setIsModalOpen(false)}>
+                취소
+              </button>
+              <button type="submit" className="btn-medieval btn-medieval-primary">
+                {modalMode === 'add' ? '추가하기' : '수정 완료'}
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
