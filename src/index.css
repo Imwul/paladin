@@ -1589,15 +1589,17 @@ input[type="number"] {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  border: 2px solid var(--color-gold);
+  border: 4px double var(--color-gold); /* Royal double border of a medieval scroll */
   border-radius: 12px;
   padding: 16px 12px;
   position: relative;
-  background-color: #faf5eb;
+  background-color: #f6eedb; /* Deeper vintage parchment base */
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(232, 213, 160, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(232, 213, 160, 0.1) 0%, transparent 40%);
-  box-shadow: inset 0 0 20px rgba(46, 31, 15, 0.05);
+    repeating-linear-gradient(0deg, transparent, transparent 32px, rgba(139, 105, 20, 0.015) 32px, rgba(139, 105, 20, 0.015) 33px),
+    radial-gradient(circle at 50% 50%, rgba(246, 238, 219, 0.4) 0%, rgba(222, 207, 172, 0.45) 100%); /* Stained manuscript paper effect */
+  box-shadow: 
+    inset 0 0 35px rgba(46, 31, 15, 0.18), 
+    0 4px 15px rgba(0,0,0,0.1);
 }
 
 .ft-canvas {
@@ -1623,15 +1625,16 @@ input[type="number"] {
 }
 
 .ft-svg-path.path-marriage {
-  stroke: var(--color-gold);
-  stroke-width: 2px;
+  stroke: var(--color-gold-dark); /* Gilded gold-bronze connection */
+  stroke-width: 2.5px;
   stroke-linecap: round;
+  filter: drop-shadow(0 1px 2px rgba(46, 31, 15, 0.15));
 }
 
 .ft-svg-path.path-lineage {
-  stroke: rgba(43, 65, 112, 0.4);
-  stroke-width: 1.5px;
-  stroke-dasharray: 4, 4;
+  stroke: #8b6914; /* Deep sepia/bronze instead of modern royal blue */
+  stroke-width: 1.8px;
+  stroke-dasharray: 4, 3;
   stroke-linecap: round;
 }
 
@@ -1667,9 +1670,9 @@ input[type="number"] {
   gap: 6px;
   width: 190px;
   flex-shrink: 0;
-  border-right: 1.5px solid rgba(201, 168, 76, 0.2);
+  border-right: 3px double rgba(139, 105, 20, 0.35); /* Royal double line divider */
   padding-right: 12px;
-  font-family: var(--font-korean);
+  font-family: var(--font-korean-serif) !important; /* Elegant Korean Serif for headers */
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-gold-dark);
@@ -1677,13 +1680,13 @@ input[type="number"] {
 }
 
 .ft-gen-badge {
-  background: var(--color-royal-blue);
+  background: var(--color-gold-dark); /* Old gold tone badge */
   color: #fff;
   padding: 1px 6px;
   border-radius: 4px;
   font-size: 0.65rem;
   font-family: var(--font-serif) !important;
-  box-shadow: 0 1px 3px rgba(43, 65, 112, 0.15);
+  box-shadow: 0 1px 3px rgba(139, 105, 20, 0.25);
 }
 
 .ft-gen-nodes {
@@ -1701,7 +1704,7 @@ input[type="number"] {
   align-items: center;
   gap: 8px;
   position: relative;
-  background: rgba(201, 168, 76, 0.05);
+  background: rgba(201, 168, 76, 0.04);
   border: 1.5px dashed rgba(201, 168, 76, 0.25);
   padding: 6px 10px;
   border-radius: 8px;
@@ -1729,35 +1732,43 @@ input[type="number"] {
 .ft-card {
   width: 156px;
   padding: 10px 10px 14px 10px; /* Safe padding-bottom to prevent text clipping! */
-  border: 1.5px solid var(--color-grey-light);
+  border: 3px double var(--color-gold-light); /* Historical double gold border */
   border-radius: 6px;
-  background: linear-gradient(135deg, #ffffff 0%, #fffefc 100%);
-  box-shadow: 0 1.5px 5px rgba(46, 31, 15, 0.03);
+  background: linear-gradient(145deg, #fdfaf2 0%, #f5ecd3 100%) !important; /* Warm antique paper scroll texture */
+  box-shadow: 
+    inset 0 0 10px rgba(139, 105, 20, 0.15),
+    0 3px 8px rgba(46, 31, 15, 0.08);
   position: relative;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: visible; /* Prevent absolute elements like crown from being clipped! */
   z-index: 2;
 }
 
+.ft-card * {
+  font-family: var(--font-korean-serif) !important; /* Force elegant classic serif text inside card! */
+}
+
 .ft-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 31, 15, 0.1);
-  border-color: var(--color-gold);
+  box-shadow: 
+    inset 0 0 12px rgba(139, 105, 20, 0.2),
+    0 6px 16px rgba(46, 31, 15, 0.15);
+  border-color: var(--color-gold) !important;
 }
 
 .ft-card-knight {
-  border: 1.8px solid var(--color-gold);
-  background: linear-gradient(135deg, #fffdf2 0%, #fffbf0 100%);
+  border: 3.5px double var(--color-gold) !important; /* Grand double gold border for the Knight */
+  background: linear-gradient(145deg, #fffdf4 0%, #f6e8c3 100%) !important; /* Glowing noble paper scroll texture */
   box-shadow: 
-    0 1.5px 6px rgba(201, 168, 76, 0.15),
-    0 0 0 2px rgba(201, 168, 76, 0.05);
+    inset 0 0 14px rgba(201, 168, 76, 0.28),
+    0 3px 10px rgba(201, 168, 76, 0.15);
 }
 
 .ft-card-knight:hover {
-  border-color: var(--color-gold-dark);
+  border-color: var(--color-gold-dark) !important;
   box-shadow: 
-    0 4px 14px rgba(201, 168, 76, 0.22),
-    0 0 0 3px rgba(201, 168, 76, 0.08);
+    inset 0 0 16px rgba(201, 168, 76, 0.35),
+    0 6px 18px rgba(201, 168, 76, 0.25);
 }
 
 .ft-crown {
@@ -1767,7 +1778,7 @@ input[type="number"] {
   transform: translateX(-50%);
   color: #fff;
   background: var(--color-gold);
-  border: 1.2px solid var(--color-gold-dark);
+  border: 1.5px solid var(--color-gold-dark);
   border-radius: 50%;
   width: 18px;
   height: 18px;
@@ -1776,6 +1787,7 @@ input[type="number"] {
   justify-content: center;
   box-shadow: 0 1.5px 3px rgba(0,0,0,0.15);
   animation: floatCrown 3s ease-in-out infinite;
+  z-index: 6;
 }
 
 @keyframes floatCrown {
@@ -1794,7 +1806,7 @@ input[type="number"] {
   font-size: 0.62rem;
   font-weight: 700;
   color: var(--color-gold-dark);
-  font-family: var(--font-korean);
+  font-family: var(--font-korean-serif) !important;
   letter-spacing: -0.02em;
 }
 
