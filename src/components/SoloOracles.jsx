@@ -174,6 +174,19 @@ export default function SoloOracles({ character, setCharacter }) {
   const [isRollingImprove, setIsRollingImprove] = useState(false);
   const [improveApplied, setImproveApplied] = useState(false);
 
+  // 5. 대규모 집단 전투 (Mass Combat - Chapter 8) States
+  const [battleTacticsResult, setBattleTacticsResult] = useState(null);
+  const [meleeEventResult, setMeleeEventResult] = useState(null);
+  const [followersFateResult, setFollowersFateResult] = useState(null);
+  const [isRollingBattle, setIsRollingBattle] = useState(false);
+  const [isRollingMeleeEvent, setIsRollingMeleeEvent] = useState(false);
+  const [isRollingFollowersFate, setIsRollingFollowersFate] = useState(false);
+  const [battleApplied, setBattleApplied] = useState(false);
+  const [battleGloryTotal, setBattleGloryTotal] = useState(0);
+  const [battleLootTotal, setBattleLootTotal] = useState(0);
+  const [enemyCommanderSkill, setEnemyCommanderSkill] = useState(12);
+  const [playerBattleSkillOverride, setPlayerBattleSkillOverride] = useState(10);
+
   // Mappings
   const allSkills = [
     // 일반 스킬 (Common Skills)
@@ -1338,6 +1351,229 @@ export default function SoloOracles({ character, setCharacter }) {
     alert(`[시트 수련 반영]: ${improveRollResult?.skillName} 스킬에 대해 ${addedText}경험치 체크(✓)를 정상 해제(소모)하였습니다.`);
   };
 
+  // ==========================================
+  // 5. MASS COMBAT (CHAPTER 8) LOGIC
+  // ==========================================
+  const rollBattleTactics = () => {
+    if (isRollingBattle) return;
+    setIsRollingBattle(true);
+    setBattleTacticsResult(null);
+
+    setTimeout(() => {
+      const pRoll = Math.floor(Math.random() * 20) + 1;
+      const eRoll = Math.floor(Math.random() * 20) + 1;
+
+      // Opposed resolution
+      const pVal = playerBattleSkillOverride;
+      const eVal = enemyCommanderSkill;
+
+      const pSuccess = pRoll <= pVal;
+      const pCrit = pRoll === pVal;
+      const pFumble = pRoll === 20 && pVal < 20;
+
+      const eSuccess = eRoll <= eVal;
+      const eCrit = eRoll === eVal;
+      const eFumble = eRoll === 20 && eVal < 20;
+
+      let pOutcome = '';
+      let eOutcome = '';
+      let advantage = '';
+      let color = 'var(--color-grey)';
+
+      // Determine outcomes
+      if (pCrit) pOutcome = '대성공 (Critical!)';
+      else if (pFumble) pOutcome = '펌블 (Fumble!)';
+      else if (pSuccess) pOutcome = '성공 (Success)';
+      else pOutcome = '실패 (Failure)';
+
+      if (eCrit) eOutcome = '대성공 (Critical!)';
+      else if (eFumble) eOutcome = '펌블 (Fumble!)';
+      else if (eSuccess) eOutcome = '성공 (Success)';
+      else eOutcome = '실패 (Failure)';
+
+      // Compare
+      if (pCrit && !eCrit) {
+        advantage = '아군 전술적 압승! (+10 전투 보정 획득)';
+        color = 'var(--color-success)';
+      } else if (eCrit && !pCrit) {
+        advantage = '적군 전술적 압승! (아군 대열 붕괴 및 -5 패널티)';
+        color = 'var(--color-danger)';
+      } else if (pSuccess && !eSuccess) {
+        advantage = '아군 우세! (+5 전투 보정 획득)';
+        color = 'var(--color-success)';
+      } else if (eSuccess && !pSuccess) {
+        advantage = '적군 우세! (아군 -3 패널티)';
+        color = 'var(--color-danger)';
+      } else if (pSuccess && eSuccess) {
+        if (pRoll > eRoll) {
+          advantage = '아군 판정승! (+3 전투 보정 획득)';
+          color = 'var(--color-success)';
+        } else if (eRoll > pRoll) {
+          advantage = '적군 판정승! (아군 -2 패널티)';
+          color = 'var(--color-danger)';
+        } else {
+          advantage = '치열한 대치 (동률)';
+        }
+      } else if (pFumble && !eFumble) {
+        advantage = '아군 전열 붕괴! 극심한 패배 위기';
+        color = 'var(--color-danger)';
+      } else if (eFumble && !pFumble) {
+        advantage = '적군 전열 붕괴! 기사의 전광석화 기회 (+5 보정)';
+        color = 'var(--color-success)';
+      } else {
+        advantage = '난전 및 혼전 (양측 실패)';
+      }
+
+      setBattleTacticsResult({
+        playerRoll: pRoll,
+        enemyRoll: eRoll,
+        playerOutcome: pOutcome,
+        enemyOutcome: eOutcome,
+        advantage,
+        color
+      });
+      setIsRollingBattle(false);
+    }, 800);
+  };
+
+  const rollMeleeEvent = () => {
+    if (isRollingMeleeEvent) return;
+    setIsRollingMeleeEvent(true);
+    setMeleeEventResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+      let loot = 0;
+
+      if (roll <= 2) {
+        outcome = '끔찍한 고립 (Surrounded by Enemy)';
+        desc = '전투 대열이 완전히 붕괴되고 쇄도하는 작센 이교도 야만전사단에 포위되었습니다! 동료들의 엄호가 단절되었으므로 1대1 무기 대결창으로 이동하여 2명의 적과 연속으로 칼을 맞대어 돌파구를 직접 마련해야 합니다.';
+        glory = 15;
+      } else if (roll <= 5) {
+        outcome = '보병 전사단 격돌 (Clash with Pagan Footmen)';
+        desc = '선봉에 나선 무장한 작센 보병들이 아군 전열을 방패로 밀쳐내며 습격해옵니다. 단일 적과의 정면 대결이 전개됩니다.';
+        glory = 25;
+      } else if (roll <= 9) {
+        outcome = '정예 기마 돌격 (Mounted Charger)';
+        desc = '말을 타고 진흙을 가르며 가문 휘장을 노려 기습 돌격해오는 이교도 정예 기마전사와 맹렬한 창끝 대결이 벌어집니다. 1대1 대결기에서 랜스 충돌을 시뮬레이션하십시오.';
+        glory = 35;
+      } else if (roll <= 13) {
+        outcome = '방패벽 유지 및 대열전 (Hold the Shieldwall)';
+        desc = '프랑크 기사단의 거대한 방패벽 뒤에서 전우들과 함께 전열을 사수하며 버텨냅니다. 혼란스러운 전장의 철림 속에서 방패로 밀어내며 생존에 전념하십시오.';
+        glory = 15;
+      } else if (roll <= 16) {
+        outcome = '적 우익 텐트 급습 및 전리품 쟁취 (Flanking & Plunder)';
+        desc = '우회 기동에 성공하여 적 지휘부의 텐트 및 수레 수송대를 타격할 천금 같은 기회입니다! 이번 전투에서 기사적 대결을 승리하면, £5 상당의 막대한 약탈 보화와 무구를 쟁취합니다.';
+        glory = 20;
+        loot = 5;
+      } else if (roll <= 19) {
+        outcome = '적 백작과의 일대일 대치 (Enemy Commander Challenge)';
+        desc = '프랑크의 전세를 뒤집기 위해 작센 침공군의 선봉장 백작 경이 가문의 문장을 보고 창을 겨누며 결투를 신청합니다! 기사도의 명예가 걸린 위대한 생사 결투가 성립됩니다!';
+        glory = 100;
+        loot = 10;
+      } else {
+        outcome = '위대한 선봉 대진격 (Glorious Vanguard Charge)';
+        desc = '샤를마뉴 대제의 위엄찬 황금 나팔 소리와 함께 적 진형 정중앙을 분쇄하는 전설적인 쐐기 대돌격(Vanguard Charge)을 전개합니다! 이교도 전열이 아수라장으로 조각납니다!';
+        glory = 50;
+      }
+
+      setMeleeEventResult({
+        roll,
+        outcome,
+        desc,
+        gloryAward: glory,
+        lootAward: loot
+      });
+
+      // 즉각 누적 가산
+      setBattleGloryTotal(prev => prev + glory);
+      setBattleLootTotal(prev => prev + loot);
+
+      setIsRollingMeleeEvent(false);
+    }, 800);
+  };
+
+  const rollFollowersFate = () => {
+    if (isRollingFollowersFate) return;
+    setIsRollingFollowersFate(true);
+    setFollowersFateResult(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+      let loot = 0;
+
+      if (roll <= 2) {
+        outcome = '애마 사망 및 종자의 중상 (Squire Injured / Mount Slain)';
+        desc = '적 창병의 가혹한 집단 공세에 휘말려 애마가 부러져 쓰러져 즉사하고, 종자가 자신의 몸을 던져 기사를 구하다 적의 날카로운 도끼에 큰 상처를 입었습니다! 기사 캐릭터의 마구 창에서 기동마 1필이 사망 처리되거나, 종자의 긴급 치료비로 은화 £2가 강제 차감됩니다.';
+      } else if (roll <= 7) {
+        outcome = '종자 경상 및 장비 파손 (Squire Scratched / Gear Damaged)';
+        desc = '종자가 방패로 비산하는 파편과 화살을 막아내다 경미한 찰과상을 입었으며, 기사의 아머 가죽끈이 파손되어 정비가 필요합니다. 무구 보수 비용 £1이 발생합니다.';
+        loot = -1; // penalty
+      } else if (roll <= 14) {
+        outcome = '안전 및 대열 유지 (Safe & Loyal)';
+        desc = '검날과 돌이 비산하는 극도의 난전 속에서도 기사의 소중한 종자와 가신 군마 모두 상처 하나 없이 건재하게 전장을 수호했습니다.';
+      } else if (roll <= 18) {
+        outcome = '종자의 눈부신 수호 (Squire Shield Cover)';
+        desc = '절체절명의 기습 화살 공격의 순간, 기사의 충성스러운 종자가 자신의 가죽 방패를 머리 위로 던져 주인의 목숨을 구했습니다! 종자의 헌신적인 전우애에 군사적 명예를 드높입니다!';
+        glory = 10;
+      } else {
+        outcome = '신화적 무공 및 전리군마 포획 (Legendary Fate: Capture Enemy Steed)';
+        desc = '종자가 주위의 아수라장 속에서 낙마한 적 이교도 기사의 기품 있고 튼튼한 적장 전용 기동마 고삐를 낚아채어 주군에게 바쳤습니다! 가문 마굿간에 명품 군마가 추가되며 가문의 부가 늘어납니다!';
+        glory = 30;
+        loot = 4;
+      }
+
+      setFollowersFateResult({
+        roll,
+        outcome,
+        desc
+      });
+
+      // 누적 가산
+      setBattleGloryTotal(prev => Math.max(0, prev + glory));
+      setBattleLootTotal(prev => prev + loot);
+
+      setIsRollingFollowersFate(false);
+    }, 800);
+  };
+
+  const applyBattleToSheet = () => {
+    if (battleApplied) return;
+
+    setCharacter(prev => {
+      const updated = { ...prev };
+      
+      // GloryTotal 가중
+      if (!updated.gear) updated.gear = {};
+      const currentGlory = updated.gear.gloryTotal || 1000;
+      updated.gear.gloryTotal = currentGlory + battleGloryTotal;
+
+      // Cash(소지금) 가중
+      const currentCash = updated.gear.cash || 0;
+      updated.gear.cash = Math.max(0, currentCash + battleLootTotal);
+
+      return updated;
+    });
+
+    setBattleApplied(true);
+    alert(`[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`);
+  };
+
+  const resetBattleSimulator = () => {
+    setBattleTacticsResult(null);
+    setMeleeEventResult(null);
+    setFollowersFateResult(null);
+    setBattleGloryTotal(0);
+    setBattleLootTotal(0);
+    setBattleApplied(false);
+  };
+
   const getOracleAnswerFromRollText = (ans) => {
     if (!ans) return '';
     return ans.result + ': ' + ans.desc;
@@ -2472,6 +2708,157 @@ export default function SoloOracles({ character, setCharacter }) {
                       )}
                     </div>
                   )}
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4: 대규모 집단 전투 시뮬레이터 (Chapter 8) */}
+          <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
+            <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
+              <h3>⚔️ 대규모 집단 전투 및 전술 시뮬레이터 (Mass Combat &amp; Battle)</h3>
+            </div>
+            <div className="cs-section-inner">
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
+                제국의 거대한 군단들과 함께 전장에 나서는 집단 전투 상황(Mass Combat)을 모사합니다. 부대 전술 대결을 벌이고 전장 돌발 조우와 가신단의 운명을 결정하세요.
+              </p>
+
+              <div className="cs-row" style={{ gap: '16px' }}>
+                
+                {/* 4-1. 부대 전술 및 대지휘 대결 (Battle Tactics) */}
+                <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
+                  <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-royal-blue)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    📊 부대 대열 전술 대결 (Tactics)
+                  </h4>
+                  
+                  <div className="cs-field" style={{ marginBottom: '8px' }}>
+                    <span className="cs-field-label">기사의 전술 (Battle) 스킬 레벨:</span>
+                    <input 
+                      type="number" 
+                      value={playerBattleSkillOverride} 
+                      onChange={e => { setPlayerBattleSkillOverride(parseInt(e.target.value) || 10); setBattleTacticsResult(null); }}
+                    />
+                  </div>
+
+                  <div className="cs-field" style={{ marginBottom: '12px' }}>
+                    <span className="cs-field-label">적장 지휘관의 전술 레벨:</span>
+                    <input 
+                      type="number" 
+                      value={enemyCommanderSkill} 
+                      onChange={e => { setEnemyCommanderSkill(parseInt(e.target.value) || 10); setBattleTacticsResult(null); }}
+                    />
+                  </div>
+
+                  <button 
+                    className="btn-medieval btn-medieval-primary" 
+                    onClick={rollBattleTactics}
+                    disabled={isRollingBattle}
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    {isRollingBattle ? '전술 수 읽는 중...' : '⚔️ 부대 전술 대결 주사위 굴리기 (Opposed)'}
+                  </button>
+
+                  {battleTacticsResult && (
+                    <div style={{ marginTop: '12px', border: '1px solid ' + battleTacticsResult.color, padding: '10px', background: 'rgba(0,0,0,0.01)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '4px' }}>
+                        <span>🛡️ 기사 롤: {battleTacticsResult.playerRoll} ({battleTacticsResult.playerOutcome})</span>
+                        <span>😈 적장 롤: {battleTacticsResult.enemyRoll} ({battleTacticsResult.enemyOutcome})</span>
+                      </div>
+                      <h4 style={{ color: battleTacticsResult.color, fontWeight: 'bold', fontSize: '0.86rem', textAlign: 'center', marginTop: '6px', borderTop: '1px dashed ' + battleTacticsResult.color, paddingTop: '6px' }}>
+                        {battleTacticsResult.advantage}
+                      </h4>
+                    </div>
+                  )}
+                </div>
+
+                {/* 4-2. 전장 돌발 조우 및 추종자 운명 (Melee Events) */}
+                <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
+                  <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-royal-blue)', paddingBottom: '4px', marginBottom: '8px' }}>
+                    🚩 전장 돌발 상황 &amp; 종자 운명
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                    <button 
+                      className="btn-medieval" 
+                      onClick={rollMeleeEvent}
+                      disabled={isRollingMeleeEvent}
+                      style={{ justifyContent: 'center', fontSize: '0.78rem', padding: '6px' }}
+                    >
+                      {isRollingMeleeEvent ? '조우 주입 중...' : '🎲 전장 상황 조우 (d20)'}
+                    </button>
+
+                    <button 
+                      className="btn-medieval" 
+                      onClick={rollFollowersFate}
+                      disabled={isRollingFollowersFate}
+                      style={{ justifyContent: 'center', fontSize: '0.78rem', padding: '6px' }}
+                    >
+                      {isRollingFollowersFate ? '운명 갈리는 중...' : '🐴 종자/군마 운명 (d20)'}
+                    </button>
+                  </div>
+
+                  {/* Results scroll box */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {meleeEventResult && (
+                      <div style={{ border: '1px solid var(--color-gold)', padding: '8px', background: '#faf6eb', borderRadius: '4px' }}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-crimson)', display: 'block', marginBottom: '2px' }}>
+                          🚩 전장 조우 (d20: {meleeEventResult.roll}): {meleeEventResult.outcome}
+                        </strong>
+                        <p style={{ fontSize: '0.74rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: '1.4' }}>
+                          {meleeEventResult.desc}
+                        </p>
+                        <div style={{ display: 'flex', gap: '8px', marginTop: '4px', fontSize: '0.72rem', color: 'var(--color-success)', fontWeight: 'bold' }}>
+                          {meleeEventResult.gloryAward > 0 && <span>• 명예 +{meleeEventResult.gloryAward} Glory</span>}
+                          {meleeEventResult.lootAward > 0 && <span>• 전리품 +£{meleeEventResult.lootAward}</span>}
+                        </div>
+                      </div>
+                    )}
+
+                    {followersFateResult && (
+                      <div style={{ border: '1px solid var(--color-grey)', padding: '8px', background: '#f5ecd5', borderRadius: '4px' }}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-ink)', display: 'block', marginBottom: '2px' }}>
+                          🐴 종자 및 가신단 운명 (d20: {followersFateResult.roll}): {followersFateResult.outcome}
+                        </strong>
+                        <p style={{ fontSize: '0.74rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: '1.4' }}>
+                          {followersFateResult.desc}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 4-3. 전투 전획품 및 명예 정산 (Battle Rewards) */}
+                <div style={{ flex: '1 1 200px', background: 'rgba(139, 105, 20, 0.03)', padding: '12px', border: '1.5px solid var(--color-gold)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-gold)', paddingBottom: '4px', marginBottom: '10px' }}>
+                      🏆 전장 위업 정산 총계
+                    </h4>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem', color: 'var(--color-ink)', margin: '8px 0' }}>
+                      <div>누적 획득 명예: <strong style={{ color: 'var(--color-success)', fontSize: '1.05rem' }}>+{battleGloryTotal} Glory</strong></div>
+                      <div>누적 소지금 변동: <strong style={{ color: battleLootTotal >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontSize: '1.05rem' }}>£{battleLootTotal >= 0 ? '+' : ''}{battleLootTotal}</strong></div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
+                    <button 
+                      className="btn-medieval btn-medieval-primary" 
+                      onClick={applyBattleToSheet} 
+                      disabled={battleApplied || (battleGloryTotal === 0 && battleLootTotal === 0)}
+                      style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem' }}
+                    >
+                      {battleApplied ? '✓ 시트 데이터 정산 완료' : '📈 전장 위업 시트 데이터 반영'}
+                    </button>
+                    
+                    <button 
+                      className="btn-medieval" 
+                      onClick={resetBattleSimulator}
+                      style={{ width: '100%', justifyContent: 'center', fontSize: '0.76rem', padding: '4px' }}
+                    >
+                      🔄 전장 초기화
+                    </button>
+                  </div>
                 </div>
 
               </div>
