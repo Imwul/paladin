@@ -76,110 +76,506 @@ export default function FamilyWinter({ character, setCharacter }) {
     let gfGlory = 2500;
     let gfHateSaxons = 0;
     let gfHateMoors = 0;
+    let gfHateDanes = 0;
     let gfDead = false;
-    let gfDeathYr = 747;
+    let gfDeathYr = 744;
     let gfCause = '노환';
 
-    for (let yr = 723; yr <= 747; yr++) {
-      if (gfDead) continue;
+    const runCombatSurvival = (yr, eventName, isGrandfather, battleModifier = 0, isVictor = true, standardGlory = 100) => {
+      const roll = rollD20();
+      const modifiedRoll = roll + battleModifier;
       
-      let event = "";
-      if (yr === 723) {
-        event = "작센 영토 공격: 카롤루스 마르텔이 가이스마르와 프리츨라 인근의 작센 신성한 나무(holy trees)들을 파괴한 역사적 원정에 종군했습니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
+      let dead = false;
+      let gloryGained = standardGlory * (isVictor ? 2 : 1);
+      let logMsg = "";
+      let cause = "";
+      let status = "survived";
+
+      if (modifiedRoll <= 0) {
+        dead = true;
+        status = "dead";
+        gloryGained += 1000;
+        cause = "전투 중 장렬한 전사 (Combat)";
+        logMsg = `🗡️ ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 전공을 치하받으며 장렬히 전사하셨습니다! (+${gloryGained} Glory)`;
+      } else if (modifiedRoll === 1) {
+        dead = true;
+        status = "dead";
+        cause = "전투 중 전사 (Combat)";
+        logMsg = `🗡️ ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 전투 중 아쉽게 전사하셨습니다. (+${gloryGained} Glory)`;
+      } else if (modifiedRoll === 2) {
+        dead = true;
+        status = "retired";
+        const retiredYears = rollD20();
+        cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+        logMsg = `🏥 ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
+      } else if (modifiedRoll === 3) {
+        dead = true;
+        status = "captured";
+        cause = "포로 압송 및 실종 (Captured)";
+        logMsg = `🔗 ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 포로로 잡혀 적국으로 압송되었으며 영영 돌아오지 못했습니다. (+${gloryGained} Glory)`;
+      } else if (modifiedRoll <= 5) {
+        gloryGained += 100;
+        logMsg = `✨ ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 기적적으로 생존하고 전장에 큰 기여를 한 영웅적 전공을 세웠습니다! (+${gloryGained} Glory)`;
+      } else {
+        logMsg = `🛡️ ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 치열한 전투 속에서 무사히 살아남으셨습니다. (+${gloryGained} Glory)`;
+      }
+
+      if (isGrandfather) {
+        gfGlory += gloryGained;
+        if (dead) {
           gfDead = true;
           gfDeathYr = yr;
-          gfCause = "작센 전사 (Combat)";
-          gfGlory += 1000;
-          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          gfGlory += 200; 
-          gfHateSaxons += rollD3();
-          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 영웅적 전공을 세우며 생존! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
-        } else {
-          gfGlory += 50; 
-          gfHateSaxons += rollD3();
-          logs.push(`🛡️ 723년: [역사] ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
-        }
-      } else if (yr === 725) {
-        event = "오툉 포위전: 무어인들이 Nîmes과 Carcassonne을 함락시키고 론 강을 따라 오툉(Autun)까지 대약탈을 감행하여, 오툉 수비대로서 결사 항전했습니다. 소문에 따르면 아키텐의 오도 공작이 아키텐 대신 프랑크를 침공하라고 무어인을 매수했다고 합니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
-          gfDead = true;
-          gfDeathYr = yr;
-          gfCause = "오툉 공성전 전사 (Combat)";
-          gfGlory += 1000;
-          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 무어인들과 싸우다 장렬히 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          gfGlory += 100;
-          gfHateMoors += rollD3();
-          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 적들의 공세를 저지하며 활약! (+100 Glory, 무어인 증오 +${gfHateMoors})`);
-        } else {
-          gfGlory += 25;
-          gfHateMoors += rollD3();
-          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${gfHateMoors})`);
-        }
-      } else if (yr === 728) {
-        event = "작센 및 아키텐 대원정: 카롤루스 마르텔이 작센과 프리지아에서 원정을 벌이고, 독립을 선포하며 무어인과 연맹을 맺은 아키텐의 오도 공작을 제압하기 위해 대원정에 나섰습니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
-          gfDead = true;
-          gfDeathYr = yr;
-          gfCause = "작센 전사 (Combat)";
-          gfGlory += 1000;
-          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          gfGlory += 200;
-          gfHateSaxons += rollD3();
-          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 작센 추장들과 대결해 승리! (+200 Glory, 작센인 증오 +${gfHateSaxons})`);
-        } else {
-          gfGlory += 50;
-          gfHateSaxons += rollD3();
-          logs.push(`🛡️ 728년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${gfHateSaxons})`);
+          gfCause = cause;
         }
       } else {
-        const d20 = rollD20();
-        if (d20 === 1) {
-          gfDead = true;
-          gfDeathYr = yr;
-          const deathCauseRoll = rollD20();
-          if (deathCauseRoll <= 3) gfCause = "전투 중 사망 (Battle)";
-          else if (deathCauseRoll <= 6) gfCause = "가문 결투 중 사망 (Feud)";
-          else if (deathCauseRoll <= 8) gfCause = "적의 습격으로 사망 (Raid)";
-          else if (deathCauseRoll <= 10) gfCause = "사냥 중 사고사 (Hunting Accident)";
-          else if (deathCauseRoll <= 13) gfCause = "마차 사고 등 사고사 (Accident)";
-          else if (deathCauseRoll <= 14) gfCause = "행방불명 (Disappeared)";
-          else if (deathCauseRoll <= 18) gfCause = "돌발적인 질병사 (Illness)";
-          else gfCause = "노환 (Old Age)";
-          
-          logs.push(`💀 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 비보! 할아버님께서 [${gfCause}]로 서거하셨습니다.`);
-        } else if (d20 >= 18 && d20 <= 19) {
-          gfGlory += 50;
-          logs.push(`✨ ${yr}년: 평화로운 해 -> 주사위 ${d20} - 봉토 순찰 중 영광스러운 모험 전공! (+50 Glory)`);
-        } else if (d20 === 20) {
-          const survival = rollD20();
-          if (survival <= 2) {
+        fGlory += gloryGained;
+        if (dead) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = cause;
+        }
+      }
+      logs.push(logMsg);
+      return { dead, status };
+    };
+
+    const rollOrdinaryYear = (yr, eventDescription, isGrandfather, enemyName = "Saxons") => {
+      const d20 = rollD20();
+      let gloryGained = 0;
+      let dead = false;
+      let logMsg = "";
+      let cause = "";
+      let status = "survived";
+
+      if (d20 === 1) {
+        dead = true;
+        status = "dead";
+        cause = "예기치 못한 급사 (Ordinary Year Death)";
+        logMsg = `💀 ${yr}년: [역사] ${eventDescription}\n  └ [주사위 ${d20}] - 평화로운 겨울철에 갑작스러운 불의의 사고 혹은 급병으로 서거하셨습니다.`;
+      } else if (d20 <= 17) {
+        logMsg = `🏰 ${yr}년: [역사] ${eventDescription}\n  └ [주사위 ${d20}] - 기사로서 성채 수비대(Garrison) 의무 및 영지 보초 임무를 평온히 완수했습니다.`;
+      } else if (d20 <= 19) {
+        gloryGained = 50;
+        logMsg = `✨ ${yr}년: [역사] ${eventDescription}\n  └ [주사위 ${d20}] - 봉토를 훌륭히 순찰하고 주군의 신임을 받아 기념비적이고 명예로운 무훈을 올렸습니다! (+50 Glory)`;
+      } else {
+        logMsg = `🔥 ${yr}년: [역사] ${eventDescription}\n  └ [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! (전투 생존 판정 돌입)`;
+        
+        // Combat Survival on a raid (25 Glory, unmodified, victor)
+        const survivalRoll = rollD20();
+        let sDead = false;
+        let sGlory = 25;
+        let sCause = "";
+        let sLog = "";
+
+        if (survivalRoll === 1) {
+          sDead = true;
+          sCause = `${enemyName} 습격 방어 중 전사`;
+          sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 안타깝게도 밀려오는 적들을 막아서다 격전 중 장렬히 전사하셨습니다.`;
+        } else if (survivalRoll === 2) {
+          sDead = true;
+          const retiredYears = rollD20();
+          sCause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+          sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 불구가 되는 중상을 입어 은퇴 후 수도원에 귀의합니다. ${retiredYears}년 뒤 조용히 영면에 드십니다.`;
+        } else if (survivalRoll === 3) {
+          sDead = true;
+          sCause = `포로 압송 및 실종`;
+          sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 적들의 포로가 되어 머나먼 이교의 땅으로 납치되었으며 끝내 돌아오지 못했습니다.`;
+        } else if (survivalRoll <= 5) {
+          sGlory += 100;
+          sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 기적적으로 습격의 대장을 척살하는 위대한 영웅적 무훈을 세우며 살아남았습니다! (+${sGlory} Glory)`;
+        } else {
+          sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
+        }
+
+        const hVal = rollD3();
+        if (isGrandfather) {
+          gfGlory += sGlory;
+          if (sDead) {
             gfDead = true;
             gfDeathYr = yr;
-            gfCause = "작센 습격 수비 전사 (Combat)";
-            gfGlory += 1000;
-            logs.push(`🔥 ${yr}년: 영지에 작센인들의 기습이 있었습니다! -> 수비전 전사! (+1000 Glory)`);
+            gfCause = sCause;
           } else {
-            gfGlory += 25;
-            gfHateSaxons += rollD3();
-            logs.push(`🔥 ${yr}년: 영지에 작센인들의 기습이 있었습니다! -> 주사위 ${survival} - 무사히 막아냈습니다. (작센인 증오 +${gfHateSaxons})`);
+            if (enemyName === "Saxons") gfHateSaxons += hVal;
+            else gfHateMoors += hVal;
+            sLog += ` (이교도 증오 +${hVal} 획득)`;
           }
         } else {
-          logs.push(`🏰 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 영지 수비대 근무를 원활하게 수행하셨습니다.`);
+          fGlory += sGlory;
+          if (sDead) {
+            fDead = true;
+            fDeathYr = yr;
+            fCause = sCause;
+          } else {
+            if (enemyName === "Saxons") fHateSaxons += hVal;
+            else if (enemyName === "Moors") fHateMoors += hVal;
+            else fHateDanes += hVal;
+            sLog += ` (이교도 증오 +${hVal} 획득)`;
+          }
+        }
+        logMsg += `\n` + sLog;
+      }
+
+      if (isGrandfather) {
+        if (dead) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = cause;
+        }
+      } else {
+        if (dead) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = cause;
+        }
+      }
+      logs.push(logMsg);
+    };
+
+    // 👴 [조조부의 연대기 (723~744)]
+    for (let yr = 723; yr <= 744; yr++) {
+      if (gfDead) continue;
+
+      if (yr === 723) {
+        const event = "작센 신성수 파괴 공격: 카롤루스 마르텔이 가이스마르와 프리츨라 인근의 작센 신성한 나무(holy trees)들을 파괴한 역사적 원정에 종군했습니다.";
+        const roll = rollD20();
+        if (roll <= 10) {
+          logs.push(`🏰 723년: [역사] ${event} -> 주사위 ${roll} - 후방 수비대(Garrison) 의무를 안전하게 수행했습니다.`);
+        } else {
+          const res = runCombatSurvival(yr, event, true, 0, true, 25);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        }
+      } else if (yr === 724) {
+        const event = "교황 성유물 기증: 교황이 카롤루스 마르텔에게 성 베드로의 쇠사슬과 열쇠 성유물함을 기증하였습니다. 가문의 영광스러운 후계자이자 아버님이 되실 제라르 경(Gerard)이 탄생하셨습니다.";
+        rollOrdinaryYear(yr, event, true, "Saxons");
+      } else if (yr === 725) {
+        const event = "오툉 포위전: 무어인들이 Nîmes과 Carcassonne을 함락시키고 론 강을 따라 오툉(Autun)까지 대약탈을 감행하여, 오툉 수비대로서 결사 항전했습니다. (오도 공작 매수 소문)";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "질병사 (Illness)";
+          logs.push(`💀 725년: [역사] ${event} -> 주사위 ${roll} - 행군 도중 돌발적인 질병으로 급거 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 725년: [역사] ${event} -> 주사위 ${roll} - 후방 성채 경계 근무를 수행했습니다.`);
+        } else {
+          const res = runCombatSurvival(yr, event, true, 0, false, 50);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${gfHateMoors})`);
+          }
+        }
+      } else if (yr === 726) {
+        const event = "중대한 무훈의 공백기: 기사단이 전열을 정비하는 동안, 할아버님께서는 후방 참호를 강화하고 평화로운 겨울 보초 임무에 전념하셨습니다.";
+        rollOrdinaryYear(yr, event, true, "Saxons");
+      } else if (yr === 727) {
+        const event = "영지의 평온: 제국 국경에 마찰이 일어나지 않은 해로, 봉토의 곡식 수확을 관리하고 가문의 권세를 평화롭게 유지하였습니다.";
+        rollOrdinaryYear(yr, event, true, "Saxons");
+      } else if (yr === 728) {
+        const event = "작센 및 아키텐 대원정: 카롤루스 마르텔이 작센과 프리지아에서 원정을 벌이고, 독립을 선포하며 무어인과 연맹을 맺은 아키텐의 오도 공작을 제압하기 위해 대원정에 나섰습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "사고 (Accident)";
+          logs.push(`💀 728년: [역사] ${event} -> 주사위 ${roll} - 불의의 마차 낙마 사고로 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 728년: [역사] ${event} -> 주사위 ${roll} - 후방 영지 보급 호위를 전담했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (오도 공작 응징전)", true, -1, true, 100);
+        } else {
+          const res = runCombatSurvival(yr, event + " (북방 작센전)", true, 0, true, 100);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        }
+      } else if (yr === 729) {
+        const event = "작센 전투 및 바르벨 타워 공성: 가린과 두온 공작을 돕기 위해 작센인들의 거점인 바르벨 타워 근처에서 대전투를 펼쳤습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "사냥 사고 (Hunting Accident)";
+          logs.push(`💀 729년: [역사] ${event} -> 주사위 ${roll} - 사냥 중 멧돼지의 기습을 받아 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 729년: [역사] ${event} -> 주사위 ${roll} - 성벽 경계 및 보초 근무를 수행했습니다.`);
+        } else if (roll <= 15) {
+          const res = runCombatSurvival(yr, event + " (Vauclere 전투)", true, -1, false, 100);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        } else {
+          const res = runCombatSurvival(yr, event + " (Barbel Tower 공방전)", true, -1, true, 100);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        }
+      } else if (yr === 730) {
+        const event = "무훈시 [Gaufrey] & [Auberi de Bourgogne]: 바르벨 타워에서 공주 플뢰르드핀의 지혜로 갇힌 프랑크 기사들이 구출되고 거인 로바스트르가 글로리앙을 결투로 참수했으며, 오베리 경이 아바르족의 공습으로부터 바이에른 영토를 완전히 사수하여 귀족적 안착에 성공했습니다.";
+        rollOrdinaryYear(yr, event, true, "Saxons");
+      } else if (yr === 731) {
+        const event = "오리돈 공성전: 카롤루스 마르텔을 도와 배반자 람베르트의 성인 오리돈(Oridon)을 포위 공성했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "질병사 (Illness)";
+          logs.push(`💀 731년: [역사] ${event} -> 주사위 ${roll} - 군영 내 전염병으로 돌연 서거하셨습니다.`);
+        } else if (roll <= 15) {
+          logs.push(`🏰 731년: [역사] ${event} -> 주사위 ${roll} - 후방 수비대 임무를 마쳤습니다.`);
+        } else {
+          runCombatSurvival(yr, event, true, 0, true, 50);
+        }
+      } else if (yr === 732) {
+        const event = "포아티에 전투 (투르 전투): 이슬람 무어인들의 대규모 침공군에 맞서 서유럽의 운명을 걸고 카롤루스 마르텔의 연합군에 합류하여 평원에서 격전을 벌였습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "낙사 (Accident)";
+          logs.push(`💀 732년: [역사] ${event} -> 주사위 ${roll} - 전투 직전 말에서 떨어져 서거하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 732년: [역사] ${event} -> 주사위 ${roll} - 기사단 후방 보급을 호위했습니다.`);
+        } else {
+          const pRoll = rollD20();
+          if (pRoll === 1) {
+            gfDead = true;
+            gfDeathYr = yr;
+            gfCause = "Poitiers 전사 (Combat)";
+            gfGlory += 1400;
+            logs.push(`🗡️ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 전설적인 전공을 기사단에 남기며 장렬히 전사하셨습니다! (+${gfGlory} Glory)`);
+          } else if (pRoll <= 11) {
+            gfDead = true;
+            gfDeathYr = yr;
+            gfCause = "Poitiers 전사 (Combat)";
+            gfGlory += 400;
+            logs.push(`🗡️ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 전투 중 영예롭게 전사하셨습니다. (+400 Glory)`);
+          } else if (pRoll === 12) {
+            gfDead = true;
+            gfDeathYr = yr;
+            gfCause = "스페인 압송 포로 (Captured)";
+            gfGlory += 400;
+            logs.push(`🔗 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 포로로 잡혀 무어인의 땅(스페인)으로 압송되어 소식이 끊겼습니다. (+400 Glory)`);
+          } else if (pRoll === 13) {
+            gfGlory += 500;
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`✨ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal})`);
+          } else if (pRoll <= 19) {
+            gfGlory += 400;
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`🛡️ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal})`);
+          } else {
+            gfGlory += 900;
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`👑 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal})`);
+          }
+        }
+      } else if (yr === 733) {
+        const event = "무훈시 [Daurel and Beton] & [역사]: 브라반트 공작 베비스가 프랑크 왕국 국왕의 누이 에르멩가르드 공주와 성대한 축복 속에 결혼했으나, 질투심에 타락한 기(Guy) 백작이 주군을 해칠 비열한 음모를 꾸몄습니다. [역사] 아키텐의 수호자 오도 공작이 서거하여 아들 후놀트가 작위를 상속받았습니다.";
+        rollOrdinaryYear(yr, event, true, "Moors");
+      } else if (yr === 734) {
+        const event = "무훈시 [Daurel and Beton] & [역사]: 주군 가문의 위대한 희망이자 기사도의 정수인 아기 베통 경이 출생하였습니다. [역사] 프랑크의 진정한 권력자 카롤루스 마르텔이 그의 둘째 아들 피핀(Pepin)을 롬바르디아의 Pavia 왕실로 보내 수습 종자 훈련을 거치도록 조치했습니다.";
+        rollOrdinaryYear(yr, event, true, "Moors");
+      } else if (yr === 735) {
+        const event = "루시옹 대결 및 보르도 공성전: 카롤루스 마르텔을 종군하여 보르도 공성에 나서거나, 루시옹의 제라르 공작과의 대결전에 참전했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "사망 (Feud)";
+          logs.push(`💀 735년: [역사] ${event} -> 주사위 ${roll} - 가문 불화 결투 도중 서거하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 735년: [역사] ${event} -> 주사위 ${roll} - 쾰른 경비 의무를 마쳤습니다.`);
+        } else if (roll <= 12) {
+          runCombatSurvival(yr, event + " (루시옹 대결)", true, 0, true, 50);
+        } else if (roll <= 15) {
+          logs.push(`⚖️ 735년: [역사] ${event} -> 주사위 ${roll} - 위옹 경의 아모르 스캔들 재판에서 위증을 강요받아 정직함이 무너집니다. (Just 수치 하락)`);
+        } else {
+          runCombatSurvival(yr, event + " (보르도 공성)", true, 0, true, 50);
+        }
+      } else if (yr === 736) {
+        const event = "제라르 격퇴 및 아를 해방전: 무어인들과 손을 잡은 반역세력을 토벌하고, 무어인의 치하에서 아를(Arles)을 완전히 탈환하기 위한 공성전에 참전했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "질병사 (Illness)";
+          logs.push(`💀 736년: [역사] ${event} -> 주사위 ${roll} - 진중의 무서운 열병으로 서거하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 736년: [역사] ${event} -> 주사위 ${roll} - 기사단 초소 근무를 섰습니다.`);
+        } else if (roll <= 10) {
+          runCombatSurvival(yr, event + " (제라르 전투)", true, -1, false, 100);
+        } else {
+          const res = runCombatSurvival(yr, event + " (아를 해방전)", true, 0, true, 50);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${gfHateMoors})`);
+          }
+        }
+      } else if (yr === 737) {
+        const event = "아비뇽 공성전 및 학살극: 무어인과 연맹을 맺은 비시고트 반역자들을 징벌하기 위해 아비뇽을 격파하고, 도시 함락 후 가차 없는 학살 및 처벌에 가담했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "사고 (Accident)";
+          logs.push(`💀 737년: [역사] ${event} -> 주사위 ${roll} - 성벽 수축 공사 도중 돌에 깔려 서거하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 737년: [역사] ${event} -> 주사위 ${roll} - 영지 가드 근무를 섰습니다.`);
+        } else if (roll <= 10) {
+          runCombatSurvival(yr, event + " (제라르 전투)", true, -1, false, 100);
+        } else {
+          runCombatSurvival(yr, event + " (아비뇽 대참화)", true, 0, true, 50);
+          logs.push("  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) 1d6 기질 획득!");
+        }
+      } else if (yr === 738) {
+        const event = "부르고뉴 전투 및 보르들레 습격전: 로렌 가문을 도우며 부르고뉴로 쳐들어온 무어 침공군을 격파하거나, 보르들레 가문을 급습하는 가문 불화 전투에 나섰습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "사망 (Feud)";
+          logs.push(`💀 738년: [역사] ${event} -> 주사위 ${roll} - 라이벌 가문의 자객에게 급습받아 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 738년: [역사] ${event} -> 주사위 ${roll} - 쾰른 성 수비대에 소집되었습니다.`);
+        } else if (roll <= 15) {
+          const res = runCombatSurvival(yr, event + " (부르고뉴 무어인전)", true, -1, true, 100);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateMoors += hVal;
+            logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${gfHateMoors})`);
+          }
+        } else {
+          runCombatSurvival(yr, event + " (보르들레 습격전)", true, 0, true, 25);
+        }
+      } else if (yr === 739) {
+        const event = "셉티마니아 수복전: 남부에서 무어인들을 축출하기 위한 셉티마니아 공성전에 가담해 큰 전리품을 획득하고 충성스러운 기사로 인정받았습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "행방불명 (Disappeared)";
+          logs.push(`💀 739년: [역사] ${event} -> 주사위 ${roll} - 원정길의 수풀 속에서 실종되시어 돌아오지 못했습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 739년: [역사] ${event} -> 주사위 ${roll} - 후방 수비 의무를 원활하게 수행했습니다.`);
+        } else if (roll <= 10) {
+          gfGlory += 50;
+          logs.push(`🛡️ 739년: [역사] ${event} -> 프로방스 공성전 주사위 ${roll} - 실패로 끝난 아를 포위전에서 힘겹게 목숨을 건졌습니다. (+50 Glory)`);
+        } else {
+          const res = runCombatSurvival(yr, event + " (셉티마니아 대공성)", true, 0, true, 50);
+          if (!res.dead) {
+            logs.push("  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)");
+          }
+        }
+      } else if (yr === 740) {
+        const event = "로슈브룬 공성전: 대공 나이모의 사촌 파스루즈를 구출하기 위해 덴마크 침공군에 맞서 로슈브룬 성을 방어 및 탈환했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "덴마크 전사 (Combat)";
+          logs.push(`💀 740년: [역사] ${event} -> 주사위 ${roll} - 북유럽 바이킹 도끼에 맞서 장렬히 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 740년: [역사] ${event} -> 주사위 ${roll} - 후방 성벽을 지켰습니다.`);
+        } else {
+          const res = runCombatSurvival(yr, event, true, 0, true, 50);
+          if (!res.dead) {
+            logs.push("  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노(Hate Danes 1d6)를 품었습니다!");
+          }
+        }
+      } else if (yr === 741) {
+        const event = "카롤루스 마르텔의 서거 및 장례: 마르텔 공의 서거을 기리고, 영지를 탈취하려는 그리포 왕자의 반란군을 생포하는 진압군에 가담했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "질병사 (Illness)";
+          logs.push(`💀 741년: [역사] ${event} -> 주사위 ${roll} - 주군 카롤루스 마르텔의 부고를 듣고 상심 속에 병사하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 741년: [역사] ${event} -> 주사위 ${roll} - 쾰른에서 애도 기간을 가졌습니다.`);
+        } else if (roll <= 10) {
+          gfGlory += 50;
+          logs.push(`🛡️ 741년: [역사] ${event} -> 그리포 생포전 주사위 ${roll} - 반역 왕자의 병력을 기습해 체포에 일조했습니다! (+50 Glory)`);
+        } else {
+          gfGlory += 50;
+          logs.push(`🕯️ 741년: [역사] ${event} -> 장례식 참석 주사위 ${roll} - 카롤루스 마르텔의 장엄한 아르덴 성당 매장식에 기치를 들었습니다. (+50 Glory)`);
+        }
+      } else if (yr === 742) {
+        const event = "두온 백작의 결혼식: 국왕 피핀의 누이 올리브 공주와 두온 백작의 화려한 쾰른 혼례식에 공식 하객으로 참석했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "노환 (Old Age)";
+          logs.push(`💀 742년: [역사] ${event} -> 주사위 ${roll} - 주군들의 결혼 잔치 직후 노환으로 평화로이 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 742년: [역사] ${event} -> 주사위 ${roll} - 축제 기간 영지 순찰을 담당했습니다.`);
+        } else {
+          gfGlory += 25;
+          logs.push(`🎉 742년: [역사] ${event} -> 하객 참석 주사위 ${roll} - 국왕과 대귀족들이 모인 성대한 연회에서 가문의 권세를 떨쳤습니다. (+25 Glory)`);
+        }
+      } else if (yr === 743) {
+        const event = "레겐스부르크 전투 및 삼면 원정: 바이에른을 완전 병합하기 위한 레겐스부르크 전투에 참전하거나, 아키텐/작센의 반란을 평정하기 위해 종군했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          gfDead = true;
+          gfDeathYr = yr;
+          gfCause = "바이에른 전사 (Combat)";
+          logs.push(`💀 743년: [역사] ${event} -> 주사위 ${roll} - 알프스 고갯길에서 바이에른 보병의 기습을 받아 전사하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 743년: [역사] ${event} -> 주사위 ${roll} - 가문 영지를 수호했습니다.`);
+        } else if (roll <= 10) {
+          runCombatSurvival(yr, event + " (레겐스부르크 결전)", true, -1, true, 100);
+        } else if (roll <= 15) {
+          const res = runCombatSurvival(yr, event + " (작센 정벌)", true, 0, true, 25);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        } else {
+          runCombatSurvival(yr, event + " (아키텐 진압)", true, 0, true, 25);
+        }
+      } else if (yr === 744) {
+        const event = "조조부 은퇴 전 최후의 원정: 궁정의 간첩을 적발하고 최후의 작센 습격을 차단하며 기사로서의 영예로운 일생을 매듭지었습니다.";
+        const roll = rollD20();
+        if (roll <= 10) {
+          logs.push(`🏰 744년: [역사] ${event} -> 주사위 ${roll} - 노장이 되어 고향 영지를 지켰습니다.`);
+        } else if (roll <= 14) {
+          const res = runCombatSurvival(yr, event + " (작센 최후 전투)", true, 0, true, 25);
+          if (!res.dead) {
+            const hVal = rollD3();
+            gfHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${gfHateSaxons})`);
+          }
+        } else if (roll <= 18) {
+          gfGlory += 25;
+          logs.push(`👑 744년: [역사] ${event} -> 주사위 ${roll} - 파리 대성당에서 섭정 베르트라다 왕비의 성대하고 역사적인 복귀식 대열에 합류했습니다. (+25 Glory)`);
+        } else {
+          gfGlory += 100;
+          logs.push(`🔍 744년: [역사] ${event} -> 주사위 ${roll} - 피핀 국왕의 어전에서 아키텐 위노 공작이 심어놓은 흉악한 세작을 기지로 생포해 상을 받았습니다! (+100 Glory)`);
         }
       }
     }
 
     if (!gfDead) {
-      gfDeathYr = 747;
+      gfDeathYr = 744 + rollD20();
       gfCause = "평화로운 영면 (Old Age)";
-      logs.push("💀 747년: 할아버님께서 노환으로 편안히 영면에 드셨습니다.");
+      logs.push(`👴 ${gfDeathYr}년: 은퇴한 할아버님(시조 고드프루아 경)께서 평화롭게 침상에서 영면에 드셨습니다.`);
     }
 
     setGrandfatherGlory(gfGlory);
@@ -190,115 +586,373 @@ export default function FamilyWinter({ character, setCharacter }) {
     let inheritedSaxons = gfHateSaxons > 10 ? gfHateSaxons : 0;
     let inheritedMoors = gfHateMoors > 10 ? gfHateMoors : 0;
 
+    // 👨 [부친의 연대기 (745~766)]
     logs.push("");
-    logs.push("📜 [부친의 생애: 연대기 시작 748년]");
+    logs.push("📜 [부친의 생애: 연대기 시작 745년]");
     let fGlory = 2500 + Math.floor(gfGlory / 10);
-    logs.push(`🎁 748년: 부친(724년생)께서 성인식을 마치고 조부의 영광 1/10을 물려받아 ${fGlory} Glory로 임관하셨습니다.`);
+    logs.push(`🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${fGlory} Glory로 당당히 기사 서임을 받으셨습니다.`);
     
     let fHateSaxons = inheritedSaxons;
     let fHateMoors = inheritedMoors;
+    let fHateDanes = 0;
     let fDead = false;
     let fDeathYr = 766;
     let fCause = '노환';
+    let skipYearsUntil = 0;
 
-    for (let yr = 748; yr <= 766; yr++) {
+    for (let yr = 745; yr <= 766; yr++) {
       if (fDead) continue;
+      if (yr < skipYearsUntil) {
+        logs.push(`✈️ ${yr}년: 부친께서는 란드리 경과 함께 비잔티움 대원정에 참전하시어 머나먼 동방에 계십니다. (Garrison 및 전투 자동 생존)`);
+        continue;
+      }
 
-      if (yr === 753) {
-        event = "작센 대토벌: 단신왕 피핀(Pepin the Short)이 이교도 작센인들의 연이은 배반과 국경 습격을 징벌하고 영토를 평정하기 위해 일으킨 대대적인 원정에 참전했습니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
+      if (yr === 745) {
+        const event = "부친의 영광스러운 결혼: 가문 번영과 동맹의 기틀을 닦는 기사 가문의 결합을 성취하셨습니다.";
+        const roll = rollD20();
+        if (roll <= 5) {
+          fGlory += 100;
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 부친께서 현명한 조언을 해주는 양가 가문의 아가씨를 맞아 혼인하셨습니다. (+100 Glory)`);
+        } else if (roll <= 10) {
+          fGlory += 200;
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 가문에 헌신적인 공로를 세워, 아르덴 영주로부터 직접 귀부인의 손을 약속받으셨습니다! (+200 Glory)`);
+        } else {
+          fGlory += 400;
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 적대 가문 영주의 어여쁜 여식을 극적인 기사 결투 끝에 쟁취하여 가문을 일으켰습니다! (+400 Glory)`);
+        }
+      } else if (yr === 746) {
+        const event = "Roland 경의 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "전역사 (Illness)";
+          logs.push(`💀 746년: [역사] ${event} -> 주사위 ${roll} - 무서운 군영 내 돌림병에 걸려 Roland 경의 탄생 소식만을 듣고 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 746년: [가문] ${event} -> 주사위 ${roll} - 기쁜 롤랑 경의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`);
+        } else if (roll <= 15) {
+          const res = runCombatSurvival(yr, event + " (셉티마니아 무어인 방어전)", false, -1, false, 25);
+          if (!res.dead) {
+            const hVal = rollD3();
+            fHateMoors += hVal;
+            logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${fHateMoors})`);
+          }
+        } else if (roll <= 18) {
+          logs.push(`🪓 746년: [역사] ${event} -> 주사위 ${roll} - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) 1d6 기질 획득!`);
+        } else {
+          fGlory += 50;
+          logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 Roland 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
+        }
+      } else if (yr === 747) {
+        const event = "카를로만 공의 순례 동행: 궁정의 번잡함을 떠나 카를로만 공을 모시고 롬바르디아를 거쳐 로마로 순례 여행을 다녀오거나, 신앙의 부름을 받았습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "순례 중 사망 (Accident)";
+          logs.push(`💀 747년: [역사] ${event} -> 주사위 ${roll} - 알프스 산맥을 돌파하던 도중 눈사태로 낙사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 747년: [역사] ${event} -> 주사위 ${roll} - 쾰른 궁정의 보초를 섰습니다.`);
+        } else if (roll <= 18) {
+          fGlory += 25;
+          logs.push(`✝️ 747년: [역사] ${event} -> 주사위 ${roll} - 카를로만 공의 은퇴길 로마 대순례단에 하객으로 동참해 축복을 목도했습니다. (+25 Glory)`);
+        } else {
+          fDead = true;
+          fDeathYr = yr + rollD20();
+          fCause = "성스러운 은수사 은퇴 (Hermit)";
+          logs.push(`🌲 747년: [역사] ${event} -> 주사위 ${roll} - 마인츠 대주교 보니파키우스를 접견한 후 깊은 성령을 깨달아 아르덴 깊은 숲의 은수사(Hermit)로 기꺼이 은퇴하셨습니다. (+1 Love God, 기사 전역)`);
+        }
+      } else if (yr === 748) {
+        const event = "무훈시 [Raoul de Cambrai] & [역사]: 베르니에와 베아트릭스가 고난 끝에 죄를 씻기 위한 순례 도중 무어인 기습을 받아 스페인 지하 감옥에 갇혔습니다. [역사] 반역도당 그리포 왕자가 바이에른으로 패주했고, 피핀 왕의 중재로 타실로 3세가 공작으로 정식 등극했습니다.";
+        rollOrdinaryYear(yr, event, false, "Moors");
+      } else if (yr === 749) {
+        const event = "바이에른 전역 및 그리포 왕자 탈출 사건: 반역자 그리포 왕자가 피핀을 피해 탈출하자, 그의 바이에른 지지 병력들을 격파하는 평정 작전에 참전했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "바이에른 전사 (Combat)";
+          logs.push(`💀 749년: [역사] ${event} -> 주사위 ${roll} - 레겐스부르크 근교의 기습전에서 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 749년: [역사] ${event} -> 주사위 ${roll} - 기사단 행군 대열의 중심을 지켰습니다.`);
+        } else if (roll <= 18) {
+          runCombatSurvival(yr, event + " (바이에른 기습 공세)", false, -1, true, 100);
+        } else {
+          logs.push(`⚠️ 749년: [역사] ${event} -> 주사위 ${roll} - 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor 수치 하락)`);
+        }
+      } else if (yr === 750) {
+        const event = "작센 대전투: 작센 추장 저스타몽이 선포한 이교 대침공에 대항해, 피핀 국왕의 선봉으로 작센 벌판에서 치열한 혈투를 전개했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
           fDead = true;
           fDeathYr = yr;
           fCause = "작센 전사 (Combat)";
-          fGlory += 1000;
-          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          fGlory += 200;
-          fHateSaxons += rollD3();
-          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 영웅적인 활약으로 영지를 점령! (+200 Glory, 작센인 증오 +${fHateSaxons})`);
+          logs.push(`💀 750년: [역사] ${event} -> 주사위 ${roll} - 작센인들의 숲속 함정에 포위되어 장렬히 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 750년: [역사] ${event} -> 주사위 ${roll} - 영지 수비 근무를 섰습니다.`);
         } else {
-          fGlory += 50;
-          fHateSaxons += rollD3();
-          logs.push(`🛡️ 753년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (작센인 증오 +${fHateSaxons})`);
+          const res = runCombatSurvival(yr, event, false, 0, true, 100);
+          if (!res.dead) {
+            const hVal = rollD6();
+            fHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 격렬한 증오 +${hVal} (누적: ${fHateSaxons})`);
+          }
         }
-      } else if (yr === 755) {
-        event = "롬바르디아 원정: 피핀 국왕이 교황 스테파노 2세의 구원 요청을 정식으로 승인하여, 알프스를 넘어 롬바르디아 왕 아이스툴프의 수도인 파비아(Pavia)를 포위 공성하는 이탈리아 원정에 참여했습니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
+      } else if (yr === 751) {
+        const event = "피핀 3세의 대관식 경비: 메로빙거 최후의 국왕 힐데리히 3세의 폐위식과 피핀 3세의 새로운 프랑크 국왕 즉위식 대관 경비를 맡았습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
           fDead = true;
           fDeathYr = yr;
-          fCause = "파비아 공성전 전사 (Combat)";
-          fGlory += 1000;
-          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 파비아 성벽 아래에서 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          fGlory += 100;
-          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 성문을 부수는 결사대를 지원해 명예 획득! (+100 Glory)`);
+          fCause = "수비 중 사망 (Feud)";
+          logs.push(`💀 751년: [역사] ${event} -> 주사위 ${roll} - 반역도당의 황궁 난입 사태에서 왕가를 지키다 서거하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 751년: [역사] ${event} -> 주사위 ${roll} - 즉위식장 외부 바리케이드를 경비했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (반역 세작 처단)", false, 0, true, 25);
         } else {
           fGlory += 50;
-          logs.push(`🇮🇹 755년: [역사] ${event} -> 주사위 ${survival} - 안전하게 생존하셨습니다.`);
+          logs.push(`👑 751년: [역사] ${event} -> 즉위 경비 주사위 ${roll} - 성스러운 피핀 3세의 대관 미사에서 왕의 최측근 근위대로 기립하며 큰 명예를 획득했습니다! (+50 Glory)`);
         }
-      } else if (yr === 759) {
-        event = "나르본 공성전(무어인 토벌): 남부 셉티마니아의 요충지이자 무어인(사라센)이 점령하고 있던 나르본(Narbonne)을 7년간의 끈질긴 포위 공성전 끝에 마침내 완전히 탈환하고 영토를 수복하는 대역사적 승리에 동참했습니다.";
-        const survival = rollD20();
-        if (survival <= 2) {
+      } else if (yr === 752) {
+        const event = "무훈시 [Mainet] & [역사]: 사생아들의 독살 음모를 기지로 피해 툴레도로 망명한 젊은 샤를마뉴(마이네)가 술탄 갈라프레의 휘하 용병으로 뛰며 거인 카이망과 브라이망을 영웅적으로 베고, 공주 갈리엔나의 숭고한 구애를 쟁취했습니다. [역사] 이교도들이 남방 국경을 무단 습격하였으며, 샤를마뉴의 친동생 카를로만 2세가 출생했습니다.";
+        rollOrdinaryYear(yr, event, false, "Moors");
+      } else if (yr === 753) {
+        const event = "비부르크 산 전투: 작센 이교도들의 반란에 맞서 피핀 왕과 함께 출정하여 대지진 속 비부르크 산에서 격렬한 전투를 벌였습니다. (대주교 힐데가르 전사)";
+        const roll = rollD20();
+        if (roll === 1) {
           fDead = true;
           fDeathYr = yr;
-          fCause = "나르본 공성전 전사 (Combat)";
-          fGlory += 1000;
-          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 나르본 공성 중 장렬히 전사하셨습니다! (+1000 Glory)`);
-        } else if (survival <= 5) {
-          fGlory += 100;
-          fHateMoors += rollD3();
-          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 이교도의 돌격을 격퇴하고 기치를 꽂음! (+100 Glory, 무어인 증오 +${fHateMoors})`);
-        } else {
-          fGlory += 50;
-          fHateMoors += rollD3();
-          logs.push(`⚔️ 759년: [역사] ${event} -> 주사위 ${survival} - 생존하셨습니다. (무어인 증오 +${fHateMoors})`);
-        }
-      } else {
-        const d20 = rollD20();
-        if (d20 === 1) {
-          fDead = true;
-          fDeathYr = yr;
-          const deathCauseRoll = rollD20();
-          if (deathCauseRoll <= 3) fCause = "전투 중 사망 (Battle)";
-          else if (deathCauseRoll <= 6) fCause = "가문 결투 중 사망 (Feud)";
-          else if (deathCauseRoll <= 8) fCause = "적의 습격으로 사망 (Raid)";
-          else if (deathCauseRoll <= 10) fCause = "사냥 중 사고사 (Hunting Accident)";
-          else if (deathCauseRoll <= 13) fCause = "낙마 등 사고사 (Accident)";
-          else if (deathCauseRoll <= 14) fCause = "행방불명 (Disappeared)";
-          else if (deathCauseRoll <= 18) fCause = "질병사 (Illness)";
-          else fCause = "노환 (Old Age)";
-          
-          logs.push(`💀 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 비보! 아버님께서 [${fCause}]로 서거하셨습니다.`);
-        } else if (d20 >= 18 && d20 <= 19) {
-          fGlory += 50;
-          logs.push(`✨ ${yr}년: 평화로운 해 -> 주사위 ${d20} - 국경 경비 중 산적 소탕 공적! (+50 Glory)`);
-        } else if (d20 === 20) {
-          const survival = rollD20();
-          if (survival <= 2) {
-            fDead = true;
-            fDeathYr = yr;
-            fCause = "영지 방어 중 전사 (Combat)";
-            fGlory += 1000;
-            logs.push(`🔥 ${yr}년: 작센 습격 수비전 -> 수비전 전사! (+1000 Glory)`);
-          } else {
-            fGlory += 25;
-            fHateSaxons += rollD3();
-            logs.push(`🔥 ${yr}년: 작센 습격 수비전 -> 주사위 ${survival} - 방어 성공! (작센인 증오 +${fHateSaxons})`);
+          fCause = "작센 전사 (Combat)";
+          logs.push(`💀 753년: [역사] ${event} -> 주사위 ${roll} - 비부르크 산 절벽 전장에서 추락사 혹은 장렬히 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 753년: [역사] ${event} -> 주사위 ${roll} - 쾰른 군영을 수호했습니다.`);
+        } else if (roll <= 15) {
+          const res = runCombatSurvival(yr, event + " (비부르크 참사)", false, -1, true, 100);
+          if (!res.dead) {
+            const hVal = rollD6();
+            fHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 극심한 원한 +${hVal} (누적: ${fHateSaxons})`);
           }
         } else {
-          logs.push(`🏰 ${yr}년: 평화로운 해 -> 주사위 ${d20} - 영지 수비대 근무를 성실히 수행하셨습니다.`);
+          fGlory += 50;
+          logs.push(`🗡️ 753년: [역사] ${event} -> 주사위 ${roll} - 국경을 이탈해 암약을 시도하던 반역자 그리포를 검거하는 기사 특별 부대를 이끌어 활약했습니다! (+50 Glory)`);
+        }
+      } else if (yr === 754) {
+        const event = "나르본 공성전 및 알프스 행군: 교황의 동맹 요청에 응하여 반역 동맹군에 맞서 알프스를 돌파하거나 사라센 세력을 격퇴하기 위해 나르본 탈환전에 종군했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "무어 전사 (Combat)";
+          logs.push(`💀 754년: [역사] ${event} -> 주사위 ${roll} - 나르본 성문을 부수던 와중 적들의 화포 혹은 불화살을 맞고 전사하셨습니다.`);
+        } else if (roll <= 8) {
+          logs.push(`🏰 754년: [역사] ${event} -> 주사위 ${roll} - 교황 전령을 접견하는 경호 임무를 수행했습니다.`);
+        } else if (roll <= 14) {
+          runCombatSurvival(yr, event + " (알프스 원정 전투)", false, -1, true, 100);
+        } else if (roll <= 18) {
+          fGlory += 25;
+          logs.push(`🇮🇹 754년: [역사] ${event} -> 주사위 ${roll} - 롬바르디아 영지 약탈 공방전에서 적들의 식량 창고를 털어 군에 공헌했습니다. (+25 Glory)`);
+        } else {
+          const res = runCombatSurvival(yr, event + " (나르본 탈환 대작전)", false, 0, true, 50);
+          if (!res.dead) {
+            const hVal = rollD3();
+            fHateMoors += hVal;
+            logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${fHateMoors})`);
+          }
+        }
+      } else if (yr === 755) {
+        const event = "무훈시 [Lion de Bourges] & [Orson de Beauvais]: 사자 젖을 먹고 자란 영웅 리옹이 친부모를 찾아 위대한 모험을 돌파하고 이탈리아 Monterose성을 공성했으며, [Orson de Beauvais] Chanson에서 충직한 밀로 기사가 성지 예루살렘의 암흑 감옥에 갇힌 늙은 아버지 오르송 백작을 극적으로 탈환해 사법적 정의를 지켰습니다.";
+        rollOrdinaryYear(yr, event, false, "Moors");
+      } else if (yr === 756) {
+        const event = "파비아 포위 공성전: 교황령 수호를 방해하는 롬바르디아 왕 아이스툴프를 징벌하기 위해 파비아 성벽 아래에서 격전을 전개했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "파비아 전사 (Combat)";
+          logs.push(`💀 756년: [역사] ${event} -> 주사위 ${roll} - 파비아 성루 기습 작전에서 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 756년: [역사] ${event} -> 주사위 ${roll} - 이탈리아 고지 점령대를 경계했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (파비아 성문 공략)", false, -1, true, 50);
+        } else {
+          fGlory += 25;
+          logs.push(`⛪ 756년: [역사] ${event} -> 주사위 ${roll} - 승리 후 로마 바티칸 성당의 정예 황실 가드로 배정되어 교황령 수호의 증인이 되었습니다. (+25 Glory)`);
+        }
+      } else if (yr === 757) {
+        const event = "덴마크 정벌 원정: 쾰른의 백작 두온과 피핀 왕의 공세에 동참하여 북방의 덴마크인들을 제압하고 국위를 떨쳤습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "덴마크 전사 (Combat)";
+          logs.push(`💀 757년: [역사] ${event} -> 주사위 ${roll} - 덴마크 상륙 도중 전함 위에서 적의 도끼에 스러지셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 757년: [역사] ${event} -> 주사위 ${roll} - 초소 순찰을 돌며 조용히 보냈습니다.`);
+        } else if (roll <= 18) {
+          const res = runCombatSurvival(yr, event + " (바이킹 결전)", false, 0, true, 100);
+          if (!res.dead) {
+            const hVal = rollD3();
+            fHateDanes += hVal;
+            logs.push(`  └ [증오 획득] 덴마크 바이킹에 대한 원한 +${hVal}`);
+          }
+        } else {
+          fHateDanes += 6;
+          logs.push(`⚠️ 757년: [역사] ${event} -> 주사위 ${roll} - 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor 대폭 삭감, 덴마크인 증오 대폭 상승)`);
+        }
+      } else if (yr === 758) {
+        const event = "작센 보복 정벌: 매년 300필의 군마 조공을 거부하고 거듭 반란을 일으키는 작센 영토로 침투해 강제 개종과 무자비한 토벌전을 벌였습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "작센 전사 (Combat)";
+          logs.push(`💀 758년: [역사] ${event} -> 주사위 ${roll} - 불타는 작센 성읍의 철수 도중 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 758년: [역사] ${event} -> 주사위 ${roll} - 국경 참호를 보수했습니다.`);
+        } else if (roll <= 16) {
+          const res = runCombatSurvival(yr, event + " (작센 강제정벌 레이드)", false, 0, true, 25);
+          if (!res.dead) {
+            const hVal = rollD3();
+            fHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 증오 +${hVal} (누적: ${fHateSaxons})`);
+          }
+        } else {
+          const res = runCombatSurvival(yr, event + " (작센 대학살 징벌전)", false, -1, true, 100);
+          if (!res.dead) {
+            const hVal = rollD6();
+            fHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센인에 대한 뼈에 사무친 복수심 +${hVal} (누적: ${fHateSaxons})`);
+          }
+        }
+      } else if (yr === 759) {
+        const event = "무훈시 [Les Lorrains] & [역사]: 영예로운 Bego 백작이 멧돼지 사냥 도중 가문의 오래된 원수인 Fromont 패거리에게 야만적으로 암살당하여 피비린내 나는 복수극이 재발했습니다. [역사] 피핀 국왕이 마침내 사라센 무어인들을 완전히 몰아내어 남부 Septimania 영토를 완전히 탈환하였습니다.";
+        rollOrdinaryYear(yr, event, false, "Saxons");
+      } else if (yr === 760) {
+        const event = "리무쟁 공성전 및 쾰른 사절단: 아키텐 전역의 포문을 열기 위해 리무쟁 성을 공격하거나, 반역을 꾀하는 토밀 가문의 계획에 맞서 사절로 나섰습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "아키텐 전사 (Combat)";
+          logs.push(`💀 760년: [역사] ${event} -> 주사위 ${roll} - 리무쟁 공성망을 공격하던 와중 화살을 맞아 전사하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 760년: [역사] ${event} -> 주사위 ${roll} - 후방 포병대를 경호했습니다.`);
+        } else if (roll <= 10) {
+          runCombatSurvival(yr, event + " (리무쟁 공성 돌파)", false, 0, true, 50);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (아키텐 수림 게릴라전)", false, 0, true, 25);
+        } else {
+          fGlory += 200;
+          skipYearsUntil = 763;
+          logs.push(`✈️ ${yr}년: [역사] ${event} -> 주사위 ${roll} - 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, 명예 수치 대폭 상승)`);
+        }
+      } else if (yr === 761) {
+        const event = "부르주 포위전 및 브르타뉴 습격: 아키텐 정벌 전역의 핵심 거점인 부르주(Bourges) 성을 성공적으로 공략하여 대승을 거두었습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "부르주 전사 (Combat)";
+          logs.push(`💀 761년: [역사] ${event} -> 주사위 ${roll} - 부르주 성벽 함락 작전에서 적의 불벼락을 맞고 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 761년: [역사] ${event} -> 주사위 ${roll} - 기사단 예비 진지를 보수했습니다.`);
+        } else if (roll <= 17) {
+          runCombatSurvival(yr, event + " (부르주 격파전)", false, 0, true, 50);
+        } else {
+          runCombatSurvival(yr, event + " (브르타뉴 소탕)", false, 0, true, 25);
+        }
+      } else if (yr === 762) {
+        const event = "아키텐 약탈전 및 왕가의 화해: 아키텐 전초 기지를 견고하게 세우고, 어린 Roland가 왕궁 음식물 서리를 하던 당돌한 순간과 가문의 기쁨을 지켜보았습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "아키텐 전사 (Combat)";
+          logs.push(`💀 762년: [역사] ${event} -> 주사위 ${roll} - 아키텐 기습군의 정찰 칼날에 희생되셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 762년: [역사] ${event} -> 주사위 ${roll} - 아르헨돈 요새 수비를 섰습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (아키텐 산악 약탈전)", false, 0, true, 25);
+        } else {
+          fGlory += 50;
+          logs.push(`👑 762년: [가문] ${event} -> 주사위 ${roll} - 왕궁 기사단 훈련 중 어린 아들 롤랑(Roland)이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`);
+        }
+      } else if (yr === 763) {
+        const event = "쾰른 라 로슈 성의 기적적인 방어: 토밀과 말랭그가 이끄는 대반란군의 겹겹이 쌓인 포위를 뚫고 성을 사수했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "라 로슈 전사 (Combat)";
+          logs.push(`💀 763년: [역사] ${event} -> 주사위 ${roll} - 포위당한 라 로슈 성루에서 적의 발석기에 깔려 전사하셨습니다.`);
+        } else if (roll <= 5) {
+          logs.push(`🏰 763년: [역사] ${event} -> 주사위 ${roll} - 화살 통을 날 나르며 공성에 저항했습니다.`);
+        } else {
+          runCombatSurvival(yr, event + " (성루 총사수 결전)", false, -1, true, 50);
+        }
+      } else if (yr === 764) {
+        const event = "라 로슈 제2차 공성 및 툴루즈 함락: 오베리 주교와 함께 성을 격파하고 쾰른을 탈환하거나, 아키텐의 수도 툴루즈 점령 작전에 합류했습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "툴루즈 전사 (Combat)";
+          logs.push(`💀 764년: [역사] ${event} -> 주사위 ${roll} - 툴루즈 성문 돌파 시도 중 성루 위에서 쏟아지는 화약/기름에 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 764년: ${event} -> 주사위 ${roll} - 보급선 방어를 담당했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (오베리 백작의 라 로슈 탈환전)", false, 0, true, 50);
+        } else {
+          runCombatSurvival(yr, event + " (툴루즈 대공격)", false, 0, true, 25);
+        }
+      } else if (yr === 765) {
+        const event = "오트페이유 공성과 작센 족장 브로히막스 격퇴: 쾰른의 평화를 깨려는 작센 군단을 맞아 족장 브로히막스와의 대결에서 목숨을 건 수호전을 벌였습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "작센 전사 (Combat)";
+          logs.push(`💀 765년: [역사] ${event} -> 주사위 ${roll} - 쾰른을 지키는 격돌에서 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 765년: [역사] ${event} -> 주사위 ${roll} - 수비 진영을 정리했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (오트페이유 포위전)", false, 0, true, 50);
+        } else {
+          const res = runCombatSurvival(yr, event + " (브로히막스 결전)", false, -1, true, 100);
+          if (!res.dead) {
+            const hVal = rollD6();
+            fHateSaxons += hVal;
+            logs.push(`  └ [증오 획득] 작센 군단에 대한 증오 +${hVal} (누적: ${fHateSaxons})`);
+          }
+        }
+      } else if (yr === 766) {
+        const event = "부친 은퇴 전 마지막 참전: 샤를마뉴 왕자 및 위비앙의 세력과 함께 몽펠리에와 에그르몽 포위 공성전에 참전하여 최후의 기사도 영광을 불살랐습니다.";
+        const roll = rollD20();
+        if (roll === 1) {
+          fDead = true;
+          fDeathYr = yr;
+          fCause = "최후의 전사 (Combat)";
+          logs.push(`💀 766년: [역사] ${event} -> 주사위 ${roll} - 아들 Roland의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`);
+        } else if (roll <= 10) {
+          logs.push(`🏰 766년: [역사] ${event} -> 주사위 ${roll} - 황실 가드 임무를 다했습니다.`);
+        } else if (roll <= 15) {
+          runCombatSurvival(yr, event + " (몽펠리에 공성전)", false, 0, true, 50);
+        } else {
+          const res = runCombatSurvival(yr, event + " (에그르몽 대승)", false, 0, true, 50);
+          if (!res.dead) {
+            fGlory += 25;
+            logs.push(`⛪ 766년: [역사] ${event} -> 주사위 ${roll} - 이교도 귀족 위비앙 부부의 역사적인 기독교 세례 성사에서 가문의 명예 하객 대열을 호위하셨습니다! (+25 Glory)`);
+          }
         }
       }
     }
 
     if (!fDead) {
-      fDeathYr = 766;
-      fCause = "작센 원정 중 용맹 전사 (Combat)";
-      fGlory += 1000;
-      logs.push("💀 766년: 아버님께서 아르덴 대공의 국경 사수에 참전하여 장렬히 전사하셨습니다. (+1000 Glory)");
+      fDeathYr = 766 + rollD20();
+      fCause = "평화로운 영면 (Old Age)";
+      logs.push(`👴 ${fDeathYr}년: 은퇴한 아버님(제라르 경)께서 영광스러운 대공의 은퇴 생활 도중 침상에서 평화로이 서거하셨습니다.`);
     }
 
     setFatherGlory(fGlory);
@@ -318,6 +972,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setAncestorRollLog(logs);
     setAncestorApplied(false);
   };
+
 
   const applyAncestorLegacy = () => {
     if (ancestorApplied) return;
