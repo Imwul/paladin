@@ -1347,45 +1347,48 @@ export default function SoloOracles({ character, setCharacter }) {
     <div className="cs-page view-animate">
       
       {/* Profile Header Banner */}
-      <div className="tutorial-banner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-        <div>
-          <h4 className="tutorial-banner-title">
-            🛡️ {character?.personal?.name || '기사'}의 오라클 &amp; 기사단 무대
-          </h4>
-          <p>
-            명예: {character?.gear?.gloryTotal || 1000} Glory &bull; 소지금: £{character?.gear?.cash || 0}
-          </p>
+      <div className="tutorial-banner" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px 22px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '8px' }}>
+          <div>
+            <h4 className="tutorial-banner-title" style={{ fontSize: '1.05rem' }}>
+              🛡️ {character?.personal?.name || '기사'}의 오라클 &amp; 기사단 무대
+            </h4>
+            <p style={{ fontSize: '0.86rem', margin: 0 }}>
+              명예: {character?.gear?.gloryTotal || 1000} Glory &bull; 소지금: £{character?.gear?.cash || 0}
+            </p>
+          </div>
         </div>
         
-        {/* Expanded sub-tabs */}
-        <div className="sub-tab-navigation" style={{ display: 'flex', gap: '8px', margin: 0, flexWrap: 'wrap' }}>
+        {/* Immersive Chapter 6 General Solo Rules Explanation */}
+        <div style={{ borderTop: '1px solid rgba(201, 168, 76, 0.15)', paddingTop: '8px', marginTop: '4px', fontSize: '0.82rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
+          📖 <strong>제너럴 솔로 모험 규칙 (General Rules)</strong>: 기사의 모든 운명 판정은 1인 플레이 기본 수칙을 따릅니다. 이 오라클 패널의 모든 굴림(일반 신탁, 성격 및 열정 시험, 전투 격돌)은 캐릭터 성장의 모태가 되며, 겨울 정산 단계(가문 역사 탭)의 수련 및 가문 계승과 유기적으로 긴밀히 연결됩니다.
+        </div>
+
+        {/* Expanded sub-tabs with consistent premium pills */}
+        <div className="sub-tab-navigation" style={{ margin: '8px 0 0 0' }}>
           <button 
-            className={`tab-btn btn-medieval ${activeSubTab === 'general' ? 'active' : ''}`} 
+            className={`sub-tab-btn ${activeSubTab === 'general' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('general')}
-            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '140px', justifyContent: 'center' }}
           >
-            <Dices size={14} style={{ marginRight: '4px' }} /> 일반 판정 및 운명 신탁
+            <Dices size={14} /> 일반 판정 및 운명 신탁
           </button>
           <button 
-            className={`tab-btn btn-medieval ${activeSubTab === 'personality' ? 'active' : ''}`} 
+            className={`sub-tab-btn ${activeSubTab === 'personality' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('personality')}
-            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center' }}
           >
-            <Sparkles size={14} style={{ marginRight: '4px' }} /> 성격 특성과 기사적 열정
+            <Sparkles size={14} /> 성격 특성과 기사적 열정
           </button>
           <button 
-            className={`tab-btn btn-medieval ${activeSubTab === 'reputation' ? 'active' : ''}`} 
+            className={`sub-tab-btn ${activeSubTab === 'reputation' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('reputation')}
-            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
           >
-            <Award size={14} style={{ marginRight: '4px' }} /> 명예 계산과 명망 알현
+            <Award size={14} /> 명예 계산과 명망 알현
           </button>
           <button 
-            className={`tab-btn btn-medieval ${activeSubTab === 'combat_skills' ? 'active' : ''}`} 
+            className={`sub-tab-btn ${activeSubTab === 'combat_skills' ? 'active' : ''}`} 
             onClick={() => setActiveSubTab('combat_skills')}
-            style={{ padding: '6px 12px', fontSize: '0.85rem', minWidth: '160px', justifyContent: 'center', borderLeft: '1px solid var(--color-gold-light)' }}
           >
-            <Shield size={14} style={{ marginRight: '4px' }} /> 1대1 무기 격돌 및 전투 기술
+            <Shield size={14} /> 1대1 무기 격돌 및 전투 기술
           </button>
         </div>
       </div>
@@ -1582,7 +1585,7 @@ export default function SoloOracles({ character, setCharacter }) {
             {/* 1. Trait Roller */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
-                <h3><Shield size={16} style={{ marginRight: '6px' }} />성격 특성(Traits) 판정기 (p.70-71)</h3>
+                <h3><Shield size={16} style={{ marginRight: '6px' }} />성격 특성 판정기</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
@@ -1662,7 +1665,7 @@ export default function SoloOracles({ character, setCharacter }) {
             {/* 2. Passion Roller */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
-                <h3><Flame size={16} style={{ marginRight: '6px' }} />열정(Passions) &amp; 영감 롤러</h3>
+                <h3><Flame size={16} style={{ marginRight: '6px' }} />열정 &amp; 영감 롤러</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
@@ -1745,7 +1748,7 @@ export default function SoloOracles({ character, setCharacter }) {
             {/* 3. Conflicting Emotions */}
             <section className="cs-section" style={{ flex: '1 1 300px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
-                <h3>⚖️ 감정 대립 대결기 (p.71-72)</h3>
+                <h3>⚖️ 감정 대립 대결기</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>두 감정이 대치할 때의 본능을 대결합니다.</p>
@@ -1885,7 +1888,7 @@ export default function SoloOracles({ character, setCharacter }) {
             {/* 1. 명예(Glory) 계산기 */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
-                <h3><Award size={16} style={{ marginRight: '6px' }} />명예(Glory) 계산기 (Chapter 4)</h3>
+                <h3><Award size={16} style={{ marginRight: '6px' }} />기사의 명예(Glory) 계산기</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
@@ -1981,7 +1984,7 @@ export default function SoloOracles({ character, setCharacter }) {
                 {/* 1-2. 결혼 명예 계산기 (Marriage Glory) */}
                 <div style={{ borderTop: '1px dashed var(--color-grey-light)', paddingTop: '12px', marginTop: '4px' }}>
                   <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-ink)', marginBottom: '8px' }}>
-                    👰 영예로운 결혼 명예 (Marriage Glory - p.87)
+                    👰 영예로운 결혼 명예 (Marriage Glory)
                   </h4>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
@@ -2038,7 +2041,7 @@ export default function SoloOracles({ character, setCharacter }) {
             {/* 2. 명망(Standing) 선물 & 청탁 판정기 */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
-                <h3><Coins size={16} style={{ marginRight: '6px' }} />명망(Standing) 선물 &amp; 청탁기 (p.92)</h3>
+                <h3><Coins size={16} style={{ marginRight: '6px' }} />명망(Standing) 선물 &amp; 청탁기</h3>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0 }}>
@@ -2151,11 +2154,11 @@ export default function SoloOracles({ character, setCharacter }) {
           {/* Section 2: Melee Clash Simulator (Chapter 5) */}
           <section className="cs-section" style={{ width: '100%' }}>
             <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
-              <h3>⚔️ 전술적 무기 격돌 시뮬레이터 (Tactical Melee Clash Simulator - p.102-105)</h3>
+              <h3>⚔️ 전술적 무기 격돌 시뮬레이터 (Tactical Melee Clash Simulator)</h3>
             </div>
             <div className="cs-section-inner">
               <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
-                기사와 이교도/정적의 1대1 무기 대결을 룰북 챕터 5의 무기별 특성(검의 타이 브레이커, 보병 창의 돌격 무력화, 할버드 기마 대항, 펌블 파괴 등)을 적용해 opposed roll로 정밀 모사합니다.
+                기사와 이교도/정적의 1대1 무기 대결을 무기별 고유 특성(검의 타이 브레이커, 보병 창의 돌격 무력화, 할버드 기마 대항, 펌블 파괴 등)을 적용해 opposed roll로 정밀 모사합니다.
               </p>
 
               {/* Selection board */}
@@ -2312,7 +2315,7 @@ export default function SoloOracles({ character, setCharacter }) {
           {/* Section 3: Skill Roller & Improvement (Chapter 5) */}
           <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
             <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
-              <h3>🔮 기사 스킬 판정 및 수련 수려기 (Chapter 5 - p.105)</h3>
+              <h3>🔮 기사 스킬 판정 및 수련기</h3>
             </div>
             <div className="cs-section-inner">
               <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>

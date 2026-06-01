@@ -2345,5 +2345,49 @@ input[type="number"] {
   gap: 12px;
 }
 
+/* Sub-tab navigation pill buttons - custom premium style for spacious layout and no color conflicts */
+.sub-tab-navigation {
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 20px 0 !important;
+  flex-wrap: wrap;
+}
+
+.sub-tab-btn {
+  font-family: var(--font-korean);
+  font-size: 0.9rem !important;
+  font-weight: 600;
+  padding: 0 20px !important; /* Controlled padding */
+  background-color: rgba(255, 250, 240, 0.85) !important;
+  border: 1.5px solid var(--color-gold) !important;
+  color: var(--color-ink-light) !important;
+  cursor: pointer;
+  transition: all 0.22s ease-in-out;
+  border-radius: 24px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(46, 31, 15, 0.04);
+  height: 42px !important; /* Strict vertical height */
+  box-sizing: border-box !important;
+  white-space: nowrap !important; /* Prevent text wrapping */
+}
+
+.sub-tab-btn:hover {
+  background-color: rgba(43, 65, 112, 0.08) !important;
+  color: var(--color-royal-blue) !important;
+  border-color: var(--color-royal-blue) !important;
+  transform: translateY(-1px);
+}
+
+.sub-tab-btn.active {
+  background-color: var(--color-royal-blue) !important;
+  color: #ffffff !important;
+  border-color: var(--color-royal-blue) !important;
+  box-shadow: 0 4px 8px rgba(43, 65, 112, 0.2) !important;
+  font-weight: 700;
+}
+
 
 
