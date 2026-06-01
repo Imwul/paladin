@@ -218,6 +218,12 @@ export default function SoloOracles({ character, setCharacter }) {
   const [trialAccusation, setTrialAccusation] = useState('이단 혐의 및 작센과의 밀통 밀고');
   const [courtshipGift, setCourtshipGift] = useState('비단 스카프와 향기로운 장미 백합');
 
+  // 7. 재정 생활 수준 및 무구 상점 (Chapter 12 - Wealth & Treasure) States
+  const [selectedLivingStandard, setSelectedLivingStandard] = useState('ordinary'); // 'rich' | 'ordinary' | 'poor' | 'miserly'
+  const [appraisedTreasure, setAppraisedTreasure] = useState(null);
+  const [isAppraising, setIsAppraising] = useState(false);
+  const [armoryLogs, setArmoryLogs] = useState([]);
+
   // Mappings
   const allSkills = [
     // 일반 스킬 (Common Skills)
@@ -1943,6 +1949,155 @@ export default function SoloOracles({ character, setCharacter }) {
     setMagicLogs([]);
   };
 
+  // ==========================================
+  // 7. WEALTH & TREASURE (CHAPTER 12) LOGIC
+  // ==========================================
+  const payMaintenance = () => {
+    const costMap = { rich: 12, ordinary: 6, poor: 3, miserly: 1.5 };
+    const cost = costMap[selectedLivingStandard];
+    const currentCash = character?.gear?.cash || 0;
+
+    if (currentCash < cost) {
+      alert(`[재정 지불 실패]: 현재 기사단 소지금(£${currentCash})이 ${selectedLivingStandard === 'rich' ? '풍족함' : selectedLivingStandard === 'ordinary' ? '보통' : selectedLivingStandard === 'poor' ? '빈곤함' : '인색함'} 유지비 £${cost}보다 부족합니다!`);
+      return;
+    }
+
+    setCharacter(prev => {
+      const updated = { ...prev };
+      if (!updated.gear) updated.gear = {};
+      updated.gear.cash = Math.max(0, currentCash - cost);
+      return updated;
+    });
+
+    const logs = [
+      {
+        id: Date.now(),
+        type: 'maintenance',
+        title: '💼 생활 수준 유지비 지불',
+        detail: `생활 수준: ${selectedLivingStandard.toUpperCase()} | 지출: £${cost}`,
+        narrative: `올해 겨울 정산을 위해 기사의 기품 있는 신분을 상징하는 ${selectedLivingStandard === 'rich' ? '풍족한(Rich)' : selectedLivingStandard === 'ordinary' ? '보통의(Ordinary)' : selectedLivingStandard === 'poor' ? '빈곤한(Poor)' : '인색한(Miserly)'} 가문 생활 수준 유지비 £${cost}를 금고에서 기꺼이 지불했습니다.`,
+        cost: -cost,
+        timestamp: new Date().toLocaleTimeString()
+      }
+    ];
+    setArmoryLogs(prev => [...logs, ...prev]);
+    alert(`[생활 수준 유지비 납부 완료]: £${cost}가 지출되었으며, 시트 소지금에 동기화되었습니다.`);
+  };
+
+  const buyArmoryItem = (label, cost, category, itemData) => {
+    const currentCash = character?.gear?.cash || 0;
+
+    if (currentCash < cost) {
+      alert(`[상점 구매 실패]: 소지금(£${currentCash})이 부족하여 ${label} (£${cost})을(를) 구매할 수 없습니다!`);
+      return;
+    }
+
+    setCharacter(prev => {
+      const updated = { ...prev };
+      if (!updated.gear) updated.gear = {};
+      updated.gear.cash = Math.max(0, currentCash - cost);
+      
+      // Update inventory on sheet if matching category
+      if (category === 'horse') {
+        if (!updated.horses) updated.horses = {};
+        updated.horses.warhorse = {
+          hp: itemData.hp,
+          armor: itemData.armor,
+          damage: itemData.damage
+        };
+      }
+      
+      return updated;
+    });
+
+    const logs = [
+      {
+        id: Date.now(),
+        type: 'purchase',
+        title: `🛒 상점 무구/군마 구입`,
+        detail: `품명: ${label} | 지출: £${cost}`,
+        narrative: `장원 금고에서 £${cost}를 인출하여 장인단 및 장교로부터 최고급 무구인 [${label}]을(를) 공식 취득하였습니다. 이는 즉시 기사 시트의 장비고에 등재되었습니다.`,
+        cost: -cost,
+        timestamp: new Date().toLocaleTimeString()
+      }
+    ];
+    setArmoryLogs(prev => [...logs, ...prev]);
+    alert(`[구매 완료]: ${label}을(를) £${cost}에 구매하여 기사 장비 및 군마 정보가 실시간 업데이트되었습니다.`);
+  };
+
+  const rollAppraiseLoot = () => {
+    if (isAppraising) return;
+    setIsAppraising(true);
+    setAppraisedTreasure(null);
+
+    setTimeout(() => {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      
+      let name = '';
+      let value = 0;
+      let desc = '';
+
+      if (roll <= 3) {
+        name = '이교도 장병들의 전술 무구 파편';
+        value = 0.5;
+        desc = '전투 후 흙더미에 반쯤 파묻힌 이교 보병들의 구리 장식 칼자루와 부러진 창날 조각들을 쓸어 모았습니다. 고철상에게 소량의 가치가 있습니다.';
+      } else if (roll <= 7) {
+        name = '정교한 사라센 놋쇠 브로치';
+        value = 1.0;
+        desc = '죽은 이교 지휘관의 옷자락을 여미던 반짝이는 놋쇠 세공 브로치입니다. 흠집이 거의 없어 시장에 가져가면 £1에 처분할 수 있습니다.';
+      } else if (roll <= 11) {
+        name = '귀족용 사라센 실크 튜닉';
+        value = 2.0;
+        desc = '이국적이고 촉감이 매우 부드러운 동방의 실크 외투입니다. 귀족이나 학자들에게 훌륭한 장식복이 되어 높은 몸값을 부를 수 있습니다.';
+      } else if (roll <= 14) {
+        name = '세공된 이단 단죄용 은제 성배';
+        value = 3.0;
+        desc = '세례의 성수를 담을 수 있도록 장인단이 수려하게 세공해 놓은 순은제 성배입니다. 교회의 대의나 영지 제단에 훌륭하게 바치거나 £3에 처분합니다.';
+      } else if (roll <= 17) {
+        name = '불꽃이 비치는 루비 세공 가락지';
+        value = 5.0;
+        desc = '중앙에 핏빛처럼 영롱하게 빛나는 천연 루비가 장식된 장인의 금반지입니다. 가문의 보물함에 가득 찬 기사적 자긍심과 보화가 됩니다.';
+      } else if (roll <= 19) {
+        name = '화려한 황금 모자이크 영지 장식물';
+        value = 8.0;
+        desc = '비잔티움 장인들이 직접 모자이크 타일을 구워 만든 정교한 성화 장식판입니다. 장원의 위엄을 한 단계 높여주며 막대한 가치를 지닙니다.';
+      } else {
+        name = '천상의 가호를 담은 성물 성골함의 봉인 봉화';
+        value = 12.0;
+        desc = '전설적인 성 성골함의 모조 장식 테두리 조각 또는 황금 세공 뚜껑입니다! 룰북 p.209에 해당하는 최고의 위엄찬 보화로 주군에게 명예를 사거나 £12의 엄청난 소지금으로 즉시 정산할 수 있습니다!';
+      }
+
+      setCharacter(prev => {
+        const updated = { ...prev };
+        if (!updated.gear) updated.gear = {};
+        const currentCash = updated.gear.cash || 0;
+        updated.gear.cash = currentCash + value;
+        return updated;
+      });
+
+      setAppraisedTreasure({ roll, name, value, desc });
+      setIsAppraising(false);
+
+      const logs = [
+        {
+          id: Date.now(),
+          type: 'appraise',
+          title: `💎 보물 감정 & 전리품 정산`,
+          detail: `획득: ${name} | 가치: +£${value}`,
+          narrative: `모험 중 수습한 전리보화를 감정한 결과, [${name}]의 진정한 위용이 드러났습니다! 즉시 처분하여 장원 금고에 +£${value}의 현금이 정산되었습니다.`,
+          cost: value,
+          timestamp: new Date().toLocaleTimeString()
+        }
+      ];
+      setArmoryLogs(prev => [...logs, ...prev]);
+    }, 800);
+  };
+
+  const resetArmoryLogs = () => {
+    setArmoryLogs([]);
+    setAppraisedTreasure(null);
+  };
+
   const getOracleAnswerFromRollText = (ans) => {
     if (!ans) return '';
     return ans.result + ': ' + ans.desc;
@@ -2000,6 +2155,12 @@ export default function SoloOracles({ character, setCharacter }) {
             onClick={() => setActiveSubTab('miracles_amor')}
           >
             <Heart size={14} /> 신앙 기적과 사법 재판 및 연애
+          </button>
+          <button 
+            className={`sub-tab-btn ${activeSubTab === 'wealth_armory' ? 'active' : ''}`} 
+            onClick={() => setActiveSubTab('wealth_armory')}
+          >
+            <Coins size={14} /> 재정 생활 수준 및 무구 상점
           </button>
         </div>
       </div>
@@ -3552,6 +3713,284 @@ export default function SoloOracles({ character, setCharacter }) {
                           {log.glory > 0 ? '영예 획득' : '명예 실추'}: {log.glory > 0 ? '+' : ''}{log.glory} Glory
                         </div>
                       )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ========================================================
+          SUB-TAB 6: WEALTH, LIVING STANDARDS, SHOP & LOOT APPRAISAL (Chapter 12)
+          ======================================================== */}
+      {activeSubTab === 'wealth_armory' && (
+        <>
+          {/* Header Status Row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139,105,20,0.03)', padding: '14px', border: '1.5px solid var(--color-gold)', borderRadius: '4px', marginBottom: '16px' }}>
+            <div>
+              <strong style={{ fontSize: '0.94rem', color: 'var(--color-gold-dark)' }}>💼 기사의 현재 영지 재정 및 소지금 현황</strong>
+              <div style={{ fontSize: '0.84rem', marginTop: '4px' }}>
+                기사의 금고 소지금: <strong style={{ color: 'var(--color-success)', fontSize: '1.05rem' }}>£{character?.gear?.cash || 0}</strong>
+              </div>
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--color-grey)', textAlign: 'right' }}>
+              📖 <strong>룰북 챕터 12 (Wealth &amp; Treasure)</strong>: 기사의 생활 수준(Ordinary £6/년)을 유지하고<br />
+              소유 장원의 이득을 소모하여 새로운 군마와 무구를 충당하거나 전리품 보물을 시장에 처분합니다.
+            </div>
+          </div>
+
+          <div className="cs-row">
+            {/* 1. 생활 수준 설정 및 유지비 납부 (Living Standards) */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-royal-blue)' }}>
+                <h3>💼 품격 있는 생활 수준 (Living Standard) 설정</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
+                  기사의 매년 생활 수준은 신체 건강, 종자 육성, 사회적 명예(Glory) 및 겨울철 회복 판정에 직접적인 가중치/패널티를 부여합니다.
+                </p>
+                
+                <div className="cs-field">
+                  <span className="cs-field-label">생활 수준 선택 (Table 12-1):</span>
+                  <select 
+                    value={selectedLivingStandard} 
+                    onChange={e => setSelectedLivingStandard(e.target.value)}
+                    style={{ fontSize: '0.82rem' }}
+                  >
+                    <option value="rich">풍족함 (Rich - £12/년) &bull; 연간 Glory +10, 치료 판정 +1 보정</option>
+                    <option value="ordinary">보통 (Ordinary - £6/년) &bull; 기본 생활 (보정 없음)</option>
+                    <option value="poor">빈곤함 (Poor - £3/년) &bull; 연간 Glory -10, 종자 사망 판정 -2 불이익</option>
+                    <option value="miserly">인색함 (Miserly - £1.5/년) &bull; 연간 Glory -20, 치료 판정 -2 불이익</option>
+                  </select>
+                </div>
+
+                <div style={{ padding: '10px', background: 'rgba(0,0,0,0.01)', border: '1px dashed var(--color-grey-light)', fontSize: '0.78rem', lineHeight: 1.4 }}>
+                  <strong>선택된 생활 수준 효과:</strong>
+                  {selectedLivingStandard === 'rich' && <div style={{ color: 'var(--color-success)', marginTop: '4px' }}>✨ [풍족한 삶]: 매년 겨울 정산 시 **영예 +10 Glory** 자동 획득 및 부상 치료 판정에 **+1 절대 유리함**을 얻습니다.</div>}
+                  {selectedLivingStandard === 'ordinary' && <div style={{ color: 'var(--color-ink-light)', marginTop: '4px' }}>🛡️ [보통의 삶]: 기사의 품위를 해치지 않는 일반적인 상태로 특별한 패널티나 버프가 없습니다.</div>}
+                  {selectedLivingStandard === 'poor' && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>⚠️ [빈곤한 삶]: 매년 겨울 정산 시 **영예 -10 Glory**를 잃으며, 겨울 혹한기 종자 생존 판정에 **-2 치명적인 감점**이 주어집니다.</div>}
+                  {selectedLivingStandard === 'miserly' && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>🚨 [인색한 삶]: 매년 겨울 정산 시 **영예 -20 Glory**를 잃고, 치료 판정에 **-2 불이익**을 얻으며 가신들이 파업 위기에 처합니다.</div>}
+                </div>
+
+                <button 
+                  className="btn-medieval btn-medieval-primary" 
+                  onClick={payMaintenance}
+                  style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
+                >
+                  💼 선택한 생활 수준 유지비 지불하기
+                </button>
+              </div>
+            </section>
+
+            {/* 2. 전리품 및 보화 감정기 (Loot Appraisal) */}
+            <section className="cs-section" style={{ flex: '1 1 340px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+                <h3>💎 전획 보화 및 전리품 시장 처분 (Loot Appraisal)</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
+                  모험 도중이나 시나리오 클리어 후 획득한 이교도의 정밀 약탈물이나 가문의 수습 골동품들을 시장에서 정산하여 돈으로 즉시 치환합니다 (Table 12-4).
+                </p>
+
+                <button 
+                  className="btn-medieval" 
+                  onClick={rollAppraiseLoot} 
+                  disabled={isAppraising} 
+                  style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
+                >
+                  {isAppraising ? '보물의 금 함량과 가치를 저울질하는 중...' : '💎 미확인 보물 감정 굴리기 (d20)'}
+                </button>
+
+                {appraisedTreasure && (
+                  <div style={{ border: '1.5px solid var(--color-gold)', padding: '10px', background: '#faf6eb', marginTop: '8px', borderRadius: '4px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--color-crimson)', marginBottom: '4px' }}>
+                      <span>💎 감정 결과 (d20: {appraisedTreasure.roll}): {appraisedTreasure.name}</span>
+                      <span>+£{appraisedTreasure.value}</span>
+                    </div>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45, fontStyle: 'italic' }}>
+                      "{appraisedTreasure.desc}"
+                    </p>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--color-success)', fontWeight: 'bold', display: 'block', marginTop: '4px' }}>
+                      ✓ 감정 완료 즉시 £{appraisedTreasure.value}의 소지금이 기사 시트 금고에 가산 처리되었습니다!
+                    </span>
+                  </div>
+                )}
+              </div>
+            </section>
+          </div>
+
+          <div className="cs-row" style={{ marginTop: '16px' }}>
+            {/* 3. 명마 무구 기사단 상점 (Equipping a Knight Store) */}
+            <section className="cs-section" style={{ flex: '1 1 100%' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
+                <h3>🛒 기사단 공식 명마 및 군마/무구 상점 (Table 12-2 &amp; 12-3)</h3>
+              </div>
+              <div className="cs-section-inner" style={{ padding: '16px' }}>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginBottom: '14px' }}>
+                  겨울철 생존 판정 실패나 전장의 혹독한 칼날에 무기와 말이 파괴되었다면, 장원의 소지금을 투자하여 즉시 최고급 명마와 갑옷을 재구입합니다. (구매 시 기사 시트의 전투마 정보가 즉각 자동 갱신됩니다)
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
+                  {/* Horses Section */}
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '12px', background: 'rgba(0,0,0,0.01)', borderRadius: '4px' }}>
+                    <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.88rem', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '4px', marginBottom: '8px' }}>
+                      🐴 군마 및 전투마/이동마 구매 (Table 12-2)
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {/* Charger */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>전투 기동마 (Charger) &bull; £10</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>최고급 군속마 (체력 HP: 24, 아머: 5, 피해: 3d6+3)</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('전투 기동마 (Charger)', 10, 'horse', { hp: 24, armor: 5, damage: '3d6+3' })}>
+                          구입 £10
+                        </button>
+                      </div>
+                      {/* Palfrey */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>우아한 승용마 (Palfrey) &bull; £5</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>장거리 승마용 준마 (체력 HP: 16, 아머: 2, 피해: 1d6)</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('우아한 승용마 (Palfrey)', 5, 'horse', { hp: 16, armor: 2, damage: '1d6' })}>
+                          구입 £5
+                        </button>
+                      </div>
+                      {/* Rouncy */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>일반 기동마 (Rouncy) &bull; £2</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>일반 승마 및 다목적마 (체력 HP: 12, 아머: 1, 피해: 1d6-1)</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('일반 기동마 (Rouncy)', 2, 'horse', { hp: 12, armor: 1, damage: '1d6-1' })}>
+                          구입 £2
+                        </button>
+                      </div>
+                      {/* Pack horse */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>종자용 짐말 (Pack Horse) &bull; £1</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>물자 수송용 짐말 (체력 HP: 10, 아머: 0, 피해: 0)</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('종자용 짐말 (Pack Horse)', 1, 'horse', { hp: 10, armor: 0, damage: '0' })}>
+                          구입 £1
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Weapons & Armor Section */}
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '12px', background: 'rgba(0,0,0,0.01)', borderRadius: '4px' }}>
+                    <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.88rem', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '4px', marginBottom: '8px' }}>
+                      ⚔️ 신성 무구 및 명인 갑옷 단련 (Table 12-3)
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {/* Reinforced Mail */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>강화형 명인 사슬갑옷 &bull; £10</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>기사의 방어력 등급 대폭 상승 (소장용)</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('강화형 명인 사슬갑옷', 10, 'armor', {})}>
+                          구입 £10
+                        </button>
+                      </div>
+                      {/* Standard Mail */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>기사용 표준 사슬갑옷 &bull; £5</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>기본 기사 임관용 표준 아머 복구</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('기사용 표준 사슬갑옷', 5, 'armor', {})}>
+                          구입 £5
+                        </button>
+                      </div>
+                      {/* Two handed sword */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>양손 대검 (Two-handed Sword) &bull; £3</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>격돌 승리 시 +1d6 추가 타격 옵션</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('양손 대검', 3, 'weapon', {})}>
+                          구입 £3
+                        </button>
+                      </div>
+                      {/* Great Knight Shield */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
+                        <div>
+                          <strong>기사단 정예 대형방패 &bull; £1</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>펌블 시 무기 파손을 엄격 방어하는 쉴드</div>
+                        </div>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('기사단 정예 대형방패', 1, 'shield', {})}>
+                          구입 £1
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* 4. 나의 장원 재정 기행록 (My Armory Ledger) */}
+          <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
+            <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
+              <h3>📜 나의 기사단 장원 재정 및 소비 장부 (My Financial Ledger)</h3>
+            </div>
+            <div className="cs-section-inner" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '8px' }}>
+                <span style={{ fontSize: '0.82rem', color: 'var(--color-grey)' }}>
+                  기사의 상점 구입, 생활 유지비, 그리고 보화 감정 정산 결과가 실시간 기록되는 장부입니다.
+                </span>
+                {armoryLogs.length > 0 && (
+                  <button 
+                    className="btn-medieval" 
+                    style={{ fontSize: '0.76rem', padding: '4px 8px' }}
+                    onClick={() => {
+                      const text = armoryLogs.map(log => `[${log.timestamp}] ${log.title}\n- 내역: ${log.detail}\n- 경위: ${log.narrative}\n- 수지 변동: ${log.cost >= 0 ? '+' : ''}${log.cost} 파운드(£)\n`).join('\n');
+                      navigator.clipboard.writeText(text);
+                      alert('기사의 소중한 재정 장부가 통째로 클립보드에 복사되었습니다! 겨울 세션 일지 정리에 활용하세요.');
+                    }}
+                  >
+                    📋 전체 재정 장부 복사
+                  </button>
+                )}
+              </div>
+
+              {armoryLogs.length === 0 ? (
+                <div style={{ padding: '30px 10px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', fontSize: '0.86rem' }}>
+                  "아직 올해 가문 장원에 어떠한 재정 지출이나 전리품 감정이 기록되지 않았습니다.<br />
+                  상단의 생활 수준 유지비를 결제하거나, 보물을 감정하고, 또는 군마를 구입하여 대서사를 채워가세요."
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
+                  {armoryLogs.map((log) => (
+                    <div 
+                      key={log.id} 
+                      style={{ 
+                        borderLeft: `3px solid ${log.type === 'maintenance' ? 'var(--color-royal-blue)' : log.type === 'purchase' ? 'var(--color-crimson)' : 'var(--color-success)'}`, 
+                        padding: '10px 14px', 
+                        background: '#faf6eb', 
+                        borderRadius: '0 4px 4px 0',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <span style={{ fontWeight: 'bold', fontSize: '0.86rem', color: 'var(--color-ink)' }}>{log.title}</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{log.timestamp}</span>
+                      </div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '4px' }}>
+                        {log.detail}
+                      </div>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '0 0 6px 0', lineHeight: 1.45, fontStyle: 'italic' }}>
+                        "{log.narrative}"
+                      </p>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '0.74rem', color: log.cost >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 'bold' }}>
+                        수지 변동: {log.cost >= 0 ? '+' : ''}£{log.cost}
+                      </div>
                     </div>
                   ))}
                 </div>
