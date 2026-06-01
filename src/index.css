@@ -1591,7 +1591,7 @@ input[type="number"] {
   overflow-y: hidden;
   border: 2px solid var(--color-gold);
   border-radius: 12px;
-  padding: 32px 24px;
+  padding: 16px 12px;
   position: relative;
   background-color: #faf5eb;
   background-image: 
@@ -1601,7 +1601,7 @@ input[type="number"] {
 }
 
 .ft-canvas {
-  min-width: 920px;
+  min-width: 780px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -1624,21 +1624,21 @@ input[type="number"] {
 
 .ft-svg-path.path-marriage {
   stroke: var(--color-gold);
-  stroke-width: 2.5px;
+  stroke-width: 2px;
   stroke-linecap: round;
 }
 
 .ft-svg-path.path-lineage {
   stroke: rgba(43, 65, 112, 0.4);
-  stroke-width: 2px;
-  stroke-dasharray: 5, 5;
+  stroke-width: 1.5px;
+  stroke-dasharray: 4, 4;
   stroke-linecap: round;
 }
 
 .ft-rows-container {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
   position: relative;
   z-index: 2;
   width: 100%;
@@ -1647,10 +1647,10 @@ input[type="number"] {
 .ft-gen-row {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   width: 100%;
   border-bottom: 1.5px dashed rgba(201, 168, 76, 0.15);
-  padding-bottom: 24px;
+  padding-bottom: 12px;
 }
 
 .ft-gen-row:last-child {
@@ -1661,9 +1661,9 @@ input[type="number"] {
 .ft-gen-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-family: var(--font-korean);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--color-gold-dark);
 }
@@ -1671,17 +1671,17 @@ input[type="number"] {
 .ft-gen-badge {
   background: var(--color-royal-blue);
   color: #fff;
-  padding: 2px 8px;
+  padding: 1px 6px;
   border-radius: 4px;
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   font-family: var(--font-serif) !important;
-  box-shadow: 0 2px 4px rgba(43, 65, 112, 0.15);
+  box-shadow: 0 1px 3px rgba(43, 65, 112, 0.15);
 }
 
 .ft-gen-nodes {
   display: flex;
   flex-wrap: wrap;
-  gap: 48px;
+  gap: 16px;
   justify-content: center;
   width: 100%;
 }
@@ -1689,12 +1689,12 @@ input[type="number"] {
 .ft-marriage-block {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
   position: relative;
   background: rgba(201, 168, 76, 0.05);
-  border: 1.5px dashed rgba(201, 168, 76, 0.3);
-  padding: 10px 16px;
-  border-radius: 12px;
+  border: 1.5px dashed rgba(201, 168, 76, 0.25);
+  padding: 6px 10px;
+  border-radius: 8px;
   box-shadow: inset 0 0 6px rgba(0,0,0,0.02);
 }
 
@@ -1703,11 +1703,11 @@ input[type="number"] {
   align-items: center;
   justify-content: center;
   background: #faf5eb;
-  border: 1.5px solid var(--color-gold-light);
+  border: 1px solid var(--color-gold-light);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   z-index: 3;
 }
 
@@ -1717,12 +1717,12 @@ input[type="number"] {
 }
 
 .ft-card {
-  width: 190px;
-  padding: 14px;
+  width: 136px;
+  padding: 8px;
   border: 1.5px solid var(--color-grey-light);
-  border-radius: 8px;
+  border-radius: 6px;
   background: linear-gradient(135deg, #ffffff 0%, #fffefc 100%);
-  box-shadow: 0 2px 8px rgba(46, 31, 15, 0.04);
+  box-shadow: 0 1.5px 5px rgba(46, 31, 15, 0.03);
   position: relative;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow: hidden;
@@ -1730,58 +1730,58 @@ input[type="number"] {
 }
 
 .ft-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(46, 31, 15, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 31, 15, 0.1);
   border-color: var(--color-gold);
 }
 
 .ft-card-knight {
-  border: 2px solid var(--color-gold);
+  border: 1.8px solid var(--color-gold);
   background: linear-gradient(135deg, #fffdf2 0%, #fffbf0 100%);
   box-shadow: 
-    0 2px 10px rgba(201, 168, 76, 0.18),
-    0 0 0 3px rgba(201, 168, 76, 0.08);
+    0 1.5px 6px rgba(201, 168, 76, 0.15),
+    0 0 0 2px rgba(201, 168, 76, 0.05);
 }
 
 .ft-card-knight:hover {
   border-color: var(--color-gold-dark);
   box-shadow: 
-    0 8px 24px rgba(201, 168, 76, 0.28),
-    0 0 0 4px rgba(201, 168, 76, 0.12);
+    0 4px 14px rgba(201, 168, 76, 0.22),
+    0 0 0 3px rgba(201, 168, 76, 0.08);
 }
 
 .ft-crown {
   position: absolute;
-  top: -8px;
+  top: -7px;
   left: 50%;
   transform: translateX(-50%);
   color: #fff;
   background: var(--color-gold);
-  border: 1px solid var(--color-gold-dark);
+  border: 1.2px solid var(--color-gold-dark);
   border-radius: 50%;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  box-shadow: 0 1.5px 3px rgba(0,0,0,0.15);
   animation: floatCrown 3s ease-in-out infinite;
 }
 
 @keyframes floatCrown {
   0%, 100% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -2px); }
+  50% { transform: translate(-50%, -1.5px); }
 }
 
 .ft-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .ft-relation {
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--color-gold-dark);
   font-family: var(--font-korean);
@@ -1791,49 +1791,49 @@ input[type="number"] {
 .ft-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
-  padding: 1px 6px;
+  gap: 2px;
+  padding: 1px 4px;
   border-radius: 10px;
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 700;
   border: 1px solid;
   letter-spacing: -0.03em;
 }
 
 .ft-status-dot {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
 }
 
 .ft-name {
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--color-ink);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   font-family: var(--font-korean) !important;
   letter-spacing: -0.03em !important;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .ft-years {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: var(--color-grey);
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   font-family: var(--font-serif) !important;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .ft-note {
-  font-size: 0.74rem;
+  font-size: 0.64rem;
   color: var(--color-ink-light);
-  line-height: 1.35;
-  margin-top: 5px;
+  line-height: 1.3;
+  margin-top: 3px;
   border-top: 1px solid rgba(46, 31, 15, 0.06);
-  padding-top: 5px;
-  height: 40px;
+  padding-top: 3px;
+  height: 26px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
