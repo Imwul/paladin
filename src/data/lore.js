@@ -452,3 +452,30 @@ export const bestiary = [
   }
 ];
 
+export const bibliography = {
+  majorEpics: [
+    { title: "Chanson de Guillaume and La Prise d’Orange", details: "ed. P.E. Bennett (London, 2001)", desc: "오렌지의 기욤(나르본 가문의 백작)의 활약상을 다룬 대표적인 12세기 영웅 무공시." },
+    { title: "Guillaume d’Orange: Four Twelfth-Century Epics", details: "ed. J.M. Ferrante (New York, 2001)", desc: "남부 프랑크 국경에서 벌어지는 사라센 침공을 막아내는 기욤의 눈부신 활약상을 다룬 번역본 모음." },
+    { title: "Histoire de Huon de Bordeaux et Aubéron, roi de féerie", details: "ed. R. Pernoud (Paris, 1983)", desc: "아르덴 요정 숲의 요정왕 오베론과 위옹 경의 신비로운 모험을 담은 환상 서사시." },
+    { title: "Karlamagnus Saga: The Saga of Charlemagne and his Heroes", details: "Toronto, 1980", desc: "샤를마뉴 대제와 성기사들의 전설을 집대성하여 중세 노르드어로 번역/편찬한 거대 서사 전집." },
+    { title: "La Chevalerie d’Ogier de Danemarche", details: "Raimbert de Paris, ed. M. Eusebi (Milan, 1963)", desc: "샤를마뉴 대제와 대립하며 명예를 찾고 제국을 수호하는 덴마크인 오지에 경의 기사도 일대기." },
+    { title: "Les Quatre Fils Aymon", details: "ed. M. de Combarieu et al. (Paris, 2011)", desc: "샤를마뉴 대제에 반대하여 마법마 바야르를 타고 저항한 에몽 백작의 네 아들(르노와 형제들)의 비장한 저항시." },
+    { title: "Orlando Furioso (광란의 오를란도)", details: "Ludovico Ariosto (Oxford, 2008)", desc: "르네상스 시기 루도비코 아리오스토가 완성한 최고의 이탈리아 성기사 대서사시." },
+    { title: "The Song of Roland (롤랑의 노래)", details: "various editions", desc: "론세스바예스 고개에서 전사한 롤랑과 12성기사의 영웅적 장렬함을 다룬 세계 최고의 기사도 무공시." }
+  ],
+  minorEpics: [
+    { title: "Aiol", details: "ed. S.C. Malicote (New York, 2014)", desc: "가난한 몰락 기사 아이올이 주군의 인정을 받기 위해 명예로운 모험을 떠나는 이야기." },
+    { title: "Ami et Amiles (아미와 아밀레)", details: "ed. N. Desgrugillers-Billard (Clermont-Ferrand, 2008)", desc: "어떠한 시련 속에서도 결코 깨지지 않는 두 기사의 아름답고 비장한 신의와 우정의 서사." },
+    { title: "Aye d’Avignon (아비뇽의 아예)", details: "ed. S.J. Borg (Geneva, 1967)", desc: "봉건적 강제 혼인에 저항하고 남편의 원수를 갚기 위해 일어선 여장부 기사 아예의 일대기." },
+    { title: "Doon de Mayence (도온 드 마옌스)", details: "ed. A. Pey (Paris, 1859)", desc: "원로 가문의 기틀을 세운 대전사 도온 경의 탄생과 모험, 거인 사냥 연대기." },
+    { title: "Fierabras (피에라브라)", details: "ed. M. le Person (Paris, 2003)", desc: "로마를 습격했던 사라센 거인 전사 피에라브라가 롤랑과 결투 후 기독교로 개종하고 성기사단원이 되는 무용담." },
+    { title: "Gui de Nanteuil (낭퇴유의 기 경)", details: "ed. J. McCormack (Geneva, 1970)", desc: "법률과 행정의 명가 낭퇴유 가문의 음모와 사법적 명예 회복을 둘러싼 정밀한 사회 고발형 서사시." }
+  ],
+  studies: [
+    { author: "Einhard & Notker the Stammerer", title: "Two Lives of Charlemagne", details: "trans. Lewis Thorpe (1969)", desc: "샤를마뉴 대제의 직속 비서 아인하르트와 수도사 노트커가 기록한 대제의 가장 유명한 전기문." },
+    { author: "Pierre Riché", title: "The Carolingians: A Family Who Forged Europe", details: "trans. M. Allen (1993)", desc: "어떻게 카롤링거 가문이 분열된 프랑크 영토를 통합하고 현대 유럽의 뼈대를 주조했는가에 대한 역사학계 최고의 역작." },
+    { author: "David Nicolle", title: "The Age of Charlemagne", details: "Osprey Publishing (1984)", desc: "샤를마뉴 시대 기병의 전술, 무장 방어구, 기마 돌격술을 방대한 복원 그림과 함께 수록한 전쟁사 고증서." },
+    { author: "Leon Gauthier", title: "Les Épopées Françaises (프랑스 무공시 연구)", details: "Paris, 1897", desc: "중세 프랑스 무공시(Chansons de Geste)의 수십만 행에 달하는 인명, 지명, 족보 계통을 총정리한 문학 연구사 기념비." }
+  ]
+};
+
