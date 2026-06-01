@@ -1728,7 +1728,7 @@ input[type="number"] {
 
 .ft-card {
   width: 156px;
-  padding: 10px;
+  padding: 10px 10px 14px 10px; /* Safe padding-bottom to prevent text clipping! */
   border: 1.5px solid var(--color-grey-light);
   border-radius: 6px;
   background: linear-gradient(135deg, #ffffff 0%, #fffefc 100%);
@@ -1866,7 +1866,7 @@ input[type="number"] {
   margin-top: 3px;
   border-top: 1px solid rgba(46, 31, 15, 0.06);
   padding-top: 3px;
-  height: 26px;
+  height: 34px; /* Increased height to comfortably fit 2 lines of text! */
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
