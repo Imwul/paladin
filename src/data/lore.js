@@ -290,3 +290,165 @@ export const soloScenarios = [
     rules: "vassal 기사들이 평시에 자신의 영지(Manor)를 직접 관리하고 보살필 때 발생하는 경영 판정입니다."
   }
 ];
+
+export const gazetteer = [
+  {
+    key: "ardennes",
+    emoji: "🌲",
+    nameKO: "아르덴 대삼림 (Ardennes)",
+    nameEN: "The Forest of Ardennes",
+    rulerKO: "티에리 공작 (Duke Thierry)",
+    rulerEN: "Duke Thierry",
+    passionKO: "가족에 대한 사랑 (Love [Family]) 15점",
+    passionEN: "Love (Family) 15",
+    modifiers: [
+      { name: "영지 관리 (Stewardship)", value: "+2" },
+      { name: "수렵 (Hunting)", value: "+3" },
+      { name: "요정 전설 (Faerie Lore)", value: "+5" }
+    ],
+    historyKO: "벨기에와 프랑스 국경 지대에 넓게 뻗어 있는, 울창하고 신비로운 원시림입니다. 고대 켈트 요정 전설의 힘이 여전히 숲의 안개 속에 깃들어 있으며, 성난 수멧돼지와 거인들이 서식합니다. 숲의 수호자 기질을 지닌 강인한 기사들이 이 영토를 사수합니다.",
+    historyEN: "A vast, ancient forest spanning the borderlands. It is deeply connected to ancient faerie folklore, harboring dangerous beasts and mysterious ruins. Its knights are rugged and deeply bound to their ancestral lands."
+  },
+  {
+    key: "aquitaine",
+    emoji: "🍇",
+    nameKO: "아키텐 공국 (Aquitaine)",
+    nameEN: "The Duchy of Aquitaine",
+    rulerKO: "바이페르 공작 (Duke Waifer)",
+    rulerEN: "Duke Waifer",
+    passionKO: "주군에 대한 충성 (Loyalty [Lord]) 15점",
+    passionEN: "Loyalty (Lord) 15",
+    modifiers: [
+      { name: "연애예법 (Romance)", value: "+3" },
+      { name: "마술 (Horsemanship)", value: "+2" },
+      { name: "예의 (Courtesy)", value: "+3" }
+    ],
+    historyKO: "프랑크 제국 남서부의 풍요롭고 따뜻한 농경 구릉지입니다. 로마 시대의 찬란한 문화가 깊이 남아 있으며, 음유시인의 사랑 노래와 화려한 궁정 구애(Courtly Love) 문화가 가장 먼저 꽃피어난 기사도의 정수와 같은 예술의 고장입니다.",
+    historyEN: "A rich and sunny southern land characterized by Roman heritage and rolling hills. It is the cradle of troubadours, courtly love, and refined horsemanship, displaying the elegant side of chivalry."
+  },
+  {
+    key: "saxony",
+    emoji: "🛡️",
+    nameKO: "작센 공국 (Saxony)",
+    nameEN: "The Duchy of Saxony",
+    rulerKO: "비두킨트 공작 (Duke Widukind)",
+    rulerEN: "Duke Widukind",
+    passionKO: "프랑크인에 대한 증오 (Hate [Franks]) 15점 (또는 작센인에 대한 증오 15점)",
+    passionEN: "Hate (Franks) 15 or Hate (Saxons) 15",
+    modifiers: [
+      { name: "전술 (Battle)", value: "+3" },
+      { name: "창/도끼 (Spear/Axe)", value: "+2" },
+      { name: "경계 (Awareness)", value: "+2" }
+    ],
+    historyKO: "독일 북부의 거친 밀림과 수렁이 가득한 제국의 새로운 정복지입니다. 샤를마뉴의 30년 작센 전쟁이 벌어진 피비린내 나는 전장이며, 이교도 작센인들의 강력한 민간 저항과 기습 공격이 빈발하여 언제나 전운이 감도는 삼엄한 국경지대입니다.",
+    historyEN: "A wild and rugged region in the north, newly annexed after decades of bitter warfare. It is a land of dense marshes, pagan resistance led by Widukind, and constant border patrols."
+  },
+  {
+    key: "zaragoza",
+    emoji: "🕌",
+    nameKO: "사라고사 토후국 (Zaragoza)",
+    nameEN: "The Emirate of Zaragoza",
+    rulerKO: "마르실 토후 (Emir Marsile)",
+    rulerEN: "Emir Marsile",
+    passionKO: "기독교인에 대한 증오 (Hate [Christians]) 15점 (또는 이교도에 대한 증오 15점)",
+    passionEN: "Hate (Christians) 15 or Hate (Pagans) 15",
+    modifiers: [
+      { name: "음모 (Intrigue)", value: "+3" },
+      { name: "사라센 검술 (Scimitar)", value: "+2" },
+      { name: "사막 생존 (Awareness)", value: "+3" }
+    ],
+    historyKO: "피레네 산맥 남쪽 에스파냐 영토에 위치한 거대 이슬람 관문 도시이자 성채 토후국입니다. 마르실 토후의 치세 아래 찬란한 아랍 과학과 군사력이 집결해 있으며, 론세스바예스의 롤랑 배신 공작이 수립된 역사의 도가니입니다.",
+    historyEN: "A powerful Islamic stronghold south of the Pyrenees. Under Emir Marsile, it represents the highly sophisticated Andalusian civilization, standing as the main rival and source of intrigue for Charlemagne's paladins."
+  },
+  {
+    key: "rome",
+    emoji: "🏛️",
+    nameKO: "로마 교황령 (Rome)",
+    nameEN: "The Papal States of Rome",
+    rulerKO: "교황 레오 3세 (Pope Leo III)",
+    rulerEN: "Pope Leo III",
+    passionKO: "신에 대한 사랑 (Love [God]) 15점",
+    passionEN: "Love (God) 15",
+    modifiers: [
+      { name: "경건 (Pious)", value: "+3" },
+      { name: "문해력 (Read/Write)", value: "+5" },
+      { name: "종교 지식 (Religion)", value: "+3" }
+    ],
+    historyKO: "유럽 역사와 가톨릭 신앙의 영원한 수도입니다. 800년 크리스마스 날, 교황 레오 3세가 샤를마뉴에게 서로마 제국 황제의 왕관을 씌워 준 종교적 신성함의 원천이자, 라틴 교양과 사법 문해력의 중심지입니다.",
+    historyEN: "The eternal city and the spiritual heart of the West. It is where Pope Leo III crowned Charlemagne as Emperor, serving as a bastion of ancient scholarship, divine miracles, and holy law."
+  }
+];
+
+export const bestiary = [
+  {
+    key: "giant_boar",
+    emoji: "🐗",
+    nameKO: "아르덴 거대 수멧돼지 (Ardennes Giant Boar)",
+    nameEN: "Ardennes Giant Boar",
+    category: "야수 (Beast)",
+    stats: { STR: 32, CON: 22, SIZ: 35, DEX: 11, HP: 29, Armor: 6, Damage: "6d6" },
+    specialRules: [
+      { title: "분노의 돌격 (Furious Charge)", desc: "멧돼지가 첫 돌격을 가할 때, 상대 기사는 마술(Horsemanship) 혹은 SIZ 대립 판정을 굴려야 합니다. 실패 시 즉시 낙마(Knockdown)하며 1d6의 추가 마찰 관통 피해를 받습니다." },
+      { title: "질긴 가죽 (Thick Hide)", desc: "지방과 두터운 털로 덮여 있어, 일반 화살이나 투척 무기로 가하는 원거리 피해는 아머 수치가 10으로 취급됩니다." }
+    ],
+    loreKO: "아르덴 숲 깊은 곳에서 이끼 낀 거목 아래 서식하는 전설적인 괴수입니다. 일반 수멧돼지의 4배에 달하는 거구와 강철 같은 강도의 어금니를 가지고 있어, 어설픈 사냥꾼의 뼈와 갑옷을 통째로 으스러뜨립니다.",
+    loreEN: "A colossal beast roaming the dark groves of Ardennes. Its monstrous tusks can pierce heavy mail, and its rage makes it immune to minor wounds, requiring a coordinated hunt to bring down."
+  },
+  {
+    key: "carolingian_giant",
+    emoji: "🧌",
+    nameKO: "피레네 산맥 거인 (Pyrenean Giant)",
+    nameEN: "Pyrenean Giant",
+    category: "거인 (Giant)",
+    stats: { STR: 45, CON: 28, SIZ: 50, DEX: 8, HP: 39, Armor: 4, Damage: "8d6" },
+    specialRules: [
+      { title: "광폭한 휘두르기 (Sweep Attack)", desc: "거인의 무식한 곤봉 공격은 넓은 범위를 휩씁니다. 기병이 맞설 때, 대립 판정 실패 시 공격 피해량이 기마 방패의 아머 방어도를 관통하여 말과 기사 모두에게 절반씩 직접 전달됩니다." },
+      { title: "공포의 포효 (Terrifying Roar)", desc: "거인이 전투 시작 시 포효를 지르면, 모든 기사는 기사도 성향인 '용맹(Valorous)' 판정을 굴려야 합니다. 실패 시 기가 죽어 전투가 끝날 때까지 모든 무기 스킬 판정에 -5 패널티를 받습니다." }
+    ],
+    loreKO: "피레네나 알프스의 거친 바위 협곡에 숨어 지내는 고대 거인족의 생존자입니다. 인간 기사들을 한 손으로 움켜쥐어 바위에 메칠 수 있는 엄청난 괴력을 지니고 있으며, 거대한 고목 몽둥이로 무장하고 있습니다.",
+    loreEN: "A remnant of an ancient race living in the high mountain passes. Giants possess immense strength and wield heavy clubs capable of crushing a warhorse with a single blow."
+  },
+  {
+    key: "faerie_knight",
+    emoji: "🧝‍♂️",
+    nameKO: "숲의 요정 기사 (Forest Faerie Knight)",
+    nameEN: "Forest Faerie Knight",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 18, CON: 15, SIZ: 16, DEX: 22, HP: 16, Armor: 8, Damage: "4d6" },
+    specialRules: [
+      { title: "요정의 미혹 (Faerie Glamour)", desc: "요정 기사가 공격을 적중시킬 때마다, 기사는 '정직/신뢰(Trusting)' 또는 '요정 전설(Faerie Lore)' 판정을 굴려야 합니다. 실패 시 오감이 환각에 빠져 다음 1턴 동안 무기 공격 시 주사위를 2번 굴려 더 낮은 값을 적용합니다." },
+      { title: "신비로운 민첩성 (Ethereal Grace)", desc: "요정 기사는 물리 법칙을 무시하고 가볍게 나뭇잎 위를 걷습니다. 어떠한 지형에서도 이동 및 방어 제약이 없으며, 기사의 '회피(Dodge)' 판정에 영구적인 -3 디버프를 가합니다." }
+    ],
+    loreKO: "아르덴의 안개 너머 요정 성채(Faerie Realm)에서 파견된 의문의 전사입니다. 밤빛이 흐르는 은색 요정 갑옷을 두르고 있으며, 인간들의 무분별한 삼림 벌채와 성전 침입을 무력으로 처단하러 홀연히 모습을 드러냅니다.",
+    loreEN: "An enigmatic guardian from the faerie realm. Wielding a sword of pure starlight and wearing enchanted armor, they defend the pagan sanctuaries of the forest from mortal encroachment."
+  },
+  {
+    key: "saracen_cavalry",
+    emoji: "🏇",
+    nameKO: "사라센 정예 경기병 (Saracen Cavalry)",
+    nameEN: "Saracen Elite Cavalry",
+    category: "인간 (Human)",
+    stats: { STR: 14, CON: 14, SIZ: 14, DEX: 16, HP: 14, Armor: 5, Damage: "4d6" },
+    specialRules: [
+      { title: "치고 빠지기 (Hit & Run)", desc: "경기병은 마상 궁술과 투창에 매우 능합니다. 사거리가 확보된 전투 시, 선제 라운드에서 무작위로 활(Bow) 공격을 수행하여 방어 판정이 불가한 2d6 피해를 기사에게 입힌 후 백병전에 돌입합니다." },
+      { title: "시미터 베기 (Scimitar Slash)", desc: "사라센 정밀 검술로 치명타(대성공)가 터질 경우, 두터운 판금 아머를 우회하여 피 흘리는 지속 자상 피해(매 라운드 정산 시 1d3 HP 소실)를 가합니다. 구급(First Aid) 성공 시에만 멈춥니다." }
+    ],
+    loreKO: "에스파냐 남부 및 아프리카에서 징집된 기민하고 노련한 사라센 경기병입니다. 무거운 사슬 갑옷을 입어 둔한 프랑크 성기사들에 비해 가벼운 누비 갑옷과 민첩한 아라비아마를 타고 질풍노도처럼 치고 빠지는 전술을 구사합니다.",
+    loreEN: "Swift and highly skilled light horsemen from Al-Andalus. They rely on mobility, curved scimitars, and shortbows to harass and outflank the heavily armored Frankish knights."
+  },
+  {
+    key: "wolf_pack",
+    emoji: "🐺",
+    nameKO: "혹한의 겨울 늑대 무리 (Winter Wolf Pack)",
+    nameEN: "Winter Wolf Pack",
+    category: "야수 (Beast)",
+    stats: { STR: 12, CON: 12, SIZ: 10, DEX: 15, HP: 11, Armor: 2, Damage: "2d6+2" },
+    specialRules: [
+      { title: "무리 전술 (Pack Coordination)", desc: "늑대 무리는 표적을 포위합니다. 늑대가 2마리 이상 동시에 교전 중일 때, 기사의 회피(Dodge) 판정은 불가능하며, 늑대 무리의 모든 물어뜯기 대립 판정에 +2 가산 보너스가 붙습니다." },
+      { title: "살을 에는 동상 (Freezing Bite)", desc: "한겨울 밤 조우 시 늑대의 물어뜯기에 피해를 입은 기사는 CON 판정을 굴려야 합니다. 실패 시 동상(Frostbite)을 입어 영지나 성으로 돌아가 요양할 때까지 매일 1 HP의 자연 치유만 가능하게 제한됩니다." }
+    ],
+    loreKO: "겨울철 식량이 모두 소진되었을 때 눈 덮인 황야에서 사냥감을 찾아 울부짖는 늑대 무리입니다. 굶주림으로 지극히 흉포해져 있으며, 길 잃은 순례자나 단독 정찰 중인 기사의 말을 집요하게 추적합니다.",
+    loreEN: "A desperate pack of wolves hunting in the frozen forests. They hunt in perfect coordination, using their numbers to surround isolated travelers and bring down larger prey through exhaustion."
+  }
+];
+

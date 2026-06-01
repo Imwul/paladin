@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { greatFamilies, soloScenarios } from '../data/lore';
-import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award } from 'lucide-react';
+import { greatFamilies, soloScenarios, gazetteer, bestiary } from '../data/lore';
+import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull } from 'lucide-react';
 import ProperNoun from './ProperNoun';
 
 export default function LoreEncyclopedia() {
   const [activeSubTab, setActiveSubTab] = useState('families');
   const [selectedFamily, setSelectedFamily] = useState(greatFamilies[0]);
   const [selectedScenario, setSelectedScenario] = useState(soloScenarios[0]);
+  const [selectedRegion, setSelectedRegion] = useState(gazetteer[0]);
+  const [selectedMonster, setSelectedMonster] = useState(bestiary[0]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFamilies = greatFamilies.filter(f =>
@@ -20,19 +22,32 @@ export default function LoreEncyclopedia() {
     s.rules.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredGazetteer = gazetteer.filter(g =>
+    g.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    g.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    g.rulerKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    g.historyKO.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredBestiary = bestiary.filter(b =>
+    b.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    b.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    b.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    b.loreKO.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="cs-page view-animate">
-      
+
       {/* Tutorial Header Banner */}
       <div className="tutorial-banner">
         <div>
           <h4 className="tutorial-banner-title">🏛️ 제국 백과사전 (Carolingian Encyclopedia)</h4>
-          <p>샤를마뉴 대제 시대의 8대 명가 설정과 룰북 후반부의 솔로 시나리오 공식 행동 규칙을 열람하세요.</p>
+          <p>샤를마뉴 대제 시대의 8대 명가 및 제국 지리(Gazetteer), 전설의 괴수 및 야수(Bestiary)와 솔로 시나리오 공식을 열람하세요.</p>
         </div>
       </div>
 
       {/* Sub Tab Navigation */}
-      <div style={{ display: 'flex', gap: '12px', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px' }}>
+      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px' }}>
         <button 
           style={{ 
             background: 'none', 
@@ -73,6 +88,40 @@ export default function LoreEncyclopedia() {
             border: 'none', 
             cursor: 'pointer', 
             fontSize: '1rem', 
+            fontWeight: activeSubTab === 'gazetteer' ? 'bold' : 'normal', 
+            color: activeSubTab === 'gazetteer' ? 'var(--color-crimson)' : 'var(--color-ink-light)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onClick={() => { setActiveSubTab('gazetteer'); setSearchQuery(''); }}
+        >
+          <Globe size={16} /> 제국 지리 사전 (Gazetteer)
+        </button>
+        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
+        <button 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontSize: '1rem', 
+            fontWeight: activeSubTab === 'bestiary' ? 'bold' : 'normal', 
+            color: activeSubTab === 'bestiary' ? 'var(--color-crimson)' : 'var(--color-ink-light)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onClick={() => { setActiveSubTab('bestiary'); setSearchQuery(''); }}
+        >
+          <Skull size={16} /> 제국 괴수 및 야수 사전 (Bestiary)
+        </button>
+        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
+        <button 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontSize: '1rem', 
             fontWeight: activeSubTab === 'feudal' ? 'bold' : 'normal', 
             color: activeSubTab === 'feudal' ? 'var(--color-crimson)' : 'var(--color-ink-light)',
             display: 'flex',
@@ -91,7 +140,12 @@ export default function LoreEncyclopedia() {
           <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-grey)' }} />
           <input 
             type="text" 
-            placeholder={activeSubTab === 'families' ? "가문 이름 또는 키워드로 검색..." : "시나리오 이름 또는 규칙 검색..."}
+            placeholder={
+              activeSubTab === 'families' ? "가문 이름 또는 키워드로 검색..." :
+              activeSubTab === 'scenarios' ? "시나리오 이름 또는 규칙 검색..." :
+              activeSubTab === 'gazetteer' ? "지역 영지 이름 또는 영주 검색..." :
+              "괴수/야수 이름 또는 카테고리 검색..."
+            }
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             style={{ 
@@ -317,6 +371,237 @@ export default function LoreEncyclopedia() {
                       </div>
                     ))}
                   </div>
+                </div>
+
+          )}
+        </div>
+      )}
+
+      {/* 4. GAZETTEER TAB */}
+      {activeSubTab === 'gazetteer' && (
+        <div className="cs-row" style={{ alignItems: 'flex-start', gap: '20px' }}>
+          {/* Left Side List */}
+          <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
+              제국 주요 영지 일람
+            </h3>
+            {filteredGazetteer.map(g => (
+              <div 
+                key={g.key}
+                onClick={() => setSelectedRegion(g)}
+                style={{ 
+                  padding: '12px', 
+                  border: selectedRegion?.key === g.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                  borderRadius: '4px',
+                  background: selectedRegion?.key === g.key ? 'rgba(179,143,67,0.06)' : '#fff',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{g.emoji}</span>
+                  <strong style={{ fontSize: '0.95rem', color: selectedRegion?.key === g.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{g.nameKO.split(' (')[0]}</strong>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{g.nameEN}</div>
+                </div>
+                <ChevronRight size={16} color="var(--color-gold)" />
+              </div>
+            ))}
+            {filteredGazetteer.length === 0 && (
+              <p style={{ textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', padding: '20px 0' }}>검색 결과가 없습니다.</p>
+            )}
+          </div>
+
+          {/* Right Side Detail Reader */}
+          {selectedRegion && (
+            <section className="cs-section" style={{ flex: '2 1 450px' }}>
+              <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>{selectedRegion.emoji} {selectedRegion.nameKO}</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
+                
+                {/* Ruler & Starting Passion info card */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 통치자 (Ruler)</div>
+                    <div style={{ fontSize: '0.95rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedRegion.rulerKO}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>{selectedRegion.rulerEN}</div>
+                  </div>
+                  <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>❤️ 시작 열정 (Starting Passion)</div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--color-crimson)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedRegion.passionKO}</div>
+                  </div>
+                </div>
+
+                {/* Cultural Modifiers Table */}
+                <div style={{ border: '1px dashed var(--color-gold)', padding: '12px', borderRadius: '4px', background: 'rgba(179,143,67,0.03)' }}>
+                  <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>📊 지역 문화 보정치 (Cultural Skill &amp; Attribute Modifiers)</div>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    {selectedRegion.modifiers.map((m, idx) => (
+                      <span 
+                        key={idx} 
+                        style={{ 
+                          fontSize: '0.8rem', 
+                          padding: '4px 8px', 
+                          background: '#fff', 
+                          border: '1px solid var(--color-grey-light)', 
+                          borderRadius: '4px', 
+                          color: 'var(--color-ink)',
+                          fontWeight: '500'
+                        }}
+                      >
+                        {m.name}: <strong style={{ color: 'var(--color-crimson)' }}>{m.value}</strong>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* History & Lore */}
+                <div>
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '6px' }}>📖 영지 역사 및 지리 설정</h4>
+                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
+                    {selectedRegion.historyKO}
+                  </p>
+                  <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
+                    {selectedRegion.historyEN}
+                  </p>
+                </div>
+
+              </div>
+            </section>
+          )}
+        </div>
+      )}
+
+      {/* 5. BESTIARY TAB */}
+      {activeSubTab === 'bestiary' && (
+        <div className="cs-row" style={{ alignItems: 'flex-start', gap: '20px' }}>
+          {/* Left Side List */}
+          <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
+              괴수 및 전설의 야수 일람
+            </h3>
+            {filteredBestiary.map(b => (
+              <div 
+                key={b.key}
+                onClick={() => setSelectedMonster(b)}
+                style={{ 
+                  padding: '12px', 
+                  border: selectedMonster?.key === b.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                  borderRadius: '4px',
+                  background: selectedMonster?.key === b.key ? 'rgba(179,143,67,0.06)' : '#fff',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{b.emoji}</span>
+                  <strong style={{ fontSize: '0.95rem', color: selectedMonster?.key === b.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{b.nameKO.split(' (')[0]}</strong>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{b.category}</div>
+                </div>
+                <ChevronRight size={16} color="var(--color-gold)" />
+              </div>
+            ))}
+            {filteredBestiary.length === 0 && (
+              <p style={{ textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', padding: '20px 0' }}>검색 결과가 없습니다.</p>
+            )}
+          </div>
+
+          {/* Right Side Detail Reader */}
+          {selectedMonster && (
+            <section className="cs-section" style={{ flex: '2 1 450px' }}>
+              <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>{selectedMonster.emoji} {selectedMonster.nameKO}</h3>
+                <span style={{ fontSize: '0.8rem', padding: '2px 6px', background: 'rgba(255,255,255,0.2)', color: '#fff', borderRadius: '4px', fontWeight: 'bold' }}>
+                  {selectedMonster.category}
+                </span>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
+                
+                {/* TRPG Stats Table Card */}
+                <div style={{ border: '1px solid var(--color-gold-light)', borderRadius: '6px', background: '#fff', padding: '14px', boxShadow: '0 2px 6px rgba(0,0,0,0.03)' }}>
+                  <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    📊 TRPG 전투 능력치 스펙 (Standard TRPG Stats)
+                  </div>
+                  
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ textAlign: 'center', background: '#faf8f5', padding: '6px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>STR (근력)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>{selectedMonster.stats.STR}</div>
+                    </div>
+                    <div style={{ textAlign: 'center', background: '#faf8f5', padding: '6px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>CON (건강)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>{selectedMonster.stats.CON}</div>
+                    </div>
+                    <div style={{ textAlign: 'center', background: '#faf8f5', padding: '6px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>SIZ (크기)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>{selectedMonster.stats.SIZ}</div>
+                    </div>
+                    <div style={{ textAlign: 'center', background: '#faf8f5', padding: '6px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>DEX (민첩)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>{selectedMonster.stats.DEX}</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                    {/* HP Bar */}
+                    <div style={{ background: '#f5f5f5', padding: '8px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>
+                        <span>HP (체력)</span>
+                        <span style={{ color: 'var(--color-crimson)' }}>{selectedMonster.stats.HP} / {selectedMonster.stats.HP}</span>
+                      </div>
+                      <div style={{ height: '6px', background: '#e0e0e0', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: '100%', background: 'linear-gradient(90deg, var(--color-crimson) 0%, #ff5252 100%)' }} />
+                      </div>
+                    </div>
+
+                    {/* Armor Shield */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#fdfbf7', padding: '4px', borderRadius: '4px', border: '1.5px solid var(--color-gold)' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>🛡️ 아머 (Armor)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>{selectedMonster.stats.Armor}</div>
+                    </div>
+
+                    {/* Damage */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#fff5f5', padding: '4px', borderRadius: '4px', border: '1.5px solid #ff8a80' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--color-crimson)', fontWeight: 'bold' }}>⚔️ 피해량 (Damage)</div>
+                      <div style={{ fontSize: '1rem', fontWeight: 'bold', color: 'var(--color-crimson)' }}>{selectedMonster.stats.Damage}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Combat Special Rules */}
+                <div style={{ border: '1.5px solid var(--color-gold)', borderRadius: '6px', overflow: 'hidden', boxShadow: '0 3px 8px rgba(201,168,76,0.1)' }}>
+                  <div style={{ background: 'linear-gradient(135deg, #b38f43 0%, #8c6b23 100%)', color: '#fff', padding: '8px 12px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    💀 솔로 전투 특수 규칙 (Combat Special Rules)
+                  </div>
+                  <div style={{ background: '#fffefb', padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {selectedMonster.specialRules.map((r, idx) => (
+                      <div key={idx} style={{ fontSize: '0.82rem', lineHeight: 1.5 }}>
+                        <div style={{ fontWeight: 'bold', color: 'var(--color-crimson)', marginBottom: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          ✦ {r.title}
+                        </div>
+                        <div style={{ color: 'var(--color-ink-light)', paddingLeft: '12px', borderLeft: '1.5px solid var(--color-gold-light)' }}>
+                          {r.desc}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Lore / Description */}
+                <div>
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '4px' }}>📖 배경 기사도 야사 및 관찰 보고</h4>
+                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
+                    {selectedMonster.loreKO}
+                  </p>
+                  <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
+                    {selectedMonster.loreEN}
+                  </p>
                 </div>
 
               </div>
