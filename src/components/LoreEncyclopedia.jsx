@@ -1013,7 +1013,7 @@ export default function LoreEncyclopedia() {
                               🗺️ 유럽 강역도 (서기 768년 - 샤를마뉴 즉위 원년) [인터랙티브 대화형]
                             </h4>
                             <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
-                              국왕 피핀 3세 사후, 샤를마뉴 대제와 동생 카를로만 1세가 프랑크 왕국을 분할 통치하던 즉위 원년 시점의 대륙 강역도입니다. 잘려 있던 좌우 페이지를 디지털 접합 및 최적화하였습니다. **지도 속 각 영역을 클릭하면 세부 설정으로 이동합니다.**
+                              국왕 피핀 3세 사후, 샤를마뉴 대제와 동생 카를로만 1세가 프랑크 왕국을 분할 통치하던 즉위 원년 시점의 대륙 강역도입니다. **지도 속 각 영역을 클릭하면 세부 설정으로 이동합니다.**
                             </p>
                             <div style={{ position: 'relative', border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
                               <img 
