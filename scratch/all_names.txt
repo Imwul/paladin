@@ -1,0 +1,251 @@
+0: Alard | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | Count Aymon’s second son. Though he is not as strong and val
+1: Aymer the Puny | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | William Shortnose’s younger brother gets captured at Ronceva
+2: Fulco of Candie | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | The nephew of Vivien the Fearless is a fighter worthy of his
+3: Garin of Anjou | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | William Shortnose’s younger brother is the father of Vivien.
+4: Garnier of Nanteuil | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | Raised at the royal court, he fights at the side of Anseïs o
+5: Gerard of Vienne | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | When Oliver’s proud and independent uncle is insulted by Kin
+6: Guichard the Wild | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | Count Aymon’s fourth son is Bradamant’s twin brother. His ra
+7: Guy of Nanteuil | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | T o avenge his father’s death, Guy allies with the chivalrou
+8: Lion of Bourges | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | The courteous son of the destitute Count Herpin of Bourges l
+9: Milo of Aiglent | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | The father of Roland is the strong, handsome, optimistic, va
+10: Oliver and William of Bourges | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | These twin brothers are the sons of Lion of Bourges and Flor
+11: Richard | Imperial Family & Court | ⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights) | Count Aymon’s third son is a doughty warrior. Unlike his bro
+12: Pepin the Short (714–768) | Imperial Family & Court | 👑 황실 부모 (Parents) | Charlemagne’s father is the illustrious son of the great Cha
+13: Bertrada Broadfoot (726–783) | Imperial Family & Court | 👑 황실 부모 (Parents) | Pepin the Short’s wife is the daughter of King Floris and Qu
+14: Adelaid (738–756) | Imperial Family & Court | 👑 황실 형제 (Siblings) | Wife of Aymon of Dordon and the mother of Renaud, his brothe
+15: Rothaid (744–789) | Imperial Family & Court | 👑 황실 형제 (Siblings) | A meek but handsome princess, who marries Count Anthony of A
+16: Carloman I (750–771) | Imperial Family & Court | 👑 황실 형제 (Siblings) | Charlemagne’s younger and more intellectual brother was rais
+17: Gertrude (751–771) | Imperial Family & Court | 👑 황실 형제 (Siblings) | A strong-willed woman who marries a Neustrian count. She die
+18: Gisela (757–810) | Imperial Family & Court | 👑 황실 형제 (Siblings) | This grave and distant girl is promised to the Lombard princ
+19: Himiltrude (764–770) | Imperial Family & Court | 👑 황실 황후 (Wives) | This young Frankish concubine of modest origins is not offic
+20: Desideria (770–771) | Imperial Family & Court | 👑 황실 황후 (Wives) | The third daughter of King Desiderius is a lovely and refine
+21: Hildegard (771–783) | Imperial Family & Court | 👑 황실 황후 (Wives) | This Alemannian princess is only 13 years old when Charlemag
+22: Liutgard (795–800) | Imperial Family & Court | 👑 황실 황후 (Wives) | A gentle Alemannian princess, whom Charlemagne is already co
+23: Gerswinda | Imperial Family & Court | 👑 황실 후궁 (Concubines) | Mother of Adaltrude.
+24: Madelgard | Imperial Family & Court | 👑 황실 후궁 (Concubines) | Mother of a Ruothild.
+25: Regina | Imperial Family & Court | 👑 황실 후궁 (Concubines) | Mother of Drogo and Hugo.
+26: Adallinda | Imperial Family & Court | 👑 황실 후궁 (Concubines) | Mother of Ricbod and Thierry.
+27: Pepin the Hunchback (765–811) | Imperial Family & Court | 👑 황실 황자 (Sons) | The deformed son of Charlemagne’s concubine Himiltrude is re
+28: Louis the Pious (766) | Imperial Family & Court | 👑 황실 황자 (Sons) | Charlemagne’s least favorite son is somewhat effeminate. His
+29: Charlot (772–811) | Imperial Family & Court | 👑 황실 황자 (Sons) | Also known as “Charles the Y ounger, ” the king’s favorite s
+30: Rothrud (773–810) | Imperial Family & Court | 👑 황실 황녀 (Daughters) | She is first promised to the Greek Emperor (781), but finall
+31: Bertha (779–826) | Imperial Family & Court | 👑 황실 황녀 (Daughters) | This frivolous and proud princess marries Angilbert (a diplo
+32: Adalhard (751–827) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Charlemagne’s favorite cousin was raised at court as the son
+33: Angilbert (751–814) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Charlemagne’s son-in-law was raised at royal court. At first
+34: Bertha (735–) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | A year before giving birth to Roland in 750, Charlemagne’s c
+35: Bernard (736–787) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Charlemagne’s uncle is a bastard son of Pepin the Short. He 
+36: Childebrand II (779–826) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Charlemagne’s diligent and shrewd cousin, son of Count Nibel
+37: Gerold of Bavaria | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | See Paladins.
+38: Gontrada | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Adalhard and W ala’s sister is Charlemagne’s chaste cousin a
+39: Lothair (744–768) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | This unfortunate cousin is killed by Bevis of Aigremont, whi
+40: Nibelung I (725–771) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Charlemagne’s distant uncle is the son of Childebrand I, who
+41: W ala (755–836) | Imperial Family & Court | 👑 황실 친족 (Other Relatives) | Adalhard’s younger brother is uncle Bernard’s second son. He
+42: Ganelon of Ponthieu (736–778) | Imperial Family & Court | 🏰 궁정 대신 (Courtiers) | The valorous Count of Mayence inherited his ancestor Doon’s 
+43: Naymo of Bavaria (732–815) | Imperial Family & Court | 🏰 궁정 대신 (Courtiers) | Another of Charlemagne’s childhood friends, and the king’s m
+44: Alcuin (735–804) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The tall British monk is a calm and honest man with great di
+45: Angilbert | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | See Other Relatives.
+46: Arno of Salzburg (750–821) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | This Bavarian bishop enters the Palace Academy as Aquila, a 
+47: Benedict of Aniane (747–821) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The son of the Visigothic Count Aigulf of Gellone grows up a
+48: Clement (750–818) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | An eloquent and patient Irish monk who arrives at Charlemagn
+49: Dagulf (743–809) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | During summer, the conscientious library master travels thro
+50: Dungal (749–828) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | This Irish monk is Charlemagne’s court astrologer. He teache
+51: Einhard (770–840) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A very talented and versatile dwarfsized monk from Fulda. He
+52: Fredegise (791–834) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A British disciple of Alcuin, nicknamed Nathanaël, who succe
+53: Fulrad (710–784) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The Abbot of St. Denis, who owns many rich domains all over 
+54: George the Byzantine (755–817) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A very erudite Greek, he speaks Latin, Arabic and Hebrew. He
+55: Hildebald of Cologne (761–818) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A personal friend of Charlemagne, nicknamed Aaron at the Aca
+56: Ludger (742–809) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A noble Frisian monk who teaches at the Utrecht cathedral sc
+57: Modoin (770–840) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A Visigothic monk raised at court, where he is known as Ovid
+58: Paul the Deacon (720–802) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The venerable Lombard Bishop of Aquileia is a renowned gramm
+59: Peter of Pisa (744–799) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A humorless Lombard from Pavia who teaches Latin at the Pala
+60: Raban Maur (780–856) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A quiet and diligent monk from Fulda, and a pupil of Alcuin 
+61: Theodulf (759–821) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The Visigothic Bishop of Orleans (798) and Abbot of Fleury s
+62: Willihad (741–789) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | A pure monk from Y ork, where he became Alcuin’s friend. He 
+63: Wido (761–802) | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | Alcuin’s most talented pupil and companion is the personal t
+64: Chamberlain | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The chamberlain takes care of the personal belongings of the
+65: Chancellor | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | He oversees the royal charters and archives, assists on the 
+66: Chaplain | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The guardian of the cape (chapelle) of St. Martin, the most 
+67: Master of the Kitchens | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | Often the subject of gentle raillery, the master cook is nev
+68: Magister | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The head of the Palace Academy. Alcuin (780–796); Wido (796–
+69: Palace Count | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | The principal royal advisor and president of the permanent s
+70: Seneschal | Imperial Family & Court | 🏰 궁정 학자 (Academicians) | Also known as the steward, he manages the provisions of the 
+71: Aigremont or Clermont | Great Families | 📜 제국 명문 가계 (Great Families) | See The House of Clermont in the section on the Duchy of Ard
+72: Agilolfings | Great Families | 📜 제국 명문 가계 (Great Families) | The most powerful Bavarian family is mainly composed of civi
+73: Arnulfings | Great Families | 📜 제국 명문 가계 (Great Families) | Charles Martel, Pepin the Short, and Charlemagne are members
+74: Bordelais | Great Families | 📜 제국 명문 가계 (Great Families) | Duke Sevin I of Bordeaux is the leader of this ancient famil
+75: Etichonids | Great Families | 📜 제국 명문 가계 (Great Families) | A family of strong but honest brutes from Alsace, allied to 
+76: Gerardines | Great Families | 📜 제국 명문 가계 (Great Families) | Gerard of Paris has two sons: Bego, who succeeds his father 
+77: House of Lorraine | Great Families | 📜 제국 명문 가계 (Great Families) | An ancient and respected house of Austrasia, where they cont
+78: Lombards | Great Families | 📜 제국 명문 가계 (Great Families) | Rivals of the Carolingians. They understandably develop a gr
+79: Mayence | Great Families | 📜 제국 명문 가계 (Great Families) | The Austrasian Mayence clan is indirectly related to the Arn
+80: Monglane or Narbonnais | Great Families | 📜 제국 명문 가계 (Great Families) | Although far from wealthy, the Narbonnais are the single mos
+81: Nibelungs | Great Families | 📜 제국 명문 가계 (Great Families) | Charlemagne’s wealthy and loyal allies and relatives descend
+82: Rorgonids | Great Families | 📜 제국 명문 가계 (Great Families) | A proud family from Normandy, led by Duke Richard of Normand
+83: Widonids | Great Families | 📜 제국 명문 가계 (Great Families) | Another great family allied to the Arnulfings have their fie
+84: Angelica | Imperial Family & Court | 🔮 신비한 마법사 (Magicians) | A stunning and chaste princess of Cathay, who wears a powerf
+85: Atlantes | Imperial Family & Court | 🔮 신비한 마법사 (Magicians) | The most powerful Saracen astrologer and sorcerer lives in a
+86: Basin (Elegast) | Imperial Family & Court | 🔮 신비한 마법사 (Magicians) | The Frankish Count of Geneva is a skillful enchanter, who wa
+87: Maugis | Imperial Family & Court | 🔮 신비한 마법사 (Magicians) | The most famous Frankish wizard-knight, from the family of A
+88: Merlin | Imperial Family & Court | 🔮 신비한 마법사 (Magicians) | The long-dead magician is sometimes present as a living spir
+89: Amaury of Hauteville | Enemies Within | ⚔️ 흑색 기사단 (Black Knights) | The last member of the House of Mayence becomes Count of May
+90: Dorame | Foreigners | ❄️ 아바르 (Avars) | The decadent khagan of the Avars (784–790).
+91: Otxoa | Foreigners | 🏔️ 바스크 (Basques) | The treacherous Duke of the Basques allies with the Moors ag
+92: Orthez | Foreigners | 🏔️ 바스크 (Basques) | He succeeds his father as a duke in 778, and although he ple
+93: Aquin | Foreigners | 🏹 브르타뉴 (Bretons) | The pagan king of Brittany is bald, with a hoary white beard
+94: Doret of Gardain | Foreigners | 🏹 브르타뉴 (Bretons) | King Aquin’s youngest son is eager to prove himself in battl
+95: Erdisa | Foreigners | 🏹 브르타뉴 (Bretons) | The Breton queen is very beautiful and exceptionally modest 
+96: Grimoart of Dinard | Foreigners | 🏹 브르타뉴 (Bretons) | King Aquin’s eldest son is a boastful, cruel and selfish man
+97: Lubien and Macabray | Foreigners | 🏹 브르타뉴 (Bretons) | T wo aggressive local warlords, who regularly stage raids in
+98: Salomon | Foreigners | 🏹 브르타뉴 (Bretons) | See Paladins.
+99: Samson | Foreigners | 🏹 브르타뉴 (Bretons) | See Paladins. Mercia
+100: Offa | Foreigners | 🏹 브리튼 (Britons) | The clever and learned King of Mercia (757–796) annexed W es
+101: Astolf | Foreigners | 🏹 브리튼 (Britons) | King Ecfrid’s half-brother. See Paladins.
+102: Clarice | Foreigners | 🏹 브리튼 (Britons) | King Offa’s beautiful sister marries the widowed Ogier in 78
+103: Ecfrid | Foreigners | 🏹 브리튼 (Britons) | Offa’s son is crowned co-ruler of Mercia in 787, and rules a
+104: Coenwulf | Foreigners | 🏹 브리튼 (Britons) | The pious and ruthless King of Mercia (796–821). NortHu Mbri
+105: Ahlred | Foreigners | 🏹 브리튼 (Britons) | King of Northumbria (765–774).
+106: Aethelred I | Foreigners | 🏹 브리튼 (Britons) | King of Northumbria (774–779).
+107: Aelfwald I | Foreigners | 🏹 브리튼 (Britons) | King of Northumbria (779–788).
+108: Osred II | Foreigners | 🏹 브리튼 (Britons) | King of Northumbria (788–796).
+109: Eardwulf | Foreigners | 🏹 브리튼 (Britons) | King of Northumbria (796–806), whose blazon is “d’azur à une
+110: Alcuin | Foreigners | 🏹 브리튼 (Britons) | See Academicians. s cotlaNd
+111: Gilmer | Foreigners | 🏹 브리튼 (Britons) | Zerbin’s valiant nephew serves at the court of William Short
+112: Zerbin | Foreigners | 🏹 브리튼 (Britons) | The romantic prince of Scotland is the lover of Isabella of 
+113: Cynewulf | Foreigners | 🏹 브리튼 (Britons) | King of W essex (757–786).
+114: Bertric | Foreigners | 🏹 브리튼 (Britons) | King of W essex (786–802).
+115: Egbert the Great | Foreigners | 🏹 브리튼 (Britons) | As a chivalrous youth, Prince Egbert spends some time at Cha
+116: Constantine V | Foreigners | 👑 비잔틴 제국 (Byzantines) | The Basileus (741–775), whom the Franks call Hugo the Strong
+117: Leo IV | Foreigners | 👑 비잔틴 제국 (Byzantines) | Nicknamed “the Khazar” because his mother was a Circassian p
+118: Constantine VI | Foreigners | 👑 비잔틴 제국 (Byzantines) | This weak emperor (780–797) is consumed by his ill-fated lov
+119: Irene of Athens | Foreigners | 👑 비잔틴 제국 (Byzantines) | Leo IV’s wife, she becomes the empress-regent (780–797), and
+120: Nikephoros | Foreigners | 👑 비잔틴 제국 (Byzantines) | This emperor (802–811) is notorious for his devouring ambiti
+121: Staurakios the Paralyzed | Foreigners | 👑 비잔틴 제국 (Byzantines) | Basileus of the Greeks (811). Named co-emperor with his fath
+122: Michael Rangabe | Foreigners | 👑 비잔틴 제국 (Byzantines) | A skilled politician, Emperor Michael (811–813) tries to rec
+123: Leo V | Foreigners | 👑 비잔틴 제국 (Byzantines) | Emperor of Byzantium (813–820). PatriarcHs
+124: Niketas the Slav | Foreigners | 👑 비잔틴 제국 (Byzantines) | Patriarch from 766 to 780.
+125: Paul the New | Foreigners | 👑 비잔틴 제국 (Byzantines) | Patriarch from 780 to 784, when he retires to a monastery.
+126: T arasios | Foreigners | 👑 비잔틴 제국 (Byzantines) | This patriarch (784–806) is a very wise and learned lay scho
+127: Nikephoros | Foreigners | 👑 비잔틴 제국 (Byzantines) | T arasios’ successor (806–815) is a simple but learned monk,
+128: Stauriakos | Foreigners | 👑 비잔틴 제국 (Byzantines) | A eunuch, a patrician and a logothete. He is Empress Irene’s
+129: Elissa | Foreigners | 👑 비잔틴 제국 (Byzantines) | A court eunuch who acts as Princess Rothrud’s tutor.
+130: Pancratios | Foreigners | 👑 비잔틴 제국 (Byzantines) | The Byzantine court astrologer.
+131: Salmadrine | Foreigners | 👑 비잔틴 제국 (Byzantines) | This beautiful princess, Constantine V’s sister, is married 
+132: Godfrid I | Foreigners | 🌊 북방 덴마크 (Danes) | The proud and illustrious Frankish King of the Danes (740–78
+133: Magnus the Strong | Foreigners | 🌊 북방 덴마크 (Danes) | A Danish convert who serves as a knight at the Frisian court
+134: Sigfrid | Foreigners | 🌊 북방 덴마크 (Danes) | This rich and selfish warlord manages to usurp the title of 
+135: Godfrid II | Foreigners | 🌊 북방 덴마크 (Danes) | King Hemming I’s son rules from 804 to 810, when he is kille
+136: Hemming II | Foreigners | 🌊 북방 덴마크 (Danes) | King Godfrid II’s nephew is a wise and prudent king (811–812
+137: Ogier the Dane | Foreigners | 🌊 북방 덴마크 (Danes) | See Main Heroes.
+138: Reginald | Foreigners | 🌊 북방 덴마크 (Danes) | King Hemming I’s youngest son dies in battle in 808. a quita
+139: W aifer | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | The Duke of Aquitaine (748–767) is an ally of the rebellious
+140: Hunold | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | Duke of Aquitaine (767–768), Duke W aifer’s son.
+141: Sevin of Bordeaux | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | Duke of Aquitaine (769–803). See Paladins.
+142: Alice | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | Duchess-regent of Aquitaine (803–810), Sevin’s wife and moth
+143: Huon of Bordeaux | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | See Paladins. g asco N Nobles
+144: Lupus | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | The Duke of Gascony (759–768) betrays his ally Duke W aifer 
+145: Yo n | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | The Duke of Gascony (768–786) marries his eldest daughter Cl
+146: Odalric | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | Duke Lupus’ second son captures his rival, Duke Chorso of T 
+147: Sancho | Foreigners | 🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians) | See Paladins. a var  k HagaNs
+148: Kurguz | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | The fat and decadent ceremonial khagan.
+149: Unguimer | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | A traitor tarkan who helps the Franks conquer the Avar Ring 
+150: T elerig | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | Successful in his wars with Byzantium, the cruel khagan is n
+151: Rogero | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | See Paladins. This Christian King of the Bulgars (777–784) r
+152: Krum | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | King Rogero’s successor is a skillful battle leader and a su
+153: Sacripant | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | The courteous tsar of Circassia (or Khazaria) is a vain cont
+154: Agrican | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | Roland kills this noble and worthy khagan in a duel for Ange
+155: Gradasso | Foreigners | ❄️ 불가르 & 훈족 (Bulgars & Huns) | This chivalrous but arrogant khagan of the T artars attacks 
+156: Isaac | Foreigners | ⛪ 유대인 (Jews) | A wise and wealthy merchant who speaks Hebrew, Latin, Greek,
+157: Desiderius | Foreigners | 🛡️ 롬바르드 (Lombards) | The former Duke of T uscany, now King of Lombardy, is too ol
+158: Ansa | Foreigners | 🛡️ 롬바르드 (Lombards) | King Desiderius’ beautiful and proud wife.
+159: Adalchis | Foreigners | 🛡️ 롬바르드 (Lombards) | King Desiderius’ only son is the exiled leader of the anti-F
+160: Liutperga | Foreigners | 🛡️ 롬바르드 (Lombards) | Desiderius’ eldest daughter is married to Duke T assilo III 
+161: Gerberga | Foreigners | 🛡️ 롬바르드 (Lombards) | Desiderius’ second daughter is King Carloman’s wife. At her 
+162: Desideria | Foreigners | 🛡️ 롬바르드 (Lombards) | See Wives.
+163: Adalperga | Foreigners | 🛡️ 롬바르드 (Lombards) | Desiderius’ fourth daughter is married to Duke Arichis of Be
+164: Arichis | Foreigners | 🛡️ 롬바르드 (Lombards) | The stubborn and haughty duke (758–787) calls himself “princ
+165: Grimoald III | Foreigners | 🛡️ 롬바르드 (Lombards) | Arichis’ youngest son is taken hostage by Charlemagne in 787
+166: Grimoald IV | Foreigners | 🛡️ 롬바르드 (Lombards) | He was Grimoald’s treasurer, and takes the throne from Grimo
+167: Rhodgaud | Foreigners | 🛡️ 롬바르드 (Lombards) | Rebellious and fickle Duke of Friuli (767–776).
+168: Marcarius | Foreigners | 🛡️ 롬바르드 (Lombards) | Duke of Friuli (776–789), appointed by Charlemagne himself.
+169: Eric | Foreigners | 🛡️ 롬바르드 (Lombards) | See Paladins. Duke of Friuli (789–799).
+170: Aio | Foreigners | 🛡️ 롬바르드 (Lombards) | Duke of Friuli (799–816), arrogant but respected. s Poleto
+171: Theodicius | Foreigners | 🛡️ 롬바르드 (Lombards) | The Lombard duke (767–773) dies in the war against the Frank
+172: Hildeprand | Foreigners | 🛡️ 롬바르드 (Lombards) | A valorous Frankish duke (774–789), who dies in battle again
+173: Winichis | Foreigners | 🛡️ 롬바르드 (Lombards) | A just and loyal Frankish duke (789–822). v eNice
+174: Galbaio | Foreigners | 🛡️ 롬바르드 (Lombards) | The wealthy doge (duke) of V enice (764–787) is a shrewd and
+175: Giovanni | Foreigners | 🛡️ 롬바르드 (Lombards) | Galbaio’s son and his successor as doge (787–805) is a venge
+176: Oberlier | Foreigners | 🛡️ 롬바르드 (Lombards) | As doge (805–810) he wisely marries a Frankish woman and rem
+177: Garnier | Foreigners | 🛡️ 롬바르드 (Lombards) | The perfidious Duke of Calabria.
+178: Gregorio | Foreigners | 🛡️ 롬바르드 (Lombards) | Duke of Campania.
+179: Milo | Foreigners | 🛡️ 롬바르드 (Lombards) | Duke of Apulia.
+180: Al-Mansour | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | This generous and just caliph (754–775) stimulates the arts 
+181: Al-Mahdi | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Al-Mansour’s son is a just and stern caliph (775–785), who m
+182: Al-Hadi | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Al-Mahdi’s son is briefly caliph from 785 to 786, until he i
+183: Harun al-Rashid | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The enlightened, just and very learned caliph (786–809) is C
+184: Al-Amin | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Harun’s son and successor (809–813). o tHers
+185: Jafar | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Harun’s grand vizier is a shrewd, powerful, and very demandi
+186: Carahue the Courteous | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | An extremely chivalrous knight, who earns Ogier’s respect at
+187: Paul I | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Pope until his death in 767, Stephen II’s energetic brother 
+188: Constantine II | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A dogmatic and humorless lay anti-Pope (767–768), installed 
+189: Stephen III | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A prudent and somewhat paranoid Pope (768–772), who wants to
+190: Adrian I | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | An aristocrat from a very wealthy patrician family, this Pop
+191: Leo III | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | He is not a member of the Roman aristocracy, but as a Pope (
+192: Galafre of Aufalerne | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile and Galienna’s father was a cultivated poet and a ma
+193: Marsile of Cordoba | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | (765–779) Marsile is Emir Galafre’s son and the older brothe
+194: Deramay the Usurper | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The deceitful and vain W ali of Cordoba captures Emir Marsil
+195: Abdul Rahman | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Hisham’s chivalrous youngest son has a poetic soul, but feel
+196: Agolant | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The proud and valiant W ali of Compostela.
+197: Aragon of Orange | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Tiebaut’s eldest son.
+198: Blancandrin of V alfond | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Emir Marsile’s white-bearded ambassador; a despicable, sly, 
+199: Bramimonde | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile’s wife is a romantic queen, who is captured and bapt
+200: Corsolt | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The cruel W ali of Barbastro in 802 (not to be confused with
+201: Dardinel | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile’s courteous half-brother and prince of T oledo, kill
+202: Ganor of Aufalerne | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | This pious, courteous, and relatively autonomous wali is the
+203: Gaudissa | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile I’s lovely daughter. She converts and marries Duke A
+204: Siglorel | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile’s court enchanter.
+205: Sulayman | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The W ali of Barcelona is the head of the Persian faction in
+206: Tiebaut | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The former W ali of Orange (776–791) is Lady Orable’s first 
+207: Florismart | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A courteous and romantic Moor converted by Roland, whose fri
+208: Orable (Guibourc) | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Marsile’s sister is forced to marry Tiebaut, but she is secr
+209: Marfisa | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Rogero’s twin sister is a fierce warrior-maiden.
+210: Otuel (Ferrau) | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A courteous semi-giant, miraculously converted by Roland dur
+211: Rogero | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | See Paladins. Saracens s ultaNs  of  b abylo N
+212: Corsuble | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The honorable and chivalrous Sultan (752– 774) who claims Ro
+213: Baligant | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Emir Marsile’s younger brother is the monstrous, reckless an
+214: Bruhier | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A valorous but arrogant Sultan (779–780), who believes himse
+215: Norandin | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The greedy and iniquitous Sultan (781–802) is killed at Jeru
+216: Gaudisso | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A vain and decadent Sultan (803–811), who is slain by Huon o
+217: Agrapard | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The Sultan of Babylon (811–814). Nobles
+218: Brunello the Dwarf | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A master-thief who steals Angelica’s magic ring, Sacripant’s
+219: Ferragut | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | A courteous but stupid Moorish giant, Emir Marsile’s nephew,
+220: Lengoulaffre | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Sultan Bruhier’s brother is the W ali of Alexandria. He gets
+221: Mandricard | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Rodomont’s rival for the love of Princess Doralice.
+222: Rodomont of Algiers | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | This extremely boastful, yet courteous, Emir of Algiers is t
+223: Yvorin of Monbranc | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Sultan Gaudisso’s brother. c o Nverts
+224: Iroldo | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Prasildo’s gallant companion, and Roland’s friend.
+225: Moisan | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | The Emir of Jerusalem converts in 782, after having witnesse
+226: Prasildo | Foreigners | 🐫 페르시아 & 바빌론 (Persians) | Roland’s friend, and Iroldo’s chivalrous companion.
+227: Abbio and Wibrecht | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | Widukind’s sons, who are forcibly baptized in their father’s
+228: Brun | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | The chief of the Angarians.
+229: Cimosco | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | The chief of the Frisians.
+230: Dyalas | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | Widukind’s third son is a chivalric knight who denies his Sa
+231: Hessi | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | The Eastphalian leader, who submits to Charlemagne in 775.
+232: Widukind | Foreigners | 🌲 작센 & 프리시아 (Saxons & Frisians) | His name means “child of the forest.” Widukind is the uncont
+233: Dragovit | Foreigners | 🌲 슬라브 (Slavs) | Prince of the Wilzi.
+234: Godelaid | Foreigners | 🌲 슬라브 (Slavs) | Prince, son of Thrasico.
+235: Lecho | Foreigners | 🌲 슬라브 (Slavs) | Prince of the Czechs.
+236: Miliduoch | Foreigners | 🌲 슬라브 (Slavs) | Prince of the Serbs.
+237: Thrasico | Foreigners | 🌲 슬라브 (Slavs) | The last independent King of the Slavs. k iNgs  of  a sturia
+238: Fruela the Cruel | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | King of Asturias until his assassination (757–768).
+239: Aurelio | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | A good-hearted and generous king (768–774) who gains the thr
+240: Silo | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | An ambitious king (774–783) and a subtle diplomat.
+241: Mauregato the Usurper | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | King of Asturias (783–789). He is the evil, scheming, bastar
+242: Bermudo the Deacon | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | A merciful and pious king (789– 791), who abdicates and reti
+243: Alphonso II the Chaste | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | An enlightened king (791–813), reputed to be chaste, generou
+244: Hugo the Orphan | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | Raymond of St. Giles’ only son marries Alphonso’s heiress So
+245: Beato of Liebana | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | A learned monk at the Asturian court; strongly opposed to Ad
+246: Benedict of Aniane | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | See Academicians.
+247: Bera | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | The loyal and valorous Count of Carcassonne is made Count of
+248: Hamon of Galicia | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | See Paladins.
+249: Isabella of Galicia | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | Duke Hamon’s romantic daughter, in love with Prince Zerbin o
+250: Raymond | Foreigners | ⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias) | Duke of Navarra (779–803).

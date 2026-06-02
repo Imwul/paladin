@@ -49,6 +49,30 @@ const fathersClasses = [
   { name: "영주/지방관 기사 (Lord or Officer)", benefit: "+18 기술 포인트, 명예 500", skillsAdd: 18, glory: 500 }
 ];
 
+const birthGiftsTable = [
+  { roll: 1, name: "Decorated Saddle", benefit: "장식된 말 안장 (가치 120d)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "장식된 말 안장 (가치 120d)"; } },
+  { roll: 2, name: "Magnificent Cloak", benefit: "화려한 가문 망토 (가치 £1)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "화려한 가문 망토 (가치 £1)"; } },
+  { roll: 3, name: "Blessed Spear", benefit: "축복받은 창 (Spear 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.spear = (char.skills.spear || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 창 (이교도 상대 +1)"; } },
+  { roll: 4, name: "Money £1", benefit: "동전 £1 (£1 in coin)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 1; } },
+  { roll: 5, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 +1)"; } },
+  { roll: 6, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 +1)"; } },
+  { roll: 7, name: "Golden Ring", benefit: "금반지 (가치 £2)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "금반지 (가치 £2)"; } },
+  { roll: 8, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.traits.pious = Math.min(20, (char.traits.pious || 10) + 2); char.traits.worldly = 20 - char.traits.pious; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (성유물 보관)"; } },
+  { roll: 9, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.traits.pious = Math.min(20, (char.traits.pious || 10) + 2); char.traits.worldly = 20 - char.traits.pious; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (성유물 보관)"; } },
+  { roll: 10, name: "Extra Palfrey", benefit: "여분의 경량마 (Palfrey) 1필 추가", apply: (char) => { char.horses.other3 = "여분 경량마 (Palfrey)"; } },
+  { roll: 11, name: "Extra Palfrey", benefit: "여분의 경량마 (Palfrey) 1필 추가", apply: (char) => { char.horses.other3 = "여분 경량마 (Palfrey)"; } },
+  { roll: 12, name: "Money £3", benefit: "동전 £3 (£3 in coin)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 3; } },
+  { roll: 13, name: "Extra Charger", benefit: "여분의 돌격마 (Charger) 1필 추가", apply: (char) => { char.horses.other4 = "여분 돌격마 (Charger)"; } },
+  { roll: 14, name: "Extra Charger", benefit: "여분의 돌격마 (Charger) 1필 추가", apply: (char) => { char.horses.other4 = "여분 돌격마 (Charger)"; } },
+  { roll: 15, name: "Upgrade Outfit", benefit: "시작 복장 패키지 1단계 업그레이드 (+£1 가치 추가)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 1; } },
+  { roll: 16, name: "Annual Stipend £1", benefit: "평생 매년 연금 £1 영구 수급권", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "평생 연간 영지 영수증 (£1/년)"; } },
+  { roll: 17, name: "Exceptional Weapon", benefit: "장인의 특수 무기 (검 선택 시 기술 +1, 다른 무기 선택 시 기술 +3)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "명품 장인의 철검 (기술 +1)"; } },
+  { roll: 18, name: "Healing Potion", benefit: "신비한 치유 물약 (사용 시 1d6 체력 즉시 회복)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "신비한 치유 물약 (1d6 HP 회복)"; } },
+  { roll: 19, name: "Roll Twice", benefit: "가문의 특별한 은혜: 2회 추가로 굴림", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "가문의 희귀 보물함"; } },
+  { roll: 20, name: "Player's Choice", benefit: "자유 선택 (여분의 돌격마 또는 원하는 특수 보물)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "황제의 칙임 보물 (유저 선택)"; } }
+];
+
+
 const presets = [
   {
     name: "용맹한 돌격 대장 (The Chivalrous Vanguard)",
@@ -358,6 +382,19 @@ export default function CharacterSheet({ character, setCharacter }) {
   const [customFatherIndex, setCustomFatherIndex] = useState(0); // Vassal Knight default
   const [customBlessing, setCustomBlessing] = useState('용맹의 징표');
 
+  const [customBirthGiftRoll1, setCustomBirthGiftRoll1] = useState(4);
+  const [customBirthGiftRoll2, setCustomBirthGiftRoll2] = useState(10);
+  const [customBirthGiftRoll3, setCustomBirthGiftRoll3] = useState(17);
+
+  const getBirthGiftRollCount = (fatherIndex) => {
+    if (fatherIndex === 0) return 2; // Vassal
+    if (fatherIndex === 1) return 3; // Banneret
+    if (fatherIndex === 2) return 1; // Bachelor
+    if (fatherIndex === 3) return 1; // Mercenary
+    if (fatherIndex === 4) return 3; // Lord or Officer
+    return 2;
+  };
+
   const handleSaintRollChange = (val) => {
     const num = Math.min(20, Math.max(1, parseInt(val) || 1));
     setCustomSaintRoll(num);
@@ -399,6 +436,10 @@ export default function CharacterSheet({ character, setCharacter }) {
 
     setCustomFatherRoll(fatherRoll);
     setCustomFatherIndex(getFatherIndexFromRoll(fatherRoll));
+
+    setCustomBirthGiftRoll1(rollD20());
+    setCustomBirthGiftRoll2(rollD20());
+    setCustomBirthGiftRoll3(rollD20());
   };
 
   const handleApplyPreset = () => {
@@ -442,16 +483,16 @@ export default function CharacterSheet({ character, setCharacter }) {
     newChar.personal = {
       ...newChar.personal,
       name: customName,
-      age: 21,
+      age: 18,
       sonNumber: "첫째",
       blessing: customBlessing || "가문의 축복",
-      homeland: "프랑크 왕국 (Francia)",
+      homeland: "아르덴 (Ardennes)",
       home: "바스토뉴 (Bastogne)",
       culture: "프랑크 (Frankish)",
       lineage: "아르덴 (Ardennes)",
       liegeLord: "티에리 공작 (Duke Thierry)",
       fathersClass: fathersClasses[customFatherIndex].name,
-      personalClass: "기사 (Knight)",
+      personalClass: "종자 (Squire)",
       features: ["외마디 흉터", "다부진 근육", "예리한 시선"]
     };
 
@@ -528,11 +569,37 @@ export default function CharacterSheet({ character, setCharacter }) {
     newChar.personal.fathersClass = father.name;
     newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
     newChar.gear.gloryTotal = 1000 + father.glory;
+
+    // Apply Table 1-15: Frankish Birth Gifts
+    const rollsCount = getBirthGiftRollCount(customFatherIndex);
+    const appliedGifts = [];
+    if (rollsCount >= 1) {
+      const gift = birthGiftsTable[customBirthGiftRoll1 - 1];
+      if (gift) {
+        gift.apply(newChar);
+        appliedGifts.push(gift.benefit);
+      }
+    }
+    if (rollsCount >= 2) {
+      const gift = birthGiftsTable[customBirthGiftRoll2 - 1];
+      if (gift) {
+        gift.apply(newChar);
+        appliedGifts.push(gift.benefit);
+      }
+    }
+    if (rollsCount >= 3) {
+      const gift = birthGiftsTable[customBirthGiftRoll3 - 1];
+      if (gift) {
+        gift.apply(newChar);
+        appliedGifts.push(gift.benefit);
+      }
+    }
+
     newChar.attributes.currentHp = newChar.attributes.siz + newChar.attributes.con;
 
     setCharacter(newChar);
     setIsGenOpen(false);
-    alert(`커스텀 기사 [${customName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(적용된 수호 성인: ${saint.name}, 가문 특성: ${characteristic.name})`);
+    alert(`커스텀 기사 [${customName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(적용된 수호 성인: ${saint.name}, 가문 특성: ${characteristic.name}${appliedGifts.length > 0 ? `, 탄생 선물: ${appliedGifts.join(', ')}` : ''})`);
   };
 
   const handleInputChange = (category, field, value) => {
@@ -848,6 +915,82 @@ export default function CharacterSheet({ character, setCharacter }) {
                       value={customBlessing} 
                       onChange={e => setCustomBlessing(e.target.value)}
                     />
+                  </div>
+
+                  {/* 가문 탄생 선물 (Table 1-15 Frankish Birth Gifts) */}
+                  <div className="ft-form-group" style={{ borderTop: '1px dashed rgba(201,168,76,0.2)', paddingTop: '12px', marginTop: '12px' }}>
+                    <label className="ft-label" style={{ color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      🎁 가문 탄생 선물 (부친 신분 보너스: {getBirthGiftRollCount(customFatherIndex)}회 굴림)
+                    </label>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', display: 'block', marginBottom: '8px' }}>
+                      룰북 40쪽 Table 1-15에 따라 조상 소지품 또는 유산을 획득합니다.
+                    </span>
+                    
+                    {getBirthGiftRollCount(customFatherIndex) >= 1 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
+                        <input 
+                          type="number" 
+                          className="ft-input" 
+                          min="1" max="20"
+                          value={customBirthGiftRoll1}
+                          onChange={e => setCustomBirthGiftRoll1(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                          style={{ textAlign: 'center', fontWeight: 'bold' }}
+                        />
+                        <select 
+                          className="cs-roll-select"
+                          value={customBirthGiftRoll1}
+                          onChange={e => setCustomBirthGiftRoll1(Number(e.target.value))}
+                        >
+                          {birthGiftsTable.map((g) => (
+                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {getBirthGiftRollCount(customFatherIndex) >= 2 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
+                        <input 
+                          type="number" 
+                          className="ft-input" 
+                          min="1" max="20"
+                          value={customBirthGiftRoll2}
+                          onChange={e => setCustomBirthGiftRoll2(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                          style={{ textAlign: 'center', fontWeight: 'bold' }}
+                        />
+                        <select 
+                          className="cs-roll-select"
+                          value={customBirthGiftRoll2}
+                          onChange={e => setCustomBirthGiftRoll2(Number(e.target.value))}
+                        >
+                          {birthGiftsTable.map((g) => (
+                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {getBirthGiftRollCount(customFatherIndex) >= 3 && (
+                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                        <input 
+                          type="number" 
+                          className="ft-input" 
+                          min="1" max="20"
+                          value={customBirthGiftRoll3}
+                          onChange={e => setCustomBirthGiftRoll3(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                          style={{ textAlign: 'center', fontWeight: 'bold' }}
+                        />
+                        <select 
+                          className="cs-roll-select"
+                          value={customBirthGiftRoll3}
+                          onChange={e => setCustomBirthGiftRoll3(Number(e.target.value))}
+                        >
+                          {birthGiftsTable.map((g) => (
+                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 </div>
 

@@ -15,16 +15,16 @@ import './components/SettingsModal.css';
 const initialCharacterState = {
   personal: {
     name: "롤랑 경 (Sir Roland)",
-    age: 21,
+    age: 18,
     sonNumber: "첫째",
     blessing: "성스러운 아우라 (Holy Aura)",
-    homeland: "프랑크 왕국 (Francia)",
-    home: "아헨 (Aachen)",
+    homeland: "아르덴 (Ardennes)",
+    home: "바스토뉴 (Bastogne)",
     culture: "프랑크 (Frankish)",
     lineage: "아르덴 (Ardennes)",
-    liegeLord: "샤를마뉴 대제 (Charlemagne)",
+    liegeLord: "티에리 공작 (Duke Thierry)",
     fathersClass: "봉신 기사 (Vassal Knight)",
-    personalClass: "기사 (Knight)",
+    personalClass: "종자 (Squire)",
     features: ["왼쪽 뺨의 흉터", "날카로운 벽안", "크고 날씬한 체형"]
   },
   attributes: {

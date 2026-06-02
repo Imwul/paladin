@@ -7,6 +7,15 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('family');
   const [winterStep, setWinterStep] = useState(1);
   const [logMessages, setLogMessages] = useState([]);
+
+  // --- 구원 및 성인 판정 (Salvation & Canonization) 추가 상태 ---
+  const [salvationDeedsPaladin, setSalvationDeedsPaladin] = useState(false);
+  const [salvationDeedsHolyWar, setSalvationDeedsHolyWar] = useState(false);
+  const [salvationPagans, setSalvationPagans] = useState(0);
+  const [salvationCustomDeeds, setSalvationCustomDeeds] = useState(0);
+  const [salvationManualD20, setSalvationManualD20] = useState('');
+  const [salvationRollResult, setSalvationRollResult] = useState(null);
+  const [blessingRollResult, setBlessingRollResult] = useState(null);
   
   // Interactive Step States
   const [agingD20, setAgingD20] = useState(null);
@@ -74,6 +83,9 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [currentYearRolled, setCurrentYearRolled] = useState(false);
   const [currentYearResultText, setCurrentYearResultText] = useState('');
   const [fSkipYearsUntil, setFSkipYearsUntil] = useState(0);
+  const [gfDead, setGfDead] = useState(false);
+  const [fatherDead, setFatherDead] = useState(false);
+  const [chronicleHistory, setChronicleHistory] = useState([]);
 
   // 연도별 이벤트 매핑
   const ANCESTOR_EVENTS = {
@@ -124,6 +136,70 @@ export default function FamilyWinter({ character, setCharacter }) {
     766: "부친 은퇴 전 마지막 참전: 샤를마뉴 왕자 및 위비앙의 세력과 함께 몽펠리에와 에그르몽 포위 공성전에 참전하여 최후의 기사도 영광을 불살랐습니다."
   };
 
+  const isGapYear = (yr, stage) => {
+    if (stage.startsWith('gf')) {
+      return [724, 726, 727, 730, 733, 734].includes(yr);
+    } else if (stage.startsWith('f')) {
+      return [748, 752, 755, 759].includes(yr);
+    }
+    return false;
+  };
+
+  const saveChronicleHistory = () => {
+    const snapshot = {
+      interactiveYear,
+      interactiveStage,
+      grandfatherGlory,
+      grandfatherDeathYear,
+      grandfatherDeathCause,
+      grandfatherHates: { ...grandfatherHates },
+      fatherGlory,
+      fatherDeathYear,
+      fatherDeathCause,
+      fatherHates: { ...fatherHates },
+      gfDead,
+      fatherDead,
+      ancestorRollLog: [...ancestorRollLog],
+      currentYearRolled,
+      currentYearResultText,
+      fSkipYearsUntil,
+      chronicleManualD20
+    };
+    setChronicleHistory(prev => [...prev, snapshot]);
+  };
+
+  const undoLastChronicleStep = () => {
+    if (chronicleHistory.length === 0) return;
+    const prev = chronicleHistory[chronicleHistory.length - 1];
+    setChronicleHistory(hist => hist.slice(0, -1));
+    setInteractiveYear(prev.interactiveYear);
+    setInteractiveStage(prev.interactiveStage);
+    setGrandfatherGlory(prev.grandfatherGlory);
+    setGrandfatherDeathYear(prev.grandfatherDeathYear);
+    setGrandfatherDeathCause(prev.grandfatherDeathCause);
+    setGrandfatherHates(prev.grandfatherHates);
+    setFatherGlory(prev.fatherGlory);
+    setFatherDeathYear(prev.fatherDeathYear);
+    setFatherDeathCause(prev.fatherDeathCause);
+    setFatherHates(prev.fatherHates);
+    setGfDead(prev.gfDead);
+    setFatherDead(prev.fatherDead);
+    setAncestorRollLog(prev.ancestorRollLog);
+    setCurrentYearRolled(prev.currentYearRolled);
+    setCurrentYearResultText(prev.currentYearResultText);
+    setFSkipYearsUntil(prev.fSkipYearsUntil);
+    setChronicleManualD20(prev.chronicleManualD20);
+  };
+
+  const handleGapYearInteractive = () => {
+    saveChronicleHistory();
+    const event = ANCESTOR_EVENTS[interactiveYear];
+    const logMsg = `🏰 ${interactiveYear}년: [역사] ${event}\n  └ 📖 평온한 공백기: 무사히 한 해를 보냈습니다.`;
+    setAncestorRollLog(prev => [...prev, logMsg]);
+    setCurrentYearRolled(true);
+    setCurrentYearResultText("🕊️ 역사적 평온기: 무사히 생존");
+  };
+
   const startInteractiveChronicle = () => {
     setInteractiveStage('gf_running');
     setInteractiveYear(723);
@@ -143,10 +219,20 @@ export default function FamilyWinter({ character, setCharacter }) {
     setFSkipYearsUntil(0);
     setAncestorRollLog(["📜 [인터랙티브 가문 연대기 시작 - 723년]"]);
     setAncestorApplied(false);
+    setChronicleHistory([]);
+    setGfDead(false);
+    setFatherDead(false);
   };
 
   const rollSingleYearInteractive = () => {
     if (currentYearRolled) return;
+
+    if (isGapYear(interactiveYear, interactiveStage)) {
+      handleGapYearInteractive();
+      return;
+    }
+
+    saveChronicleHistory();
 
     let d20 = parseInt(chronicleManualD20);
     if (isNaN(d20) || d20 < 1 || d20 > 20) {
@@ -163,7 +249,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     if (interactiveStage === 'gf_running') {
       const runGfCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = rollD20();
+        const rollVal = chronicleManualD20 ? d20 : rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -216,7 +302,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
           
-          const survivalRoll = rollD20();
+          const survivalRoll = chronicleManualD20 ? d20 : rollD20();
           let sDead = false;
           let sGlory = 25;
           let sCause = "";
@@ -867,7 +953,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     } 
     else if (interactiveStage === 'f_running') {
       const runFCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = rollD20();
+        const rollVal = chronicleManualD20 ? d20 : rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -920,7 +1006,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
           
-          const survivalRoll = rollD20();
+          const survivalRoll = chronicleManualD20 ? d20 : rollD20();
           let sDead = false;
           let sGlory = 25;
           let sCause = "";
@@ -1616,6 +1702,8 @@ export default function FamilyWinter({ character, setCharacter }) {
   const advanceChronicleYear = () => {
     if (!currentYearRolled) return;
 
+    saveChronicleHistory();
+
     const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
     if (interactiveStage === 'gf_running') {
@@ -1899,7 +1987,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 724) {
         const event = "교황 성유물 기증: 교황이 카롤루스 마르텔에게 성 베드로의 쇠사슬과 열쇠 성유물함을 기증하였습니다. 가문의 영광스러운 후계자이자 아버님이 되실 제라르 경(Gerard)이 탄생하셨습니다.";
-        rollOrdinaryYear(yr, event, true, "Saxons");
+        logs.push(`🏰 724년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 725) {
         const event = "오툉 포위전: 무어인들이 Nîmes과 Carcassonne을 함락시키고 론 강을 따라 오툉(Autun)까지 대약탈을 감행하여, 오툉 수비대로서 결사 항전했습니다. (오도 공작 매수 소문)";
         const roll = rollD20();
@@ -1920,10 +2008,10 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 726) {
         const event = "중대한 무훈의 공백기: 기사단이 전열을 정비하는 동안, 할아버님께서는 후방 참호를 강화하고 평화로운 겨울 보초 임무에 전념하셨습니다.";
-        rollOrdinaryYear(yr, event, true, "Saxons");
+        logs.push(`🏰 726년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 727) {
         const event = "영지의 평온: 제국 국경에 마찰이 일어나지 않은 해로, 봉토의 곡식 수확을 관리하고 가문의 권세를 평화롭게 유지하였습니다.";
-        rollOrdinaryYear(yr, event, true, "Saxons");
+        logs.push(`🏰 727년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 728) {
         const event = "작센 및 아키텐 대원정: 카롤루스 마르텔이 작센과 프리지아에서 원정을 벌이고, 독립을 선포하며 무어인과 연맹을 맺은 아키텐의 오도 공작을 제압하기 위해 대원정에 나섰습니다.";
         const roll = rollD20();
@@ -1971,7 +2059,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 730) {
         const event = "무훈시 [Gaufrey] & [Auberi de Bourgogne]: 바르벨 타워에서 공주 플뢰르드핀의 지혜로 갇힌 프랑크 기사들이 구출되고 거인 로바스트르가 글로리앙을 결투로 참수했으며, 오베리 경이 아바르족의 공습으로부터 바이에른 영토를 완전히 사수하여 귀족적 안착에 성공했습니다.";
-        rollOrdinaryYear(yr, event, true, "Saxons");
+        logs.push(`🏰 730년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 731) {
         const event = "오리돈 공성전: 카롤루스 마르텔을 도와 배반자 람베르트의 성인 오리돈(Oridon)을 포위 공성했습니다.";
         const roll = rollD20();
@@ -2034,10 +2122,10 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 733) {
         const event = "무훈시 [Daurel and Beton] & [역사]: 브라반트 공작 베비스가 프랑크 왕국 국왕의 누이 에르멩가르드 공주와 성대한 축복 속에 결혼했으나, 질투심에 타락한 기(Guy) 백작이 주군을 해칠 비열한 음모를 꾸몄습니다. [역사] 아키텐의 수호자 오도 공작이 서거하여 아들 후놀트가 작위를 상속받았습니다.";
-        rollOrdinaryYear(yr, event, true, "Moors");
+        logs.push(`🏰 733년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 734) {
         const event = "무훈시 [Daurel and Beton] & [역사]: 주군 가문의 위대한 희망이자 기사도의 정수인 아기 베통 경이 출생하였습니다. [역사] 프랑크의 진정한 권력자 카롤루스 마르텔이 그의 둘째 아들 피핀(Pepin)을 롬바르디아의 Pavia 왕실로 보내 수습 종자 훈련을 거치도록 조치했습니다.";
-        rollOrdinaryYear(yr, event, true, "Moors");
+        logs.push(`🏰 734년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 735) {
         const event = "루시옹 대결 및 보르도 공성전: 카롤루스 마르텔을 종군하여 보르도 공성에 나서거나, 루시옹의 제라르 공작과의 대결전에 참전했습니다.";
         const roll = rollD20();
@@ -2313,7 +2401,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 748) {
         const event = "무훈시 [Raoul de Cambrai] & [역사]: 베르니에와 베아트릭스가 고난 끝에 죄를 씻기 위한 순례 도중 무어인 기습을 받아 스페인 지하 감옥에 갇혔습니다. [역사] 반역도당 그리포 왕자가 바이에른으로 패주했고, 피핀 왕의 중재로 타실로 3세가 공작으로 정식 등극했습니다.";
-        rollOrdinaryYear(yr, event, false, "Moors");
+        logs.push(`🏰 748년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 749) {
         const event = "바이에른 전역 및 그리포 왕자 탈출 사건: 반역자 그리포 왕자가 피핀을 피해 탈출하자, 그의 바이에른 지지 병력들을 격파하는 평정 작전에 참전했습니다.";
         const roll = rollD20();
@@ -2365,7 +2453,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 752) {
         const event = "무훈시 [Mainet] & [역사]: 사생아들의 독살 음모를 기지로 피해 툴레도로 망명한 젊은 샤를마뉴(마이네)가 술탄 갈라프레의 휘하 용병으로 뛰며 거인 카이망과 브라이망을 영웅적으로 베고, 공주 갈리엔나의 숭고한 구애를 쟁취했습니다. [역사] 이교도들이 남방 국경을 무단 습격하였으며, 샤를마뉴의 친동생 카를로만 2세가 출생했습니다.";
-        rollOrdinaryYear(yr, event, false, "Moors");
+        logs.push(`🏰 752년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 753) {
         const event = "비부르크 산 전투: 작센 이교도들의 반란에 맞서 피핀 왕과 함께 출정하여 대지진 속 비부르크 산에서 격렬한 전투를 벌였습니다. (대주교 힐데가르 전사)";
         const roll = rollD20();
@@ -2412,7 +2500,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 755) {
         const event = "무훈시 [Lion de Bourges] & [Orson de Beauvais]: 사자 젖을 먹고 자란 영웅 리옹이 친부모를 찾아 위대한 모험을 돌파하고 이탈리아 Monterose성을 공성했으며, [Orson de Beauvais] Chanson에서 충직한 밀로 기사가 성지 예루살렘의 암흑 감옥에 갇힌 늙은 아버지 오르송 백작을 극적으로 탈환해 사법적 정의를 지켰습니다.";
-        rollOrdinaryYear(yr, event, false, "Moors");
+        logs.push(`🏰 755년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 756) {
         const event = "파비아 포위 공성전: 교황령 수호를 방해하는 롬바르디아 왕 아이스툴프를 징벌하기 위해 파비아 성벽 아래에서 격전을 전개했습니다.";
         const roll = rollD20();
@@ -2477,7 +2565,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 759) {
         const event = "무훈시 [Les Lorrains] & [역사]: 영예로운 Bego 백작이 멧돼지 사냥 도중 가문의 오래된 원수인 Fromont 패거리에게 야만적으로 암살당하여 피비린내 나는 복수극이 재발했습니다. [역사] 피핀 국왕이 마침내 사라센 무어인들을 완전히 몰아내어 남부 Septimania 영토를 완전히 탈환하였습니다.";
-        rollOrdinaryYear(yr, event, false, "Saxons");
+        logs.push(`🏰 759년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 760) {
         const event = "리무쟁 공성전 및 쾰른 사절단: 아키텐 전역의 포문을 열기 위해 리무쟁 성을 공격하거나, 반역을 꾀하는 토밀 가문의 계획에 맞서 사절로 나섰습니다.";
         const roll = rollD20();
@@ -3227,6 +3315,12 @@ export default function FamilyWinter({ character, setCharacter }) {
         >
           <RotateCcw size={14} /> 겨울 나기와 봉토 경제 경영
         </button>
+        <button 
+          className={`sub-tab-btn ${activeSubTab === 'salvation' ? 'active' : ''}`}
+          onClick={() => setActiveSubTab('salvation')}
+        >
+          <Award size={14} /> 기사 은퇴 및 구원 판정 (Salvation)
+        </button>
       </div>
 
       {/* SUB TAB: FAMILY DETAILS */}
@@ -3435,32 +3529,53 @@ export default function FamilyWinter({ character, setCharacter }) {
 
                           {/* Dice Roll / Input Box */}
                           {interactiveStage !== 'completed' && !currentYearRolled && (
-                            <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid rgba(179,143,67,0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력 (1~20):</span>
-                                  <input
-                                    type="number"
-                                    min={1} max={20}
-                                    placeholder="비워두면 랜덤"
-                                    value={chronicleManualD20}
-                                    onChange={e => setChronicleManualD20(e.target.value)}
-                                    style={{ width: '100px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                  />
+                            isGapYear(interactiveYear, interactiveStage) ? (
+                              <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.04)', border: '1px solid rgba(16, 185, 129, 0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+                                  <div>
+                                    <h5 style={{ margin: 0, fontWeight: 'bold', fontSize: '0.86rem', color: 'var(--color-success)' }}>🕊️ 역사적 평온기 (공백기)</h5>
+                                    <span style={{ fontSize: '0.76rem', color: 'var(--color-ink)' }}>
+                                      룰북 규칙에 따라 이 연도에는 전쟁이나 주사위 판정(위험)이 발생하지 않습니다.
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="btn-medieval btn-medieval-primary"
+                                    style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px', borderColor: 'var(--color-success)', background: 'var(--color-success)' }}
+                                    onClick={handleGapYearInteractive}
+                                  >
+                                    🕊️ 평온하게 한 해 보내기
+                                  </button>
                                 </div>
-                                <button
-                                  type="button"
-                                  className="btn-medieval btn-medieval-primary"
-                                  style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                                  onClick={rollSingleYearInteractive}
-                                >
-                                  ⚔️ {interactiveYear}년 운명 주사위 판정
-                                </button>
                               </div>
-                              <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                                * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
-                              </span>
-                            </div>
+                            ) : (
+                              <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid rgba(179,143,67,0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력 (1~20):</span>
+                                    <input
+                                      type="number"
+                                      min={1} max={20}
+                                      placeholder="비워두면 랜덤"
+                                      value={chronicleManualD20}
+                                      onChange={e => setChronicleManualD20(e.target.value)}
+                                      style={{ width: '100px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="btn-medieval btn-medieval-primary"
+                                    style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                                    onClick={rollSingleYearInteractive}
+                                  >
+                                    ⚔️ {interactiveYear}년 운명 주사위 판정
+                                  </button>
+                                </div>
+                                <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
+                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
+                                </span>
+                              </div>
+                            )
                           )}
 
                           {/* Year Outcome display */}
@@ -3486,6 +3601,20 @@ export default function FamilyWinter({ character, setCharacter }) {
                                  interactiveYear === 744 ? '👴 조조부 은퇴 및 부친 상속식 진행' :
                                  interactiveYear === 766 ? '🏁 부친 은퇴 및 연대기 매듭짓기' :
                                  `➡️ ${interactiveYear + 1}년으로 시간선 진행`}
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Undo button */}
+                          {chronicleHistory.length > 0 && interactiveStage !== 'completed' && (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', marginBottom: '8px' }}>
+                              <button
+                                type="button"
+                                className="btn-medieval"
+                                style={{ fontSize: '0.78rem', padding: '4px 10px', color: 'var(--color-grey)', borderColor: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent' }}
+                                onClick={undoLastChronicleStep}
+                              >
+                                ↩️ 뒤로가기 (직전 판정 취소)
                               </button>
                             </div>
                           )}
@@ -4082,6 +4211,263 @@ export default function FamilyWinter({ character, setCharacter }) {
 
         </div>
       )}
+
+      {/* SUB TAB: RETIREMENT & SALVATION */}
+      {activeSubTab === 'salvation' && (() => {
+        // Calculate lowest religious trait
+        const chaste = character.traits.chaste || 10;
+        const forgiving = character.traits.forgiving || 10;
+        const merciful = character.traits.merciful || 10;
+        const modest = character.traits.modest || 10;
+        const temperate = character.traits.temperate || 10;
+        const trusting = character.traits.trusting || 10;
+
+        const lowestReligiousTrait = Math.min(chaste, forgiving, merciful, modest, temperate, trusting);
+
+        // Passion bonuses
+        const amorVal = character.passions.amor || 0;
+        const honorVal = character.passions.honor || 0;
+        const loyaltyLiege = character.passions.loyaltyLiege || 0;
+        const loveGodVal = character.passions.loveGod || 0;
+
+        const amorBonus = Math.min(5, Math.max(0, amorVal - 15));
+        const honorBonus = Math.min(5, Math.max(0, honorVal - 15));
+        const liegeBonus = Math.min(5, Math.max(0, loyaltyLiege - 15));
+        const godBonus = Math.min(5, Math.max(0, loveGodVal - 15));
+
+        const deedsBonus = (salvationDeedsPaladin ? 5 : 0) + 
+                            (salvationDeedsHolyWar ? 5 : 0) + 
+                            Math.min(5, Math.max(0, parseInt(salvationPagans) || 0)) + 
+                            (parseInt(salvationCustomDeeds) || 0);
+
+        const totalSalvationScore = lowestReligiousTrait + amorBonus + honorBonus + liegeBonus + godBonus + deedsBonus;
+
+        const rollSalvation = () => {
+          let d20 = parseInt(salvationManualD20);
+          if (isNaN(d20) || d20 < 1 || d20 > 20) {
+            d20 = Math.floor(Math.random() * 20) + 1;
+          }
+
+          let outcome = "";
+          let destination = "";
+          let saintEligible = false;
+          let isSaint = false;
+
+          // Critical
+          if (d20 === 1) {
+            outcome = "⭐ 임계 성공 (Critical Success!)";
+            destination = "👼 천국 직행 (Immediate Heaven!)";
+            if (deedsBonus >= 15) {
+              saintEligible = true;
+            }
+          } 
+          // Fumble
+          else if (d20 === 20) {
+            outcome = "💀 임계 실패 (Fumble!)";
+            if (totalSalvationScore <= 5) {
+              destination = "🔥 지옥 낙하 (Damned to Hell!)";
+            } else {
+              destination = "⛪ 연옥 (Purgatory)";
+            }
+          } 
+          // Success
+          else if (d20 <= totalSalvationScore) {
+            outcome = "✅ 성공 (Success)";
+            destination = "👼 천국 (Heaven)";
+          } 
+          // Failure
+          else {
+            outcome = "❌ 실패 (Failure)";
+            destination = "⛪ 연옥 (Purgatory)";
+          }
+
+          // If saint eligible, check church standing
+          const churchStanding = character.standings.church || 15;
+          const churchRoll = Math.floor(Math.random() * 20) + 1;
+          if (saintEligible && churchRoll <= churchStanding) {
+            isSaint = true;
+          }
+
+          setSalvationRollResult({
+            roll: d20,
+            total: totalSalvationScore,
+            outcome,
+            destination,
+            isSaint,
+            churchRoll,
+            churchStanding
+          });
+        };
+
+        const applySalvationLegacy = () => {
+          if (!salvationRollResult) return;
+          const { isSaint } = salvationRollResult;
+
+          setCharacter(prev => {
+            const updated = JSON.parse(JSON.stringify(prev));
+            // Heirloom / legacy bonuses
+            updated.gear.gloryTotal = Math.floor((updated.gear.gloryTotal || 1000) * 1.1); // Inherit 1.1x total glory in next generation
+            updated.personal.age = 18;
+            updated.personal.personalClass = "종자 (Squire)";
+            updated.personal.name = "계승자 " + updated.personal.name.replace(" 경", "").replace("Sir ", "");
+            
+            if (isSaint) {
+              updated.personal.blessing = "가문의 수호 성인 축복 (Saintly Lineage)";
+            }
+            return updated;
+          });
+
+          alert("기사의 은퇴 판정 유산이 성기사 캐릭터 시트에 영구히 반영되었습니다!\n(다음 세대 계승자 종자가 준비되었습니다!)");
+        };
+
+        return (
+          <section className="cs-section view-animate">
+            <div className="sheet-ribbon"><h3>⛪ 기사 은퇴 및 영면 구원 판정 (Salvation Roll)</h3></div>
+            <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              
+              <div style={{ backgroundColor: 'rgba(43, 65, 112, 0.04)', border: '1.5px solid var(--color-gold)', padding: '16px', borderRadius: '6px' }}>
+                <h4 style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: '1rem', color: 'var(--color-royal-blue)' }}>
+                  📖 구원(Salvation) 판정 규칙
+                </h4>
+                <p style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.45', margin: 0 }}>
+                  룰북 42쪽 규칙에 의거, 기사 캐릭터가 전사하거나 은퇴할 때 자신의 평생의 공적과 신앙심을 저울질하여 천국, 연옥, 지옥 중 어디로 갈지 판정합니다.<br />
+                  구원 판정에 성공하면 다음 세대 계승자는 **이전 캐릭터의 특정한 핵심 스킬 전수 보너스** 및 **시작 탄생 선물 가산 혜택**을 누립니다.
+                </p>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                
+                {/* Score Calculator */}
+                <div style={{ border: '1.2px solid rgba(201,168,76,0.3)', padding: '14px', borderRadius: '6px', backgroundColor: '#fff' }}>
+                  <h5 style={{ margin: '0 0 12px 0', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '4px' }}>
+                    📊 구원 스코어 계산기 (Salvation Score)
+                  </h5>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
+                      <span>⛪ 가장 낮은 종교적 성향 수치 (기본값):</span>
+                      <strong style={{ color: 'var(--color-crimson)' }}>{lowestReligiousTrait} 점</strong>
+                    </div>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', marginTop: '-6px', marginBottom: '4px' }}>
+                      * 정숙({chaste}), 관용({forgiving}), 자비({merciful}), 겸손({modest}), 절제({temperate}), 신뢰({trusting}) 중 최솟값
+                    </span>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
+                      <span>💘 연인 열망 보너스 (Amor > 15):</span>
+                      <span>+{amorBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({amorVal}점)</span></span>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
+                      <span>🏅 명예 열망 보너스 (Honor > 15):</span>
+                      <span>+{honorBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({honorVal}점)</span></span>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
+                      <span>👑 주군 충성 보너스 (Loyalty > 15):</span>
+                      <span>+{liegeBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loyaltyLiege}점)</span></span>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
+                      <span>⛪ 신앙 열망 보너스 (Love God > 15):</span>
+                      <span>+{godBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loveGodVal}점)</span></span>
+                    </div>
+
+                    {/* Deeds Checklist */}
+                    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '1px dashed #ccc', paddingTop: '10px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 'bold' }}>
+                        <input type="checkbox" checked={salvationDeedsPaladin} onChange={e => setSalvationDeedsPaladin(e.target.checked)} />
+                        🛡️ 성기사 공적 (Paladin Deeds): +5 점
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 'bold' }}>
+                        <input type="checkbox" checked={salvationDeedsHolyWar} onChange={e => setSalvationDeedsHolyWar(e.target.checked)} />
+                        ⛪ 성전 참전 중 전사 또는 은퇴 후 수도자 귀의: +5 점
+                      </label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: 'bold' }}>🧙 직접 개종시킨 이교도 수 (최대 5):</span>
+                        <input type="number" min={0} max={5} value={salvationPagans} onChange={e => setSalvationPagans(Math.min(5, Math.max(0, parseInt(e.target.value) || 0)))} style={{ width: '60px', padding: '2px 4px', textAlign: 'center' }} />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: 'bold' }}>🎭 GM 부여 기타 가산치:</span>
+                        <input type="number" value={salvationCustomDeeds} onChange={e => setSalvationCustomDeeds(parseInt(e.target.value) || 0)} style={{ width: '60px', padding: '2px 4px', textAlign: 'center' }} />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1.5px solid var(--color-gold-dark)', paddingTop: '8px', marginTop: '10px', fontSize: '0.92rem' }}>
+                      <strong>최종 구원 판정 기준치 (Salvation Score):</strong>
+                      <strong style={{ color: 'var(--color-success)', fontSize: '1.05rem' }}>{totalSalvationScore} 점</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Roller & Outcome */}
+                <div style={{ border: '1.2px solid rgba(201,168,76,0.3)', padding: '14px', borderRadius: '6px', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                  <div>
+                    <h5 style={{ margin: '0 0 12px 0', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '4px' }}>
+                      🎲 운명 주사위 굴림 및 영면 판정
+                    </h5>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>주사위 수동 입력 (1~20):</span>
+                      <input 
+                        type="number" 
+                        min={1} max={20}
+                        placeholder="랜덤"
+                        value={salvationManualD20}
+                        onChange={e => setSalvationManualD20(e.target.value)}
+                        style={{ width: '80px', padding: '4px', textAlign: 'center', fontWeight: 'bold', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                      />
+                      <button 
+                        type="button" 
+                        className="btn-medieval btn-medieval-primary" 
+                        style={{ fontSize: '0.82rem', padding: '6px 14px' }}
+                        onClick={rollSalvation}
+                      >
+                        ⛪ 영면 판정 굴림
+                      </button>
+                    </div>
+
+                    {salvationRollResult && (
+                      <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.03)', border: '1px solid var(--color-success)', padding: '12px', borderRadius: '6px', fontSize: '0.82rem', lineHeight: '1.45' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-success)', borderBottom: '1px dashed var(--color-success)', paddingBottom: '4px', marginBottom: '6px' }}>
+                          영혼 판정 결과: {salvationRollResult.outcome}
+                        </div>
+                        • 구원 판정 기준치: <strong>{salvationRollResult.total}</strong><br />
+                        • 운명 주사위 결과: <strong>d20: [ {salvationRollResult.roll} ]</strong><br />
+                        • 영면의 안식처: <strong style={{ color: 'var(--color-crimson)', fontSize: '0.92rem' }}>{salvationRollResult.destination}</strong><br />
+                        
+                        {salvationRollResult.isSaint ? (
+                          <div style={{ marginTop: '8px', padding: '6px', backgroundColor: 'rgba(255, 215, 0, 0.1)', border: '1px solid gold', borderRadius: '4px', fontWeight: 'bold', color: 'var(--color-gold-dark)', textAlign: 'center' }}>
+                            👼 🎉 가문의 기적: 성인(Saint) 추대 성공!<br />
+                            (다음 계승자: Table 1-17 성인의 축복 획득!)
+                          </div>
+                        ) : (
+                          <div style={{ marginTop: '4px', fontSize: '0.74rem', color: 'var(--color-grey)' }}>
+                            * 성인(Sainthood) 조건: 구원 공적 보너스 15점 이상 확보, 주사위 임계 성공(1), 교단 소속 Standing 판정 패스
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {salvationRollResult && (
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                      <button 
+                        type="button" 
+                        className="btn-medieval btn-medieval-primary" 
+                        style={{ flex: 1, padding: '8px', fontSize: '0.85rem' }}
+                        onClick={applySalvationLegacy}
+                      >
+                        🌟 영면 및 가문 계승 시트 적용
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+        )}
 
     </div>
   );

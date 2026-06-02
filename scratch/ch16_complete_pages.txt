@@ -1,0 +1,1784 @@
+==================== PAGE 321 ====================
+=================
+
+==================== PAGE 322 ====================
+=================
+321
+T
+he Carolingian epics are peopled by heroes and villains, 
+knights and ladies, paladins and wicked pagans. Below 
+are statistics for some of the major characters of the epics, 
+and lists of many of the “big names” of the epics. 
+Charlemagne (736–814)
+Powerful, prudent, wise, modest,
+Illustrious, affable, learned, good, able, upright,
+Gentle, distinguished, just, pious, an outstanding hero,
+A king and a ruler, held in the highest respect, august, 
+excellent,
+A distinguished arbiter and judge, compassionate to the 
+poor,
+Peaceful, generous, skillful, good-spirited, handsome.
+— Einhard
+T
+hese laudatory verses were written by one of the court -
+iers, Einhard, to describe Charlemagne. Indeed, the glo -
+rious leader of the Franks is the perfect embodiment of a 
+king and emperor, divinely inspired and guided in his mission to 
+build a solid Christian realm: 
+Charlemagne practiced the Christian religion with great 
+devotion and piety. As long as he lived he went to church 
+morning and evening with great regularity.
+— Einhard
+Partly because of this, he is an enlightened king, who spends 
+personal money for the common good and his people, by fund -
+ing the acquisition of grain, and paying for the construction of 
+canals, bridges and roads. And as all Frankish kings, he distrib -
+utes his wealth generously among those loyal to him: 
+He was most active in relieving the poor and in that form 
+of really disinterested charity which the Greeks call elee-
+mosyna. He gave alms not only in his own country, but 
+also across the sea. Wherever he heard that Christians 
+were living in want, he took pity on their poverty and 
+sent them money regularly.
+— Einhard
+Chapter Sixteen:  
+Non-Player Characters
+Charlemagne is famous for his inexhaustible energy: 
+Charlemagne, who could never endure idleness and sloth, 
+prepared to go off into the forest grove to hunt aurochs.
+— Notker
+He is naturally good-humored, very sincere and unusually 
+temperate (except for red meat): 
+He was moderate in his eating and drinking, and espe -
+cially so in drinking; for he hated to see drunkenness in 
+any man, and even more so in himself and his friends. 
+[…] He was so sparing in his use of wine and every other 
+beverage that he rarely drank more than three times in 
+the course of his dinner. 
+— Einhard
+During his life the king has many women and concubines. 
+However, he never commits adultery. His only noteworthy char-
+acter flaws are his tendency to act stubbornly, and to not easily 
+forgive traitors: 
+The sons of two nobles, whose duty it was to guard the en-
+trance to the King’s tent, lay there dead to the world one 
+night, as a result of the drink they had guzzled. Char -
+lemagne, who, according to his custom, was unceasingly 
+vigilant, went the rounds of his camp and then quietly re-
+turned to his tent without anybody recognizing him. The 
+next morning he called all the leaders of the realm to him 
+and asked what punishment ought to be meted out to a 
+man who betrayed the king into the hands of the enemy. 
+The two nobles whom I mentioned in the beginning were 
+completely unaware of what had happened, and they 
+proffered it as their opinion that such a man should be 
+condemned to death. Charlemagne gave the young men a 
+wigging and then let them go unharmed.
+— Notker
+As the leader of his people, he subscribes to the traditional 
+values of family life and hospitality, and is preoccupied with his 
+reputation and especially with God’s precepts: 
+He loved foreigners and took great pains to make them wel-
+come. So many visited him as a result that they were rightly
+
+==================== PAGE 323 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+322
+held to be a burden not only to the palace, but to the entire 
+realm. In his magnanimity he took no notice at all of this 
+criticism, for he considered that his reputation for hospitality 
+and the advantage of the good name which he acquired more 
+than made up for the great nuisance of their being there.
+— Einhard
+Charlemagne is an excellent horseman, and his favorite 
+occupations include swimming and hunting, especially in the 
+Ardennes Forest: 
+He spent much time on horseback and out hunting, which 
+came naturally to him, for it would be difficult to find anoth-
+er race on earth who could equal the Franks in this activity.
+— Einhard
+He took delight in steam-baths at thermal springs, and 
+loved to exercise himself in the water whenever he could. 
+He was an extremely good swimmer and in this sport no 
+one could surpass him. He would not only invite his sons 
+to bathe with him, but his nobles and friends as well.
+— Einhard
+The king is an excellent warrior, but also a man who has re-
+ceived a solid education: he speaks Frankish and Latin, and even 
+understands Greek. Being eloquent himself, he has a particular love 
+for arts, especially stories and music. A good song recited at the right 
+moment can make him change his mind on important matters: 
+He spoke easily and fluently, and could express with great clar-
+ity whatever he had to say. He learned Latin so well he spoke it 
+as fluently as his own mother tongue; but he understood Greek 
+better than he spoke it. (…) Under Alcuin, the king spent much 
+time studying rhetoric, dialectic and especially astrology. He 
+also tried to learn to write, but despite his best efforts he had 
+begun too late in life and made little progress.
+— Einhard
+Charlemagne is rather handsome. He has a large nose, a 
+short neck, a high-thin voice, a mustache, but no beard: 
+Charlemagne was strong and well built. He was tall in 
+stature, but not excessively so, for his height was just seven 
+times the length of his own feet. His health was good. (…) 
+His eyes were piercing and unusually large. His expres -
+sion was gay and good-humored. Whether he was seated 
+or standing, he always appeared masterful and dignified. 
+— Einhard
+He usually wears fairly common clothes with a golden 
+brooch and a very fine belt. Regalia is reserved for when foreign 
+ambassadors are present. Only after 800 does Charlemagne wear 
+a beard and an imperial eagle on his helmet.
+k iNg  c HarleM agNe  (aNNo  768)
+k iNg  of  tHe  f raNks ; Protector  of  r o Me
+Glory: 15,000
+SIZ 23, DEX 13, STR 22, CON 30, APP 15
+Damage: 8d6, Armor 12+shield+3+5 (enchanted helmet), Move 4
+Hit Points: 53, Major W ound 30, Unconscious 13, 
+Knockdown 23; Healing Rate 5
+Traits: Chaste 13, Energetic 25, Forgiving 17, Generous 20, 
+Honest 16, Just 14, Merciful 15, Modest 13, Prudent 10, 
+T emperate 15, T rusting 17, V alorous 28
+Directed Traits: V engeful (traitors) +15
+Passions: Love [family] 25, Honor 19, Love [God] 20
+Ideals: Chivalrous (and Religious, after 768) 
+Skills: Awareness 18, Courtesy 16, Eloquence 15, Hunting 20, 
+Intrigue 18, Languages 10, Swimming 25
+Combat Skills: Battle 25, Siege 20, Sword 22, Axe 20, Lance 
+18, Dagger 18
+Significant Items: Joyeuse (sword), Blanchard (horse), 
+Charlemagne’s helmet, Charlemagne’s scepter, 
+Charlemagne’s talisman, Fastrada’s Ring (after 783) 
+Main Heroes
+T
+he Gamemaster characters presented below play a pre -
+eminent role in the stories described in Chapter 15: The 
+Future. These men are all exceptional in their own way. 
+Their scores are not a reference for starting characters, but rather 
+it should be the player’s ambition to emulate the heroes of legend 
+by acquiring Glory and greatness through character and skill.
+Archbishop Turpin (734–778)
+T urpin was a monk at Saint Denis who was appointed 
+Archbishop of Reims, but decided to take up arms on the death of his 
+father. He soon became the glorious warrior-archbishop of the Franks. 
+By his double task as a knight and a bishop, he embodies the Church’s 
+support of Charlemagne’s holy wars against the pagans. T urpin is one 
+of Charlemagne’s closest friends, as well as the royal biographer.
+a rcHbisH o P t urPiN  (aNNo  768)
+a rcHbisH o P of  tHe  f raNks , PaladiN
+Glory: 7,300
+SIZ 15, DEX 10, STR 18, CON 23, APP 8
+Damage: 6d6; Armor: 10+shield+3, Move 3
+Hit Points: 38, Major W ound 23, Unconscious 10, 
+Knockdown 15; Healing Rate 4
+Traits: Chaste 20, Energetic 25, Forgiving 16, Generous 20, 
+Honest 16, Just 8, Merciful 16, Modest 18, Prudent 10, 
+T emperate 19, T rusting 16, V alorous 21
+Passions: Love [Charlemagne] 20, Love [family] 10, Honor 20, 
+Love [God] 25
+Ideals: Chivalrous, Religious
+Skills: Eloquence 16, Intrigue 17, Languages 11, Reading & 
+W riting 10, Recognize 18, Religion 19, Singing 16
+Combat Skills: Battle 14, Siege 10, Sword 21, Bludgeon 20, 
+Spear/Polearm 11, Dagger 13, Lance 15
+Significant Items: Almace (sword)
+
+==================== PAGE 324 ====================
+=================
+323
+Ogier the Dane (740–814)
+King Godfrid of Denmark’s semi-giant son was raised at the 
+castle of Boulogne as King Pepin’s war hostage. There he married 
+the castle warden’s daughter, Bellisende, who gave him two sons: 
+Baldwin and Dudo (both half-giants). For a while, Duke Naymo’s 
+nephew lived as a respected senior squire at King Pepin’s court.
+The fearless Ogier always remains loyal to the paladins, yet 
+at the same time is often in conflict with King Charlemagne. 
+The irate and stubborn Dane brings his king victories in battle 
+and defeats cumbersome giants, as well as occasionally fighting 
+the Franks and their king. After a long period of captivity, Ogier 
+goes to the East and has some exciting adventures on his own, 
+before returning to the Frankish court once more.
+s ir  o gier  tHe  d aNe  (aNNo  768)
+PriNce  of  d eNM ark ; PaladiN
+Glory: 4,200
+SIZ 26, DEX 10, STR 28, CON 20, APP 10
+Damage: 9d6; Armor: 10+shield+3, Move 4 
+Hit Points: 46, Major W ound 20, Unconscious 12, 
+Knockdown 26; Healing Rate 5
+Traits: Chaste 12, Energetic 16, Forgiving 4, Generous 13, 
+Honest 5, Just 19, Merciful 8, Modest 10, Prudent 5, 
+T emperate 4, T rusting 10, V alorous 24
+Passions: Love [Charlemagne] 16, Love [family] 14, Honor 23, 
+Love [God] 11
+Ideals: Chivalrous
+Skills: Courtesy 16, Faerie Lore 16, Gaming 16, 
+Horsemanship 20, Swimming 1
+Combat Skills: Battle 19, Siege 12, Sword 21+9, Axe 20, 
+Dagger 16, Lance 15
+Significant Items: Broiefer (horse), Courtain (sword) 
+Roland (750–778)
+Roland was born when his parents, Princess Bertha and Count 
+Milo of Aiglent, were living in exile. Once accepted back at court, 
+Roland becomes Charlemagne’s favorite nephew. The king pro-
+motes him Count of the Breton March in 768. He is the companion 
+of Oliver, and becomes engaged to Oliver’s sister, Aude, in 771. He is 
+generally recognized as the world’s best and most chivalrous knight. 
+When Roland acquires Durendal and Hector’s Armor during the 
+first Spanish Campaign, he becomes nigh-invincible.
+Main Heroes
+
+==================== PAGE 325 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+324
+Roland suffers from moments of “divine fury, ” which mark 
+him as a Chosen One, benefiting from both royal and divine 
+protection. This manifests itself by epileptic fits, followed by an 
+outburst of blind violence. Afterwards, Roland is incapable of 
+moving for several hours.
+Despite his numerous good qualities, Roland has two great 
+character flaws: his excessive pride and his irresponsible reckless-
+ness, both of which cause the Roncevaux disaster.
+s ir  r olaNd  (aNNo  768)
+c ouNt  of  tHe  b reto N MarcH ; PaladiN
+Glory: 4,500
+SIZ 20, DEX 16, STR 26, CON 20, APP 16
+Damage: 8d6+13 (Durendal); Armor: 23+shield+3; Move 4 
+Hit Points: 40, Major W ound 22, Unconscious 10, 
+Knockdown 18, Healing Rate 5
+Traits: Chaste 19, Energetic 19, Forgiving 16, Generous 19, 
+Honest 11, Just 13, Merciful 16, Modest 1, Prudent 1, 
+T emperate 12, T rusting 15, V alorous 25
+Passions: Love [Charlemagne] 25, Love [family] 15, Honor 23, 
+Love [God] 14
+Ideals: Chivalrous
+Skills: Courtesy 18, Falconry 17, Horsemanship 18, 
+Hunting 19, Swimming 20
+Combat Skills: Battle 16, Siege 11, Sword 20+13 (Durendal), 
+Spear/Polearm 21, Dagger 15, Lance 17
+Significant Items: V eillantif (horse), Hector’s Armor, Durendal 
+(sword), Oliphant (horn) 
+Oliver of Vienne (750–778)
+This young paladin is a member of one of the most pow -
+erful Frankish families: the House of Monglane. He is noted 
+for his great wisdom and keen senses, as well as his chivalrous 
+conduct and his exceptional courage and skill: “ Roland is val-
+iant, Oliver is wise .” — The Song of Roland, LXXXVII. 
+Oliver’s thoughtfulness is even more valued than Roland’s leg -
+endary courage: “For a true vassal’s act, in its wisdom, avoids fol-
+ly/Caution is better than great zeal. ” — The Song of Roland, 
+CXXXI
+s ir  o liver  of  v ieNNe  (aNNo  768)
+PaladiN
+Glory: 2,800
+SIZ 18, DEX 22, STR 18, CON 26, APP 23
+Damage: 6d6; Armor: 10+shield, Move 4
+Hit Points: 44, Major W ound 26, Unconscious 11, 
+Knockdown 18, Healing Rate 4
+Traits: Chaste 16, Energetic 16, Forgiving 12, Generous 13, 
+Honest 15, Just 14, Merciful 16, Modest 10, 
+Prudent 16+3, T emperate 10, T rusting 13, V alorous 18
+Passions: Love [Charlemagne] 19, Love [family] 15, 
+Honor 20+3, Love [God] 18
+Skills: Courtesy 19, Eloquence 16, Falconry 18, First Aid 16, 
+Horsemanship 20, Religion 10, Stewardship 10
+Combat Skills: Battle 25, Siege 15, Sword 24, Spear 21, 
+Dagger 13, Lance 17
+Significant Items: Ferrant (horse ); later Halteclere (sword) 
+Astolf of England (751–814)
+King Offa sends his second son to the court of his Frankish 
+ally in 773. Though Astolf is not particularly skilled in combat, 
+he is known for his good looks, courage, wisdom and his chival -
+rous courtesy: “ a courtly, gallant gentleman,/courteous, no -
+ble, fair and free.” Orlando Innamorato , 1.7.LXIII
+Even before he becomes a paladin in 779 after the battle 
+of Roncevaux, he has acquired some very valuable magic items, 
+like the Golden Lance, the Horn of T error, and a Book of Spell 
+Breaking. His most notable feat of arms is the capture of the 
+Saracen robber giant Caligorante (775), and, riding a hippogriff, 
+he travels to Africa and the moon to recover Roland’s lost wits 
+(776). Later in life, he retires as a hermit. At the very end of his 
+life, Sir Astolf becomes a saint-bishop in Mayence (813). 
+s ir  a stolf  of  e NglaNd  (aNNo  773)
+PriNce  of  e NglaNd
+Glory: 4,100
+SIZ 16, DEX 7, STR 17, CON 24, APP 20
+Damage: 5d6; Armor: 10+shield+3, Move 2
+Hit Points: 30, Major W ound 17, Unconscious 8, 
+Knockdown 13; Healing Rate 3
+Traits: Chaste 15, Energetic 17, Forgiving 16, Generous 18, 
+Honest 19, Just 14, Merciful 15, Modest 10, Prudent 6, 
+T emperate 12, T rusting 16, V alorous 17
+Passions: Love [Charlemagne] 18, Love [family] 15, Honor 21, 
+Love [God] 15
+Ideals: Chivalrous
+Skills: Awareness 18, Courtesy 20, Eloquence 20, Intrigue 15, 
+Recognize 18, Romance 15
+Combat Skills: Battle 15, Siege 10, Sword 20, Spear 20, 
+Dagger 10, Lance 12
+Significant Items: The Golden Lance, The Horn of T error, 
+Book of Spell Breaking
+Renaud of Montalban (753–797)
+Not one in the pagan host was so brave that his hair did 
+not stand on end when he heard the grim watchwords 
+‘Renaud’ and ‘Montalban’ ring out. Saracens and Moors 
+turned tail without stopping to load their baggage. 
+— Orlando Furioso , 31.LIV
+The eldest and most formidable of Aymon’s four sons (to-
+gether with Richard, Alard and Guichard the Wild), Renaud 
+is the proudest knight of Frankland, fearless, and quite lustful. 
+Shortly after being accepted as a paladin, Renaud starts a feud
+
+==================== PAGE 326 ====================
+=================
+325
+with Charlemagne. T ogether with his brothers he goes into ex-
+ile. They become impoverished, but find their luck in Gascony, 
+where Renaud marries the duke’s daughter. Clarissa gives him 
+two healthy boys, Aymonnet and Y onnet, who also become pal-
+adins. Renaud makes peace with Charlemagne by sacrificing his 
+faerie horse, Bayard. T o repent for his sins, he then spends the 
+best part of his life in the Holy Land, warring against the infidels.
+s ir  r eNaud  (aNNo  768)
+PaladiN
+Glory: 3,300
+SIZ 20, DEX 18, STR 22, CON 18, APP 12
+Damage: 7d6; Armor: 10+shield, Move 4
+Hit Points: 52, Major W ound 18, Unconscious 9, 
+Knockdown 18, Healing Rate 4
+Traits: Chaste 4, Energetic 17, Forgiving 6, Generous 10, 
+Honest 16, Just 9, Merciful 17, Modest 1, Prudent 14, 
+T emperate 16, T rusting 11, V alorous 22
+Passions: Love [Charlemagne] 15, Love [family] 24, Honor 22, 
+Love [God] 9
+Skills: Faerie Lore 14, First Aid 16, Gaming 16, Heraldry 16, 
+Horsemanship 24
+Combat Skills: Battle 15, Siege 15, Sword 20+14 (Froberge), 
+Spear 17, Dagger 14, Lance 14
+Significant Items: Bayard (horse), Froberge (sword) 
+William Shortnose (756–812)
+William’s father, Aymeri, is the conqueror of Narbonne 
+and the heir of Garin of Monglane. William is the bravest 
+among his six brothers and, like them, he does not inherit a fief 
+from his father. He remains a poor bachelor knight until he is 
+given the title of Duke of Septimania at the age of 34 (in 790). 
+He marries the Moorish princess Orable (Emir Tiebaut’s wife), 
+baptized Guibourc.
+William is the leader of the reconquest of Provence, in 
+which he takes an active part by liberating the cities of Nîmes 
+and Orange. He is the symbol of loyalty to the Frankish 
+crown, and serves both Charlemagne and King Louis with 
+unrelenting zeal.
+William is optimistic, and has a recognizable boisterous 
+laugh. When angered, though, he quickly loses his temper. On 
+several occasions, when he is refused access to a castle or city, he 
+kills the porter, but afterwards he always pays their wergild.
+s ir  w illia M (aNNo  775)
+PaladiN
+Glory: 5,400
+SIZ 21, DEX 14, STR 24, CON 20, APP 9
+Damage: 7d6; Armor: 10+shield+3, Move 4
+Hit Points: 40, Major W ound 20, Unconscious 10, 
+Knockdown 20; Healing Rate 4
+Traits: Chaste 12, Energetic 19, Forgiving 14, Generous 20, 
+Honest 6, Just 16, Merciful 17, Modest 5, Prudent 10, 
+T emperate 5, T rusting 5, V alorous 20
+Passions: Love [Charlemagne] 18, Love [family] 20, Honor 25, 
+Love [God] 18
+Ideals: Chivalrous
+Skills: Awareness 16, Courtesy 16, Hunting 17, Intrigue 16, 
+Languages 13, Recognize 19, Romance 12
+Combat Skills: Battle 18, Siege 17, Sword 23, Spear/
+Polearm 21, Dagger 13, Lance 22
+Significant Items: Protective talisman
+Paladins
+T
+he list of paladins given below is not necessarily com -
+plete. Especially from the 780’s onward, not all of the 12 
+places are filled, which leaves a good occasion for Player-
+knights to earn the title of paladin for themselves.
+Anseïs of Carthago: The son of Ripay of Brittany, who died 
+heroically at Roncevaux, marries the Moorish princess Gaudissa 
+of Cordoba and is made Duke of Spain in 779. However brave 
+and well-intentioned, young Anseïs is unable to resist an alliance 
+of Frankish traitors and vengeful Moors. At his death, his daugh-
+ter Galienne (from a previous marriage) takes Count Oliver of 
+Bourges as her husband.
+Anseïs the Proud: Proud Anseïs is the son of the Viscount 
+of Dijon, and one of the first paladins, knighted on the battle -
+field together with Roland, Ogier, Oliver and the others. 
+Aymonnet: Renaud’s eldest son becomes a knight in 790 
+and a paladin in 795. His main feats of arms are directed against 
+the hated Mayence clan.
+Baldwin the Brave: Ganelon’s third son, whom he had 
+with his second wife, Princess Bertha, is a courteous and roman-
+tic knight, who is naturally accepted as a paladin in 779. He is 
+Roland’s half-brother and the companion of Berard of Ardennes, 
+who joins the order two years later. Baldwin rapidly distinguish-
+es himself in the wars against the Saxons, and the young paladin 
+even briefly becomes the first Frankish Duke of Saxony in 782, 
+after he marries Widukind’s converted wife, Sebile. T ragically, he 
+dies at the siege of T remoigne a year after.
+Berard of Ardennes: When the eldest son of Thierry of 
+Ardennes comes of age, Charlemagne dubs him knight and pal-
+adin, and he becomes the companion of his friend Baldwin the 
+Brave. Like his friend, the reckless and lusty Berard dies in the 
+war with the Saxons.
+Berenger the Gascon: This swift young man distinguishes 
+himself at the Battle of the Humble Squires, where he is knight-
+ed and made a paladin by Charlemagne. Odo’s companion likes 
+to call himself the best horseman of Frankland.
+Bertrand of Narbonne: William’s nephew accompanies 
+his famous uncle in his adventures in Provence. He attains pal -
+adinhood at an early age, in 792, like his cousin and companion 
+Paladins
+
+==================== PAGE 327 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+326
+Vivien. Later, Bertrand participates in the conquest of Spain, 
+during which he is imprisoned at Barbastro. He finally marries 
+the Moorish princess Ayglente in 810. 
+Bradamant the W arrior-Maiden: Count Aymon’s 
+chaste, proud, and valiant daughter is Guichard the Wild’s 
+twin sister. Bradamant is a fierce fighter, who becomes the first 
+woman knighted at Charlemagne’s court, in 773. As a skillful 
+knight, she has some interesting adventures, during which she 
+falls in love with Rogero the Moor. She marries her baptized 
+lover after an eventful wedding-tournament in 777. For some 
+years, the happy couple rules over Bulgaria, until they are bru -
+tally murdered in 784.
+Engelier of Bordeaux: When Ogier the Dane defects in 
+773, Charlemagne recruits two new courteous paladins: Gerard 
+of Anjou and his calm and sincere companion, Engelier, known 
+for his lance skill and his musical talents.
+Eric of Friuli: The elder brother of Queen Hildegard be -
+comes  duke of Friuli in 789 and paladin Gerold’s companion. 
+Eric is a born leader and a fine tactician, but dies in battle against 
+the rebellious Avars. His marshal, the cynical demi-giant Eishere, 
+is one of the best sword fighters of Frankland.
+Galien the Restored: The illegitimate son of Sir Oliver 
+and the Byzantine princess Iacobina was raised in Byzantium. 
+He travels to Frankland in 788 and recovers his father’s fief 
+(hence his nickname). After his promise to avenge his father’s 
+death on the Moors, Charlemagne makes Galien a paladin. Later 
+he returns to Byzantium and finds his mother has been captured 
+by the Persians. He liberates his mother and becomes King of 
+Jerusalem in 802, after Sultan Norandin’s defeat by Count 
+Simon of Apulia.
+Geoffrey of Anjou: At Thierry’s death in Saxony in 786, 
+his young son Geoffrey continues his late father’s mission of 
+fighting the pagans, whether in Saxony, Slavonia, or Spain. 
+Geoffrey is a handsome, gentle knight, who turns into a real sav-
+age on the battlefield.
+Gerard of Anjou: T ogether with his companion, Engelier, 
+Gerard is dubbed as a paladin in 773. He is a very religious man, 
+whose spartan and frugal lifestyle almost turns him into a saint.
+Gerold II of Bavaria: When the king marries Queen 
+Hildegard in 771, Gerold, her brother, becomes not only the 
+king’s brother-in-law, but also the royal sword master. Later, 
+when Charlemagne disposes of the disloyal T assilo III, he makes 
+Gerold Duke of Bavaria and a paladin of his court (789) as the 
+companion of Eric of Friuli. A competent army leader, Gerold 
+dies in battle against the Avars. He is remembered for his un -
+equalled sword skill and his outstanding valor.
+Guy of Burgundy: Handsome Guy is a nephew of Y on 
+of Gascony, and the illustrious Garin of Monglane is his great-
+grand-uncle. Guy is both a skilled battle commander and a ro -
+mantic soul who is always in for a laugh.
+Hamon of Galicia: The courteous Duke of Galicia be -
+comes a paladin at Charlemagne’s court as Sir Raimbold’s com-
+panion. He dies in battle against the Avars.
+Name Paladinhood Companion
+Roland 767–778 Oliver of Vienne
+Oliver of Vienne 767–778 Roland
+Archbishop T urpin 767–797
+Ogier the Dane 767–814 Renaud of Montalban 
+(768-778), Salomon of 
+Brittany (779)
+Odo of Lengres 767–778 Berenger the Gascon
+Berenger the Gascon 767–778 Odo of Lengres
+W arin of V ergy 767–778 Guy of Burgundy
+Guy of Burgundy 767–773 W arin of V ergy
+Samson of Brittany 767–778 Anseïs the Proud
+Anseïs the Proud 767–778 Samson of Brittany
+Ivory the Foundling 767–778 Yvo the Black
+Yvo the Black 767–778 Ivory the Foundling
+Renaud of Montalban 768–797 Ogier the Dane
+Engelier of Bordeaux 773–778 Gerard of Anjou
+Gerard of Anjou 773–778 Engelier of Bordeaux
+Rogero 779–784 Bradamant (wife)
+Bradamant 779–784 Rogero (husband)
+Astolf of England 779–814 Sevin of Bordeaux
+William Shortnose 779–812 Anseïs of Carthago
+Anseïs of Carthago 779–780 William Shortnose
+Baldwin the Brave 779–783 Berard of Ardennes (781)
+Sevin of Bordeaux 779–803 Astolf of England
+Salomon of Brittany 779–788 Ogier the Dane
+Hamon of Galicia 779–805 Raimbold of Frisia
+Raimbold of Frisia 779–810 Hamon of Galicia
+Berard of Ardennes 781–783 Baldwin the Brave
+Thierry of Anjou 783–786
+Geoffrey of Anjou 786–801
+Sancho the Gascon 786–814
+Galien the Restored 788–814
+Eric of Friuli 789–799 Gerold II of Bavaria
+Gerold II of Bavaria 789–799 Eric of Friuli
+Bertrand of Narbonne 792–814 Vivien the Fearless
+Vivien the Fearless 792–793 Bertrand of Narbonne
+Rainouart 793–793
+Aymonnet 795–814 Y onnet
+Y onnet 795–814 Aymonnet
+Maillefer 810–814
+Huon of Bordeaux 808–814
+r oster  of  PaladiNs
+
+==================== PAGE 328 ====================
+=================
+327
+Huon of Bordeaux: Duke Sevin II’s eldest son is a partic-
+ularly generous and valorous paladin, but a reckless youth who 
+will risk anything to save his honor. He is banished from court 
+and goes on the last paladin’s quest in 810.
+Ivory the Foundling: Raised as the adoptive son of Doon 
+of Mayence, Ivory has sworn to remain chaste until all Moors are 
+baptized or slain.
+Maillefer: Like his father, Rainouart’s half-giant son fights 
+with an iron club. Although he receives the honor of paladin -
+hood in 810, he is never seen at Aachen. Maillefer is a silent and 
+solitary warrior, who prefers wandering alone in the mountains.
+Odo of Lengres: Much to the despair of his father, Estout 
+of Lengres, Odo is a charming young minstrel-knight who de -
+lights the court with elegant songs and intricate stories.
+Rainouart: The captured son of Emir Desramé the 
+Usurper is raised as one of King Louis’ kitchen knaves until Sir 
+William takes him along to fight at the Archant in 793, where 
+he distinguishes himself by slaughtering many Moors. He always 
+fights with his iron club, which he tends to forget everywhere. 
+Rainouart has trouble controlling his tremendous strength, and 
+often kills both his adversaries and their steeds with one blow, 
+which is annoying for his comrades in need of a new horse! 
+Rainouart is a half-giant (see the stats on page 383). 
+Raimbold of Frisia: Hamon’s companion is a pious and 
+virtuous knight, whose personal aim is the complete conversion 
+of his people, the Frisians. Raimbold has taken a vow of poverty.
+Rogero the Moor: The son of a Christian knight and a 
+Saracen lady (Galaciella, Emir Agolant’s daughter), Rogero and 
+his twin sister, Marfisa, were raised as pagans. Rogero was sent 
+to Atlantes the Sorcerer’s secluded castle in the mountains as 
+one of the finest Moorish knights. The chivalrous Moor rescues 
+Angelica from a sea monster in 775, and finally accepts baptism 
+in order to marry his lover, Bradamant (777). He rules over 
+Bulgaria as the first Christian king until he is betrayed and slain 
+by the Mayence clan in 784.
+Salomon of Brittany: Samson’s eldest son from a Frankish 
+wife is himself a Frank. His younger brother Engleboeuf is 
+among the victims of the battle at the Süntel Mountains in 782. 
+Salomon follows in his father’s footsteps and becomes the Duke 
+of Brittany in 786, but is accidentally killed at the tournament of 
+Châlon two years later.
+Samson of Brittany: Like Ogier, he was initially a hostage, 
+son of a Breton “king.” Y oung Samson converted and adopted 
+the Frankish culture. He starts his career among the first gen -
+eration of paladins in 767. An exemplary Christian, he remains 
+utterly loyal to Charlemagne and often leads the Frankish troops 
+in battle against his former countrymen.
+Sancho the Gascon: Duke Lupus’ first son is sent as a 
+hostage at the Frankish court at the age of three, in 768. Once 
+knighted, he becomes a paladin and participates in the conquest 
+of Spain under King Louis the Pious, who makes him Duke of 
+Gascony in 800.
+Sevin of Bordeaux: The Duke of Guyenne is Huon’s fa -
+ther. His ancestors participated in the feud of the Bordelais 
+against the Lorrainers, so many northern Franks give him suspi-
+cious looks. He dies heroically while saving King Louis in battle 
+in 803.
+Thierry of Anjou: At the death of his father, Duke Guy, in 
+775, Thierry is still only a page. He becomes a paladin to replace 
+Baldwin and Berard, whom he swears to avenge. From then on, 
+Thierry becomes the most zealous slayer of Saxons.
+Vivien the Fearless: William Shortnose’s strong, hand -
+some nephew is a very proud and hot-headed youth. When he 
+is knighted and receives the honor of paladinhood, in 792, he 
+swears on the horn of his father: “never to yield a foot before a 
+Saracen.” Only one year later, Vivien dies a hero’s death at the 
+battle of the Archant.
+W arin of V ergy: This formidable hunter from Auvergne 
+is the twelfth original paladin, knighted at the Battle of the 
+Humble Squires in 767. His son Isembart saves Charlemagne’s 
+life.
+Y onnet: Renaud’s second son is knighted and made a pal -
+adin in 795, together with his elder brother and companion, 
+Aymonnet. T ogether, they are as inseparable as their father and 
+uncles used to be.
+Yvo the Black: The Count of Basel has long black hair and 
+a large black beard. When he enters the order of paladins as a 
+youth in 767, he becomes Ivory the Foundling’s companion and 
+assists his friend in all his quests in Spain.
+Other Heroes
+S
+ome heroes are never made paladin, even though they 
+would merit the title in view of their exploits, glory, and 
+skills. This is due to the fact that Charlemagne prefers an 
+even spread of paladins among the great families of his realm, 
+which in practice means that there are rarely more than two pal-
+adins from the same House. 
+Alard: Count Aymon’s second son. Though he is not as 
+strong and valiant as his elder brother, the hot-headed Alard re-
+mains a fearsome and destructive opponent.
+Aymer the Puny: William Shortnose’s younger brother 
+gets captured at Roncevaux, but after a few years he manages to 
+escape. He vows to never again sleep under a roof, and to spend 
+his whole life warring against the infidels (this gentle knight is 
+slightly insane).
+Fulco of Candie: The nephew of Vivien the Fearless is a 
+fighter worthy of his uncle’s fame, as well as being a courteous 
+womanizer. He becomes the last Duke of Spain by the peace 
+terms of 810.
+Garin of Anjou: William Shortnose’s younger brother is 
+the father of Vivien. He gets captured after Roncevaux and is 
+Other Heroes
+
+==================== PAGE 329 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+328
+liberated in exchange for his son. He dies at the hands of the 
+Saxons in the Battle of the Süntel Mountains in 782.
+Garnier of Nanteuil: Raised at the royal court, he fights at 
+the side of Anseïs of Carthago. He later rescues his lover, Aye of 
+Avignon, when she is imprisoned at Majorca. During the siege 
+of his home castle, Garnier is slain by Ganelon’s brother, Milo.
+Gerard of Vienne: When Oliver’s proud and independent 
+uncle is insulted by King Carloman’s wife, Queen Gerberga, 
+he declares a feud and refuses to acknowledge himself as either 
+Carloman’s or Charlemagne’s vassal.
+“Whatever’s mine, my wealth, my land, my weal
+Not one shelled egg thereof I’ll ever yield
+To any man — Lord God alone I heed!
+Your King Charlemagne I’ll never love nor fear; 
+Let him come here and kneel down at my feet!”
+— The Song of Aspremont , I
+Peace is concluded after an aborted duel between his neph-
+ew Oliver and Roland. On his horse Killvillian, the white-haired 
+Count Gerard then joins Charlemagne for the First Spanish 
+Campaign and dies heroically at Roncevaux.
+Guichard the Wild: Count Aymon’s fourth son is 
+Bradamant’s twin brother. His rash and reckless behavior earns 
+him his surname.
+Guy of Nanteuil: T o avenge his father’s death, Guy allies 
+with the chivalrous W ali of Majorca and kills the vile Milo of 
+Mayence in battle, rekindling the feud between the houses of 
+Nanteuil and Mayence.
+Lion of Bourges: The courteous son of the destitute Count 
+Herpin of Bourges lives an adventurous life, trying to find his 
+parents, regain his ancestral fief, and punish traitors (who are 
+often from the Mayence clan). The courageous and god-fear -
+ing Lion is sometimes assisted in his laudable projects by a holy 
+White Knight.
+Milo of Aiglent: The father of Roland is the strong, 
+handsome, optimistic, valorous, and slightly naive Duke of 
+Septimania. He is the bastard son of the false Queen Aliste and 
+Bernard of Clermont. He is the royal seneschal until he falls in 
+love with Bertha and they are exiled. After their marriage and 
+reinstatement at court, he is made Duke of Septimania.
+Oliver and William of Bourges: These twin brothers are 
+the sons of Lion of Bourges and Florentine of Sicily. After many 
+adventures, they manage to recover their ancestral fief by sound-
+ing the town’s magical horn.
+Richard: Count Aymon’s third son is a doughty warrior. 
+Unlike his brothers, the introverted Richard thinks before act -
+ing, and occasionally even plans things ahead. Even if Maugis 
+remains the House of Aigremont’s uncontested master-brain, 
+Richard sometimes saves his brothers from catastrophe by using 
+a clever subterfuge.
+Minor Characters
+Charlemagne’s Family
+Parents
+P
+epin the Short (714–768): Charlemagne’s father is the 
+illustrious son of the great Charles Martel and Rothrude. 
+He was anointed in 751, and crowned King of the Franks 
+in 754. As a young prince he received his education at the abbey 
+of St. Denis. Pepin is a clever man with a soothing voice, whose 
+motto is: “Never take on more than one enemy at a time.” 
+Bertrada Broadfoot (726–783): Pepin the Short’s wife 
+is the daughter of King Floris and Queen Blancheflour of 
+Asturias. She plays an important role at the royal court until 
+her death. As a mother, she favors Charlemagne over his broth -
+er Carloman. She spends much energy in finding suitably el -
+egant and cultivated wives and husbands for her “barbarian” 
+sons and daughters. Bertrada is a pious, chaste, generous and 
+modest woman, who thinks everything that goes on at court 
+is her business.
+Siblings
+Adelaid (738–756): Wife of Aymon of Dordon and the 
+mother of Renaud, his brothers, and sister Bradamant. Adelaid 
+is a modest and generous mother, a pious woman and a faithful 
+wife, who never loses her calm at the side of her irascible, and 
+often, violent husband.
+Rothaid (744–789): A meek but handsome princess, who 
+marries Count Anthony of Avignon, to whom she gives a fierce 
+daughter, Aye of Avignon.
+Carloman I (750–771): Charlemagne’s younger and 
+more intellectual brother was raised by Abbot Fulrad at the 
+abbey of St. Denis, and is therefore in vogue among scholars. 
+His military education was at the hands of Duke Thierry of 
+Ardennes, who knights his royal squire in 767. A year later, 
+Prince Carloman inherits a large part of his father’s kingdom. 
+He marries his beloved Gerberga of Lombardy in 769, who 
+bears him two sons: Pepin and Lothair. He is killed by a furi -
+ous Ogier In 771, but officially he dies in a “hunting accident.” 
+Charlemagne strongly dislikes his peevish younger broth -
+er, who is always complaining about everything. As a king, 
+Carloman is surrounded by flattering courtiers who spend 
+their time scheming and plotting.
+Gertrude (751–771): A strong-willed woman who marries 
+a Neustrian count. She dies giving birth to a daughter, Avissa, the 
+mother of Aiol.
+Gisela (757–810): This grave and distant girl is prom -
+ised to the Lombard prince Adalgise at an early age, but later 
+becomes a nun and abbess of Chelles, where she is nicknamed 
+“ Alcuin’s sister.”
+
+==================== PAGE 330 ====================
+=================
+329
+Wives
+Himiltrude (764–770): This young Frankish concubine 
+of modest origins is not officially married to Charlemagne, even 
+though she gives him two sons, Pepin and Louis, of which the 
+first is, unfortunately, hunchbacked. She is repudiated and sent 
+to a nunnery in 770.
+Desideria (770–771): The third daughter of King 
+Desiderius is a lovely and refined Lombard princess. 
+Charlemagne sees her for the first time when Bertrada brings 
+her back from Lombardy. He is smitten and agrees to marry her, 
+but repudiates her for political reasons only a year later. During 
+her short reign as queen the beautiful girl exasperates the court-
+iers with her pride, her endless chatting (in Latin only), and her 
+immoderate taste for luxury. She travels accompanied by poets, 
+singers and other artists. Her numerous servants carry her glass 
+goblets, silver cutlery, and plates everywhere. Her dresses must 
+be silk, and she abhors Charlemagne’s peasant-like lifestyle.
+Hildegard (771–783): This Alemannian princess is only 
+13 years old when Charlemagne marries her in 771, after he re -
+pudiates Desideria. She is the daughter of Gerold I of Vinzgau 
+and a cousin to T assilo III. This virtuous young woman gives 
+birth to two princes: Pepin and Charlot, and five princesses: 
+Rothrud, Bertha, Gisela, Hiltrude and Adaltrude. Hildegard is 
+a model of virtue, though slightly jealous and vengeful towards 
+the children her husband had with other women.
+Fastrada (784–794).  The daughter of Count Radulf of 
+Thuringia is said to be elf-born, and is much disliked at court. 
+Her extreme beauty barely conceals her ice cold, selfish, venge -
+ful, and cruel nature. She bears Charlemagne two daughters: 
+Theodrade and Hiltrude.
+Liutgard (795–800): A gentle Alemannian princess, 
+whom Charlemagne is already courting before Fastrada’s death.
+Concubines
+Gerswinda: Mother of Adaltrude.
+Madelgard: Mother of a Ruothild.
+Regina: Mother of Drogo and Hugo.
+Adallinda: Mother of Ricbod and Thierry.
+Sons
+Pepin the Hunchback (765–811): The deformed son of 
+Charlemagne’s concubine Himiltrude is reduced to the status of 
+kitchen knave. The modest prince is honest and generous, but 
+naive. Although very handsome, he remains unmarried all his 
+life because of his malformation. After Hardrad’s failed coup in 
+785, Pepin is sent to the monastery of Prüm, where he dies under 
+mysterious circumstances.
+Louis the Pious (766): Charlemagne’s least favorite son 
+is somewhat effeminate. His main qualities are intellectual, 
+not military. The timid and very pious prince lacks confidence, 
+and he especially dislikes his tutor, William Shortnose, who is 
+his complete opposite. Louis is crowned King of Aquitaine in 
+T oulouse in 781, where he was raised. He marries William’s 
+sister, Blancheflour, and later Ermengard, the daughter of Count 
+Ingram of Hesbaye. As Charlemagne’s only surviving son, Louis 
+is crowned co-emperor in 813. At the end of his life, Ermold 
+the Black describes Louis as “ the world’s Caesar, the glory of 
+the Franks, the crown of Christians, first in peace and faith, 
+yet second to none in war, distinguished in learning and the 
+works of piety. ” 
+Charlot (772–811): Also known as “Charles the Y ounger, ” 
+the king’s favorite son is raised at the court of Duke Thierry of 
+Ardennes. Despite his achievements as a valorous army leader, 
+Prince Charlot suffers from a lack of recognition from the pala-
+dins, who suspect his vain, suspicious, deceitful, selfish character. 
+In 789, Prince Charlot becomes Duke of the Breton March, and 
+from 793 onwards he acts as his father’s supreme representative 
+at court. At the end of his life, the embittered Charlot lets him -
+self be deluded by the Black Knights.
+Carloman/Pepin (774–810): Born Carloman, but re-bap-
+tized in 780, Prince Pepin is crowned King of Italy as a child a 
+year later, under Charlemagne’s cousin Adalhard’s tutelage. King 
+Pepin becomes an astute battle commander, but lacks political 
+and courtly skills.
+Bastard sons
+Drogo (801–855), Hugo (802–844), Ricbod (805–844) 
+and Thierry (807–?).
+Daughters
+Rothrud (773–810): She is first promised to the Greek 
+Emperor (781), but finally stays at court and bears her lover, 
+Count Rorgo of Le Mans, a son named Louis.
+Bertha (779–826): This frivolous and proud princess mar-
+ries Angilbert (a diplomat and the Lay Abbot of Saint Riquier 
+from 790 to his death in 814), with whom she has a son, Nithard.
+Gisela (781–808),Theodrada (785–844), Hiltrude 
+(786), Adaltrude (787), Rhuothild (790): All other daughters 
+born after Bertha are raised at court and generally end their lives 
+as the honorific abbess of a royal nunnery.
+Other Relatives
+Adalhard (751–827): Charlemagne’s favorite cousin was 
+raised at court as the son of uncle Bernard. At Carloman’s death, 
+he goes to Lombardy with Ogier, but returns to favor later and 
+becomes the Lay Abbot of Corbie (800). He is the tutor of 
+Charlemagne’s son, King Pepin of Italy.
+Angilbert (751–814): Charlemagne’s son-in-law was 
+raised at royal court. At first, he is young King Pepin of Italy’s 
+palace count, but later he returns to court as a poet and diplo -
+mat. There he enjoys a very worldly lifestyle, and becomes the 
+lover of young Princess Bertha. At the end of his life, Angilbert 
+retires to the monastery of St. Riquier, where he dies as a saint.
+Bertha (735–): A year before giving birth to Roland in 750, 
+Charlemagne’s cousin was banished from court with her lover, 
+Count Milo of Aiglent. After a period of exile, she finally mar -
+ried Milo and raised their son, Roland. Her husband was made 
+Minor Characters
+
+==================== PAGE 331 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+330
+Duke of Septimania. After Milo’s death in 771, Bertha marries 
+Count Ganelon, to whom she gives a son, named Baldwin. At 
+her second husband’s shameful death, she retires to a nunnery.
+Bernard (736–787): Charlemagne’s uncle is a bastard 
+son of Pepin the Short. He is married to a Saxon noble woman. 
+The discrete and humble Bernard acts as one of Charlemagne’s 
+army commanders in the Lombard wars. He is the father of 
+Charlemagne’s favorite cousins, Adalhard and W ala.
+Childebrand II (779–826): Charlemagne’s diligent and 
+shrewd cousin, son of Count Nibelung I, is a palatine count and 
+a missus dominicus. Childebrand is a very discreet and perspica-
+cious nobleman.
+Gerold of Bavaria: See Paladins.
+Gontrada: Adalhard and W ala’s sister is Charlemagne’s 
+chaste cousin and a good friend.
+Lothair (744–768): This unfortunate cousin is killed by 
+Bevis of Aigremont, which sparks the feud between Charlemagne 
+and Aymon’s sons.
+Nibelung I (725–771): Charlemagne’s distant uncle is the 
+son of Childebrand I, who was Charles Martel’s half-brother. He 
+is the stern and just Count of Paris, as well as Charlemagne’s pal-
+ace count.
+W ala (755–836): Adalhard’s younger brother is un -
+cle Bernard’s second son. He is an influential royal councilor, 
+and one of Charlemagne’s personal friends. He marries Lady 
+Rollinda, William Shortnose’s only daughter, and later retires to 
+Corbie, where he succeeds his brother as abbot.
+The Royal Court
+Courtiers
+Ganelon of Ponthieu (736–778): The valorous 
+Count of Mayence inherited his ancestor Doon’s blazon: 
+“St. George (as a knight) decapitating a pagan.” Ganelon is 
+Charlemagne’s childhood friend, and marries Princess Bertha 
+after Duke Milo d’ Aiglent’s death in 771. Ganelon starts to 
+hate his son-in-law, Roland, when Roland makes peace with 
+Oliver at the duel of Vienne, a fief Charlemagne would have 
+given to Ganelon had Roland won. When, years later, Roland 
+laughingly advises Charlemagne to send Ganelon on a vir -
+tually suicidal mission to Emir Masile’s court, the Count of 
+Mayence decides to avenge himself. His treason results in 
+the Battle of Roncevaux, and his vengeful, arbitrary, proud 
+and deceitful character is finally revealed. In battle, Ganelon 
+wields the blessed sword Murgleis.
+Naymo of Bavaria (732–815): Another of Charlemagne’s 
+childhood friends, and the king’s most trusted advisor. The 
+modest and wise palatine duke is the father of Aquilon (raised as 
+Anibal by the Saracens), Bertrand (killed by Ogier in 773), and 
+Wistace (Garin of Anjou’s wife and Vivien the Fearless’ mother). 
+The wise Naymo is unswervingly loyal, just, moderate, forgiv -
+ing, merciful and prudent. He acts in all respects as if he were 
+Charlemagne’s elder brother, and is at the emperor’s side until 
+the end.
+Academicians
+Many learned abbots and bishops live at court permanently, 
+or for several months a year, to assist Charlemagne in the admin-
+istration of his kingdom. The Palace Academy is founded in 780 
+by Alcuin. All its members have a skill of at least 16 in Eloquence, 
+Intrigue, Languages, Reading & W riting, and Religion. They all 
+have classical nicknames; Charlemagne himself, for example, is 
+known as David.
+Alcuin (735–804): The tall British monk is a calm and 
+honest man with great diplomatic and persuasive skills. He is a 
+magister at Y ork until he becomes Charlemagne’s personal coun-
+cilor and tutor in 780. The wise and most learned Northumbrian 
+founds the royal Palace Academy, where he is nicknamed 
+Flaccus. He goes back to Y ork in 790, but a few years later he re-
+turns to Frankland. In 796 he retires from court as the Abbot of 
+St. Martin’s (and several other satellite abbeys and monasteries), 
+where he dies in 804.
+Angilbert: See Other Relatives.
+Arno of Salzburg (750–821): This Bavarian bishop enters 
+the Palace Academy as Aquila, a year after T assilo’s banishment 
+to the Monastery of Jumieges. King Charlemagne appoints him 
+as Archbishop of Germania (798), Abbot of St. Amand, and lat-
+er Archbishop of the Avar March (805). He is frequently sent 
+out as missus dominicus.
+Benedict of Aniane (747–821): The son of the Visigothic 
+Count Aigulf of Gellone grows up at the royal court, where he 
+becomes the personal friend of Alcuin and Theodulf. He lives 
+in a Burgundian monastery for a while, but in 781 he becomes 
+King Louis’ spiritual mentor. He writes a new Benedictine Rule 
+for the numerous monasteries he founds in Septimania and 
+Aquitaine, such as Aniane (782) and Gellone (804, for his boy -
+hood friend, William Shortnose). By the time Louis is crowned 
+Emperor, the dynamic Benedict has become a living saint: 
+“Thanks to his help, the holy fortresses [monasteries] are now 
+pleasing to God. A beautiful will reigned in his sacred con -
+duct; he was as holy as it is allowed man to be. ” Ermoldus , II
+Clement (750–818): An eloquent and patient Irish monk 
+who arrives at Charlemagne’s court in 775 and rapidly becomes 
+the magister of the University of Paris. As Alcuin’s right hand at 
+court, he is in charge of the education of the royal children.
+Dagulf (743–809): During summer, the conscientious li -
+brary master travels through the realm to visit the royal scripto-
+ria. In winter, he supervises the monks at court.
+Dungal (749–828): This Irish monk is Charlemagne’s 
+court astrologer. He teaches the liberal arts at the Palace 
+Academy.
+Einhard (770–840): A very talented and versatile dwarf-
+sized monk from Fulda. He is a scholar, and skilled in metal work-
+ing, wood-carving, and gem cutting. He becomes Charlemagne’s 
+biographer, and continues the paladins’ chronicles where T urpin 
+left them. At court, he woos one of Charlemagne’s daughters. 
+His academic nickname is Nardulus. Einhard undertakes several
+
+==================== PAGE 332 ====================
+=================
+331
+diplomatic missions in the emperor’s name to the Saxons and the 
+Romans. He is King Louis’ arch-chaplain, and possesses a per -
+sonal chapel with relics outside the Royal Palace. 
+Fredegise (791–834): A British disciple of Alcuin, nick -
+named Nathanaël, who succeeds his master as the Abbot of 
+T ours after Alcuin’s death in 804. His specialization is theology.
+Fulrad (710–784): The Abbot of St. Denis, who owns 
+many rich domains all over Frankland, is the tutor and friend 
+of King Carloman. After Carloman’s death, this holy monk 
+becomes Charlemagne’s arch-chaplain and ambassador. At his 
+death he is declared a saint.
+George the Byzantine (755–817): A very erudite Greek, 
+he speaks Latin, Arabic and Hebrew. He is a bishop in Lombardy, 
+but leaves Pope Stephen III’s service to become the Bishop of 
+Amiens. Charlemagne regularly charges George with embassies 
+to Rome and Byzantium.
+Hildebald of Cologne (761–818): A personal friend of 
+Charlemagne, nicknamed Aaron at the Academy, this wise and 
+energetic scholar is a wandering missionary bishop. At court, he 
+fulfils the offices of arch-chaplain and chancellor.
+Ludger (742–809): A noble Frisian monk who teaches at 
+the Utrecht cathedral school. He is a peaceful and patient mis -
+sionary among the Frisians. In 793, he miraculously cures and 
+converts the blind Frisian skald Bernlef. Later, Ludger is the 
+chief missionary in Saxony (793), and he becomes Abbot and 
+Bishop of Münster (805), where he dies as a saint.
+Modoin (770–840): A Visigothic monk raised at court, 
+where he is known as Ovid. Modoin is a court poet and a mem -
+ber of King Louis’ household.
+Paul the Deacon (720–802): The venerable Lombard 
+Bishop of Aquileia is a renowned grammarian. He arrives at 
+court in 774, where he is nicknamed Timothee, and he becomes 
+Angilbert’s tutor. In 787 Charlemagne appoints him as the new 
+Archbishop of V enice, and he accompanies King Pepin during 
+the Avar campaign.
+Peter of Pisa (744–799): A humorless Lombard from 
+Pavia who teaches Latin at the Palace Academy. He is the tutor 
+of Charlemagne’s children. In 790 he retires from court to be -
+come a lay abbot.
+Raban Maur (780–856): A quiet and diligent monk from 
+Fulda, and a pupil of Alcuin at T ours, he comes to court to write 
+teaching manuals.
+Theodulf (759–821): The Visigothic Bishop of Orleans 
+(798) and Abbot of Fleury studied under Benedict of Aniane. 
+Theodulf is at court from 780 to 797, where he is named Pindor. 
+He acts as a missus dominicus together with Bishop Leidrad of 
+Lyon.
+Willihad (741–789): A pure monk from Y ork, where he 
+became Alcuin’s friend. He is sent to Frisia and Saxony as a mis-
+sionary in 765, but flees in despair after a Saxon massacre in 782. 
+He briefly retreats to the abbey of Echternach, and later becomes 
+the Bishop of W orms.
+Wido (761–802): Alcuin’s most talented pupil and com-
+panion is the personal tutor of Princess Gisela. Wido succeeds 
+his master as head of the Palace Academy, where he is nicknamed 
+Candidus.
+Officers
+Most important administrative offices are held by educated 
+members of the clergy. Laymen are largely excluded from these 
+functions. The major offices are given here: 
+Chamberlain: The chamberlain takes care of the personal 
+belongings of the royal household, including the treasury, called 
+the “chamber, ” which is a veritable warehouse filled with coffers 
+of jewels, gold and silver, crowns, silks, illuminated manuscripts 
+and other luxurious goods. 
+Adalgise (768–782); Meginfred (783–791), Eberhard 
+(792–812); Jeremy (813–814).
+Chancellor: He oversees the royal charters and archives, as-
+sists on the appointment of bishops and abbots, and is the king’s 
+principal councilor on religious matters in general.
+Fulrad, Abbot of Saint Denis (771–784); Bishop Angilram 
+of Metz (784–791); Archbishop Hildebald of Cologne 
+(791–814).
+Chaplain: The guardian of the cape (chapelle) of St. 
+Martin, the most holy relic of the Frankish kings, and master of 
+the court library.
+Itherius (767–775); Abbot Rado of Arras (776–797); 
+Archibald (797–812); Archbishop Jeremy of Sens (812–814).
+Marshal/Constable: The master of the royal horses and 
+stud farms.
+Geilo (768–772); Fago (773–786); Gimbold (787–799); 
+Gerricus (799–804); Burchard (805–814).
+Master of the Kitchens: Often the subject of gentle rail -
+lery, the master cook is nevertheless an important figure at court.
+Bego (768–778); Audulf (778–801); Hortmar (801–814). 
+Magister: The head of the Palace Academy.
+Alcuin (780–796); Wido (796–814).
+Palace Count: The principal royal advisor and president of 
+the permanent special royal tribunal. He commands the scarae 
+and is responsible for the court’s security.
+Count Nibelung I (768–771); Count Anselm (771–778); 
+Count Sturm (779–800); Count Childebrand II (800–814). 
+Seneschal: Also known as the steward, he manages the pro-
+visions of the court, an especially important and difficult task.
+Eggihard (768–778); Ludfrid (779–791); Audulf (791–
+801); Einhard (802–808); Ansegise (809–814).
+Great Families
+Aigremont or Clermont: See The House of Clermont in the 
+section on the Duchy of Ardennes in Chapter 14.
+Agilolfings: The most powerful Bavarian family is main -
+ly composed of civilized but decadent intriguers. Their leader 
+Minor Characters
+
+==================== PAGE 333 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+332
+is Duke T assilo III of Bavaria, who is Charles Martel’s grand-
+son. T assilo is a very cultivated, rich and refined nobleman who 
+marries the Lombard Princess Liutperga. The eloquent and 
+handsome duke considers himself as an independent ruler and 
+dresses like a king. He is jealous of Charlemagne’s power and 
+constantly plots against his cousin. That is why Charlemagne 
+condemns him for treason in 788 and sends him and his rela -
+tives to a monastery.
+Arnulfings: Charles Martel, Pepin the Short, and 
+Charlemagne are members of the powerful house of the Frankish 
+kings, also known as the Carolingians, which can trace its origins 
+back to the T rojans. Their domains can be found throughout 
+Austrasia and Neustria. The house derives its name from the relics 
+of Saint Arnulf, which the king preserves at the cathedral of Metz. 
+The Arnulfing patroness is Saint Petronella, Saint Peter’s daughter.
+Bordelais: Duke Sevin I of Bordeaux is the leader of this 
+ancient family. Once the masters of Aquitaine, they lost much of 
+their influence and prestige during the long feud opposing them 
+to the Lorrainers, but after the death of Duke W aifer and his son 
+Hunold, the Bordelais come to the foreground once more.
+Etichonids: A family of strong but honest brutes from 
+Alsace, allied to the Carolingians. Eric, the future Duke of Friuli, 
+is a member of this clan, as is Count Hugo of T ours, who leaves 
+on an embassy to Byzantium in 811. 
+Gerardines: Gerard of Paris has two sons: Bego, who suc -
+ceeds his father as Count of Paris and later becomes Duke of 
+Septimania, and Lothair, who becomes a count in Aquitaine. 
+The Gerardines can trace their genealogy back to Charles 
+Martel.
+House of Lorraine: An ancient and respected house of 
+Austrasia, where they control many monasteries. Although they 
+were victorious in their bloody feud against the Bordelais not 
+very long ago, this has, paradoxically, weakened them. Many 
+young Lorrainer widows remarried, which broke up the family 
+coherence. 
+Lombards: Rivals of the Carolingians. They understand -
+ably develop a grudge against Charlemagne when he shames 
+Desideria by repudiating her, then conquers Lombardy and 
+sends Desiderius to a monastery, wages war against Arichis of 
+Benevento, and deposes T assilo III of Bavaria. Members of the 
+Lombard royal line are Desiderius, his son Adalgis, and his four 
+daughters Liutperga, Desideria, Gerberga and Adalperga, re -
+spectively married to T assilo III, Charlemagne, Carloman II and 
+Arichis of Benevento.
+Mayence: The Austrasian Mayence clan is indirectly re -
+lated to the Arnulfings by Princess Alpaïda the Saxon. The de -
+scendants of Grifo of Hautefeuille, fourth son of the illustrious 
+Doon of Mayence, are seen as clearly separated from the other 
+houses founded by old Doon’s many sons. The Mayence Clan 
+is the second most influential house of the kingdom; respected 
+and feared by many, and hated by some. Almost all vile traitors 
+in the stories are from the wicked Mayence Clan, such as Sir 
+Ganelon and Sir Hardrad.
+Monglane or Narbonnais: Although far from wealthy, the 
+Narbonnais are the single most powerful house in Septimania, 
+and later Provence. The branch to which Sir Oliver belongs con-
+trols much of Burgundy. The Narbonnais supply many famous 
+heroes and even paladins including William Shortnose and his 
+nephew, Bertrand.
+Nibelungs: Charlemagne’s wealthy and loyal allies and 
+relatives descend from Charles Martel’s brother Childebrand I. 
+They live in Neustria, and particularly Normandy. Most of them 
+are thoughtful and scrupulous men.
+Rorgonids: A proud family from Normandy, led by Duke 
+Richard of Normandy and later by Count Rorgo of Maine, the 
+lover of Princess Rothrud.
+Widonids: Another great family allied to the Arnulfings 
+have their fiefs in the Mosel region, around Reims and T rier, 
+the Breton March, and Italy. The best known leader of this line 
+is the merciless Wido, who succeeds Roland as Count of the 
+Breton March in 778. His brother W arnar serves King Louis of 
+Aquitaine.
+Magicians
+Angelica: A stunning and chaste princess of Cathay, who 
+wears a powerful magic ring of invisibility and magic negation. 
+She may herself produce only minor enchantments, but her su -
+pernatural beauty (APP 30) often works as a Love spell on men. 
+She is saved from a sea monster by Rogero (775) and wooed by 
+Roland, but finally falls in love with a young Moor, Medoro, 
+with whom she returns to Cathay.
+Atlantes: The most powerful Saracen astrologer and sor -
+cerer lives in a magic mountain castle. He loves Rogero as his 
+son, and tries to protect him from harm and adventure by lock -
+ing him up inside his steel prison-palace. The deceitful and cun-
+ning Atlantes owns a powerful spell book of illusions, a Shield 
+of Blinding and a hippogriff. Carelessness is his weakness. The 
+magician finally dies of a broken heart when Rogero leaves, con-
+verts to Christianity, and marries Bradamant.
+Basin (Elegast): The Frankish Count of Geneva is a skillful 
+enchanter, who was born and raised at his fief of Huy. He mainly 
+uses herbs to produce magic effects such as opening locks, un -
+derstanding animal speech, putting people to sleep, and healing 
+wounds. Ever loyal to Charlemagne, he nevertheless is accused 
+of betrayal and destituted (781). Impoverished, he becomes the 
+robber knight Elegast, wandering through the Austrasian for -
+ests. Charlemagne forgives Basin and reinstates him in 786. At 
+the end of his life he becomes the Archbishop of T rier (802). He 
+has three sons: Berenger, Renier, and Aubery.
+Maugis: The most famous Frankish wizard-knight, from 
+the family of Aigremont, was raised by a faerie lady and studied 
+magic at T oledo. Renaud’s cousin possesses a very useful spell 
+book which he sometimes consults. However, he only relies on 
+his magic when all other means have failed. He uses powders to 
+make others sleep or sneeze, and to conjure up demons who he 
+may send on an errand or foretell him the future:
+
+==================== PAGE 334 ====================
+=================
+333
+Maugis took his tome.
+To understand this matter more,
+He called four demons up from hell.
+See how his mind was terrified!
+See how he shook, by heavenly God!
+He saw, as before his eyes,
+Charlemagne dead, his court destroyed.
+— Orlando Innamorato , 1.1.XXXVI
+Maugis becomes Charlemagne’s most hated adversary in 
+his feud with the house of Aigremont. On several occasions, the 
+enchanter plays tricks on his sovereign, though never with the 
+intention to harm him.
+Merlin: The long-dead magician is sometimes present as a 
+living spirit inside a cave or a tomb, from where he makes proph-
+ecies and gives his good counsel to any passing knights.
+Enemies Within
+No king is free of internal intrigue, and Charlemagne is 
+no exception. 
+The Aquitainians
+The followers of Duke Hunold of Aquitaine, who is killed 
+in 769, claim that at least one of the late duke’s children is still 
+alive and can pretend to the lordship of Aquitaine. They do not 
+foment open rebellion, but they use rather subversive ways of 
+achieving their objectives.
+It is noteworthy that the Frankish king almost never visits 
+the southern part of the Franklands. T o consolidate his power 
+in the south, Charlemagne has his son Louis crowned King of 
+Aquitaine in 781 with the help of William Shortnose. On this 
+occasion, nobles such as Arneïs and the relatives of old Richard 
+of Orleans cause quite a stir.
+Afterwards, the Aquitainian faction at court is seriously 
+weakened, but their thirst for independence and their personal 
+ambitions of power are still very much alive. 
+The Bavarian-Lombard Alliance
+At his brother’s unfortunate death in 771, Charlemagne 
+claims the lands of Carloman II and becomes the sole leader of 
+the Franks. This shocks several high noblemen, since normally 
+Carloman’s title should have been passed on to his two healthy 
+sons, for whom Charlemagne refuses to appoint a regent. Rather 
+than serve a usurper, Ogier and his friends openly rebel against 
+their new king. When Carloman’s widow, Gerberga of Pavia, 
+flees to her father’s court, Frankish nobles accompany the prin-
+cess and her two sons to Lombardy.
+Charlemagne captures his sister-in-law and his two young 
+cousins, as well as Ogier the Dane, during his successful cam -
+paign against the Lombards in 773. Charlemagne sends the 
+royal Lombards (King Desiderius, Queen Ansa, Princess 
+Gerberga and her sons) to separate monasteries, and he has 
+Ogier locked up in a castle under Duke Naymo’s care. As far 
+as the king is concerned, the Lombard royal dynasty is no 
+more, and Charlemagne distributes titles and lands to his loyal 
+Frankish followers.
+Most surviving Lombard nobles swear fealty to their new 
+king. But not all of them. Others prefer to flee, especially to 
+Avarland or Bavaria. They are welcomed with open arms at the 
+Agilolfing court, as Duke T assilo of Bavaria is himself married 
+to the Lombard Princess Liutperga. Indeed, the disinherited 
+Gerberga and her relatives have many powerful discontented 
+friends. Among their allies are some Franks who remain loyal to 
+Carloman II and his sons. Abroad, the Bavarian-Lombard fac -
+tion is supported by Constantinople (the refuge of the vengeful 
+Prince Adalgise), the Avars, and the independent Italian duchies 
+of Benevento, Spoleto and Friuli.
+The Clan of Mayence
+The House of Mayence is one of the most powerful clans 
+of the kingdom. Their leader, Ganelon of Ponthieu, Count of 
+Mainz, is a trusted councilor until he betrays his lord king out 
+of hate for Roland, his step-son. Ganelon is accused after the 
+battle of Roncevaux. His honor is defended by his champion 
+and cousin, Pinabel the Gascon (an excellent swordsman and a 
+skilled thief ), who loses his judicial duel against Count Thierry 
+of Anjou. Ganelon is quartered by horses.
+Apart from Baldwin the Brave, all other Mayence knights 
+are black-hearted traitors and ideally suited to figure as villains 
+in an adventure. They want power by all means and, not surpris-
+ingly, they are among the founders of the Black Knights.
+The Revolting Barons
+Regularly, wronged vassals — including some paladins — 
+oppose King Charlemagne. Even though they continue to rec -
+ognize him as their lawful king, and respect him as such, they 
+fight him to obtain justice or reparation for a crime. The four 
+sons of Count Aymon defy the king’s power for several years, 
+just like their cousin Maugis and their friend Ogier the Dane. 
+Other powerful counts, like Gerard of Vienne and his family, or 
+Garnier and Guy of Nanteuil, refuse to submit to Charlemagne 
+on his conditions. All these revolting barons end up making 
+peace, after having defeated their king in battle, or a forceful in-
+tervention from the paladins, or a miracle from God.
+Pepin the Hunchback
+Charlemagne’s repudiated son, sweet-faced but unfortu -
+nately hunchbacked, lives a miserable life in the court’s kitch -
+ens. His mother Himiltrude is safely locked away in a nunnery. 
+But at court, flatterers tell Pepin that he should take his life 
+back into his own hands, change his destiny and become king, 
+or even emperor, himself ! These “friends” would gladly help 
+to install Pepin on the Frankish throne in order to obtain high 
+positions for themselves. On several occasions, high nobles 
+conspire against their king in order to seize the throne. Count 
+Hardrad of Thuringia comes close in 785, but his vast conspir -
+acy ultimately fails.
+Minor Characters
+
+==================== PAGE 335 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+334
+The Black Knights
+After the failed coup of Count Hardrad, some of his rel -
+atives ally themselves with the House of Mayence. They create 
+a secret but influential brotherhood, the Black Knights, whose 
+first leader is Macharias of Lausanne, Hardrad’s nephew. Their 
+goal is to further their political interests by manipulating Prince 
+Charlot, Charlemagne’s favorite son. The Black Knights are 
+mostly courtiers, always intriguing and scheming.
+Whenever their leader sends them out to do dirty business 
+(up to assassination), the anonymous knights all dress in black, 
+hence the name of their organization. They recognize each other 
+by a small secret token, like a blue stone or a ribbon. The prince 
+himself almost never participates and usually stays back at court. 
+However, in 809 the Black Knights and their leader, Amaury de 
+Hauteville, ambush Huon of Bordeaux and his men, and in the 
+ensuing fight Prince Charlot is killed.
+Amaury of Hauteville: The last member of the House of 
+Mayence becomes Count of Mayence in 803. A few years lat -
+er, he replaces Fulco of Morillon as the chief of Charlot’s Black 
+Knights. Amaury is a dastardly backstabber, corrupt and cruel, 
+fatally proud, and over-confident.
+Foreigners
+Avars
+Dorame: The decadent khagan of the Avars (784–790).
+Basques
+Otxoa: The treacherous Duke of the Basques allies with the 
+Moors against the Franks, resulting in the disaster of Roncevaux, 
+where Otxoa meets his end.
+Orthez: He succeeds his father as a duke in 778, and al -
+though he pledges fealty to Charlemagne, he tries to remain as 
+independent from his Frankish overlord as possible.
+Bretons
+Aquin: The pagan king of Brittany is bald, with a hoary 
+white beard. He wields a magic lance and is known for his wis -
+dom, cunning and valor. He is one of the very few Bretons to be 
+literate. His war cry is “Manbrie!.” He reigns until 786.
+Doret of Gardain: King Aquin’s youngest son is eager to 
+prove himself in battle.
+Erdisa: The Breton queen is very beautiful and exception -
+ally modest and wise.
+Grimoart of Dinard: King Aquin’s eldest son is a boastful, 
+cruel and selfish man.
+Lubien and Macabray: T wo aggressive local warlords, who 
+regularly stage raids into Frankland for loot and prestige. Killed 
+in 785.
+c o Nverts
+Salomon: See Paladins.
+Samson: See Paladins.
+Britons
+Mercia
+Offa: The clever and learned King of Mercia (757–796) 
+annexed W essex (by marriage), Kent, Sussex and East Anglia, 
+unifying southern England. An enlightened ruler, Offa is a great 
+admirer and a faithful ally of Charlemagne, who in return pro -
+tects British merchants and pilgrims on the continent.
+Astolf: King Ecfrid’s half-brother. See Paladins.
+Clarice: King Offa’s beautiful sister marries the widowed 
+Ogier in 780.
+Ecfrid: Offa’s son is crowned co-ruler of Mercia in 787, 
+and rules as the sole king from his father’s death to his own, five 
+months later. Like his father, he is a loyal ally of the Franks in 
+their common struggle against the Danes.
+Coenwulf: The pious and ruthless King of Mercia 
+(796–821).
+NortHu Mbria
+Ahlred: King of Northumbria (765–774).
+Aethelred I: King of Northumbria (774–779).
+Aelfwald I: King of Northumbria (779–788).
+Osred II: King of Northumbria (788–796).
+Eardwulf: King of Northumbria (796–806), whose bla -
+zon is “d’azur à une couronne de fleurs argent” (a crown of silver 
+flowers on a blue field).
+Alcuin: See Academicians.
+s cotlaNd
+Gilmer: Zerbin’s valiant nephew serves at the court of 
+William Shortnose.
+Zerbin: The romantic prince of Scotland is the lover of 
+Isabella of Galicia, Duke Hamon’s daughter. Zerbin aids in find-
+ing back Roland’s wits. He recovers Roland’s arms and armor, 
+but is then slain by the cruel Mandricard (776).
+w esseX
+Cynewulf: King of W essex (757–786).
+Bertric: King of W essex (786–802).
+Egbert the Great:  As a chivalrous youth, Prince Egbert 
+spends some time at Charlemagne’s court. After Offa’s death, he 
+rules W essex as an independent sovereign (802–839). 
+Byzantines
+e MPerors
+Constantine V: The Basileus (741–775), whom the Franks 
+call Hugo the Strong, is an ambitious man and a skilled military 
+commander. One of his daughters, Iakobine, has a child from 
+the paladin Oliver, named Galien. The Byzantines irreverently 
+nickname him “Copronymos” (“dung-named”).
+
+==================== PAGE 336 ====================
+=================
+335
+Leo IV: Nicknamed “the Khazar” because his mother was 
+a Circassian princess, Emperor Leo IV (775–780) is a wise and 
+tolerant ruler.
+Constantine VI: This weak emperor (780–797) is con -
+sumed by his ill-fated love for the Frankish Princess Rothrud. 
+Irene of Athens: Leo IV’s wife, she becomes the em -
+press-regent (780–797), and later empress (797–802), then is 
+exiled to Lesbos. Irene is an unscrupulous, energetic, intelligent, 
+and very generous lady.
+Nikephoros: This emperor (802–811) is notorious for his 
+devouring ambition and cruelty. Killed at the battle of Pliska.
+Staurakios the Paralyzed: Basileus of the Greeks (811). 
+Named co-emperor with his father, Nikephoros, in 803. He ab-
+dicates in favor of Michael Rangabe, and dies in 812 of wounds 
+received at the Battle of Pliska. 
+Michael Rangabe: A skilled politician, Emperor Michael 
+(811–813) tries to reconcile the opposing factions in order to 
+unite his people against the Persians.
+Leo V: Emperor of Byzantium (813–820).
+PatriarcHs
+Niketas the Slav: Patriarch from 766 to 780.
+Paul the New: Patriarch from 780 to 784, when he retires 
+to a monastery.
+T arasios: This patriarch (784–806) is a very wise and 
+learned lay scholar.
+Nikephoros: T arasios’ successor (806–815) is a simple but 
+learned monk, known for his chastity and his tolerant attitude.
+o tHers
+Stauriakos: A eunuch, a patrician and a logothete. He is 
+Empress Irene’s right hand and favorite diplomat until his death 
+in 800.
+Elissa: A court eunuch who acts as Princess Rothrud’s tutor.
+Pancratios: The Byzantine court astrologer.
+Salmadrine: This beautiful princess, Constantine V’s sis -
+ter, is married to the heroic Sir Landri of La Roche, the son of 
+Doon of La Roche and Princess Olive of the Franks.
+Danes
+Godfrid I: The proud and illustrious Frankish King of the 
+Danes (740–781), was married to Duchess Passerose of Bavaria, 
+Duke Naymo’s cousin. After her death in 751, the old but valiant 
+King Godfrid married a Danish princess named Belissende, who 
+pushed him to make war on the Frankish king. Defeated in bat-
+tle, King Godfrid agreed to send his son, Ogier, as a hostage to 
+the Frankish court. The noble king becomes Widukind’s ally in 
+the Saxon’s resistance against the Frankish conquest.
+Guyon/Hemming I: Ogier’s chaste and thoughtful 
+half-brother is crowned after their father’s violent death in a 
+campaign against invading giants. Under King Hemming I’s rule 
+(781–798), the relations between the Franks and the Danes are 
+relatively peaceful.
+Magnus the Strong: A Danish convert who serves as a 
+knight at the Frisian court under Duke Lohier. In 800, carrying 
+the enchanted Frisian banner he helps King Charlemagne to lib-
+erate Rome and he becomes the duke of Frisia.
+Sigfrid: This rich and selfish warlord manages to usurp the 
+title of King of Denmark in 798, after King Hemming I’s death. 
+Godfrid II avenges his father and kills Sigfrid in battle in 804.
+Godfrid II: King Hemming I’s son rules from 804 to 
+810, when he is killed by a Danish traitor. The wealthy and 
+prudent Godfrid II builds the Danevirke to protect his lands 
+from the Franks.
+Hemming II: King Godfrid II’s nephew is a wise and pru-
+dent king (811–812). He makes war with the Franks and favors 
+prosperity through trade.
+Ogier the Dane: See Main Heroes.
+Reginald: King Hemming I’s youngest son dies in battle 
+in 808.
+Gascons and Aquitainians
+a quitaiNiaN  Nobles
+W aifer: The Duke of Aquitaine (748–767) is an ally of the 
+rebellious Prince Grifo (King Pepin’s half-brother).
+Hunold: Duke of Aquitaine (767–768), Duke W aifer’s son.
+Sevin of Bordeaux: Duke of Aquitaine (769–803). See 
+Paladins.
+Alice: Duchess-regent of Aquitaine (803–810), Sevin’s 
+wife and mother of Huon of Bordeaux.
+Huon of Bordeaux: See Paladins.
+g asco N Nobles
+Lupus: The Duke of Gascony (759–768) betrays his ally 
+Duke W aifer of Aquitaine, formally submits to Charlemagne, 
+and becomes a faithful Frankish count. He dies at Roncevaux.
+Yo n :  The Duke of Gascony (768–786) marries his eldest 
+daughter Clarissa to Renaud of Montalban, his second daughter 
+Ayglentine becomes the wife of Guy of Nanteuil, and the third 
+weds the valiant Sir Bevis of Commarchis.
+Odalric: Duke Lupus’ second son captures his rival, Duke 
+Chorso of T oulouse, in 787 and vainly tries to restore the inde-
+pendence of Gascony. He is forced to surrender and is sent to a 
+monastery to reflect upon his numerous sins.
+Sancho: See Paladins.
+Huns
+a var  k HagaNs
+Kurguz: The fat and decadent ceremonial khagan.
+Unguimer: A traitor tarkan who helps the Franks conquer 
+the Avar Ring in 794.
+b ulgar  k HagaNs
+T elerig: Successful in his wars with Byzantium, the cruel kha-
+gan is nevertheless chased from power by one of his own in 776.
+Minor Characters
+
+==================== PAGE 337 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+336
+Rogero: See Paladins. This Christian King of the Bulgars 
+(777–784) rules under the name of T elerig II. He converts nu -
+merous Huns, who flee from Bulgaria when Rogero is murdered 
+by the Mayence clan.
+Krum: King Rogero’s successor is a skillful battle leader 
+and a subtle diplomat. His rule (784–814) is based on austerity, 
+discipline and ruthless military efficiency. He maintains the alli-
+ance with the Franks to annihilate his Avar rivals.
+c ircassiaN  t sars
+Sacripant: The courteous tsar of Circassia (or Khazaria) is 
+a vain contender for the love of Angelica of Cathay. He rides the 
+fabulous horse Frontino, until it is stolen from underneath him 
+by Brunello.
+s ericaNe  k HagaNs
+Agrican: Roland kills this noble and worthy khagan in a 
+duel for Angelica’s love in 775. Just before he expires, Agrican 
+demands that Roland baptize him.
+Gradasso: This chivalrous but arrogant khagan of the 
+T artars attacks Frankland and defies Charlemagne in order to 
+win Bayard and Durendal for himself. He is finally killed by 
+Roland at the threefold duel of Lampedusa (776).
+Jews
+Isaac: A wise and wealthy merchant who speaks Hebrew, 
+Latin, Greek, and Arabic. Charlemagne sends him on an embas-
+sy to Harun al-Rashid in 799.
+Lombards
+r oyal  l o Mbard  f a Mily
+Desiderius: The former Duke of T uscany, now King of 
+Lombardy, is too old to fight on the battlefield. He prefers to 
+advance his plans through political alliances, by marrying his 
+children to the rich and powerful. He is sent to a monastery after 
+the fall of Pavia in 774.
+Ansa: King Desiderius’ beautiful and proud wife.
+Adalchis: King Desiderius’ only son is the exiled leader 
+of the anti-Frankish alliance. He is resentful, cruel, and rather 
+a coward.
+Liutperga: Desiderius’ eldest daughter is married to Duke 
+T assilo III of Bavaria. She cultivates an intense and overt hate of 
+King Charlemagne, to whom she never bows.
+Gerberga: Desiderius’ second daughter is King Carloman’s 
+wife. At her husband’s death, she flees to Pavia.
+Desideria: See Wives.
+Adalperga: Desiderius’ fourth daughter is married to Duke 
+Arichis of Benevento.
+b eNeveNto
+Arichis: The stubborn and haughty duke (758–787) calls 
+himself “prince, ” and refuses to submit after the Frankish con -
+quest of Lombardy. He is pious and cultivated, and delights in 
+intrigues and dastardly plots, quite like his Byzantine friends. He 
+is married to Princess Adalperga of Lombardy.
+Grimoald III: Arichis’ youngest son is taken hostage 
+by Charlemagne in 787, then released and installed as duke 
+(788–806). He remains loyal and even fights against his former 
+Byzantine allies.
+Grimoald IV: He was Grimoald’s treasurer, and takes the 
+throne from Grimoald III’s son, Ilderic, in 806. He rules by 
+brute force until his assassination in 817.
+f riuli
+Rhodgaud: Rebellious and fickle Duke of Friuli (767–776).
+Marcarius: Duke of Friuli (776–789), appointed by 
+Charlemagne himself.
+Eric: See Paladins. Duke of Friuli (789–799).
+Aio: Duke of Friuli (799–816), arrogant but respected.
+s Poleto
+Theodicius: The Lombard duke (767–773) dies in the war 
+against the Franks.
+Hildeprand: A valorous Frankish duke (774–789), who 
+dies in battle against the Byzantines.
+Winichis: A just and loyal Frankish duke (789–822).
+v eNice
+Galbaio: The wealthy doge (duke) of V enice (764–787) is 
+a shrewd and prudent man.
+Giovanni: Galbaio’s son and his successor as doge (787–805) 
+is a vengeful, cruel character and an unscrupulous slave trader.
+Oberlier: As doge (805–810) he wisely marries a Frankish 
+woman and remains loyal to Charlemagne.
+o tHers
+Garnier: The perfidious Duke of Calabria.
+Gregorio: Duke of Campania.
+Milo: Duke of Apulia.
+Persians
+Al-Mansour: This generous and just caliph (754–775) 
+stimulates the arts and sciences that make the Persian realm 
+flourish.
+Al-Mahdi: Al-Mansour’s son is a just and stern caliph 
+(775–785), who manages to keep the peace. He imprisons his 
+vizier, Jacub, when he suspects him of treason.
+Al-Hadi: Al-Mahdi’s son is briefly caliph from 785 to 786, 
+until he is assassinated by a family member.
+Harun al-Rashid: The enlightened, just and very learned 
+caliph (786–809) is Charlemagne’s respected ally.
+Al-Amin: Harun’s son and successor (809–813).
+o tHers
+Jafar: Harun’s grand vizier is a shrewd, powerful, and very 
+demanding nobleman.
+
+==================== PAGE 338 ====================
+=================
+337
+Carahue the Courteous: An extremely chivalrous knight, 
+who earns Ogier’s respect at the siege of Rome in 767, and be -
+comes his life-long friend. He finally accepts baptism in 784, 
+when he marries Princess Gloriande (the late Sultan Corsuble’s 
+daughter) and takes a mission to convert the people of Cathay.
+Roman Popes
+Paul I: Pope until his death in 767, Stephen II’s energetic 
+brother is a learned aristocrat and a fine diplomat.
+Constantine II: A dogmatic and humorless lay anti-Pope 
+(767–768), installed at the Lateran Palace under threat of mili -
+tary action by his brother, Duke T oto of Nepi.
+Stephen III: A prudent and somewhat paranoid Pope 
+(768–772), who wants to control everything and everybody 
+around him.
+Adrian I: An aristocrat from a very wealthy patrician fam-
+ily, this Pope (772–795) is a subtle politician and skilled diplo -
+mat. He cares little for theology.
+Leo III: He is not a member of the Roman aristocracy, but 
+as a Pope (795–816) he manages his affairs among the Romans 
+with success. His adversaries reproach him for caring too much 
+for temporal power and pleasures.
+Moors
+e Mirs  of  c ordoba
+Galafre of Aufalerne: Marsile and Galienna’s father was a 
+cultivated poet and a man of peace. The tolerant emir (750–765) 
+was loved by his people. Killed in battle by the caliph of Persia.
+Marsile of Cordoba: (765–779) Marsile is Emir Galafre’s 
+son and the older brother of Sultan Baligant. Ever since his youth, 
+he has strongly disliked the Franks in general, and Charlemagne 
+in particular. He is driven by jealousy and his unreasonable am -
+bition to conquer Frankland. He wields a sword called Precieuse.
+Hisham the Cruel, also known as Marsile II: Marsile’s son 
+is even more cruel and hateful than his father, hence his nick -
+name. During his long and violent reign (780–808), he gets 
+briefly imprisoned by his rival Deramay (793–794), but returns 
+to power and systematically eliminates all those he suspects of 
+disloyalty, causing long-lasting revolts and unrest all over the 
+emirate.
+Deramay the Usurper: The deceitful and vain W ali of 
+Cordoba captures Emir Marsile II and claims the title of emir 
+for himself (793–794).
+Nobles
+Abdul Rahman: Hisham’s chivalrous youngest son has a 
+poetic soul, but feels the burden of fulfilling his father’s insane 
+ambitions.
+Agolant: The proud and valiant W ali of Compostela.
+Aragon of Orange: Tiebaut’s eldest son.
+Blancandrin of V alfond: Emir Marsile’s white-bearded 
+ambassador; a despicable, sly, ruthless character, who is even will-
+ing to sacrifice his own sons in his quest for wealth and power.
+Bramimonde: Marsile’s wife is a romantic queen, who is 
+captured and baptized as Juliana at Aachen after the Battle of 
+Roncevaux.
+Corsolt: The cruel W ali of Barbastro in 802 (not to be con-
+fused with the disreputable giant who cuts off William’s nose in 
+a duel near Rome in 781).
+Dardinel: Marsile’s courteous half-brother and prince of 
+T oledo, killed in battle by Renaud of Montalban in 775.
+Ganor of Aufalerne: This pious, courteous, and relatively 
+autonomous wali is the bastard son of Emir Galafre. He is in love 
+with Aye of Avignon, whom he captures and marries.
+Gaudissa: Marsile I’s lovely daughter. She converts and 
+marries Duke Anseïs of Carthago.
+Otrant of Nîmes: The W ali of Nîmes, who gets killed 
+when William captures his city in 790.
+Siglorel: Marsile’s court enchanter.
+Sulayman: The W ali of Barcelona is the head of the Persian 
+faction in Spain. He secretly travels to Paderborn in 777 to enlist 
+Frankish support against Emir Marsile of Cordoba.
+Tiebaut: The former W ali of Orange (776–791) is Lady 
+Orable’s first husband before she converts and marries William. 
+He is a learned, cunning man and a proud warrior.
+c o Nverts
+Florismart: A courteous and romantic Moor converted 
+by Roland, whose friend he becomes. His lover is the pagan 
+Princess Flordelis. He is killed by Gradasso at Lampedusa in 776. 
+Orable (Guibourc): Marsile’s sister is forced to marry 
+Tiebaut, but she is secretly in love with Sir William Shortnose, 
+whom she marries after her baptism as Guibourc, in 791. She is 
+a loyal, courageous, willful, romantic princess, who knows some 
+minor magic. She loves William so much that she entirely denies 
+her pagan relatives, apart from Rainouart, whom she converts.
+Marfisa: Rogero’s twin sister is a fierce warrior-maiden.
+Otuel (Ferrau): A courteous semi-giant, miraculously con-
+verted by Roland during the First Spanish Campaign in 771. His 
+wife is the beautiful Belisarde. In 775, he slays Khagan Argalia of 
+Sericane in a duel.
+Rogero: See Paladins.
+Saracens
+s ultaNs  of  b abylo N
+Corsuble: The honorable and chivalrous Sultan (752–
+774) who claims Rome as his heritage.
+Baligant: Emir Marsile’s younger brother is the monstrous, 
+reckless and pretentious Sultan of Babylon (775–778). He is 
+killed by Charlemagne himself in the second part of the Battle 
+of Roncevaux.
+Bruhier: A valorous but arrogant Sultan (779–780), who 
+believes himself to be invincible, until Ogier kills him in a duel. 
+Norandin: The greedy and iniquitous Sultan (781–802) is 
+killed at Jerusalem in a battle with Count Simon of Apulia.
+Minor Characters
+
+==================== PAGE 339 ====================
+=================
+Chapter Sixteen: Non-Player Characters
+338
+Gaudisso: A vain and decadent Sultan (803–811), who 
+is slain by Huon of Bordeaux. The young paladin marries the 
+Sultan’s gorgeous daughter, Clarimunda.
+Agrapard: The Sultan of Babylon (811–814).
+Nobles
+Brunello the Dwarf: A master-thief who steals Angelica’s 
+magic ring, Sacripant’s horse, and Marfisa’s sword (775). He 
+fails to kill Bradamant, who ties him to a tree. Brunello is 
+liberated by Marfisa, but is then hanged by the Saracen Emir 
+Agramant (776).
+Ferragut: A courteous but stupid Moorish giant, Emir 
+Marsile’s nephew, who is completely invulnerable to weapons 
+(except at his navel) thanks to a magic healing balm. He is killed 
+in a duel by Roland in 771.
+Lengoulaffre: Sultan Bruhier’s brother is the W ali of 
+Alexandria. He gets killed in a duel with Carahue in 784.
+Mandricard: Rodomont’s rival for the love of Princess 
+Doralice.
+Rodomont of Algiers: This extremely boastful, yet cour -
+teous, Emir of Algiers is the father of Galacienne (Rogero’s 
+mother), and himself in love with Princess Doralice of Granada 
+(who prefers Mandricard). Rodomont accidentally kills Princess 
+Isabella of Galicia, for whom he builds a bridge and a tomb. In 
+her memory, he defends the bridge leading to the funerary mon-
+ument for an entire year. He is killed by Roland at Bradamant’s 
+wedding (777).
+Yvorin of Monbranc: Sultan Gaudisso’s brother.
+c o Nverts
+Iroldo: Prasildo’s gallant companion, and Roland’s friend.
+Moisan: The Emir of Jerusalem converts in 782, after hav-
+ing witnessed a miracle. His daughter Clara demands baptism 
+and marries Ogier’s companion, W alter.
+Prasildo: Roland’s friend, and Iroldo’s chivalrous 
+companion.
+Saxons and Frisians
+Abbio and Wibrecht: Widukind’s sons, who are forcibly 
+baptized in their father’s company in 785.
+Brun: The chief of the Angarians.
+Cimosco: The chief of the Frisians.
+Dyalas: Widukind’s third son is a chivalric knight who 
+denies his Saxon heritage and demands to be baptized as 
+“Widukind the Convert.” Charlemagne appoints him Duke of 
+Saxony after Baldwin’s untimely death in 783.
+Hessi: The Eastphalian leader, who submits to 
+Charlemagne in 775.
+Widukind: His name means “child of the forest.” Widukind 
+is the uncontested leader of the W estphalians, and later even of 
+all rebel Saxons. He is a shamanic warrior who possesses the 
+power of invisibility; a vengeful and cruel man. He is married to 
+Lady Sebile, who is in love with Roland’s half-brother, Baldwin, 
+whom she marries after having received baptism in 783.
+Widukind is allied with the Danes, with whom he relent -
+lessly fights the hated Franks, until he is finally captured and 
+baptized in 785. Widukind then becomes a monk at the Abbey 
+of Reichenau until his death in 810.
+Slavs
+Dragovit: Prince of the Wilzi.
+Godelaid: Prince, son of Thrasico.
+Lecho: Prince of the Czechs.
+Miliduoch: Prince of the Serbs.
+Thrasico: The last independent King of the Slavs.
+Visigoths
+k iNgs  of  a sturias
+Fruela the Cruel: King of Asturias until his assassination 
+(757–768).
+Aurelio: A good-hearted and generous king (768–774) 
+who gains the throne upon the death of his cousin. His rank is 
+re-affirmed by Charlemagne in 771.
+Silo: An ambitious king (774–783) and a subtle diplomat.
+Mauregato the Usurper: King of Asturias (783–789). He 
+is the evil, scheming, bastard son of Alphonso I and a Saracen 
+concubine. He is brother to Fruela the Cruel.
+Bermudo the Deacon: A merciful and pious king (789–
+791), who abdicates and retires to a monastery.
+Alphonso II the Chaste: An enlightened king (791–813), 
+reputed to be chaste, generous, temperate, pious and valorous.
+Hugo the Orphan: Raymond of St. Giles’ only son mar -
+ries Alphonso’s heiress Sorplante, and becomes the first Frankish 
+King of Asturias in 813.
+o tHers
+Beato of Liebana: A learned monk at the Asturian 
+court; strongly opposed to Adoptionism and an intimate 
+friend of Alcuin.
+Benedict of Aniane: See Academicians.
+Bera: The loyal and valorous Count of Carcassonne is 
+made Count of Barcelona after its conquest in 801.
+Hamon of Galicia: See Paladins.
+Isabella of Galicia: Duke Hamon’s romantic daughter, 
+in love with Prince Zerbin of Scotland. She is slain by the cruel 
+Rodomonte in 775.
+Raymond: Duke of Navarra (779–803).
