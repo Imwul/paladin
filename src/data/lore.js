@@ -457,6 +457,202 @@ export const bestiary = [
     ],
     loreKO: "겨울철 식량이 모두 소진되었을 때 눈 덮인 황야에서 사냥감을 찾아 울부짖는 늑대 무리입니다. 굶주림으로 지극히 흉포해져 있으며, 길 잃은 순례자나 단독 정찰 중인 기사의 말을 집요하게 추적합니다.",
     loreEN: "A desperate pack of wolves hunting in the frozen forests. They hunt in perfect coordination, using their numbers to surround isolated travelers and bring down larger prey through exhaustion."
+  },
+  {
+    key: "destrier",
+    emoji: "🐎",
+    nameKO: "명마 데스트리에 (Great Warhorse - Destrier)",
+    nameEN: "Great Warhorse Destrier",
+    category: "야수 (Beast)",
+    stats: { STR: 38, CON: 10, SIZ: 42, DEX: 10, HP: 52, Armor: 5, Damage: "8d6" },
+    specialRules: [
+      { title: "전투 마술 훈련 (Battle Trained)", desc: "데스트리에는 전장 돌격에 단련되어 있어, 기사가 전투 중에 마술(Horsemanship) 판정을 별도로 굴릴 필요 없이 오직 무기에만 전념할 수 있도록 합니다." },
+      { title: "마상 랜스 돌격 (Lance Charge Damage)", desc: "이 말을 탄 기사가 랜스 돌격을 감행할 경우, 공격 성공 시 가하는 최종 돌격 피해량 주사위가 8d6으로 증가합니다." }
+    ],
+    loreKO: "어지간한 기사들의 체구(SIZ 42)를 압도하는 웅장한 전쟁용 군마입니다. 오직 강력하게 전투 훈련을 거친 대군마만이 데스트리에로 분류되며, 무겁고 두터운 판금 갑옷을 걸친 중장기사를 태우고도 적진의 방패벽을 가볍게 뚫고 들어갈 수 있습니다.",
+    loreEN: "A large, war-trained horse. Only the Great Horse is big enough to be a destrier, capable of carrying a fully armored knight and delivering crushing damage in a lance charge."
+  },
+  {
+    key: "bayard",
+    emoji: "✨",
+    nameKO: "마법마 바야르 (The Magical Steed Bayard)",
+    nameEN: "Magical Steed Bayard",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 50, CON: 50, SIZ: 50, DEX: 25, HP: 100, Armor: 8, Damage: "6d6" },
+    specialRules: [
+      { title: "인간에 버금가는 지성 (Human-like Wisdom)", desc: "바야르는 인간의 언어를 완전히 이해하며 고도의 감정과 지혜를 지녔습니다. 기사의 위험 경보(Awareness) 판정에 +5 보너스를 부여하며 결코 주인을 배신하지 않습니다." },
+      { title: "바람을 가르는 돌격 (Wind Charge 17d6)", desc: "돌격(Move 25) 시 랜스 피해량이 무려 17d6으로 계산되며, 마술 회피(Avoidance) 판정이 39점 이하일 경우 어떠한 타격도 받지 않고 미끄러지듯 피합니다." }
+    ],
+    loreKO: "대마법사 모지가 심해와 숲의 정령들에게 얻어 사촌인 르노 경에게 선물한, 카롤링거 서사시 최고의 명마입니다. 네 명의 에몽 백작의 아들들을 한 등 위에 동시에 태우고 적진을 휘저었던 전설의 말이며, 르노에 대한 무한한 충성심을 자랑합니다.",
+    loreEN: "The most famous faerie horse, won by Maugis and given to Renaud. Bayard possesses human intelligence, understands speech, and runs as fast as the wind, representing a knight's perfect loyal companion."
+  },
+  {
+    key: "battle_elephant",
+    emoji: "🐘",
+    nameKO: "전투 코끼리 아불 아바스 (Battle Elephant - Abul-Abbas)",
+    nameEN: "Battle Elephant Abul-Abbas",
+    category: "야수 (Beast)",
+    stats: { STR: 80, CON: 20, SIZ: 80, DEX: 12, HP: 100, Armor: 7, Damage: "18d6" },
+    specialRules: [
+      { title: "압사 짓밟기 (Trample 16)", desc: "전투 라운드 중 적대 대상을 압사시키는 짓밟기 판정이 16점으로 수행됩니다. 성공 시 적에게 18d6의 치명적인 물리 압착 피해를 입힙니다." },
+      { title: "위압감 및 코끼리 공포증 (Elephantine Terror)", desc: "코끼리를 상대하는 기사는 전투 개시 전 신중(Prudent) +5 판정을 굴려야 합니다. 실패 시 코끼리의 거대한 풍채에 위축되어 공격 행동을 할 수 없게 됩니다." }
+    ],
+    loreKO: "아라비아 바그다드의 칼리프 하루날 라시드가 797년 샤를마뉴 황제에게 헌상한 실존했던 백색 전투 코끼리입니다. 북방의 덴마크 전쟁(810년)에도 동원되었으며, 이 거대한 괴수가 울부짖으며 돌격할 때 말들은 사방으로 흩어져 도망쳤습니다.",
+    loreEN: "Gigantic war beasts used by eastern empires. The historical white elephant Abul-Abbas was gifted to Charlemagne in 797 by Haroun Al-Rashid, bringing unmatched dread to Northern battlefields."
+  },
+  {
+    key: "battle_camel",
+    emoji: "🐫",
+    nameKO: "사막 전투 낙타 (Desert Battle Camel)",
+    nameEN: "Desert Battle Camel",
+    category: "야수 (Beast)",
+    stats: { STR: 20, CON: 12, SIZ: 55, DEX: 17, HP: 67, Armor: 5, Damage: "6d6" },
+    specialRules: [
+      { title: "기병 대치 우위 (Mounted Superiority)", desc: "낙타에 기승해 싸우는 아랍 전사들은 일반 기마에 탑승한 기사들을 상대로 칼부림과 마창 대립 판정에 +5 가산점을 획득합니다." },
+      { title: "겨울 기후 패널티 (Cold Vulnerability)", desc: "사막 태생인 낙타는 북부 유럽의 겨울 환경에서 혹한에 노출되면 생존 판정(Mount Survival)에 -5의 치명적인 벌점을 입습니다." }
+    ],
+    loreKO: "피레네 남쪽 사라고사 토후국과 머나먼 시리아, 페르시아에서 전사들이 애용하는 사막 전용 탈것입니다. 말이 낙타 특유의 악취에 겁을 먹는 경향이 있어 말 탄 서구 성기사들에게 마상 대치 시 기습적인 전술 우위를 부여합니다.",
+    loreEN: "Desert mounts used by Saracen and Moorish horsemen. Warriors fighting from a camel's back gain a +5 combat advantage over riders mounted on standard horses."
+  },
+  {
+    key: "combat_mastiff",
+    emoji: "🐕",
+    nameKO: "전투 맹견 마스티프 (Combat Mastiff)",
+    nameEN: "Combat Mastiff",
+    category: "야수 (Beast)",
+    stats: { STR: 13, CON: 12, SIZ: 12, DEX: 20, HP: 24, Armor: 2, Damage: "3d6" },
+    specialRules: [
+      { title: "목덜미 물어뜯기 (Savage Bite 15)", desc: "전투 맹견 마스티프가 적을 물 때 Bite 15 수치로 대립 판정을 합니다. 철제 갑옷(Metal Armor)을 두른 기사나 적에겐 피해량이 1d6 감소합니다." },
+      { title: "충직한 보초 및 수렵 동반 (Faithful Guardian)", desc: "기사가 겨울 야영 중이거나 수렵(Hunting) 중일 때 마스티프와 동행하면, 야습 경계(Awareness) 및 사냥 판정에 +5 가산점을 획득합니다." }
+    ],
+    loreKO: "사냥물의 뼈를 부러뜨리고 성을 침입하는 불한당이나 적병을 단숨에 물리치기 위해 귀족들이 육성하는 초대형 맹견입니다. 곰이나 거대한 멧돼지도 물어 뜯는 투지가 훌륭하여 기사들의 최고의 동반자로 여겨집니다.",
+    loreEN: "Valuable dogs bred for combat and big game hunting. These massive mastiffs are impressive defenders, used to tackle bears, boars, and thieves effectively."
+  },
+  {
+    key: "aurochs",
+    emoji: "🐂",
+    nameKO: "야생 들소 아우록스 (Aurochs)",
+    nameEN: "Wild Bull Aurochs",
+    category: "야수 (Beast)",
+    stats: { STR: 42, CON: 20, SIZ: 42, DEX: 7, HP: 62, Armor: 7, Damage: "10d6" },
+    specialRules: [
+      { title: "분노의 뿔 돌격 (Horn Charge)", desc: "들소가 첫 돌격을 가할 때, 돌격 피해량에 +2d6이 합산(최종 12d6)되며, 뿔 받기(Horn Gore 9)에 걸리면 1d6의 추가 출혈 피해를 입힙니다." },
+      { title: "수렁 수영 (Swamp Swimmer)", desc: "거대한 덩치에도 불구하고 물속에서 가볍게 수영이 가능하여, 늪지대나 강가 전투 시 지형 패널티를 전혀 받지 않습니다." }
+    ],
+    loreKO: "제국 북부 작센의 울창한 밀림과 라인강 변방의 질척이는 진흙탕 속에 서식하는 멧집 강한 고대 야생 들소입니다. 거대한 체구와 날카롭게 굽은 뿔을 자랑하며 포효하며 돌격해올 때 숲의 참나무조차 부서집니다.",
+    loreEN: "Enormous, herbivorous wild bulls living in the deep forests and wet marshes of Frankland, capable of devastating trampling attacks when enraged."
+  },
+  {
+    key: "pyrenean_bear",
+    emoji: "🐻",
+    nameKO: "피레네 갈색 곰 (Pyrenean Brown Bear)",
+    nameEN: "Pyrenean Brown Bear",
+    category: "야수 (Beast)",
+    stats: { STR: 25, CON: 18, SIZ: 25, DEX: 10, HP: 43, Armor: 6, Damage: "3d6x2" },
+    specialRules: [
+      { title: "찢어발기는 마울링 (Mauling Claws 13)", desc: "전투 라운드 당 Claws 13으로 단 한 표적만 공격합니다. 대립 성공 시, 피해량 3d6을 2회 별도로 계산하여 각각 별개의 치명적인 상처로 입힙니다." },
+      { title: "야생의 생존력 (Bear Resilience)", desc: "추운 겨울 삼림 조우 시 활 공격에 높은 저항력을 지니며, 매 라운드 자연 치유력이 인간의 두 배로 활성화됩니다." }
+    ],
+    loreKO: "피레네 산맥의 깊은 동굴과 은밀한 침엽수림에 서식하는 거구의 맹수입니다. 인간을 기피하지만 코너에 몰렸을 때 쏟아져 나오는 양손 발톱의 파괴력은 성기사의 마상 방패와 갑옷마저 갈가리 찢어버릴 수 있습니다.",
+    loreEN: "Fearsome predators found in the high passes of the Pyrenees. Bears deliver separate mauling wounds that can easily turn a knight's shield to splinters."
+  },
+  {
+    key: "aspremont_griffin",
+    emoji: "🦅",
+    nameKO: "하늘의 강탈자 그리핀 (Aspremont Griffin)",
+    nameEN: "Aspremont Griffin",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 40, CON: 25, SIZ: 40, DEX: 20, HP: 65, Armor: 10, Damage: "8d6" },
+    specialRules: [
+      { title: "공중 낙하 강탈 (Snatch & Drop)", desc: "비행 중 아머를 갖추지 않았거나 가벼운 적(SIZ 13 이하)을 입으로 낚아채어 하늘 높은 곳에서 땅으로 내던집니다. 추락한 대상은 6d6의 관통 낙하 대미지를 입습니다." },
+      { title: "공중 활공 공격 (Flyby Attack -15)", desc: "공중을 날아가며 공격할 때 적의 방어/대립 주사위에 -15라는 파괴적인 명중 디버프를 강제하고 휩쓸고 지나갑니다." }
+    ],
+    loreKO: "독수리의 앞몸과 날개, 그리고 사자의 뒷몸을 지닌 전설적인 아스프레몽 고산 지대의 야수입니다. 특히 말 고기를 극도로 좋아하며 인간 기사들을 보면 굶주린 포효와 함께 내려꽂힙니다. 마법사들이 수호수로 자주 사역합니다.",
+    loreEN: "A rare monster with the rear body of a lion and the foreparts of an eagle. Griffins have a special taste for horse meat and can snatch up and drop riders from the sky."
+  },
+  {
+    key: "carolingian_dragon",
+    emoji: "🐉",
+    nameKO: "카롤링거 지옥 화룡 (Carolingian Dragon/Wyrm)",
+    nameEN: "Carolingian Dragon Wyrm",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 35, CON: 25, SIZ: 35, DEX: 30, HP: 60, Armor: 15, Damage: "7d6" },
+    specialRules: [
+      { title: "멸망의 화염 브레스 (Fire Breath 10)", desc: "용이 화염 브레스를 뿜을 때 피할 수 없는 6d6의 마법 화염 대미지를 입힙니다. 기사는 용맹(Valorous) -10 판정에 통과해야만 대항 무기를 뽑을 수 있습니다." },
+      { title: "신체 재생 및 복원 (Demonic Regeneration)", desc: "드래곤은 잘린 팔다리를 기적적으로 복구하는 신비한 융합 능력을 가지고 있습니다. 전투 중 매 라운드가 끝날 때마다 1d6 HP를 즉시 자가 재생합니다." }
+    ],
+    loreKO: "프랑크 대륙의 문명과 멀리 떨어진 깊은 화산성 산맥이나 미지의 습지 유적 동굴에서 도사리는 종말의 상징입니다. 악마의 핏줄로부터 태어난 존재로 알려져 있으며, 이 괴수를 쓰러뜨려 명예를 쟁취한 기사는 제국의 영웅으로 칭송받습니다.",
+    loreEN: "Extremely rare giant serpents of demonic origin. They exude dread, breathe ruinous fire, and possess the horrifying ability to regenerate severed limbs and wounds instantly."
+  },
+  {
+    key: "pyrenean_manticore",
+    emoji: "🦁",
+    nameKO: "식인 야수 만티코어 (Pyrenean Manticore)",
+    nameEN: "Pyrenean Manticore",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 45, CON: 25, SIZ: 45, DEX: 20, HP: 70, Armor: 10, Damage: "9d6" },
+    specialRules: [
+      { title: "독침 꼬리 찌르기 (Tail Sting 20)", desc: "만티코어의 전갈 꼬리 찌르기가 Tail Sting 20으로 전개됩니다. 피해량은 6d6이지만 독성(Potency 4d6) 판정을 굴려 실패 시 심장 쇠약 디버프를 겪습니다." },
+      { title: "공포의 기사도 판정 (Valorous -10)", desc: "기사는 만티코어를 마주했을 때 용맹(Valorous) -10 판정을 해야 합니다. 통과하지 못하면 공포에 질려 공격 주사위를 2번 굴려 나쁜 값을 취합니다." }
+    ],
+    loreKO: "머나먼 페르시아나 인도에 살던 식인 야수이나 제국의 산맥 협곡에 흘러들어 정착한 괴물입니다. 사자의 붉은 몸뚱이에 인간의 얼굴, 세 줄로 가득 찬 톱니바퀴 같은 이빨과 전갈의 가시 꼬리를 가졌으며, 플루트 같은 달콤한 목소리로 길을 잃은 순례자를 홀려 뼈째 갉아먹습니다.",
+    loreEN: "A legendary man-eating beast with a lion's body, a human face, three rows of sharp teeth, and a deadly scorpion sting. It can leap over castle walls effortlessly to capture prey."
+  },
+  {
+    key: "desert_basilisk",
+    emoji: "🐍",
+    nameKO: "죽음의 바실리스크 (Desert Basilisk)",
+    nameEN: "Desert Basilisk",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 10, CON: 50, SIZ: 5, DEX: 25, HP: 55, Armor: 20, Damage: "2d6" },
+    specialRules: [
+      { title: "사안의 저주 (Deadly Gaze 10)", desc: "바실리스크의 눈과 눈이 마주칠 경우(Gaze 10), 기사는 경건(Pious) 또는 용맹(Valorous) 판정을 즉시 굴려 실패 시 체력에 무관하게 즉시 사망(Instant Death)합니다." },
+      { title: "맹독성 타액 침 (Poisonous Spit 21)", desc: "사거리 25야드 내에서 침을 뱉어 공격합니다. 피격 시 독 주사위를 매 라운드 굴려 1d6에서 1이 나올 때까지 라운드당 10점의 고정 아머 무시 대미지를 입습니다." }
+    ],
+    loreKO: "수탉의 머리에 날개를 달았으나 하늘을 날지 못하며, 몸은 거대한 사막 독사를 닮은 뱀의 왕입니다. 지나간 자리는 식물이 시들어 말라죽고 쉭쉭거리는 소리만으로 다른 독사들을 지배합니다. 주로 요정과 보물이 묻힌 성역을 수호합니다.",
+    loreEN: "A highly lethal snake with a cock's head and wings. Its deadly gaze can strike a man dead instantly, and its venomous spit ruins the land and infects survivors with madness."
+  },
+  {
+    key: "faerie_enchantress",
+    emoji: "🧚‍♀️",
+    nameKO: "요정 엔찬트리스 알치나 (Alcina the Faerie Enchantress)",
+    nameEN: "Alcina the Faerie Enchantress",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 8, CON: 8, SIZ: 8, DEX: 14, HP: 16, Armor: 0, Damage: "3d6" },
+    specialRules: [
+      { title: "치명적 요정 유혹 (Lustful Enchantment 20)", desc: "엔찬트리스는 고도의 환영술로 성기사를 홀립니다. 기사는 정조(Chaste) 대립 판정을 굴려 실패 시 마법의 성에 노예로 갇히며, 매 겨울 단계마다 구애 열망(Lustful) 점수가 +2씩 영구 증가합니다." },
+      { title: "환각의 베일 (Veil of Illusion)", desc: "물리적 공격이 가해질 때 요정의 환각 마법으로 적중 주사위를 2번 굴려 무조건 실패율이 높은 더 낮은 주사위 수치를 따르도록 교란합니다." }
+    ],
+    loreKO: "요정 모르간의 이복자매이자 광란의 오를란도 서사시에서 수많은 성기사들을 홀려 자신의 마법 섬에 감금하고 동물의 형상으로 바꾼 음탕하고 매혹적인 요정입니다. 춤과 음악, 아름다운 사교 예절을 즐기며, 사로잡히면 영혼이 무너집니다.",
+    loreEN: "Morgan's half-sister and a powerful lustful enchantress. She lures famous paladins to her magical island, keeping them as toys of her desire or transmuting them into wild beasts."
+  },
+  {
+    key: "sea_orc",
+    emoji: "🐋",
+    nameKO: "심해의 폭군 오크 (Sea Orc)",
+    nameEN: "Tyrant Sea Orc",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 30, CON: 20, SIZ: 40, DEX: 15, HP: 60, Armor: 30, Damage: "8d6" },
+    specialRules: [
+      { title: "강철 비늘 아머 (Unbreakable Hide 30)", desc: "오크의 가죽은 강철 성벽과 같습니다. 아머 방어도가 30으로 책정되어 있으며, 신성 성검(Holy Sword)이나 거인 슬레이어 무기가 아닌 일반 무기로는 어떠한 긁힘 피해도 줄 수 없습니다." },
+      { title: "어금니 물어뜯기 (Boar Tusks 12)", desc: "멧돼지 같은 어금니로 수중 대상을 강렬하게 물어뜯어 8d6의 피해를 입힙니다. 물속(Swim Rate 5)에서 벌어지는 대지 전투 시 적 기사를 마상째 삼킵니다." }
+    ],
+    loreKO: "아일랜드 북방 바다와 지중해 남부 해역을 지배하는, 거대 뱀의 꼬리와 야생 멧돼지의 머리를 가진 흉측한 깊은 바다의 거대 괴룡입니다. 무고한 처녀를 제물로 바치는 해안 부족들을 보호하며 군림해 왔으며, 오를란도 경이 닻줄을 입안에 처박아 물 밖으로 끌어내 죽였습니다.",
+    loreEN: "A colossal sea monster with a coiling serpent body and a boar's head. Its rocky hide is virtually impervious to standard steel, requiring legendary strength to pierce."
+  },
+  {
+    key: "carolingian_goblin",
+    emoji: "👺",
+    nameKO: "원죄의 고블린 (Carolingian Goblin)",
+    nameEN: "Carolingian Goblin",
+    category: "초자연 (Supernatural)",
+    stats: { STR: 16, CON: 20, SIZ: 6, DEX: 30, HP: 26, Armor: 6, Damage: "4d6" },
+    specialRules: [
+      { title: "원죄의 투영 (Mirror of Vices)", desc: "고블린은 오만한 독수리, 게으른 소, 음탕한 염소 등의 모습으로 나타나 기사의 정신을 오염시킵니다. 기사는 대립되는 도덕적 미덕 판정(Chaste, Temperate, Pious 등)에 통과해야만 고블린을 물리치고 도망치게 할 수 있습니다." },
+      { title: "요정의 장난꾸러기 도망 (Avoidance 30)", desc: "고블린은 지극히 민첩하여 도망(Avoidance 30)에 능합니다. 숲속에서 추적하거나 잡으려 할 때 대립 주사위에 큰 패널티를 부여합니다." }
+    ],
+    loreKO: "요정 모르간의 땅인 아발론 근방이나 황량한 제국의 광야에서 태어나는, 인간의 타락한 죄악들이 뭉쳐 기괴한 동물의 머리를 취한 하급 악귀들입니다. 기사를 물리적으로 타격하기보다 조롱하고 비웃으며 도덕심을 갉아먹는 것이 특징입니다.",
+    loreEN: "Foul visual incarnations of human sins. These highly agile, animal-headed creatures harass traveling knights by magnifying their moral weaknesses rather than engaging in direct combat."
   }
 ];
 
