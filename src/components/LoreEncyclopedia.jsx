@@ -25,6 +25,7 @@ export default function LoreEncyclopedia() {
   const [selectedGeoTab, setSelectedGeoTab] = useState('overview');
   const [selectedMinorNPC, setSelectedMinorNPC] = useState(null);
   const [cultureLangMode, setCultureLangMode] = useState('both');
+  const [hoveredHotspot, setHoveredHotspot] = useState(null);
 
   // Name Generator State
   const [genGender, setGenGender] = useState('male');
@@ -968,80 +969,253 @@ export default function LoreEncyclopedia() {
                   ))}
                 </div>
 
+                {/* CSS Pulsing animation for map hotspots */}
+                <style>{`
+                  @keyframes mapPulse {
+                    0% { transform: scale(0.9); opacity: 0.5; box-shadow: 0 0 4px rgba(201, 168, 76, 0.4); }
+                    50% { transform: scale(1.1); opacity: 0.9; box-shadow: 0 0 12px rgba(201, 168, 76, 0.8); }
+                    100% { transform: scale(0.9); opacity: 0.5; box-shadow: 0 0 4px rgba(201, 168, 76, 0.4); }
+                  }
+                  .map-hotspot-indicator {
+                    animation: mapPulse 2s infinite ease-in-out;
+                  }
+                `}</style>
+
                 {/* Map Display area with parchment frame */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center' }}>
-                  {selectedGeoTab === 'europe_768' && (
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
-                        🗺️ 유럽 강역도 (서기 768년 - 샤를마뉴 즉위 원년)
-                      </h4>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
-                        국왕 피핀 3세 사후, 샤를마뉴 대제와 동생 카를로만 1세가 프랑크 왕국을 분할 통치하던 즉위 원년 시점의 대륙 강역도입니다. 잘려 있던 좌우 페이지를 디지털 접합 및 최적화하였습니다.
-                      </p>
-                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
-                        <img 
-                          src={europe768Map} 
-                          alt="Map of Europe 768 AD" 
-                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
-                        />
-                      </div>
-                    </div>
-                  )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center', width: '100%' }}>
+                  {(() => {
+                    const territoryHotspots = [
+                      { key: 'austrasia', name: '오스트라시아 (Austrasia)', top: '22%', left: '41%', width: '12%', height: '14%' },
+                      { key: 'neustria', name: '네우스트리아 (Neustria)', top: '28%', left: '23%', width: '12%', height: '14%' },
+                      { key: 'burgundy', name: '부르군트 (Burgundy)', top: '48%', left: '38%', width: '11%', height: '14%' },
+                      { key: 'aquitaine', name: '아키텐 (Aquitaine)', top: '56%', left: '19%', width: '13%', height: '15%' },
+                      { key: 'gascony', name: '가스코뉴 (Gascony)', top: '74%', left: '13%', width: '10%', height: '10%' },
+                      { key: 'provence', name: '프로방스 (Provence)', top: '70%', left: '42%', width: '10%', height: '10%' },
+                      { key: 'septimania', name: '셉티마니아 (Septimania)', top: '72%', left: '26%', width: '11%', height: '10%' },
+                      { key: 'alemannia', name: '알레마니아 (Alemannia)', top: '38%', left: '48%', width: '10%', height: '12%' },
+                      { key: 'bavaria', name: '바이에른 (Bavaria)', top: '40%', left: '59%', width: '11%', height: '13%' },
+                      { key: 'thuringia', name: '튀링겐 (Thuringia)', top: '22%', left: '53%', width: '10%', height: '12%' }
+                    ];
 
-                  {selectedGeoTab === 'europe_814' && (
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
-                        🗺️ 유럽 강역도 (서기 814년 - 샤를마뉴 대제 서거)
-                      </h4>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
-                        샤를마뉴 대제가 전 생애에 걸친 대정복 위업을 통해 작센, 바이에른, 아바르, 롬바르디아를 정복하고 거대한 로마 제국 황제로서 서거하기 직전 최절정기의 제국 대강역도입니다.
-                      </p>
-                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
-                        <img 
-                          src={europe814Map} 
-                          alt="Map of Europe 814 AD" 
-                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
-                        />
-                      </div>
-                    </div>
-                  )}
+                    const handleHotspotClick = (key) => {
+                      const found = franklandTerritories.find(t => t.key === key);
+                      if (found) {
+                        setSelectedTerritory(found);
+                        setSelectedGeoTab('overview');
+                      }
+                    };
 
-                  {selectedGeoTab === 'ardennes' && (
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
-                        🌲 아르덴 상세 세부 지도 (The Ardennes Forest &amp; Bastogne)
-                      </h4>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
-                        플레이어 성기사들이 어린 시절 교육받고 모험을 시작하는 아르덴 공국 및 바스토뉴(Bastogne) 요새도시 중심의 세부 강역도입니다. 울창한 원시 삼림과 복잡한 지류, 신비 유적 및 수도원들의 상세 입지가 결합되어 있습니다.
-                      </p>
-                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
-                        <img 
-                          src={ardennesMap} 
-                          alt="Map of the Ardennes" 
-                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
-                        />
-                      </div>
-                    </div>
-                  )}
+                    return (
+                      <div style={{ width: '100%' }}>
+                        {selectedGeoTab === 'europe_768' && (
+                          <div style={{ width: '100%', textAlign: 'center' }}>
+                            <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                              🗺️ 유럽 강역도 (서기 768년 - 샤를마뉴 즉위 원년) [인터랙티브 대화형]
+                            </h4>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                              국왕 피핀 3세 사후, 샤를마뉴 대제와 동생 카를로만 1세가 프랑크 왕국을 분할 통치하던 즉위 원년 시점의 대륙 강역도입니다. 잘려 있던 좌우 페이지를 디지털 접합 및 최적화하였습니다. **지도 속 각 영역을 클릭하면 세부 설정으로 이동합니다.**
+                            </p>
+                            <div style={{ position: 'relative', border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+                              <img 
+                                src={europe768Map} 
+                                alt="Map of Europe 768 AD" 
+                                style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                              />
+                              {/* Render Interactive Hotspots */}
+                              {territoryHotspots.map(spot => (
+                                <div
+                                  key={spot.key}
+                                  onClick={() => handleHotspotClick(spot.key)}
+                                  onMouseEnter={() => {
+                                    const found = franklandTerritories.find(t => t.key === spot.key);
+                                    setHoveredHotspot(found);
+                                  }}
+                                  onMouseLeave={() => setHoveredHotspot(null)}
+                                  style={{
+                                    position: 'absolute',
+                                    top: spot.top,
+                                    left: spot.left,
+                                    width: spot.width,
+                                    height: spot.height,
+                                    cursor: 'pointer',
+                                    borderRadius: '50%',
+                                    border: hoveredHotspot?.key === spot.key ? '2px solid var(--color-gold)' : '2px dashed rgba(201, 168, 76, 0.4)',
+                                    background: hoveredHotspot?.key === spot.key ? 'rgba(201, 168, 76, 0.25)' : 'rgba(201, 168, 76, 0.05)',
+                                    boxShadow: hoveredHotspot?.key === spot.key ? '0 0 10px rgba(201, 168, 76, 0.6)' : 'none',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    zIndex: 10
+                                  }}
+                                  className={hoveredHotspot?.key === spot.key ? '' : 'map-hotspot-indicator'}
+                                  title={spot.name}
+                                >
+                                  <span style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    background: hoveredHotspot?.key === spot.key ? 'var(--color-crimson)' : 'var(--color-gold-dark)',
+                                    boxShadow: hoveredHotspot?.key === spot.key ? '0 0 6px var(--color-crimson)' : 'none'
+                                  }} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
 
-                  {selectedGeoTab === 'aachen' && (
-                    <div style={{ width: '100%', textAlign: 'center' }}>
-                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
-                        🏰 아헨 제국 궁정 세부 도면 (Aachen Palace Compound)
-                      </h4>
-                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
-                        샤를마뉴 대제의 황실 궁정이 위치한 아헨(Aachen)의 제국 궁정 성벽 단지 세부 배치 도면입니다. 황금 돔 예배당(Palatine Chapel), 대제의 대강당(Aula Regia), 국고 탑 등의 상세 입지를 보여줍니다.
-                      </p>
-                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', maxWidth: '600px', margin: '0 auto' }}>
-                        <img 
-                          src={aachenMap} 
-                          alt="Map of Aachen Palace" 
-                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
-                        />
+                        {selectedGeoTab === 'europe_814' && (
+                          <div style={{ width: '100%', textAlign: 'center' }}>
+                            <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                              🗺️ 유럽 강역도 (서기 814년 - 샤를마뉴 대제 서거) [인터랙티브 대화형]
+                            </h4>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                              샤를마뉴 대제가 전 생애에 걸친 대정복 위업을 통해 작센, 바이에른, 아바르, 롬바르디아를 정복하고 거대한 로마 제국 황제로서 서거하기 직전 최절정기의 제국 대강역도입니다. **지도 속 각 영역을 클릭하면 세부 설정으로 이동합니다.**
+                            </p>
+                            <div style={{ position: 'relative', border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
+                              <img 
+                                src={europe814Map} 
+                                alt="Map of Europe 814 AD" 
+                                style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                              />
+                              {/* Render Interactive Hotspots */}
+                              {territoryHotspots.map(spot => (
+                                <div
+                                  key={spot.key}
+                                  onClick={() => handleHotspotClick(spot.key)}
+                                  onMouseEnter={() => {
+                                    const found = franklandTerritories.find(t => t.key === spot.key);
+                                    setHoveredHotspot(found);
+                                  }}
+                                  onMouseLeave={() => setHoveredHotspot(null)}
+                                  style={{
+                                    position: 'absolute',
+                                    top: spot.top,
+                                    left: spot.left,
+                                    width: spot.width,
+                                    height: spot.height,
+                                    cursor: 'pointer',
+                                    borderRadius: '50%',
+                                    border: hoveredHotspot?.key === spot.key ? '2px solid var(--color-gold)' : '2px dashed rgba(201, 168, 76, 0.4)',
+                                    background: hoveredHotspot?.key === spot.key ? 'rgba(201, 168, 76, 0.25)' : 'rgba(201, 168, 76, 0.05)',
+                                    boxShadow: hoveredHotspot?.key === spot.key ? '0 0 10px rgba(201, 168, 76, 0.6)' : 'none',
+                                    transition: 'all 0.2s',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    zIndex: 10
+                                  }}
+                                  className={hoveredHotspot?.key === spot.key ? '' : 'map-hotspot-indicator'}
+                                  title={spot.name}
+                                >
+                                  <span style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: '50%',
+                                    background: hoveredHotspot?.key === spot.key ? 'var(--color-crimson)' : 'var(--color-gold-dark)',
+                                    boxShadow: hoveredHotspot?.key === spot.key ? '0 0 6px var(--color-crimson)' : 'none'
+                                  }} />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Interactive Real-Time Map Inspector Card */}
+                        {(selectedGeoTab === 'europe_768' || selectedGeoTab === 'europe_814') && (
+                          <div style={{
+                            marginTop: '16px',
+                            width: '100%',
+                            border: '1.5px solid var(--color-gold)',
+                            borderRadius: '6px',
+                            background: '#fffef9',
+                            padding: '14px',
+                            textAlign: 'left',
+                            boxShadow: '0 4px 8px rgba(0,0,0,0.03)',
+                            boxSizing: 'border-box'
+                          }}>
+                            {!hoveredHotspot ? (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-gold-dark)', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                <Compass size={16} />
+                                <span>💡 지도 위의 반짝이는 강역 원형 마커에 마우스를 올리면 통치자와 보정 혜택 요약이 제공됩니다. 클릭 시 백과사전으로 즉시 이동합니다!</span>
+                              </div>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '6px' }}>
+                                  <h4 style={{ margin: 0, fontSize: '0.95rem', color: 'var(--color-crimson)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span>{hoveredHotspot.emoji}</span> {hoveredHotspot.nameKO}
+                                  </h4>
+                                  <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{hoveredHotspot.nameEN}</span>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px', fontSize: '0.78rem' }}>
+                                  <div>
+                                    <span style={{ color: 'var(--color-grey)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>👑 통치 영주 (Ruler)</span>
+                                    <strong style={{ color: 'var(--color-ink)' }}>{hoveredHotspot.rulerKO}</strong>
+                                  </div>
+                                  <div>
+                                    <span style={{ color: 'var(--color-grey)', fontWeight: 'bold', display: 'block', marginBottom: '2px' }}>❤️ 시작 열정 (Passion)</span>
+                                    <strong style={{ color: 'var(--color-crimson)' }}>{hoveredHotspot.passionKO.split(' 또는')[0]}</strong>
+                                  </div>
+                                </div>
+                                <div style={{ fontSize: '0.78rem', borderTop: '1px dashed rgba(179,143,67,0.1)', paddingTop: '6px' }}>
+                                  <span style={{ color: 'var(--color-grey)', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>📊 고향 보정치 (Homeland Modifiers)</span>
+                                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                    {hoveredHotspot.modifiers.map((m, idx) => (
+                                      <span key={idx} style={{ padding: '2px 6px', background: 'rgba(179,143,67,0.04)', border: '1px solid var(--color-gold-light)', borderRadius: '3px', fontWeight: 'bold', color: 'var(--color-ink-light)', fontSize: '0.72rem' }}>
+                                        {m.name} <strong style={{ color: 'var(--color-royal-blue)' }}>{m.value}</strong>
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                                <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', lineHeight: 1.4, margin: '4px 0 0 0', fontStyle: 'italic', borderLeft: '3px solid var(--color-gold)', paddingLeft: '8px' }}>
+                                  {hoveredHotspot.descKO.substring(0, 100)}...
+                                </p>
+                                <div style={{ color: 'var(--color-gold-dark)', fontSize: '0.74rem', fontWeight: 'bold', marginTop: '4px', textAlign: 'right' }}>
+                                  👉 클릭 시 상세 가제티어 설명창으로 즉시 이동합니다.
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {selectedGeoTab === 'ardennes' && (
+                          <div style={{ width: '100%', textAlign: 'center' }}>
+                            <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                              🌲 아르덴 상세 세부 지도 (The Ardennes Forest &amp; Bastogne)
+                            </h4>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                              플레이어 성기사들이 어린 시절 교육받고 모험을 시작하는 아르덴 공국 및 바스토뉴(Bastogne) 요새도시 중심의 세부 강역도입니다. 울창한 원시 삼림과 복잡한 지류, 신비 유적 및 수도원들의 상세 입지가 결합되어 있습니다.
+                            </p>
+                            <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
+                              <img 
+                                src={ardennesMap} 
+                                alt="Map of the Ardennes" 
+                                style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                              />
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedGeoTab === 'aachen' && (
+                          <div style={{ width: '100%', textAlign: 'center' }}>
+                            <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                              🏰 아헨 제국 궁정 세부 도면 (Aachen Palace Compound)
+                            </h4>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                              샤를마뉴 대제의 황실 궁정이 위치한 아헨(Aachen)의 제국 궁정 성벽 단지 세부 배치 도면입니다. 황금 돔 예배당(Palatine Chapel), 대제의 대강당(Aula Regia), 국고 탑 등의 상세 입지를 보여줍니다.
+                            </p>
+                            <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', maxWidth: '600px', margin: '0 auto' }}>
+                              <img 
+                                src={aachenMap} 
+                                alt="Map of Aachen Palace" 
+                                style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
-                </div>
+                    );
+                  })()}
               </div>
             </section>
           )}
