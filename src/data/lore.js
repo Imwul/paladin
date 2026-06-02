@@ -384,6 +384,91 @@ export const gazetteer = [
     ],
     historyKO: "유럽 역사와 가톨릭 신앙의 영원한 수도입니다. 800년 크리스마스 날, 교황 레오 3세가 샤를마뉴에게 서로마 제국 황제의 왕관을 씌워 준 종교적 신성함의 원천이자, 라틴 교양과 사법 문해력의 중심지입니다.",
     historyEN: "The eternal city and the spiritual heart of the West. It is where Pope Leo III crowned Charlemagne as Emperor, serving as a bastion of ancient scholarship, divine miracles, and holy law."
+  },
+  {
+    key: "bavaria",
+    emoji: "🏔️",
+    nameKO: "바이에른 공국 (Bavaria)",
+    nameEN: "The Duchy of Bavaria",
+    rulerKO: "타실로 3세 공작 (Duke Tassilo III)",
+    rulerEN: "Duke Tassilo III",
+    passionKO: "주군에 대한 충성 (Loyalty [Lord]) 15점 또는 프랑크인에 대한 증오 (Hate [Franks]) 15점",
+    passionEN: "Loyalty (Lord) 15 or Hate (Franks) 15",
+    modifiers: [
+      { name: "연애예법 (Courtesy)", value: "+3" },
+      { name: "웅변 (Eloquence)", value: "+3" },
+      { name: "가무/악기 (Singing/Play Instruments)", value: "+3" }
+    ],
+    historyKO: "도나우강 상류와 울창한 보헤미아 숲, 그리고 웅장한 알프스산맥 사이에 위치한 역사 깊은 공국입니다. 고대 로마의 문명적 유산이 잘 보존되어 있으며, 아길롤핑 가문의 지배 아래 우아하고 세련된 궁정 문화와 예술적 학문이 발달했습니다. 자치권과 독립을 위해 샤를마뉴 황제와 격렬한 대립각을 세웠던 비장한 역사를 지니고 있습니다.",
+    historyEN: "An ancient, highly refined duchy bordered by the Danube, the Alps, and the Bohemian Forest. Under the Agilolfings, Bavaria maintains strong Roman cultural roots and courtly elegance, often struggling against Frankish hegemony."
+  },
+  {
+    key: "gascony",
+    emoji: "🏹",
+    nameKO: "가스코뉴 공국 (Gascony)",
+    nameEN: "The Duchy of Gascony",
+    rulerKO: "이온 공작 (Duke Yon)",
+    rulerEN: "Duke Yon",
+    passionKO: "가족에 대한 사랑 (Love [Family]) 15점",
+    passionEN: "Love (Family) 15",
+    modifiers: [
+      { name: "음모 (Intrigue)", value: "+3" },
+      { name: "마술 (Horsemanship)", value: "+2" },
+      { name: "사라센 예법 (Courtesy)", value: "+3" }
+    ],
+    historyKO: "피레네산맥의 서부 기슭과 대서양 연안 사이에 펼쳐진 광활한 구릉 지대입니다. 아키텐과 마찬가지로 라틴 문화와 아랍 문화가 공존하며, 대단히 기민하고 매혹적이지만 동시에 반골 기질이 강한 전사들의 고장입니다. 산악 지형을 이용해 제국의 통제에 빈번히 저항하였으며, 사라센과 프랑크 세력 사이에서 아슬아슬한 독자 세력을 형성하고 있습니다.",
+    historyEN: "A scenic duchy nestled between the Atlantic coast and the Pyrenees. Its people are energetic, fiercely independent, and possess unique blending of Gascon, Frankish, and Andalusian customs."
+  },
+  {
+    key: "provence",
+    emoji: "🌊",
+    nameKO: "프로방스 공국 (Provence)",
+    nameEN: "The Duchy of Provence",
+    rulerKO: "마르셀랭 공작 (Duke Marcellin)",
+    rulerEN: "Duke Marcellin",
+    passionKO: "가족에 대한 사랑 (Love [Family]) 15점",
+    passionEN: "Love (Family) 15",
+    modifiers: [
+      { name: "지중해 항해 (Stewardship)", value: "+3" },
+      { name: "예의 (Courtesy)", value: "+3" },
+      { name: "요정 전설 (Faerie Lore)", value: "+2" }
+    ],
+    historyKO: "지중해의 따사로운 햇살을 받는 아름다운 해안 평야와 론강 하구의 염전 늪지대를 포괄하는 유서 깊은 남부 영토입니다. 로마 시대의 극장, 아쿠아덕트(수로교) 등 고대 건축의 잔재가 풍성하며, 지중해 무역을 통해 비잔틴과 아랍 문화의 영향을 깊게 받았습니다. 매력적이지만 변덕스럽고, 물빛 가득한 가문들의 기사도가 살아 숨 쉬고 있습니다.",
+    historyEN: "A sun-drenched southern coastal region with a rich Roman heritage and busy maritime trade. Known for its salt marshes, ancient monuments, and knights who are volatile yet deeply refined."
+  },
+  {
+    key: "breton_march",
+    emoji: "⛵",
+    nameKO: "브르타뉴 변경령 (Breton March)",
+    nameEN: "The Breton March",
+    rulerKO: "마크 백작 롤랑 경 (Sir Roland, Count of the March)",
+    rulerEN: "Sir Roland, Count of the March",
+    passionKO: "주군에 대한 충성 (Loyalty [Lord]) 15점 또는 영예 (Honor) 15점",
+    passionEN: "Loyalty (Lord) 15 or Honor 15",
+    modifiers: [
+      { name: "경계 (Awareness)", value: "+3" },
+      { name: "마상창 (Lance)", value: "+3" },
+      { name: "해안 순찰 (Battle)", value: "+2" }
+    ],
+    historyKO: "프랑크 제국의 서쪽 국경이자 완고하고 호전적인 켈트 브레통인의 땅을 마주하는 삼엄한 군사 경계령입니다. 전설적인 성기사 롤랑 경이 마크 백작으로서 이 변경령의 초대 통치자로 임명되어 적들의 침입을 철통같이 방어했습니다. 사납게 휘몰아치는 해안가 거친 바람과 비바람 속에서 기사들은 한 치의 물러섬도 없이 복무합니다.",
+    historyEN: "A heavily fortified militarized frontier bordering the independent Celtic Bretons. Established by Charlemagne and ruled by the legendary Sir Roland to guard the western sea roads and borders."
+  },
+  {
+    key: "normandy",
+    emoji: "🦁",
+    nameKO: "노르망디 공국 (Normandy)",
+    nameEN: "The Duchy of Normandy",
+    rulerKO: "니벨롱 2세 공작 (Duke Nibelung II)",
+    rulerEN: "Duke Nibelung II",
+    passionKO: "영예 (Honor) 15점",
+    passionEN: "Honor 15",
+    modifiers: [
+      { name: "정의 (Just)", value: "+3" },
+      { name: "신중 (Prudent)", value: "+3" },
+      { name: "장원 관리 (Stewardship)", value: "+2" }
+    ],
+    historyKO: "제국 서북부 센강 하구와 울창한 해안 삼림에 둘러싸인 강인한 전사들의 고장입니다. 이곳 주민들은 대단히 과묵하고 고독한 기질을 지니고 있으나, 명예와 의무감이 극도로 단단하며 사법 정의에 강한 소신을 품고 있습니다. 묵묵하게 장원을 일구고 방패를 다듬는 중세 영주 기사도의 또 다른 원형을 보여줍니다.",
+    historyEN: "A rugged and forested northwestern coastal duchy on the Seine. Its inhabitants are solitary, highly silent, and possess a profound sense of duty, administrative justice, and stubborn honor."
   }
 ];
 
