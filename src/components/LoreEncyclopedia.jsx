@@ -938,7 +938,7 @@ export default function LoreEncyclopedia() {
           )}
 
           {selectedTerritory === null && (
-            <section className="cs-section" style={{ flex: '3.5 1 720px' }}>
+            <section className="cs-section" style={{ flex: '3.5 1 480px' }}>
               <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>🗺️ 제국 공식 지도첩 (Carolingian Atlas)</h3>
               </div>
