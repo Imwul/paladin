@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures, frankishSociety } from '../data/lore';
+import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures, frankishSociety, franklandTerritories } from '../data/lore';
 import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword } from 'lucide-react';
 import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
@@ -16,6 +16,8 @@ export default function LoreEncyclopedia() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSocietyTab, setSelectedSocietyTab] = useState('crown');
   const [showGmRef, setShowGmRef] = useState(false);
+  const [selectedTerritory, setSelectedTerritory] = useState(franklandTerritories ? franklandTerritories[0] : null);
+  const [selectedGeoTab, setSelectedGeoTab] = useState('overview');
 
   // Name Generator State
   const [genGender, setGenGender] = useState('male');
@@ -89,6 +91,39 @@ export default function LoreEncyclopedia() {
     g.rulerKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
     g.historyKO.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const filteredTerritories = franklandTerritories.filter(t => {
+    const query = searchQuery.toLowerCase();
+    if (!query) return true;
+    
+    if (t.nameKO.toLowerCase().includes(query) || 
+        t.nameEN.toLowerCase().includes(query) ||
+        t.descKO.toLowerCase().includes(query) ||
+        t.descEN.toLowerCase().includes(query) ||
+        t.rulerKO.toLowerCase().includes(query) ||
+        t.rulerEN.toLowerCase().includes(query) ||
+        t.passionKO.toLowerCase().includes(query)) {
+      return true;
+    }
+    
+    if (t.subdivisions && t.subdivisions.some(sub => sub.nameKO.toLowerCase().includes(query) || sub.descKO.toLowerCase().includes(query))) {
+      return true;
+    }
+    
+    if (t.towns && t.towns.some(town => town.nameKO.toLowerCase().includes(query) || town.nameEN.toLowerCase().includes(query) || town.descKO.toLowerCase().includes(query))) {
+      return true;
+    }
+    
+    if (t.abbeys && t.abbeys.some(abbey => abbey.nameKO.toLowerCase().includes(query) || abbey.nameEN.toLowerCase().includes(query) || abbey.descKO.toLowerCase().includes(query))) {
+      return true;
+    }
+    
+    if (t.enchanted && t.enchanted.some(site => site.nameKO.toLowerCase().includes(query) || site.nameEN.toLowerCase().includes(query) || site.descKO.toLowerCase().includes(query))) {
+      return true;
+    }
+    
+    return false;
+  });
 
   const filteredBestiary = bestiary.filter(b =>
     b.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -318,7 +353,7 @@ export default function LoreEncyclopedia() {
             placeholder={
               activeSubTab === 'families' ? "가문 이름 또는 키워드로 검색..." :
               activeSubTab === 'scenarios' ? "시나리오 이름 또는 규칙 검색..." :
-              activeSubTab === 'gazetteer' ? "지역 영지 이름 또는 영주 검색..." :
+              activeSubTab === 'gazetteer' ? "강역, 도시, 성채, 수도원 또는 신비 유적 검색..." :
               activeSubTab === 'bestiary' ? "괴수/야수 이름 또는 카테고리 검색..." :
               activeSubTab === 'npcs' ? "인물 이름, 작위 또는 성물 검색..." :
               activeSubTab === 'cultures' ? "세력 이름, 기질 또는 연표 검색..." :
@@ -594,23 +629,26 @@ export default function LoreEncyclopedia() {
         </div>
       )}
 
-      {/* 4. GAZETTEER TAB */}
+      {/* 4. GAZETTEER TAB (Chapter 14: Frankland) */}
       {activeSubTab === 'gazetteer' && (
         <div className="cs-row" style={{ alignItems: 'flex-start', gap: '20px' }}>
-          {/* Left Side List */}
+          {/* Left Side List: 10 Territories */}
           <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
-              제국 주요 영지 일람
+              🏛️ 제국 대강역 강역 (Territories)
             </h3>
-            {filteredGazetteer.map(g => (
+            {filteredTerritories.map(t => (
               <div 
-                key={g.key}
-                onClick={() => setSelectedRegion(g)}
+                key={t.key}
+                onClick={() => {
+                  setSelectedTerritory(t);
+                  setSelectedGeoTab('overview');
+                }}
                 style={{ 
                   padding: '12px', 
-                  border: selectedRegion?.key === g.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                  border: selectedTerritory?.key === t.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
                   borderRadius: '4px',
-                  background: selectedRegion?.key === g.key ? 'rgba(179,143,67,0.06)' : '#fff',
+                  background: selectedTerritory?.key === t.key ? 'rgba(179,143,67,0.06)' : '#fff',
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                   display: 'flex',
@@ -619,72 +657,194 @@ export default function LoreEncyclopedia() {
                 }}
               >
                 <div>
-                  <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{g.emoji}</span>
-                  <strong style={{ fontSize: '0.95rem', color: selectedRegion?.key === g.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{g.nameKO.split(' (')[0]}</strong>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{g.nameEN}</div>
+                  <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{t.emoji}</span>
+                  <strong style={{ fontSize: '0.95rem', color: selectedTerritory?.key === t.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{t.nameKO.split(' (')[0]}</strong>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{t.nameEN}</div>
                 </div>
                 <ChevronRight size={16} color="var(--color-gold)" />
               </div>
             ))}
-            {filteredGazetteer.length === 0 && (
+            {filteredTerritories.length === 0 && (
               <p style={{ textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', padding: '20px 0' }}>검색 결과가 없습니다.</p>
             )}
           </div>
 
-          {/* Right Side Detail Reader */}
-          {selectedRegion && (
-            <section className="cs-section" style={{ flex: '2 1 450px' }}>
+          {/* Right Side Detail Reader: Multi-Tab Parchment-styled browser */}
+          {selectedTerritory && (
+            <section className="cs-section" style={{ flex: '2 1 480px' }}>
+              {/* Parchment Ribbon Title */}
               <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>{selectedRegion.emoji} {selectedRegion.nameKO}</h3>
+                <h3>{selectedTerritory.emoji} {selectedTerritory.nameKO}</h3>
               </div>
-              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
+
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: '#fffefb', border: '1px solid var(--color-gold-light)', padding: '16px' }}>
                 
-                {/* Ruler & Starting Passion info card */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 통치자 (Ruler)</div>
-                    <div style={{ fontSize: '0.95rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedRegion.rulerKO}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>{selectedRegion.rulerEN}</div>
-                  </div>
-                  <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
-                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>❤️ 시작 열정 (Starting Passion)</div>
-                    <div style={{ fontSize: '0.9rem', color: 'var(--color-crimson)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedRegion.passionKO}</div>
-                  </div>
+                {/* 5-Sub-Tab Switcher */}
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px' }}>
+                  {[
+                    { id: 'overview', name: '🏰 강역 개요' },
+                    { id: 'towns', name: '⚔️ 도시 & 성채' },
+                    { id: 'abbeys', name: '⛪ 수도원 & 성물' },
+                    { id: 'enchanted', name: '✨ 신비 유적' },
+                    { id: 'trpg', name: '📊 TRPG 가이드' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      className="btn-medieval"
+                      style={{
+                        padding: '6px 10px',
+                        fontSize: '0.78rem',
+                        background: selectedGeoTab === tab.id ? 'var(--color-crimson)' : 'none',
+                        color: selectedGeoTab === tab.id ? '#fff' : 'var(--color-ink-light)',
+                        border: selectedGeoTab === tab.id ? '1px solid var(--color-crimson)' : '1px solid var(--color-grey-light)',
+                        borderRadius: '3px',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => setSelectedGeoTab(tab.id)}
+                    >
+                      {tab.name}
+                    </button>
+                  ))}
                 </div>
 
-                {/* Cultural Modifiers Table */}
-                <div style={{ border: '1px dashed var(--color-gold)', padding: '12px', borderRadius: '4px', background: 'rgba(179,143,67,0.03)' }}>
-                  <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>📊 지역 문화 보정치 (Cultural Skill &amp; Attribute Modifiers)</div>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {selectedRegion.modifiers.map((m, idx) => (
-                      <span 
-                        key={idx} 
-                        style={{ 
-                          fontSize: '0.8rem', 
-                          padding: '4px 8px', 
-                          background: '#fff', 
-                          border: '1px solid var(--color-grey-light)', 
-                          borderRadius: '4px', 
-                          color: 'var(--color-ink)',
-                          fontWeight: '500'
-                        }}
-                      >
-                        {m.name}: <strong style={{ color: 'var(--color-crimson)' }}>{m.value}</strong>
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                {/* Sub-Tab Contents */}
+                {selectedGeoTab === 'overview' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    {/* Ruler Card */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fffefb' }}>
+                        <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 통치 영주 (Rulers)</div>
+                        <div style={{ fontSize: '0.88rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedTerritory.rulerKO}</div>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{selectedTerritory.rulerEN}</div>
+                      </div>
+                      <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fffefb' }}>
+                        <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>❤️ 시작 열정 (Passion)</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--color-crimson)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedTerritory.passionKO}</div>
+                      </div>
+                    </div>
 
-                {/* History & Lore */}
-                <div>
-                  <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '6px' }}>📖 영지 역사 및 지리 설정</h4>
-                  <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
-                    {selectedRegion.historyKO}
-                  </p>
-                  <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
-                    {selectedRegion.historyEN}
-                  </p>
-                </div>
+                    {/* Historical Overview */}
+                    <div>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>📖 강역 소개 &amp; 지리적 설정</h4>
+                      <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)', margin: '0 0 8px 0' }}>
+                        {selectedTerritory.descKO}
+                      </p>
+                      <p style={{ fontSize: '0.76rem', lineHeight: 1.5, color: 'var(--color-ink-light)', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic', margin: 0 }}>
+                        {selectedTerritory.descEN}
+                      </p>
+                    </div>
+
+                    {/* Subdivisions / Counties */}
+                    {selectedTerritory.subdivisions && selectedTerritory.subdivisions.length > 0 && (
+                      <div>
+                        <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '8px' }}>📂 하위 행정 구역 및 백작령 (Subdivisions)</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {selectedTerritory.subdivisions.map((sub, idx) => (
+                            <div key={idx} style={{ padding: '8px 10px', border: '1px solid rgba(179,143,67,0.1)', background: 'rgba(179,143,67,0.01)', borderRadius: '3px' }}>
+                              <strong style={{ fontSize: '0.82rem', color: 'var(--color-ink)', display: 'block', marginBottom: '2px' }}>📍 {sub.nameKO}</strong>
+                              <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{sub.descKO}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {selectedGeoTab === 'towns' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>🛡️ 주요 도시 및 철옹성 요새</h4>
+                    {selectedTerritory.towns && selectedTerritory.towns.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {selectedTerritory.towns.map((town, idx) => (
+                          <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
+                              <strong style={{ fontSize: '0.85rem', color: 'var(--color-royal-blue)' }}>🏰 {town.nameKO}</strong>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{town.nameEN}</span>
+                            </div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{town.descKO}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', fontStyle: 'italic', margin: 0 }}>해당 강역은 대규모 도시가 성립되지 않은 삼림 혹은 늪지대입니다.</p>
+                    )}
+                  </div>
+                )}
+
+                {selectedGeoTab === 'abbeys' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>⛪ 성스러운 수도원 및 봉헌 성물</h4>
+                    {selectedTerritory.abbeys && selectedTerritory.abbeys.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {selectedTerritory.abbeys.map((abbey, idx) => (
+                          <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
+                              <strong style={{ fontSize: '0.85rem', color: 'var(--color-crimson)' }}>⛪ {abbey.nameKO}</strong>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{abbey.nameEN}</span>
+                            </div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{abbey.descKO}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', fontStyle: 'italic', margin: 0 }}>해당 강역에는 성물이 대규모로 보존된 독립 교구 수도원이 존재하지 않습니다.</p>
+                    )}
+                  </div>
+                )}
+
+                {selectedGeoTab === 'enchanted' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>✨ 요정의 신비와 초자연적 비경</h4>
+                    {selectedTerritory.enchanted && selectedTerritory.enchanted.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {selectedTerritory.enchanted.map((site, idx) => (
+                          <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
+                              <strong style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>✨ {site.nameKO}</strong>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{site.nameEN}</span>
+                            </div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{site.descKO}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', fontStyle: 'italic', margin: 0 }}>해당 강역은 성스러운 정화 기운이 가득하거나, 외래 이교 마술이 봉인되어 전설의 요정 비경이 발견되지 않았습니다.</p>
+                    )}
+                  </div>
+                )}
+
+                {selectedGeoTab === 'trpg' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>📊 TRPG 가문 탄생지 가이드 (Birthplace homeland modifiers)</h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.5 }}>
+                      기사 캐릭터 생성 시, 이 강역을 **가문 고향(Homeland)**으로 설정할 경우 다음과 같은 기술 및 속성 능력치 보정 혜택을 영구적으로 획득합니다.
+                    </p>
+
+                    {/* Homeland Modifiers Badge Grid */}
+                    <div style={{ border: '1px dashed var(--color-gold)', padding: '12px', borderRadius: '4px', background: 'rgba(179,143,67,0.03)' }}>
+                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>📊 고향 설정 보정치 (Homeland Modifiers)</div>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {selectedTerritory.modifiers.map((m, idx) => (
+                          <span 
+                            key={idx} 
+                            style={{ 
+                              fontSize: '0.8rem', 
+                              padding: '4px 8px', 
+                              background: '#fff', 
+                              border: '1px solid var(--color-grey-light)', 
+                              borderRadius: '4px', 
+                              color: 'var(--color-ink)',
+                              fontWeight: '500'
+                            }}
+                          >
+                            {m.name}: <strong style={{ color: 'var(--color-crimson)' }}>{m.value}</strong>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
               </div>
             </section>
