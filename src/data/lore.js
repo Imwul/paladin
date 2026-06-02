@@ -2393,3 +2393,211 @@ export const cultures = [
     "fortificationsKO": "마법의 안개와 투명 주문으로 은폐되어 침입자들의 감각을 교란하는 공중 회전 성채를 소유합니다."
   }
 ];
+
+export const frankishSociety = [
+  {
+    "key": "crown",
+    "titleKO": "왕권과 봉건제 (Crown & Feudalism)",
+    "icon": "Shield",
+    "topics": [
+      {
+        "titleKO": "국왕의 신성한 지위 (Spiritual Kingship & Mundane Rule)",
+        "nameEN": "Spiritual Kingship & Mundane Rule",
+        "desc": "프랑크 왕국의 군주는 단순한 세속적 군사 지도자가 아닌, 하느님의 선택을 받고 교황에 의해 성유식(Anointing)을 치른 신성한 구원의 대행자입니다. 왕은 영적으로 백성들의 영혼을 하느님께 인도할 책무를 가지며, 세속적으로는 백작들을 자신의 권위 아래 통제하는 절대적 군주입니다.",
+        "trpgRules": "기사들은 국왕(대제)을 향한 성스러운 열망인 'Loyalty [Charlemagne]' 또는 'Loyalty [King]' 열망을 15점 이상 유지할 때 국왕의 직접 명령에 직면할 경우 의지 및 열망 판정(Loyalty Roll)에 +5 보너스를 받습니다. 대제의 어명이 내리면 기사는 즉각 열망을 판정해 고무(Inspired) 상태에 돌입할 수 있습니다."
+      },
+      {
+        "titleKO": "봉건 피라미드와 서약 (Feudal Pyramid & Homage)",
+        "nameEN": "Feudal Pyramid & Homage",
+        "desc": "샤를마뉴 제국의 중추는 Homage(봉신 서약)와 Fealty(충성 서약)로 구성된 쌍무적 계약 관계입니다. 봉신은 주군 앞에 무릎을 꿇고 합장한 손을 주군의 두 손에 얹으며 평생의 복종을 서약합니다. 주군은 이에 답해 입맞춤을 베풀며 장원(Manor)의 분봉과 기사 가문의 보호를 약속합니다.",
+        "trpgRules": "봉신 서약의 핵심은 Aid(군역 협조)와 Counsel(자문)입니다. 봉신 기사는 매년 최대 40일간의 무상 군역 의무를 지며, 주군의 소집 명령에 고의적으로 불응(Dereliction of duty - Herisliz)할 경우 사법 의회에서 탄핵당하고 기사의 영지(Fief)가 즉각 회수 및 가산 압류될 수 있습니다."
+      },
+      {
+        "titleKO": "신분 삼분설 (Trifunctional Model)",
+        "nameEN": "Trifunctional Model",
+        "desc": "프랑크 사회는 하느님이 정하신 신성한 삼분설(Three-order Model)에 기반합니다. 기도하는 자(Oratores - 성직자), 싸우는 자(Bellatores - 기사 및 귀족), 노동하는 자(Laboratores - 농민 및 평민)가 서로를 상호 보완합니다. 기사는 무력으로 교회를 수호하고 백성을 지키며, 농민은 식량을 공출하여 모두를 먹여 살립니다.",
+        "trpgRules": "TRPG 캠페인 시작 시 신분 계급은 캐릭터의 초기 Glory 점수와 가문 상속 자산에 결정적인 영향을 줍니다. 기사 가문은 기사 계급(Bellatores)에 속하여 기본적으로 1,000 Glory를 안고 시작하며, 평민 출신이 전장에서 대실패(Fumble) 없이 가공할 무공을 증명해 기사 작위를 받는 경우 추가로 500 Glory를 즉시 획득합니다."
+      },
+      {
+        "titleKO": "영지와 장원 분봉 (Land & Fiefs)",
+        "nameEN": "Land & Fiefs",
+        "desc": "제국의 영지는 소유 방식에 따라 완전 독립적 자유 영지인 Allod(자유 직할령), 왕실 소유의 국유지인 Fisc(국유 장원), 그리고 군역의 대가로 일시 대여된 봉토(Feud / Precarium)로 나뉩니다. 성기사들은 대제로부터 직접 분봉을 받은 영주 기사로서, 자신의 Demesne(영주 직할지)과 소속 가솔들을 돌봐야 합니다.",
+        "trpgRules": "표준 장원(Demesne Manor) 1개소는 매년 영주에게 £6(실링/펜스 환산) 상당의 연간 경제적 소득을 산출합니다. 겨울 단계(Winter Phase) 동안 기사는 영지 관리 기술(Stewardship) 판정을 수행해야 하며, 판정 대실패 시 장원에 흉작이나 가축 역병이 돌아 소득이 -£2 실추되고, 대성공 시 추가 보너스 풍작 소득 £2를 얻습니다."
+      },
+      {
+        "titleKO": "백작과 공작 (Counts & Dukes)",
+        "nameEN": "Counts & Dukes",
+        "desc": "대제는 각 행정 구역(County)마다 백작(Count)을 수임하여 민정, 사법, 세무를 총괄하게 합니다. 국경의 대규모 요충 관구는 여러 백작령을 아우르는 대공작(Duke)이나 변경백(Margrave)이 다스려, 외래 이교도들의 기습적인 대규모 국경 침공을 상시 방어하고 영토의 통치권을 영구히 보장합니다.",
+        "trpgRules": "백작급 주군은 전시 소집 시 최소 10명 이상의 중장 기병 전단(Banneret)을 징집할 권한이 있습니다. 플레이어 기사가 백작의 기치 하에 소집되어 전투를 치를 경우, 주군의 'Loyalty [Count]' 열망을 굴려 성공 시 전투 개막 직후 부대 전체가 군사 격려(Inspired) 혜택을 획득합니다."
+      }
+    ]
+  },
+  {
+    "key": "justice",
+    "titleKO": "사법과 특사 (Justice & Royal Envoys)",
+    "icon": "Scale",
+    "topics": [
+      {
+        "titleKO": "제국의 법률과 관습법 (The Law)",
+        "nameEN": "The Law",
+        "desc": "제국의 사법 체제는 고대 게르만족 부족 관습법(살리카 법 등)과 교회의 성스러운 카논 성법(Canon Law), 그리고 대제가 반포하는 제국 칙령(Capitularies)이 유기적으로 조화된 복합적 권한입니다. 법은 백성의 공명정대한 질서를 확립하고 이교 세력의 악습을 타파하는 수단으로 작용합니다.",
+        "trpgRules": "제국 칙령에 따라 기독교를 모욕하거나 교회의 성물을 훼손하는 자는 즉각 형사 사법 재판에 회부되어 영구 교수형에 처해집니다. 사법 재판 중 기사 캐릭터는 법률 지식(Law)이나 지혜(Int) 능력치 판정을 통해 피고의 불합리한 혐의를 변론하고 감형 청원을 이끌 수 있습니다."
+      },
+      {
+        "titleKO": "사법 재판과 의회 (Judicial Courts)",
+        "nameEN": "Judicial Courts",
+        "desc": "제국 내에서 정의를 실현하는 법정은 세 가지 채널이 있습니다. 친족 간의 사적인 복수인 Feud(혈투 피의 복수), 백작이나 대주교가 주재하는 백작령 법정(Public Court), 그리고 대제가 몸소 주재하는 왕실 사법 의회(Royal Court)입니다. 왕실 의회는 최고 수준의 맹약 범죄와 반역 혐의를 처단합니다.",
+        "trpgRules": "배신이나 음모 혐의로 피고를 고소하려는 기사는 법정에서 정식 증거와 증인(Inquiry)을 제시해야 합니다. 법정 판결 단계에서 심문관은 청문 판정(Inquiry Roll)을 통해 진실을 수색하며, 배신 혐의가 공적으로 입증된 기사는 기사 작위가 박탈(Degraded)되고 영주 가문에서 영원히 추방당합니다."
+      },
+      {
+        "titleKO": "신성 결투와 신명 재판 (Trial by Combat & Ordeal)",
+        "nameEN": "Trial by Combat & Ordeal",
+        "desc": "물증과 증인이 불충분할 때, 프랑크 법정은 하느님이 결코 거짓을 방관하지 않으신다는 믿음 아래 신의 심판을 구합니다. 기사들은 보검을 휘둘러 무력으로 옳고 그름을 입증하는 신성 결투(Trial by Combat)를 벌이며, 성직자나 평민들은 뜨거운 달군 철판을 쥐거나 끓는 물에 손을 넣는 가혹한 신명 재판(Trial by Ordeal)을 거칩니다.",
+        "trpgRules": "신성 결투는 양측 대전사가 죽거나 항복할 때까지 1대 1 결투(Judicial Duel)로 진행됩니다. 결투 중 판정이 대실패(Fumble)할 경우 칼이 부러지거나 방패가 박살 나는 신의 징벌을 받습니다. 신명 재판의 경우, 피고는 CONx3 판정을 수행해야 하며, 판정 실패 시 치명적인 화상 피해(3d6 HP 감소)와 함께 즉각 유죄 판결을 받아 처형됩니다."
+      },
+      {
+        "titleKO": "황제 순찰사 (Missi Dominici)",
+        "nameEN": "Missi Dominici",
+        "desc": "제국 전역의 백작과 영주들이 황제를 기만하고 부패를 저지르는 것을 방지하기 위해, 대제는 성스러운 전령관 특사인 황제 순찰사(Missi Dominici) 제도를 운영합니다. 일반적으로 지혜로운 대주교와 강직한 백작이 2인 1조가 되어 각 변경 관구를 순찰하며, 불합리한 지방 판결을 뒤집고 황실에 직접 보고합니다.",
+        "trpgRules": "순찰사는 황제의 인장이 찍힌 성물을 소지하여, 지방 영지의 군사 징집권과 사법권을 일시적으로 초월 통제합니다. 플레이어 기사가 황제 순찰사의 명령에 협조하거나 동행 변경 임무를 성실히 완수할 경우, 황실의 두터운 신임을 입증하여 어전에서 직접 전설적인 Glory +200 보상을 획득하게 됩니다."
+      }
+    ]
+  },
+  {
+    "key": "palace",
+    "titleKO": "궁정과 예법 (The Palace & Court Life)",
+    "icon": "Crown",
+    "topics": [
+      {
+        "titleKO": "궁정 아카데미와 소문자 서체 (Palace Academy)",
+        "nameEN": "Palace Academy",
+        "desc": "대제는 아헨(Aachen) 왕궁에 전 유럽의 지성을 소집하여 궁정 아카데미(Palace Academy)를 건립하고 학문을 부흥시킵니다. 석학 앨퀸(Alcuin)이 주도한 이 부흥기 속에서 지식인들은 복잡한 서체를 통일하고 전설적인 고전 라틴어 사본들을 복제하는 위대한 카롤링거 르네상스를 꽃피웁니다.",
+        "trpgRules": "제국 전역의 수도원 학교에서는 읽기, 쓰기, 음악을 장려합니다. 기사가 학문 기술인 'Read [Latin]' 또는 'Composing' 예지 능력을 연마해 10점 이상 달성할 경우, 궁정 어전 회의나 귀부인들과의 대화 판정에서 카리스마적 +3 매력 보너스 혜택을 상시 획득합니다."
+      },
+      {
+        "titleKO": "궁정 알현 및 연회 예법 (Court Protocol)",
+        "nameEN": "Court Protocol",
+        "desc": "황실 궁정 라이프는 완벽히 규격화된 네 단계의 장엄한 예법으로 구성됩니다. 대제를 친견하는 알현(The Interview), 산해진미와 칠현금 선율이 울려 퍼지는 장엄한 연회(The Feast), 기사의 품격에 걸맞은 격조 높은 숙식 대접(Accommodations), 그리고 보검과 비단을 하사받아 주군의 곁을 떠나는 작별(Departure)입니다.",
+        "trpgRules": "궁정 연회에 참석한 기사는 사교 기술인 'Courtesy' 및 'Intrigue' 기술을 사용해 타 귀족 가문들의 동태를 정찰합니다. Courtesy 판정 대성공 시 타 백작 가문의 막강한 후원 약속을 받아 영지 소득 보너스를 얻을 수 있으며, 판정 대실패 시 술기운에 실수를 범해 가문의 위신 Glory -50 감점 수모를 겪습니다."
+      },
+      {
+        "titleKO": "궁정 사냥 (Hunting)",
+        "nameEN": "Hunting",
+        "desc": "사냥은 단순한 여가가 아닌, 기사들이 거친 숲속에서 전술적 기마 능력과 예리한 감각을 단련하는 성스러운 무예 훈련입니다. 대제와 성기사들은 아르덴 숲이나 라인강 기슭의 깊은 원시림으로 나아가 가공할 힘을 지닌 거대 야생 멧돼지(Boar)와 성스러운 은빛 사슴(Stag)을 추적합니다.",
+        "trpgRules": "사냥 시 기사 캐릭터는 Hunting 기술 판정을 매 세션 수행합니다. 사냥 성공 시 기사는 신선한 식량 보급과 함께 무용담 Glory +20을 얻습니다. 사냥 도중 '야생 동물 대습격' 카드 조우 시 기사는 즉각 전투 판정을 펼쳐야 하며, 멧돼지의 엄니 기습에 방심할 경우 중상을 입고 겨울 회복 판정에 심각한 불이익을 받습니다."
+      },
+      {
+        "titleKO": "고결한 사랑 (Fin’amor)",
+        "nameEN": "Fin’amor",
+        "desc": "궁정 예법의 꽃은 시인들과 고귀한 레이디들이 창안한 고결한 사랑, 즉 Courtly Love(Fin’amor)입니다. 이 사랑은 세속적인 탐욕과 정욕(Lustful)을 배제하고, 오직 연인을 향한 영혼의 절대적 충성과 고결함을 갈고닦아 영웅적 무공을 촉발하는 성스러운 순수 열정의 완성입니다.",
+        "trpgRules": "Fin’amor를 맹세한 기사는 연인에 대한 절대적 숭배 열망인 'Amor [Lady]' 또는 'Love [Amor]' 열망을 16점 이상 보유해야 합니다. 결전 직전 연인의 징표(손수건, 반지)를 가슴에 얹고 판정에 성공할 경우, 기사는 고무(Inspired for Amor) 상태가 되어 전투 중 Damage 및 모든 기술 수치가 즉각 2배로 상승합니다."
+      }
+    ]
+  },
+  {
+    "key": "knighthood",
+    "titleKO": "기사도와 토너먼트 (Knighthood & Tournaments)",
+    "icon": "Award",
+    "topics": [
+      {
+        "titleKO": "기사 수역과 서임식 (Becoming a Knight)",
+        "nameEN": "Becoming a Knight",
+        "desc": "기사 가문의 자손들은 10세가 되면 타 영주의 성에서 Page(시종) 생활을 하며 예법을 배우고, 14세가 되면 Squire(종자)가 되어 주군의 전장을 호위합니다. 마침내 21세의 성년이 되면 하룻밤 동안의 성당 참회 기도와 성수 목욕 의식을 치른 뒤, 주군의 성검 아콜레이드(Accolade - 타격)를 통해 장엄한 기사 작위를 수여받습니다.",
+        "trpgRules": "서임식 직후 새내기 기사는 주군으로부터 Warhorse(전쟁군마), Shield(기사방패), Chainmail hauberk(사슬 갑옷), 그리고 성스러운 검을 지급받습니다. 기사 대관을 완성한 기사는 즉시 영예로운 Glory +1,000 점을 가문 일지에 영구히 기록하며 제국의 적법한 전사로 대우받습니다."
+      },
+      {
+        "titleKO": "성기사의 3대 원대한 이상 (The Three Ideals)",
+        "nameEN": "The Three Ideals",
+        "desc": "프랑크 제국의 기사는 자신의 도덕적 성향치에 따라 3대 위대한 기사의 경지에 도달할 수 있습니다. 맹렬한 용기와 정의를 다듬는 기사도적 기사(Chivalrous Knight), 신앙과 용서를 추구하는 신앙적인 기사(Religious Knight), 그리고 고결한 연인과 신의를 지키는 낭만적인 기사(Romantic Knight)가 그것입니다.",
+        "trpgRules": "기사도적 기사는 Energetic/Generous/Just/Merciful/Modest/Valorous 성향 합산 90점 이상 달성 시 활성화되며 상시 +3 invisible Armor 보너스를 받습니다. 신앙 기사는 Chaste/Forgiving/Merciful/Modest/Temperate/Trusting 합산 90점 시 기도(Prayer) 판정에 +5 가산치를 얻고, 낭만 기사는 매 세션 1회 주사위 재굴림 특권을 얻습니다."
+      },
+      {
+        "titleKO": "마상 토너먼트 (Tournaments)",
+        "nameEN": "Tournaments",
+        "desc": "대제는 기사들의 전술적 역량을 연마하고 우방국 사절들에게 제국의 군사적 패권을 과시하기 위해 장엄한 마상 토너먼트(Tournaments)를 정기적으로 소집합니다. 초기 1기에는 맹수 격투와 Bohort(목조 단체 기동전) 위주였으나, 제국 중기 2기부터는 Joust(1대 1 마상 창시합)와 대규모 Melee(단체 모의 전술 백병전)로 정교화됩니다.",
+        "trpgRules": "마상 시합(Joust) 시 기사들은 평화용 무딘 랜스(Blunted Lance)를 사용합니다. 랜싱 기술(Lance)과 기마 기술(Horsemanship) 대결로 상대 기사를 말 안장에서 쳐 떨어뜨리는 낙마(Knockdown) 성공 시, 막대한 Glory +100 점과 함께 상대의 군마와 갑옷을 전리품으로 압수하거나 정식 몸값을 요구할 기사적 권리를 쟁취합니다."
+      }
+    ]
+  },
+  {
+    "key": "dailyLife",
+    "titleKO": "영지 생활과 사회 (Daily Life & Economy)",
+    "icon": "Home",
+    "topics": [
+      {
+        "titleKO": "장원과 농민의 노역 (Demesne Hall & Peasant Labor)",
+        "nameEN": "Demesne Hall & Peasant Labor",
+        "desc": "기사의 영지는 영주 직할 홀(Lord's Hall)과 농민들의 밀집 부락(Villages)으로 구성됩니다. 자유 농민과 예속 농노(Serfs)들은 영주 직할지(Demesne Lands)에서 매주 일정 일수 이상의 무상 강제 노역(Corvee)을 수행해야 하며, 방앗간(Mills) 이용세와 수확량의 일정 세금을 영주 기사에게 꼬박꼬박 공출해야 합니다.",
+        "trpgRules": "겨울 단계의 영지 사태 굴림 시, Stewardship 기술 판정에 대실패(Fumble)할 경우 가혹한 수확 부진과 농민 소요가 겹쳐 기사 가문의 연간 영지 소득이 대폭 소실됩니다. 반면 Stewardship 성공 시 평화로운 세입 수거로 영지의 인프라(방앗간 재건, 양묘장 증설 등)를 확장해 가문의 Glory를 매년 누적해 나갈 수 있습니다."
+      },
+      {
+        "titleKO": "제국의 도로망과 여정 (Travel & Danger)",
+        "nameEN": "Travel & Danger",
+        "desc": "제국의 도로망은 고대 로마인들이 닦은 석조 가도(Roman Roads)와 흙길 임도들로 연결되어 있습니다. 기사단이 원정이나 순찰을 나갈 때, 거친 아르덴 숲이나 울창한 변경림은 수많은 야생 곰, 늑대 떼, 그리고 무자비한 이교도 산적단(Robber Knights)들이 도처에 잠복한 가혹한 위험 지대입니다.",
+        "trpgRules": "제국 가도를 이탈해 여행할 때, 기사단은 Horsemanship 및 Awareness 판정을 상시 통과해야 합니다. 판정에 대실패(Fumble)할 경우 험난한 협곡에서 군마가 발을 헛디뎌 낙마하거나, 독사에게 물리거나, 소지한 모든 식량을 강탈당하는 처참한 재해(Travel Mishaps)를 입어 여정이 일시적으로 중단됩니다."
+      },
+      {
+        "titleKO": "무역, 화폐 및 노예제 (Trade & Slavery)",
+        "nameEN": "Trade & Slavery",
+        "desc": "프랑크 제국의 경제는 피핀이 도입하고 샤를마뉴 대제가 쇄신한 은화 체제인 데나리우스(Deniers)에 기반합니다. 제국 동부와 남부 국경 지대에서는 비잔티움 비단과 코르도바 가죽이 활발히 밀거래되며, 전쟁 중 사로잡힌 이교도 죄수들을 매매하는 가혹한 노예 거래와 지중해 노예 무역선도 빈번히 정박합니다.",
+        "trpgRules": "플레이어 기사가 스페인이나 이탈리아 전역에서 이교 사라센 포로들을 대거 사로잡는 경우, 이들을 가축 변경 농노로 편입시키거나 해상 시장에 판매하여 즉각 은화 £2~£5당의 전리품 일시불 현금 자산을 획득할 수 있습니다. 다만, 기사도적 기사(Chivalrous)는 비기독교적 노예 상업 참여 시 Honor 열망 수치가 -1 깎입니다."
+      },
+      {
+        "titleKO": "가족과 여성의 권리 (Family & Women)",
+        "nameEN": "Family & Women",
+        "desc": "가부장적 전통 속에서도 프랑크 법률은 여성 기사의 존재를 매우 제한적이나마 인정하며(브라다만테와 같은 전사 마이든), 미망인을 위한 Widow's Portion(미망인 상속 몫 - 사후 남편 재산의 3분의 1 상속권) 제도를 명시하고 있습니다. 귀족 가문의 Heiress(상속녀)는 대제의 특별 윤허를 얻어 자신의 장원을 성실히 방어할 의무를 가집니다.",
+        "trpgRules": "영주 기사가 후손(Son/Daughter) 없이 전사할 경우, 미망인 귀부인은 가문의 수호를 보장받기 위해 대제 앞에서 정식 상속 청원(Widow's Portion Claim) 판정을 수행해야 합니다. 기사도적 기사단원이 이들의 정당한 상속 분쟁 결투 대전사(Champion)로 참전해 결투를 승리로 이끌 경우 엄청난 명예 점수인 Glory +150을 선사받습니다."
+      }
+    ]
+  },
+  {
+    "key": "church",
+    "titleKO": "교회와 신앙 (The Church & Clergy)",
+    "icon": "Book",
+    "topics": [
+      {
+        "titleKO": "성직자 계급과 수도원 (Clergy & Monks)",
+        "nameEN": "Clergy & Monks",
+        "desc": "제국의 기독교 영적 통치망은 대수도원장(Abbot)과 대주교(Bishop)에 의해 주도됩니다. 대지가 축복을 받는 영적 중심인 베네딕토회 수도원(Abbeys)들은 황실의 든든한 학문과 종교 지지 세력이 되며, 은둔 수련을 고집하는 Hermits(은둔 수도사)들은 숲속 깊은 성당에서 주의 신성한 계시를 대변하곤 합니다.",
+        "trpgRules": "은둔 수도사나 대주교를 적으로 삼거나 약탈하는 영주는 대제에 의해 영지가 몰수될 뿐 아니라 즉각 파문(Excommunication) 조치를 당합니다. 파문을 당한 기사는 성가족 예배 보너스를 일절 받을 수 없으며, 겨울 회복 판정에 심각한 패널티(-5)를 받아 상처 치유 속도가 현저히 지체됩니다."
+      },
+      {
+        "titleKO": "성인 축성과 성물 (Angels, Saints & Relics)",
+        "nameEN": "Angels, Saints & Relics",
+        "desc": "제국 민중의 신앙은 기적을 부르는 순교 성인(Saints)들과 그들의 유해 성물(Relics) 숭배와 밀접합니다. 성인들이 흘린 핏방울이나 성유물, 성스러운 검, 그리고 천상의 성 힐데베르트 성가 등은 전쟁터에서 악마들의 간계를 물리치고 성기사단의 육신을 수호하는 하느님의 성스러운 신비입니다.",
+        "trpgRules": "기사 캐릭터가 공식 성물(예: 성 가브리엘의 깃털, 성인 뼈 조각 등)을 성당에서 정식 분수하여 갑옷 가슴받이에 봉헌 소지할 경우, 성령의 구호 판정(Divine Aid Roll) 성공 확률이 25% 가산됩니다. 또한 마법적인 저주나 이교 마녀의 사악한 환각 공격에 조우할 때 즉각 저항력 +5 보너스를 받습니다."
+      },
+      {
+        "titleKO": "신의 평화와 정의로운 전쟁 (Peace of God & Just War)",
+        "nameEN": "Peace of God & Just War",
+        "desc": "교회는 불필요한 동족상잔을 방지하기 위해 신의 평화와 휴전(Truce of God - 지정된 절기와 주말에는 유혈 무장 결투 엄금) 교리를 반포합니다. 동시에 성지를 정복하고 이교 세력을 축출하기 위한 성전은 '정의로운 전쟁(Just War / Holy Crusade)'으로 승인하여, 성전에 참가하는 전사들의 모든 죄업을 사하는 대대적 교세를 전개합니다.",
+        "trpgRules": "신의 휴전(Truce of God)을 준수하지 않고 기독교도 기사와 사적인 사투를 벌이는 자는 즉각 기사도 명예 Honor 열망 수치가 5점 강제 소멸되는 치명적인 대실패를 겪습니다. 반면 정의로운 전쟁(Just War) 원정군 기치 하에 참전해 이교 장수를 척살한 경우, 참회 성찰 성공률이 2배로 강화됩니다."
+      }
+    ]
+  },
+  {
+    "key": "warfare",
+    "titleKO": "전쟁과 요새 (Warfare & Fortifications)",
+    "icon": "Sword",
+    "topics": [
+      {
+        "titleKO": "Scarae와 원정군 조직 (Palatine Scarae & Campaign)",
+        "nameEN": "Palatine Scarae & Campaign",
+        "desc": "대제는 매년 봄이 되면 소집령(May Field)을 통해 연례 군사 원정을 소집합니다. 정규 기병 외에도 대제 직속의 상시 기동 최정예 scarae(스카라 전사단)를 국경에 상시 전진 배치하여 신속한 기습 타격을 완수하며, 성기사단(Paladins)은 이 철기병 군단의 최선봉장이 되어 돌격을 진두지휘합니다.",
+        "trpgRules": "Scarae 기병단의 일원으로 수임된 기사는 매월 군마 기동력 및 전술 판정 시 상시 +3 가산 보너스를 얻습니다. 대규모 야전 기습 시 Scarae 호위 전단은 선제 기선제압 돌격(Charge Initiative)을 무조건적으로 쟁취하여, 적군 궁수대의 일제 사격 전에 적의 중앙 진형을 돌파할 수 있습니다."
+      },
+      {
+        "titleKO": "기병 돌격과 전술 (Cavalry Bataille & Tactics)",
+        "nameEN": "Cavalry Bataille & Tactics",
+        "desc": "프랑크 기사 전술의 핵심은 기마 랜스 충격력에 기반한 장엄한 Bataille(기병 제파 전열 돌격)입니다. 강력한 쐐기 대열(Wedge Formation)로 집결된 중장 기병단은 적의 전선 한가운데로 기병 랜스 돌격을 펼치며, 보병 전사들이 적의 후방 진형을 포위하는 기마 유기적인 포위 전술로 전투를 지배합니다.",
+        "trpgRules": "전투 전 단계에서 기마 돌격 전술(Battle) 판정 성공 시, 기사 전체 부대는 첫 돌격 라운드 공격력 보정치가 +1d6 주사위만큼 추가 가산됩니다. 돌격 도중 Horsemanship 판정이 대실패(Fumble)할 경우 말이 뒤집히며 기사는 낙마해 2d6의 충격 데미지를 즉시 입고 지상 백병전으로 강제 돌입합니다."
+      },
+      {
+        "titleKO": "흙둔덕 목조 요새와 석조 성곽 (Motte & Bailey & Stone Castles)",
+        "nameEN": "Motte & Bailey & Stone Castles",
+        "desc": "제국 초기의 표준 성곽은 Motte and Bailey(인공 흙둔덕 위에 나무 울타리와 탑을 세운 보루 요새)였습니다. 짓기 저렴하고 방어 성능이 우수하지만 이교도들의 불화살 투석 공격에 매우 약했기에, 제국 중기부터 대제는 석조 아성(Stone Keeps)과 정교한 기계식 옹성 게이트하우스(Gatehouses)를 증축해 국경의 철통 보안을 완성합니다.",
+        "trpgRules": "Motte 요새 공성 시, 수비군은 높은 지리적 이점으로 모든 활 사격 및 돌팔매질 판정에 방어력 +3 보너스 칩을 받습니다. 플레이어 기사가 장원 업그레이드를 통해 목조 보루를 'Stone Keep(석조 성채)'으로 보강할 경우 영주로서의 Glory 점수가 +300 대폭 누적되며 공성 침략에 영구히 완전 면역 혜택을 지닙니다."
+      }
+    ]
+  }
+];

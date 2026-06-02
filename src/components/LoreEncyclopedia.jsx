@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures } from '../data/lore';
-import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw } from 'lucide-react';
+import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures, frankishSociety } from '../data/lore';
+import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword } from 'lucide-react';
 import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
 
@@ -14,6 +14,8 @@ export default function LoreEncyclopedia() {
   const [selectedCulture, setSelectedCulture] = useState(cultures ? cultures[0] : null);
   const [npcViewMode, setNpcViewMode] = useState('major'); // 'major', 'paladins'
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSocietyTab, setSelectedSocietyTab] = useState('crown');
+  const [showGmRef, setShowGmRef] = useState(false);
 
   // Name Generator State
   const [genGender, setGenGender] = useState('male');
@@ -1258,77 +1260,254 @@ export default function LoreEncyclopedia() {
             {/* 3. FEUDAL & HISTORICAL INFO TAB */}
       {activeSubTab === 'feudal' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          
-          <div className="cs-row" style={{ gap: '20px' }}>
-            <section className="cs-section" style={{ flex: '1 1 350px' }}>
-              <div className="sheet-ribbon"><h3>🛡️ 샤를마뉴 제국의 봉건제와 신분제</h3></div>
-              <div className="cs-section-inner" style={{ fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--color-ink)' }}>
-                <p style={{ marginBottom: '8px' }}>
-                  <strong>봉신 기사 (Vassal Knight):</strong> 대공이나 백작 등의 대주군으로부터 직접 장원(Manor)을 하사받고 그 토지를 대부하여 다스리는 기사입니다. 매년 주군의 전쟁 소집에 응할 군역 의무(보통 40일)를 지며, 장원 관리를 성실히 수행하여 연평균 <strong>£6 상당의 유지비</strong>와 가문을 유지해야 합니다.
-                </p>
-                <p style={{ marginBottom: '8px' }}>
-                  <strong>가신 기사 (Household Knight):</strong> 토지를 배분받지 못하고 주군의 직속 궁성이나 성곽에 상주하는 직업 군인 기사들입니다. 이들은 장원의 직접 수확이 없는 대신 주군이 제공하는 식사와 숙식, 마구 복지와 매년 일정한 수당을 받습니다. 결혼 자금이 부족하여 '독신 기사(Bas Chevalier / Bachelor)'로 남아있는 경우가 대다수입니다.
-                </p>
-                <p>
-                  <strong>사령 전사단 (Scara / Scarae):</strong> 샤를마뉴가 직속 지휘권을 가진 특수 정예 기병 전단으로, 최정예 성기사들로만 구성된 상시 기동 국경 타격대입니다. 제국의 위기 시 가장 맹렬히 진격하는 칼끝입니다.
-                </p>
-              </div>
-            </section>
-
-            <section className="cs-section" style={{ flex: '1 1 350px' }}>
-              <div className="sheet-ribbon"><h3>⚜️ 기사의 도덕률과 기사도 10계명</h3></div>
-              <div className="cs-section-inner" style={{ fontSize: '0.9rem', lineHeight: 1.6 }}>
-                <p style={{ fontStyle: 'italic', color: 'var(--color-grey)', marginBottom: '8px' }}>
-                  &ldquo;프랑크 제국의 기사는 신앙과 조국을 지키며, 무고한 여성과 성 교회를 무력으로 유린하는 이교 세력에 맞서는 장엄한 임무를 받았다.&rdquo;
-                </p>
-                <ol style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
-                  <li>너는 교회의 가르침을 진실히 믿고 그 규례를 충실히 지킬 것이다.</li>
-                  <li>너는 제국과 성 교회를 끝까지 지켜낼 용맹한 방패가 될 것이다.</li>
-                  <li>너는 무방비하고 억압받는 모든 자들의 보호자가 될 것이다.</li>
-                  <li>너는 조국 프랑크 강토를 헌신적으로 방위할 것이다.</li>
-                  <li>너는 주군에 대한 맹세와 약조를 결코 거스르지 않을 것이다.</li>
-                  <li>너는 부도덕한 이교 세력의 기만적 제안에 절대 야합하지 않을 것이다.</li>
-                  <li>너는 주의 공명정대한 정의를 행하되 사리사욕을 앞세우지 않을 것이다.</li>
-                  <li>너는 패배하여 자비를 구하는 약자에게 반드시 관용을 베풀 것이다.</li>
-                  <li>너는 타인을 기만하지 않고 항상 진실을 말할 것이다.</li>
-                  <li>너는 모든 위업에 대적하여 항상 전설적인 명예를 갈고닦을 것이다.</li>
-                </ol>
-              </div>
-            </section>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '12px', flexWrap: 'wrap', gap: '12px' }}>
+            <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--color-ink)', fontWeight: 'bold', fontSize: '1.2rem', margin: 0 }}>
+              <Book size={20} /> 제13장: 프랑크 사회 (Frankish Society)
+            </h3>
+            <button 
+              className={`btn-medieval ${showGmRef ? 'btn-medieval-primary' : ''}`}
+              onClick={() => setShowGmRef(!showGmRef)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '6px 12px' }}
+            >
+              <Shuffle size={14} /> {showGmRef ? '역사 해설 보기' : 'GM 룰북 퀵-레퍼런스'}
+            </button>
           </div>
 
-          <section className="cs-section">
-            <div className="sheet-ribbon"><h3>📖 기사의 세 가지 원대한 이상 (Ideals)</h3></div>
-            <div className="cs-section-inner">
-              <div className="cs-row" style={{ gap: '20px' }}>
-                <div style={{ flex: '1 1 230px', minWidth: 0, padding: '10px', border: '1px solid var(--color-gold-light)', background: 'rgba(179,143,67,0.03)' }}>
-                  <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '6px' }}>⚔️ 기사도적 기사 (Chivalrous Knight)</h4>
-                  <ul style={{ paddingLeft: '14px', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '3px', color: 'var(--color-ink-light)' }}>
-                    <li><strong>요구 성향:</strong> Energetic, Generous, Just, Merciful, Modest, Valorous 합산 <strong>90점 이상</strong></li>
-                    <li><strong>요구 열망:</strong> Honor <strong>16점 이상</strong></li>
-                    <li><strong>보너스 혜택:</strong> Inspired for Honor 시 전투 보너스 2배 (+10 / 대성공 +20), 상시 <strong>+3 invisible 아머</strong> (Divine Aid), <strong>매년 100 Glory 획득</strong></li>
-                  </ul>
+          {!showGmRef ? (
+            /* INTERACTIVE ARCHIVE BROWSER */
+            <div className="cs-row" style={{ gap: '20px', alignItems: 'flex-start' }}>
+              {/* Left Sidebar Category Selection */}
+              <div style={{ flex: '1 1 250px', display: 'flex', flexDirection: 'column', gap: '8px', position: 'sticky', top: '10px' }}>
+                {frankishSociety.map(sec => {
+                  const IconComponent = sec.key === 'crown' ? Crown :
+                                      sec.key === 'justice' ? Scale :
+                                      sec.key === 'palace' ? Book :
+                                      sec.key === 'knighthood' ? Award :
+                                      sec.key === 'dailyLife' ? Home :
+                                      sec.key === 'church' ? HelpCircle : Sword;
+                  return (
+                    <button
+                      key={sec.key}
+                      className={`btn-medieval ${selectedSocietyTab === sec.key ? 'btn-medieval-primary' : ''}`}
+                      onClick={() => setSelectedSocietyTab(sec.key)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        gap: '10px',
+                        padding: '10px 14px',
+                        textAlign: 'left',
+                        width: '100%',
+                        fontSize: '0.9rem'
+                      }}
+                    >
+                      <IconComponent size={16} style={{ color: selectedSocietyTab === sec.key ? 'inherit' : 'var(--color-gold-dark)' }} />
+                      {sec.titleKO}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right Content Pane */}
+              <div style={{ flex: '3 3 600px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {(() => {
+                  const currentSection = frankishSociety.find(sec => sec.key === selectedSocietyTab) || frankishSociety[0];
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <div className="sheet-ribbon">
+                        <h3>{currentSection.titleKO}</h3>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                        {currentSection.topics.map((topic, index) => (
+                          <div 
+                            key={index} 
+                            style={{ 
+                              background: '#fffefb', 
+                              border: '1px solid var(--color-gold-light)', 
+                              padding: '16px', 
+                              borderRadius: '4px', 
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.02)',
+                              position: 'relative'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '8px', marginBottom: '10px' }}>
+                              <h4 style={{ margin: 0, fontWeight: 'bold', fontSize: '1rem', color: 'var(--color-ink)' }}>
+                                {topic.titleKO}
+                              </h4>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)', border: '1px solid var(--color-gold-light)', padding: '2px 6px', background: 'rgba(179,143,67,0.05)', borderRadius: '2px', fontWeight: 'bold' }}>
+                                {topic.nameEN}
+                              </span>
+                            </div>
+                            <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginBottom: '12px' }}>
+                              {topic.desc}
+                            </p>
+                            <div 
+                              style={{ 
+                                borderLeft: '3px solid var(--color-crimson)', 
+                                padding: '10px 12px', 
+                                background: 'rgba(179,143,67,0.03)', 
+                                fontSize: '0.8rem', 
+                                color: 'var(--color-ink-light)', 
+                                lineHeight: 1.5,
+                                border: '1px solid rgba(179,143,67,0.15)',
+                                borderLeftWidth: '3px',
+                                borderRadius: '0 4px 4px 0'
+                              }}
+                            >
+                              <strong style={{ color: 'var(--color-crimson)', display: 'block', fontSize: '0.82rem', marginBottom: '4px' }}>
+                                🎲 TRPG 룰북 가이드 &amp; 판정
+                              </strong>
+                              {topic.trpgRules}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          ) : (
+            /* GM RULES QUICK-REFERENCE TOOL */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div className="sheet-ribbon">
+                <h3>🎲 GM 룰북 핵심 참조 요약 (GM Quick-Reference Guide)</h3>
+              </div>
+              <div className="cs-row" style={{ gap: '20px', alignItems: 'flex-start' }}>
+                {/* Chivalry 10 Commandments & Ideals */}
+                <div style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <section className="cs-section">
+                    <div style={{ padding: '14px', border: '1px solid var(--color-gold-light)', background: '#fffefb' }}>
+                      <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>
+                        ⚜️ 기사의 도덕률과 기사도 10계명
+                      </h4>
+                      <ol style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', color: 'var(--color-ink-light)', lineHeight: 1.4 }}>
+                        <li>너는 교회의 가르침을 진실히 믿고 그 규례를 충실히 지킬 것이다.</li>
+                        <li>너는 제국과 성 교회를 끝까지 지켜낼 용맹한 방패가 될 것이다.</li>
+                        <li>너는 무방비하고 억압받는 모든 자들의 보호자가 될 것이다.</li>
+                        <li>너는 조국 프랑크 강토를 헌신적으로 방위할 것이다.</li>
+                        <li>너는 주군에 대한 맹세와 약조를 결코 거스르지 않을 것이다.</li>
+                        <li>너는 부도덕한 이교 세력의 기만적 제안에 절대 야합하지 않을 것이다.</li>
+                        <li>너는 주의 공명정대한 정의를 행하되 사리사욕을 앞세우지 않을 것이다.</li>
+                        <li>너는 패배하여 자비를 구하는 약자에게 반드시 관용을 베풀 것이다.</li>
+                        <li>너는 타인을 기만하지 않고 항상 진실을 말할 것이다.</li>
+                        <li>너는 모든 위업에 대적하여 항상 전설적인 명예를 갈고닦을 것이다.</li>
+                      </ol>
+                    </div>
+                  </section>
+
+                  <section className="cs-section">
+                    <div style={{ padding: '14px', border: '1px solid var(--color-gold-light)', background: '#fffefb' }}>
+                      <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>
+                        👑 성기사의 3대 이상 (Three Knightly Ideals)
+                      </h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        <div>
+                          <strong style={{ fontSize: '0.82rem', color: 'var(--color-ink)' }}>⚔️ 기사도적 기사 (Chivalrous Knight)</strong>
+                          <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', margin: '2px 0 0 0', lineHeight: 1.3 }}>
+                            - 요구치: Energetic, Generous, Just, Merciful, Modest, Valorous 합산 90점 이상 / Honor 열망 16점 이상<br />
+                            - 보너스: Inspired 시 전투 2배 (+10 / 대성공 +20), 상시 <strong>+3 invisible 아머</strong> (Divine Aid), 매년 100 Glory
+                          </p>
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: '0.82rem', color: 'var(--color-ink)' }}>✝ 신앙적인 기사 (Religious Knight)</strong>
+                          <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', margin: '2px 0 0 0', lineHeight: 1.3 }}>
+                            - 요구치: Chaste, Forgiving, Merciful, Modest, Temperate, Trusting 합산 90점 이상 / Love [God] 16점 이상<br />
+                            - 보너스: 모든 <strong>기도(Prayer) 및 기적 판정에 +5</strong> 절대 보너스, 매년 100 Glory
+                          </p>
+                        </div>
+                        <div>
+                          <strong style={{ fontSize: '0.82rem', color: 'var(--color-ink)' }}>🌹 낭만적인 기사 (Romantic Knight)</strong>
+                          <p style={{ fontSize: '0.78rem', color: 'var(--color-ink-light)', margin: '2px 0 0 0', lineHeight: 1.3 }}>
+                            - 요구치: Forgiving, Generous, Honest, Just, Prudent, Trusting 합산 90점 이상 / Amor [Lady] 16점 이상<br />
+                            - 보너스: Inspired 시 전투 2배 (+10 / 대성공 +20), 매 세션 <strong>1회 주사위 재굴림</strong> 찬스, 매년 100 Glory
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
                 </div>
-                <div style={{ flex: '1 1 230px', minWidth: 0, padding: '10px', border: '1px solid var(--color-gold-light)', background: 'rgba(179,143,67,0.03)' }}>
-                  <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '6px' }}>✝ 신앙적인 기사 (Religious Knight)</h4>
-                  <ul style={{ paddingLeft: '14px', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '3px', color: 'var(--color-ink-light)' }}>
-                    <li><strong>요구 성향:</strong> Chaste, Forgiving, Merciful, Modest, Temperate, Trusting 합산 <strong>90점 이상</strong></li>
-                    <li><strong>요구 열망:</strong> Love [God] <strong>16점 이상</strong></li>
-                    <li><strong>보너스 혜택:</strong> 모든 <strong>기도(Prayer) 및 기적 판정에 +5</strong> 절대 보너스, <strong>매년 100 Glory 획득</strong></li>
-                  </ul>
-                </div>
-                <div style={{ flex: '1 1 230px', minWidth: 0, padding: '10px', border: '1px solid var(--color-gold-light)', background: 'rgba(179,143,67,0.03)' }}>
-                  <h4 style={{ color: '#4a148c', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '6px' }}>🌹 낭만적인 기사 (Romantic Knight)</h4>
-                  <ul style={{ paddingLeft: '14px', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '3px', color: 'var(--color-ink-light)' }}>
-                    <li><strong>요구 성향:</strong> Forgiving, Generous, Honest, Just, Prudent, Trusting 합산 <strong>90점 이상</strong></li>
-                    <li><strong>요구 열망:</strong> Amor [Lady] 또는 Love [Amor] <strong>16점 이상</strong></li>
-                    <li><strong>요구 기술:</strong> Romance 10점 및 예법 기술 4종 10점 이상</li>
-                    <li><strong>보너스 혜택:</strong> Inspired for Amor 시 전투 보너스 2배 (+10 / 대성공 +20), 매 세션 <strong>1회 주사위 재굴림</strong> 찬스, <strong>매년 100 Glory 획득</strong></li>
-                  </ul>
+
+                {/* Stewardship and Trial by Ordeal Tables */}
+                <div style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <section className="cs-section">
+                    <div style={{ padding: '14px', border: '1px solid var(--color-gold-light)', background: '#fffefb' }}>
+                      <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>
+                        🌾 장원 연간 세입 및 수확 판정 (Stewardship Table)
+                      </h4>
+                      <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse', textAlign: 'left', lineHeight: 1.4 }}>
+                        <thead>
+                          <tr style={{ borderBottom: '1px solid var(--color-gold-light)', color: 'var(--color-gold-dark)' }}>
+                            <th style={{ padding: '4px 0', fontWeight: 'bold' }}>Stewardship 판정 결과</th>
+                            <th style={{ padding: '4px 0', fontWeight: 'bold', textAlign: 'right' }}>장원 재무 소득 변화</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr style={{ borderBottom: '1px solid rgba(179,143,67,0.08)' }}>
+                            <td style={{ padding: '6px 0', fontWeight: 'bold', color: 'var(--color-crimson)' }}>대성공 (Critical Success)</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--color-crimson)' }}>풍작 소득 보너스 획득 (+£2)</td>
+                          </tr>
+                          <tr style={{ borderBottom: '1px solid rgba(179,143,67,0.08)' }}>
+                            <td style={{ padding: '6px 0' }}>성공 (Success)</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right' }}>정상 장원 소득 수금 (£6)</td>
+                          </tr>
+                          <tr style={{ borderBottom: '1px solid rgba(179,143,67,0.08)' }}>
+                            <td style={{ padding: '6px 0' }}>실패 (Failure)</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right' }}>정상 소득 수금 (£6), 단 농민 갈등 발생</td>
+                          </tr>
+                          <tr>
+                            <td style={{ padding: '6px 0', fontWeight: 'bold', color: 'var(--color-grey)' }}>대실패 (Fumble)</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right', fontWeight: 'bold', color: 'var(--color-grey)' }}>기근 / 역병 대손실 (-£2) &amp; 농민 폭동</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style={{ fontSize: '0.74rem', color: 'var(--color-grey)', fontStyle: 'italic', marginTop: '6px', marginBottom: 0 }}>
+                        * 기사 캐릭터가 Stewardship 판정 시 절대 "대실패 (Fumble)"는 일어나지 않으며, 영주로서 가뭄이나 기근의 재해를 맞이할 경우 극단적 실패는 반드시 "대실패"로 간주되어 농노 관리에 패널티를 받습니다.
+                      </p>
+                    </div>
+                  </section>
+
+                  <section className="cs-section">
+                    <div style={{ padding: '14px', border: '1px solid var(--color-gold-light)', background: '#fffefb' }}>
+                      <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.95rem', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px' }}>
+                        ⚖️ 신명 재판 사법 판정 (Trial by Ordeal Table)
+                      </h4>
+                      <table style={{ width: '100%', fontSize: '0.8rem', borderCollapse: 'collapse', textAlign: 'left', lineHeight: 1.4 }}>
+                        <thead>
+                          <tr style={{ borderBottom: '1px solid var(--color-gold-light)', color: 'var(--color-gold-dark)' }}>
+                            <th style={{ padding: '4px 0', fontWeight: 'bold' }}>신명 재판 종류</th>
+                            <th style={{ padding: '4px 0', fontWeight: 'bold' }}>요구 판정 (Roll)</th>
+                            <th style={{ padding: '4px 0', fontWeight: 'bold', textAlign: 'right' }}>실패 시 결과</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr style={{ borderBottom: '1px solid rgba(179,143,67,0.08)' }}>
+                            <td style={{ padding: '6px 0', fontWeight: 'bold' }}>뜨거운 철판 쥐기 (Hot Iron)</td>
+                            <td style={{ padding: '6px 0' }}><strong>CON x 3</strong> 판정</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right', color: 'var(--color-crimson)' }}>3d6 HP 소실 &amp; 유죄 교수형</td>
+                          </tr>
+                          <tr style={{ borderBottom: '1px solid rgba(179,143,67,0.08)' }}>
+                            <td style={{ padding: '6px 0', fontWeight: 'bold' }}>끓는 물 손 넣기 (Boiling Water)</td>
+                            <td style={{ padding: '6px 0' }}><strong>CON x 2</strong> 판정</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right', color: 'var(--color-crimson)' }}>3d6 HP 소실 &amp; 유죄 교수형</td>
+                          </tr>
+                          <tr>
+                            <td style={{ padding: '6px 0', fontWeight: 'bold' }}>찬물 잠수 (Cold Water)</td>
+                            <td style={{ padding: '6px 0' }}><strong>CON x 5</strong> 판정</td>
+                            <td style={{ padding: '6px 0', textAlign: 'right', color: 'var(--color-crimson)' }}>가라앉으면 무죄, 뜨면 유죄 처형</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <p style={{ fontSize: '0.74rem', color: 'var(--color-grey)', fontStyle: 'italic', marginTop: '6px', marginBottom: 0 }}>
+                        * 신성 결투(Trial by Combat) 시, 피고나 원고 중 결투 판정에서 대실패(Fumble)를 범하는 쪽은 칼이 부러지거나 하느님이 거짓을 벌하시는 즉각 유죄 처분을 받고 참형을 당합니다.
+                      </p>
+                    </div>
+                  </section>
                 </div>
               </div>
             </div>
-          </section>
+          )}
         </div>
       )}
 
