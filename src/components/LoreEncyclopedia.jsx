@@ -4,6 +4,11 @@ import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, 
 import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
 
+import europe768Map from '../assets/europe_768.jpg';
+import ardennesMap from '../assets/ardennes.jpg';
+import europe814Map from '../assets/europe_814.jpg';
+import aachenMap from '../assets/aachen.jpg';
+
 export default function LoreEncyclopedia() {
   const [activeSubTab, setActiveSubTab] = useState('families');
   const [selectedFamily, setSelectedFamily] = useState(greatFamilies[0]);
@@ -689,7 +694,34 @@ export default function LoreEncyclopedia() {
           <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
               🏛️ 제국 대강역 강역 (Territories)
-            </h3>
+            {/* 🗺️ 제국 지도 컬렉션 (Map Collection) */}
+            <div 
+              onClick={() => {
+                setSelectedTerritory(null);
+                setSelectedGeoTab('europe_768');
+              }}
+              style={{ 
+                padding: '12px', 
+                border: selectedTerritory === null ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                borderRadius: '4px',
+                background: selectedTerritory === null ? 'rgba(179,143,67,0.06)' : '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '10px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
+              }}
+            >
+              <div>
+                <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>🗺️</span>
+                <strong style={{ fontSize: '0.95rem', color: selectedTerritory === null ? 'var(--color-crimson)' : 'var(--color-ink)' }}>제국 공식 지도첩 (Atlas)</strong>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>Imperial Maps Collection</div>
+              </div>
+              <ChevronRight size={16} color="var(--color-gold)" />
+            </div>
+
             {filteredTerritories.map(t => (
               <div 
                 key={t.key}
@@ -899,6 +931,117 @@ export default function LoreEncyclopedia() {
                   </div>
                 )}
 
+              </div>
+            </section>
+          )}
+
+          {selectedTerritory === null && (
+            <section className="cs-section" style={{ flex: '2 1 480px' }}>
+              <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>🗺️ 제국 공식 지도첩 (Carolingian Atlas)</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: '#fffefb', border: '1px solid var(--color-gold-light)', padding: '16px' }}>
+                {/* Map Subtabs Switcher */}
+                <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px' }}>
+                  {[
+                    { id: 'europe_768', name: '🗺️ 유럽 강역도 (768 AD)' },
+                    { id: 'europe_814', name: '🗺️ 유럽 강역도 (814 AD)' },
+                    { id: 'ardennes', name: '🌲 아르덴 상세도' },
+                    { id: 'aachen', name: '🏰 아헨 황실 궁정도' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      className="btn-medieval"
+                      style={{
+                        padding: '6px 10px',
+                        fontSize: '0.78rem',
+                        background: selectedGeoTab === tab.id ? 'var(--color-crimson)' : 'none',
+                        color: selectedGeoTab === tab.id ? '#fff' : 'var(--color-ink-light)',
+                        border: selectedGeoTab === tab.id ? '1px solid var(--color-crimson)' : '1px solid var(--color-grey-light)',
+                        borderRadius: '3px',
+                        cursor: 'pointer'
+                      }}
+                      onClick={() => setSelectedGeoTab(tab.id)}
+                    >
+                      {tab.name}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Map Display area with parchment frame */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center' }}>
+                  {selectedGeoTab === 'europe_768' && (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                        🗺️ 유럽 강역도 (서기 768년 - 샤를마뉴 즉위 원년)
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                        국왕 피핀 3세 사후, 샤를마뉴 대제와 동생 카를로만 1세가 프랑크 왕국을 분할 통치하던 즉위 원년 시점의 대륙 강역도입니다. 잘려 있던 좌우 페이지를 디지털 접합 및 최적화하였습니다.
+                      </p>
+                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
+                        <img 
+                          src={europe768Map} 
+                          alt="Map of Europe 768 AD" 
+                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedGeoTab === 'europe_814' && (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                        🗺️ 유럽 강역도 (서기 814년 - 샤를마뉴 대제 서거)
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                        샤를마뉴 대제가 전 생애에 걸친 대정복 위업을 통해 작센, 바이에른, 아바르, 롬바르디아를 정복하고 거대한 로마 제국 황제로서 서거하기 직전 최절정기의 제국 대강역도입니다.
+                      </p>
+                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
+                        <img 
+                          src={europe814Map} 
+                          alt="Map of Europe 814 AD" 
+                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedGeoTab === 'ardennes' && (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                        🌲 아르덴 상세 세부 지도 (The Ardennes Forest &amp; Bastogne)
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                        플레이어 성기사들이 어린 시절 교육받고 모험을 시작하는 아르덴 공국 및 바스토뉴(Bastogne) 요새도시 중심의 세부 강역도입니다. 울창한 원시 삼림과 복잡한 지류, 신비 유적 및 수도원들의 상세 입지가 결합되어 있습니다.
+                      </p>
+                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
+                        <img 
+                          src={ardennesMap} 
+                          alt="Map of the Ardennes" 
+                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedGeoTab === 'aachen' && (
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid rgba(179,143,67,0.15)', paddingBottom: '4px', textAlign: 'left' }}>
+                        🏰 아헨 제국 궁정 세부 도면 (Aachen Palace Compound)
+                      </h4>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
+                        샤를마뉴 대제의 황실 궁정이 위치한 아헨(Aachen)의 제국 궁정 성벽 단지 세부 배치 도면입니다. 황금 돔 예배당(Palatine Chapel), 대제의 대강당(Aula Regia), 국고 탑 등의 상세 입지를 보여줍니다.
+                      </p>
+                      <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', maxWidth: '600px', margin: '0 auto' }}>
+                        <img 
+                          src={aachenMap} 
+                          alt="Map of Aachen Palace" 
+                          style={{ width: '100%', borderRadius: '2px', display: 'block' }} 
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </section>
           )}
