@@ -1836,7 +1836,16 @@ export const cultures = [
     "warfareKO": "중기병 마창 기동은 전혀 하지 않으며 경무장 기마 포니를 애용합니다. 숲과 협곡에 숨어 있다가 휩쓸고 지나가는 Hit-and-Run 기습 전술의 명수입니다.",
     "equipmentKO": "족장: 가죽 갑옷 (아머 6), 목제 둥근 방패, 투창 및 산악용 검.\n풋맨: 산짐승 모피 갑옷 (아머 4), 화살 및 돌팔매 물맷돌.",
     "codeOfHonorKO": "프랑크의 기사도 서약이나 봉건제(Homage)를 이교도의 기만술로 취급하여 절대 따르지 않으며 오직 친족(Family Loyalty)과 가문의 복수만을 최고의 의무로 삼습니다.",
-    "fortificationsKO": "성곽을 짓지 않고 대신 높은 봉우리에 목조 망루(Watch Tower)를 조밀하게 세워 적의 침입 시 신속히 동굴로 대피합니다."
+    "fortificationsKO": "성곽을 짓지 않고 대신 높은 봉우리에 목조 망루(Watch Tower)를 조밀하게 세워 적의 침입 시 신속히 동굴로 대피합니다.",
+    "appearanceEN": "These stocky mountain folks are not very tall (–1 SIZ), but usually stronglybuilt, resilient (+1 CON) and darkhaired. Some have blue eyes, but all have a proud, penetrating look that puts foreigners ill at ease.",
+    "characterEN": "The main Basques characteristic is their deep sense of independence and pride (Proud). They are very intolerant of authority (Arbitrary) and are often described as taciturn, treacherous and fickle (Deceitful). They obey only to their family and clan (Love [family]).",
+    "skillsEN": "The Basques are widely known for their keen sight and hearing (Awareness), and for their numerous legends and superstitions (Folk Lore, Faerie Lore).",
+    "relationsEN": "The Basque country is part of the duchy of Gascony and, as such, a part of the Frankish kingdom. However, when Duke Lupus of Gascony does homage to Charlemagne in 768, the Basques revolt and become a semiindependent nation whose leader pays only lipservice to the Franks. In 778, some local chieftains ally with the Moors at the slaughter of Roncevaux. At the death of their leader they once more pay homage to the Franks, but Charlemagne’s authority over the Basques remains weak at best.",
+    "dailyLifeEN": "Pamplona, the seat of the duke, is the only Basque town. Basques live almost exclusively in poor mountain villages, where they practice sheep herding. Their way of life is completely selfsufficient, so they trade very little with the outside world. W omen have a large role in Basque society. Indeed, families are based on matrilineal kinship. W omen have a voice as esteemed councilors and they may own property and land.",
+    "warfareEN": "Basques fight as mountain warriors. They have no cavalry, though they use their sturdy mountain ponies to carry equipment. They try to avoid open battle in the plains, preferring hitand-run guerrilla warfare and ambushes, which allow them to take full advantage of the mountainous terrain.",
+    "equipmentEN": "Nobles: Leather armor (6 points), wooden shield (6 points); spear, sword, dagger. Footmen: Animal skin armor (4 points), small wooden shield (4 points); spear or javelins, hand axe, bow or sling, dagger.",
+    "codeOfHonorEN": "Knighthood, and chivalry especially, are unknown to the Basques. Their individual honor is based solely on family reputation. As a result, family feuds are numerous and longlasting. The Basques are fundamentally hostile to any centralized power and are only superficially feudalized, having preserved many elements of their tribal society. Therefore, they often refuse to do homage or swear fealty to a Frankish overlord. When they do, such an oath has no value for them and they unhesitatingly break any promise that goes against the interest of their clan or family.",
+    "fortificationsEN": "The Basques do not build castles. In case of impending trouble, wooden watch towers are used to inform the population, who may flee into hidden mountain caves if necessary."
   },
   {
     "key": "bretons",
@@ -1874,7 +1883,16 @@ export const cultures = [
     "warfareKO": "마구 마갑이 없는 정찰용 Rouncy 경기병을 활용하며, 삼림 덤불 속에 깊은 참호를 파 기마 돌격을 무력화시키는 늪지 전술을 씁니다.",
     "equipmentKO": "족장: 사슬 메일 조끼 (아머 8), 라운드 철제 투구, 전투용 검.\n풋맨: 누비 가죽옷 (아머 6), 마상창, 단검 및 활.",
     "codeOfHonorKO": "야만적인 부족 결의만 중시하며 포로 몸값 협상 대신 오직 동등한 포로 맞교환(Exchange)만을 수락하는 거친 사법률을 가졌습니다.",
-    "fortificationsKO": "강변의 통로를 거대 통나무 바리케이드로 봉쇄하는 게르슈(Guerche) 방벽 요새를 운용합니다."
+    "fortificationsKO": "강변의 통로를 거대 통나무 바리케이드로 봉쇄하는 게르슈(Guerche) 방벽 요새를 운용합니다.",
+    "appearanceEN": "The Bretons are a short (–2 SIZ), stocky (+1 CON), darkhaired, and rather unsophisticated people (–1 APP). The men can be recognized by their wild beards, and they often dress in simple black and white clothes.",
+    "characterEN": "They originally came from Britain, from the end of the world. (…) That people, dishonest and pompous, have been in rebellion up to now, and lacking in goodwill. (…) They take no thought for orphans, widows, churches. A man will lie down with his sister; one brother will rape another brother’s wife; everyone lives incestuously with everyone else; wickedness abounds. They live in briar patches and sleep in the woods and rejoice to live by theft in the manner of beasts. The force of justice claims no hall for itself with them, and the proper kinds of judgments escape them. — Ermold the Black , III The word “Breton” is derived from “brutal.” On the main Breton character traits are quite negative, with a reputation of being Deceitful, Lustful, Arbitrary and Cowardly, but they are also recognized as quite Energetic.",
+    "skillsEN": "The Bretons live close to nature and know the secrets about the woods and its wild life (Folk Lore, Hunting), as well as many stories about the Other W orld (Faerie Lore). Almost all Bretons have a knack for music (Play Instruments).",
+    "relationsEN": "In the beginning of Charlemagne’s reign, the Bretons pay tribute in return for their independence. The converted Duke Samson of Brittany collects these taxes, but despite his title he does not rule over the Armorican peninsula. After the disaster at Roncevaux, the Breton leaders refuse to do homage and no longer send their traditional gifts, so Charlemagne orders the conquest of Brittany.",
+    "dailyLifeEN": "The people usually live in a small village on top of a hill, protected by a wooden palisade. Most houses are square wooden dwellings with low thatched roofs. The locals make a living from fishing and cattle herding. The whole of Brittany is quite poor, and trade with other lands almost nonexistent.",
+    "warfareEN": "They have often taken the path to our lands, but they do not go back to theirs unharmed. — Ermold the Black , III Bretons are mainly seasonal raiders. In battle they rely on light cavalry without horsearmor. Their favorite guerrilla tactic is to set traps and prepare ambushes for Frankish horsemen. Avoiding open battle with the superior Frankish troops, they often pretend to retreat and then turn around to attack. When cornered, the forest provides them with hidden routes which allow them to return unseen and attack their opponents in the back. Their few rules of honor are barbarian and as variable as the local weather. Bretons rarely ask a ransom for their prisoners, but they do accept the exchange of captured foes. Local chieftains build fortified barriers named guerches, which serve to block the waterways into the hinterland. These local magnates may live in a wooden or, rarely, stone tower. At best, the few Breton “kings” live in what they call a castle: [The king ] lives in a place with woods on one side and a nice stream on the other, situated amidst hedges, trenches and a swamp. Inside was a grand stone tower house that shone with the splendor of weapons whenever it happened to be filled with different soldiers. — Ermold the Blac k, III",
+    "equipmentEN": "Nobles: Ring mail armor and round iron helmet (8 points), wooden shield (6 points); spear, iron sword, dagger; rouncy, courser. Horsemen: Leather armor (6 points); spear, dagger; rouncy. Footmen: Leather armor (6 points), wooden shield (6 points); spear, dagger.",
+    "codeOfHonorEN": "",
+    "fortificationsEN": ""
   },
   {
     "key": "britons",
@@ -1910,7 +1928,16 @@ export const cultures = [
     "warfareKO": "말이 몹시 비싸고 귀하여 전투 시 말에서 내려 방패벽을 짜고 싸우며, 후방에서 롱보우 장궁의 정밀 화망 지원을 전개하는 전술을 애용합니다.",
     "equipmentKO": "기사: 사슬 갑옷과 철제 투구 (아머 8), 목제 카이트 쉴드, 브로드소드.\n보병: 가죽 흉갑 및 모자 (아머 5), 투창 및 목제 단궁.",
     "codeOfHonorKO": "프랑크의 정통 기사도 법률(Chivalry)과 사법 결투, 봉건 맹세를 완벽히 신뢰하고 정중히 따릅니다.",
-    "fortificationsKO": "로마의 석조 성벽을 보강하여 사용하거나 언덕 위에 목조 모트-앤-베일리(Motte-and-Bailey) 성채를 건설하여 항전합니다."
+    "fortificationsKO": "로마의 석조 성벽을 보강하여 사용하거나 언덕 위에 목조 모트-앤-베일리(Motte-and-Bailey) 성채를 건설하여 항전합니다.",
+    "appearanceEN": "The people of the British Isles are much like the Franks, though more of them have red hair. Most nobles shave, though the ones from the isolated regions, such as Scotland or Cornwall, let their beards and hair grow. When not in armor, they wear checkered shirts and fine linen trousers, whereas the women dress in an elegant RomanoBritish style unique to the Isles.",
+    "characterEN": "Britons are civilized gentlemen, much like the good Sir Astolf. The nobles try to follow the example of the Franks. As a people they are particularly lauded for their hard work (Energetic), sincerity (Honest) and their rather frugal way of life (T emperate).",
+    "skillsEN": "The Britons are a seagoing nation of adventurers and merchants (Stewardship). They are known for their refinement and good manners (Courtesy), their sharp tongue and their particular sense of humor (Eloquence). The Britons are fervent Christians (Religion). Indeed, many monks and priests travel from the Isles to go and live in a monastery or an hermitage on the continent (Love [God]).",
+    "relationsEN": "The Britons take example from their respected Frankish brothers for many things. Charlemagne looks upon the British princes as his sons, and he is their natural ally against the Danes. Many British nobles send their sons to the continent to receive a proper knightly education at one of the Frankish courts.",
+    "dailyLifeEN": "Apart from a few urban centers like London or Y ork, most Britons live on the countryside in small farming communities. The peasants make their living from herding, especially sheep and goats. Along the coast, fishermen sail out daily on their small boats. In general, the Britons are not as rich as the Franks.",
+    "warfareEN": "British lords are often not as well equipped as their Frankish counterparts. They largely rely on levies of scantily armored footmen, with only a few knights to command them. The rare and expensive horses are saved for riding and pursuit, rarely ridden in combat. In battle they make full use of archery. There is one point at which the Britons are superior to Charlemagne: their fleet is better equipped and organized, though still unable to rival the seaborne Danes.",
+    "equipmentEN": "Nobles: Ring mail armor and iron helmet (8 points), wooden shield (6 points); spear, sword, dagger; courser or charger. Horsemen: Leather armor and iron helmet (6 points), spear, sword, dagger; rouncy. Footmen: Leather armor and a leather cap (5 points), wooden shield (6 points); spear, dagger or short sword, bow.",
+    "codeOfHonorEN": "British nobles are generally honorable and follow the code of knighthood. Their word can be trusted.",
+    "fortificationsEN": "Much like in Frankland, the British lords live in fortified manors or small wooden motte castles to which the local population may flee in case of attack, especially in the exposed coastal areas."
   },
   {
     "key": "byzantines",
@@ -1949,7 +1976,16 @@ export const cultures = [
     "warfareKO": "최첨단 국영 방산 공장에서 생산된 통일된 철제 비늘 갑옷을 보급하며, 불을 뿜는 화염방사기 '그리스의 불(Greek Fire)'과 정예 카타프락토이 중기병을 씁니다.",
     "equipmentKO": "장군: 정밀 철제 비늘 갑옷과 폐쇄형 마스크 투구 (아머 14), 마갑 입힌 군마.\n보병: 경화 가죽 흉갑 (아머 6), 대형 원형 방패, 활 및 단검.",
     "codeOfHonorKO": "명예를 입으로 숭상하나 정치가 가문을 우선하기에, 정적의 씨를 말리기 위해 실명시키거나 거세하여 요양원으로 보내는 비장한 제국 법률을 선호합니다.",
-    "fortificationsKO": "삼중으로 둘러쳐진 장엄한 석조 요새 성벽(테오도시우스 성벽)과 해자로 대도시 전체를 완벽히 통제합니다."
+    "fortificationsKO": "삼중으로 둘러쳐진 장엄한 석조 요새 성벽(테오도시우스 성벽)과 해자로 대도시 전체를 완벽히 통제합니다.",
+    "appearanceEN": "Like all Mediterranean people, the Byzantines are slightly smaller and less robust than the Franks (–1 SIZ, –1 STR). They have long straight noses. They dress in elegant robes like the Romans, take good care of their looks and are found to be quite beautiful (+1 APP) and handy (+1 DEX).",
+    "characterEN": "The Byzantines are known to be particularly Proud, Deceitful, Indulgent, and Suspicious of Franks. Still, Byzantines are a type of Christians (Love [God]). In the long and bloody wars against the Bulgars and the Persians, many of them develop a Hate [Bulgars] or Hate [Persians]. Though their luxurious way of life and frequent change of politics have somewhat diminished it, their Honor is generally still higher than their Love [family].",
+    "skillsEN": "Byzantines are excellent tacticians, both for attacking strongholds and on the battlefield (Battle, Siege). The Byzantines pride themselves in their highly developed court life and refined manners (Courtesy). Their administration is very complex, but very efficient (Stewardship). T o outsiders it often seems as if they spend their time scheming and hatching wily plots (Intrigue). All members of the upper class and many merchants are completely literate, and often in more than one language (Reading & W riting, Languages). Indeed, lack of education is frowned upon. From their books they have learned the arts of debate and persuasion (Eloquence) or even sophisticated theological arguments (Religion). Their empire has many islands, so most inhabitants have some skill as a navigator or sailor. Another particularity is their fondness of the chariot races organized in great arenas.",
+    "relationsEN": "If a Frank is your friend, he is certainly not your neighbor. — Byzantine proverb The Byzantines dream of restoring the ancient Roman Empire, of which they pretend to be true heirs. They see themselves as the guardians of classical and Roman civilization and the center of Christianity. They perceive the Franks as powerful barbarians. The Byzantines and Franks share two enemies: the Bulgars and the Saracens. Phase 1–2: As long as the Lombard exiles receive Byzantine support in their attempts to reconquer their lost Italian territories, the Franks view Byzantium as a peaceful enemy. Phase 3–4: When Benevento finally submits and the Saracen pressure on Byzantium grows, the Franks are no longer enemies, but become a sort of amiable rivals. This produces a halfhearted alliance and some marriage proposals, most of which are ultimately abandoned. Despite insistent Byzantine demands, Charlemagne refuses to declare war on the Persians. W orse, he is on friendly terms with the caliph.",
+    "dailyLifeEN": "The Byzantines are appallingly wealthy and relatively educated. Their merchants operate in the Mediterranean Sea under the protection of the imperial fleet and carry considerable riches in spices, silks, gold and slaves. The main trade routes via land lead to Sericane, Persia and even Cathay. The Byzantines maintain a very efficient postal service used by the army and merchants.",
+    "warfareEN": "The Byzantines are constantly at war with the Huns from Bulgaria, the Persians (to whom they sometimes have to pay heavy tributes in return for peace), and the Saracens from Babylon. On the other hand, the Khazars (Circassians) are natural allies against the Persians. Without declaring open war, Empress Irene starts to colonize deserted Slavic lands on the European mainland.",
+    "equipmentEN": "Higher ranks: Heavy scale armor and closed helmet (14 points); iron sword, mace, compound bow, dagger; charger with trapper (2 points), courser. Cataphract: Scale armor and open helmet (12 points), light shield (4 points); mace, lance, compound bow, dagger; charger. Footman: Cuirbouilli and iron helmet (6 points), shield (6 points); spear, bow, dagger.",
+    "codeOfHonorEN": "",
+    "fortificationsEN": ""
   },
   {
     "key": "danes",
@@ -1989,7 +2025,16 @@ export const cultures = [
     "warfareKO": "파도를 가르는 드래곤쉽 장선(Longship)을 타고 침투하여 기습 상륙 작전을 편 후, 지상에서는 거대한 도끼와 방패 장막을 펼치고 난투를 벌입니다.",
     "equipmentKO": "바이킹 족장: 사슬갑옷 및 독수리 가면 투구 (아머 10), 둥근 목제 방패, 양손도끼.\n선원: 가죽 자켓 (아머 6), 투창, 브로드소드, 도끼 및 단검.",
     "codeOfHonorKO": "적을 약탈하고 살육하는 야만적 용맹(Valorous)을 최고의 미덕으로 삼으며, 오딘과 토르 신에게 가축과 포로를 바치는 거친 제례를 올립니다.",
-    "fortificationsKO": "국경선 전체를 진흙과 돌벽으로 방어하는 웅장한 40km 흙벽 요새인 다네비르케(Danevirke)를 사수합니다."
+    "fortificationsKO": "국경선 전체를 진흙과 돌벽으로 방어하는 웅장한 40km 흙벽 요새인 다네비르케(Danevirke)를 사수합니다.",
+    "appearanceEN": "The Danes are big (+1 SIZ), resilient (+1 CON), strong (+1 STR), have long blond hair and deep blue eyes. They are hearty folk made tough by the harsh region they live in, and they are not known for their delicacy (–2 DEX, –2 APP). Rich Danes wear a torc: a bronze or gold neck ring.",
+    "characterEN": "Dark and cold winters make these barbarians moody and dangerous (V alorous), while the long summers overexcite them (Reckless). Horse riding is unknown to them, as are civilized manners. They work hard (Energetic), are straightforward (Honest), boastful and easily insulted (Proud), superstitious (Arbitrary), uncouth and wild like the land where they live (V engeful). Danes are famous for their capacity to absorb huge amounts of food and drink (Indulgent). They are the most barbarian of peoples, who are like kinds of wild beasts. They live in the North, close to the Hyperboreal mountains, surrounded by all sides by excessive cold. They are an unquiet people preying on other peoples; and if a crowd of captives falls into their hands, no one is ever or hardly ever able to return. — Aethicus Ister Narrowly linked to their pagan customs is their treacherous nature and dishonorable savagery (Cruel), which makes them particularly feared enemies. For a long time they maintained wicked pagan practices, worshiping empty idols instead of their creator. Neptune was a god, and Jupiter assumed Christ’s place; they paid him all sacred honors. This people were called Danes. They are also called Northmen by the Franks. They are fast, agile and wellarmed. They inhabit the sea and seek out wealth by ship. — Ermold the Black , IV",
+    "skillsEN": "They are the undisputed rulers of the sea, sailing as far as possible to trade their merchandise (Stewardship). They have a knack for exaggerated stories (Folk Lore, Faerie Lore), they excel in Swimming and other physical activities. On the other hand, Danes seem hardly inclined to learn any courtly skills apart from Gaming. They live by a moral code in which notions as courage, hospitality, and Love [family] are central.",
+    "relationsEN": "As allies of the Saxons the Danes are the enemies of the Franks, even though they rarely meet on the battlefield in the early years of Charlemagne’s reign. At the end of the P aladin chronology, though, the Danes become more and more aggressive, attacking the shores of Britannia first, later Frisia and even some northern Frankish coasts. Alcuin writes a lament about the Danish destruction of the monastery of Lindisfarne in 793: How painful to everyone was that day, when, alas, A pagan war band arrived from the ends of the earth, Descended suddenly by ship and came to our land, Despoiling our fathers’ venerable tombs of their finery And befouling the temples dedicated to God, And Sorech, the most pure vine of the divine Christ, W as suddenly gnawed by the teeth of foxes.",
+    "dailyLifeEN": "Apart from the capital, Haithabu, and Birka, there are no towns in Denmark. The Danes live in small villages, often on the coast. Chiefs live in a great wooden hall. Some rich Danes have more than one wife. Most Danes tend to their farms or sail out to go fishing, but they are also able seafaring merchants and pirates. Their fast longships cover great distances, all the way to the British Isles, Frankland and Slavonia. Sometimes smaller groups get permission to navigate in the Frankish mainland via the Rhine, the Meuse and other rivers used as commercial routes. Instead of silver pieces, the Danes use hacksilver, cattle and barter. That region produces no useful fruit, but a multitude of beasts and cattle, horses (larger and more useful than those of other peoples); it produces much crystal and the most clear amber, hard like stones. (…) It is also very rich in iron. — Aethicus Ister",
+    "warfareEN": "At the end of the eighth century the coastlines of England and Frankland come under attack from Danish raiders. They even threaten the prosperous port of Dorestad. Their favorite tactic is the amphibious raid on coastal areas, using their superior longships (also called dragonships), which are light, extremely fast and very maneuverable. The invading ships sometimes run aground in a river, making them easy targets. If the water level in a river drops, the islands on which the Danes build their camps become vulnerable to attack by mounted troops. On land, they have neither siege engines (apart from battering rams and ladders) nor cavalry, which explains why they tend to avoid open battles. In battle, a Danish standard is usually some sort of dragon or animal. Once engaged they frequently use archers, but the most feared Danes are the socalled berserks, huge fanatical warriors wearing bear or wolf skins, who can work themselves into a terrible battle frenzy. Huscarls are heavily-armed warriors maintained by a jarl, much like household knights.",
+    "equipmentEN": "Jarl/Huscarl: Ring mail armor and a conical metal helmet (8 points), wooden shield (6 points); iron sword, dagger. Carls: Cuirbouilli (6 points), wooden shield (6 pts); spear or axe, bow, dagger. Code of honor Among themselves, Danes are men of honor, but foreigners should be wary of taking a Dane’s word for granted. Knighthood and chivalry are unknown to them. They are always ready to exchange hostages and negotiate, until the fighting begins. Once engaged in combat they never surrender. Prisoners of war are either exchanged or sacrificed to their gods.",
+    "codeOfHonorEN": "",
+    "fortificationsEN": "The Danes build only few castles. Apart from the Danevirke the only strongholds are a few ringforts: merchant villages surrounded by a palisade and wooden gate towers."
   },
   {
     "key": "gascons",
@@ -2028,7 +2073,16 @@ export const cultures = [
     "warfareKO": "제국 기병대 중 가장 빠르고 우수한 승마술을 보유한 경기병 군단을 운용하며 적의 후방을 교란하는 우회 돌격을 선호합니다.",
     "equipmentKO": "기사: 사슬 메일 조끼 (아머 8), 강철 투구, 가벼운 마창 및 스패타 검.\n풋맨: 가죽 옷 (아머 6), 투창, 활 및 가벼운 목제 방패.",
     "codeOfHonorKO": "프랑크 기사도(Chivalry)의 거의 모든 예법과 낭만적 법률을 정중히 수용하여 따르며 마상 시합을 즐깁니다.",
-    "fortificationsKO": "프랑크식 언덕 성채를 그대로 도입하여 곳곳에 목조 초소를 세워 변방의 국경을 방어합니다."
+    "fortificationsKO": "프랑크식 언덕 성채를 그대로 도입하여 곳곳에 목조 초소를 세워 변방의 국경을 방어합니다.",
+    "appearanceEN": "Southern nobles are always elegant (+1 APP) and welldressed, wearing a circular cloak, a shirt with long wide sleeves, baggy trousers and leather boots. They are slightly smaller than Franks (–1 SIZ) and less strong (–1 STR), but they have nimble fingers (+1 DEX).",
+    "characterEN": "They are acknowledged as a refined people, but corrupt, slightly effeminate, and “a volatile race, ” i.e. Deceitful, Arbitrary, Lustful, Lazy and Indulgent. Their way of life is rather freespir- ited and independent. Aquitainians are known as Merciful and Forgiving folk.",
+    "skillsEN": "They are naturally talented at courtly skills like Eloquence, Dancing, Falconry, Play Instrument, Singing, and, later, Romance. Their noble courts attract many singers, musicians and poets.",
+    "relationsEN": "Despite the defiant aspirations for independence of his people, Duke Lupus rallies to Charlemagne in 768. Later, when Louis becomes King of Aquitaine (his realm includes the territories of Aquitaine, Gascony, Septimania and Provence), he adopts southern fashion and habits. The territory remains quite distinct from Frankland. Charlemagne rarely uses Gascon troops in foreign campaigns, instead preferring to use their city levies as garrisons at fortified places.",
+    "dailyLifeEN": "Gascony used to be a more urbanized region, but during King Pepin’s wars against Aquitaine, and to a lesser degree Gascony, many towns were ravaged and their population fled to the surrounding countryside, leaving the urban centers abandoned. One notable characteristic of Gascon culture is that women have more rights and play a more prominent role in public life than Frankish women. It is not unusual for a noble widow or sister of a deceased lord to govern his lands until a male heir comes of age. The onceprosperous lands and vineyards have been devastated by the many years of war and stubborn resistance against King Pepin. Many roads are in disrepair and there is almost no external commerce left, so the people depend on the local economy centered around the rural manors, which they still call villas, in much the same way as the Franks.",
+    "warfareEN": "Gascons fight primarily as infantry or javelinusing light cavalry skirmishers. They have neither stirrups nor saddles, but are skillful horsemen nevertheless. Under Charlemagne, the Gascons often serve as mercenaries in feuds. In battle, their favorite cavalry tactic consists of repeated attack followed by feigned retreat.",
+    "equipmentEN": "Nobles: Ring mail armor (8 points), shield (6 points); spear, sword, dagger; rouncy and courser. Horsemen: Ring mail armor (8 points); spear, bow, dagger; rouncy. Footmen: Leather armor and skullcap (5 points), wooden shield (6 points); spear or javelins, dagger.",
+    "codeOfHonorEN": "Gascon knights are men of honor, though not particularly noted for their extreme valor nor their sense of loyalty. As said, they often hold allodial lands and therefore recognize no liege, even though they swear an oath of fidelity to the king.",
+    "fortificationsEN": "The Gascons adopt Frankish-style motte-and-bailey castles and erect wooden watchtowers at key points to defend their border frontiers."
   },
   {
     "key": "huns",
@@ -2067,7 +2121,16 @@ export const cultures = [
     "warfareKO": "모든 전사가 승마하며, 적에게 달려들다 몸을 돌려 등 뒤로 활을 쏘는 '파르티안 샷(Parthian Shot)' 마상 궁술로 적 기병대를 요리합니다.",
     "equipmentKO": "궁수 귀족: 가벼운 가죽 비늘 조끼 (아머 8), 합성 복합궁, 철제 곡도, 경기마.\n풋맨: 모피 누더기 옷 (아머 4), 화살통, 단검 및 포획용 올가미 로프.",
     "codeOfHonorKO": "초원의 칼의 법률만 따르며, 전사한 적장의 해골을 금으로 장식하여 술잔으로 쓰는 혹독한 복수 명예율을 지녔습니다.",
-    "fortificationsKO": "둥근 환상 철책 요새인 '아바르 링(Avar Ring)'을 구축하여 제국 전역의 황금을 비축하는 비밀 거점으로 썼습니다."
+    "fortificationsKO": "둥근 환상 철책 요새인 '아바르 링(Avar Ring)'을 구축하여 제국 전역의 황금을 비축하는 비밀 거점으로 썼습니다.",
+    "appearanceEN": "A stunted, foul and puny people, scarcely human and having no language save one which bears but slight resemblance to human speech. (…) Their hardihood is evident in their wild appearance, and they are beings who are cruel to their children on the very day they are born. For they cut the cheeks of the males with a sword, so that before they receive the nourishment of milk they must learn to endure wounds. Hence they grow old beardless and their young men are without comeliness, because a face furrowed by the sword spoils by its scars the natural beauty of a beard. They are short in stature, quick in bodily movement, alert horsemen, broad shouldered, ready in the use of bow and arrow, and have firmset necks which are ever erect in pride. Though they live in the form of men, they have the cruelty of wild beasts. — Jordanes In short, the Huns are a “ filthy race of longhaired barbarians. ” Indeed, they are broadfaced, quite ugly (–1 APP) and short (–2 SIZ), but strong and resistant (+1 STR, +1 CON), as Notker further notes: “ The ironlike and rockhard people called Huns .” These tanned and bowlegged steppe nomads, with rather square heads and wide chests, have long black hair (which the Avars wear braided) and thin mustaches. Both men and women wear gold earrings.",
+    "characterEN": "Huns are uneducated pagan savages. The most learned Alcuin describes them as “ a barbarian people, impervious to reason, uneducated, narrowminded and slow to accept the holy mysteries.” They distrust buildings and are generally given to mysterious magical beliefs (Suspicious), they eat raw meat and some are said to be cannibals. They systematically rape the women of all conquered people (Cruel, Arbitrary, V engeful).",
+    "skillsEN": "Their skills at Horsemanship and the compound Bow are unrivaled.",
+    "relationsEN": "In the early years, the Avars welcome the exiled Lombard and Bavarian enemies of Charlemagne. Later they lend their aid to the Slavs who try to resist the Franks. Finally, the Bulgars ally with Charlemagne against the Avars, who are completely defeated (792–796). The justification for the Avar wars are, as usual, the sacred task to convert the pagans and steal back the liturgical treasures these barbarians have stolen from Christians over the last few centuries. In the palace of the Ring, the Franks discovered so much gold and silver and captured so much precious booty in their battles, that it could rightly be maintained that they had in all justice taken from the Huns what these last had unjustly stolen from other nations. — Einhard An additional motivation for Charlemagne is that he wants to reward those Bavarian nobles who supported him against T assilo in 788, by offering them the newly conquered lands in the east. Christ, son of God, who created all peoples, lands, springs, rivers, mountains and formed mankind, has converted the Avars… — De Pippine Regis Victoria Avarica Charlemagne’s court has precious little contact with the other Hunnic tribes. Some missionaries are sent to convert these remote peoples, but with little result, despite some optimistic reports from the clergy.",
+    "dailyLifeEN": "The common Huns are seminomadic pastoralists keeping herds of cattle, goats, sheep and horses. Given the immense territory on which they live, population density is unsurprisingly low. Rich noble Hunnish men have many women, but adultery is severely punished: adulterers are quartered by horses or bent trees. When a khagan dies, he usually leaves many children from different women, which causes a period of political instability until a new khagan takes power. The Huns are often wealthy, but have few commercial relations with the outside world. They even block the trade on the Danube. “At that time, the Avars, the Bulgars and many other savage races barred the overland route to Byzantium, ” — Notker . They use smoke signals to communicate over great distances. The only artisanal skill of which the Huns have a great mastery is metal working (silver, gold, and bronze). They invented the stirrup.",
+    "warfareEN": "Y oung Hunnish warriors must prove themselves by bringing back the head or nose of their first human kill. Once accepted as men, they are given their own pony and may participate in military expeditions. The Bulgars are continually at war with Byzantium, while the Avars exercise a reign of terror in central Europe. They regularly conduct very fast raids into Lombardy or Bavaria, where they pillage churches and collect “peace tributes.” On horseback they are able to cover enormous distances at great speed. They prefer swooping cavalry raids, aided by bow fire from horseback, and often use Slavs as human shields when retreating. Note that rain sometimes hampers their archery. While raiding, they aim at collecting riches and taking women for slaves. While they are masters of the art of mobile warfare, their tactics lose a lot of efficiency in a pitched defensive battle.",
+    "equipmentEN": "Nobles: Cuirbouilli and open helmet (7 points), light shield (3 points); scimitar, compound bow, dagger; steppe pony with felt (2 points) or lamellar (4 points) horsearmor. Mounted archers: Fur clothes and cap (5 points), light shield (3 points); compound bow, dagger; steppe pony with felt (2 points) or lamellar (4 points) horsearmor. Footmen: Furs (5 points) and light shield (3 points); javelin, compound bow, dagger.",
+    "codeOfHonorEN": "The Huns follow their leader as long as he is successful in war. They do not follow the codes of knighthood or chivalry, and their word cannot be trusted.",
+    "fortificationsEN": "Having little or no siege equipment and very little skill in siegecraft and other forms of immobile warfare, they rarely attack or defend fortifications. In the open field, they set up their wagons in a circular camp. All in all, defense is a Hunnic weakness."
   },
   {
     "key": "jews",
@@ -2100,7 +2163,16 @@ export const cultures = [
     "warfareKO": "절대 물리적 전투에 참여하지 않으며, 무기를 들 의무를 면제받는 대신 제국 왕실에 막대한 통상 보조세를 상납합니다.",
     "equipmentKO": "비무장: 비단 외투 및 종교 경전 고서적 궤짝 소지.",
     "codeOfHonorKO": "성경의 모세 율법과 십계명을 철저히 목숨 바쳐 준수하며 평화적 타협과 계약(Honest)을 신성히 여깁니다.",
-    "fortificationsKO": "성곽이 없으며 도시의 치안 판사 및 프랑크 수호 영주가 제공하는 공공 성벽 예하에서 보호받습니다."
+    "fortificationsKO": "성곽이 없으며 도시의 치안 판사 및 프랑크 수호 영주가 제공하는 공공 성벽 예하에서 보호받습니다.",
+    "appearanceEN": "Jews are slightly smaller (–1 SIZ) and often much less muscular then Franks (–2 STR). They have an aquiline profile and usually dress in robes.",
+    "characterEN": "Jews are generally known as hard workers (Energetic, Modest, and T emperate). Their shrewd merchants have a reputation of being Honest and Prudent, but quite Selfish at times.",
+    "skillsEN": "Jews are praised as trustworthy merchants (Stewardship) who travel everywhere in Europe and beyond. They are always literate and often speak many tongues (Reading & W riting, Languages). They have poor fighting skills, but are often employed as skilled physicians (Chirurgery, First Aid).",
+    "relationsEN": "In times of famine or at the outbreak of an epidemic, Jews often get accused of sorcery or simply of bringing bad luck. Therefore Charlemagne officially protects the Jews by law, especially the merchants. Although they may not hold official positions, the king sometimes employs Jews as diplomats, interpreters and guides for embassies to the East.",
+    "dailyLifeEN": "The Jewish people have no homeland, but have traveled all over the world and settled in many countries, especially Persia and the Patriarchate of Jerusalem. Strangely, the Hunnic Circassians are Jewish, of a sort. Jews are not very numerous in Frankland. Some are landholders in the southern provinces, but most often they are merchants in Frankish and Italian cities, especially Narbonne and Rome. Generally, Jews live undisturbed in the midst of Christians. They wear no particular costume and speak the same language as everybody else; only few speak Hebrew. In southern Frankish cities with a Jewish community, a magister is in charge of protecting Jews and acts as a Jewish spokesman to the count or bishop. Wherever they live, Jews must pay taxes and even tithes as anyone else. In Frankland, most Jews are merchants, goldsmiths, doctors, moneylenders or even tax collectors. Jewish merchants sell musk, aloes wood, camphor, cinnamon and other spices from the Orient and Constantinople. The Lombards are their commercial rivals. From the Franks, they buy eunuchs, woven cloth, skins and furs. They may not trade in weapons, money, wine nor food: Let no Jew presume to have a moneychanger’s table in his house, nor shall he presume to sell wine, grain, or other commodities there. But if it be discovered that he has done so all his goods shall be taken away from him, and he shall be imprisoned until he is brought into our presence. — Capitulary for the Jews",
+    "warfareEN": "The Jews have no army. They are exempt from military service, since Charlemagne’s army is explicitly a Christian one. They are not allowed to carry weapons. For their protection, Jewish merchants are often accompanied by Gascon, Visigoth or Lombard mercenary knights.",
+    "equipmentEN": "Unarmed: Silk robes, religious scriptures, and boxes of ancient scholarly texts.",
+    "codeOfHonorEN": "Strictly adhere to the Mosaic Law of the Bible and the Ten Commandments, holding peaceful compromise and contracts (Honest) as sacred duties.",
+    "fortificationsEN": "They build no fortifications of their own, but are protected under the public city walls provided by the royal magistrates and defending Frankish lords."
   },
   {
     "key": "lombards",
@@ -2136,7 +2208,16 @@ export const cultures = [
     "warfareKO": "프랑크식 중기병을 완벽히 흡수하여 강철 마갑과 이탈리아 검술을 조합한 강력한 카발리에리(Cavalieri) 돌격 전술을 운용합니다.",
     "equipmentKO": "기사: 최고급 사슬 메일 갑옷 (아머 10), 강철 반면형 투구, 롬바르드식 날카로운 스패타 검.\n풋맨: 가죽 옷 (아머 6), 투창 및 중형 둥근 나무 방패.",
     "codeOfHonorKO": "로마 법률에 기초한 기사도 서약(Chivalry)을 완벽히 사용하나 가문의 영지 보존을 위해서라면 황제와의 약속도 기꺼이 기만합니다.",
-    "fortificationsKO": "고대 로마의 장엄한 석조 방벽과 다층식 성탑 요새를 결합하여 난공불락의 강력한 성곽을 사수합니다."
+    "fortificationsKO": "고대 로마의 장엄한 석조 방벽과 다층식 성탑 요새를 결합하여 난공불락의 강력한 성곽을 사수합니다.",
+    "appearanceEN": "The name “Longobards”/”Lombards” means “longbeards.” The Lombards wear short mantles, wide trousers and leather boots. They have beards and grow their hair long, but shave the back of the head. W omen wear Romanstyle dresses and jewelry.",
+    "characterEN": "All a Lombard wants is to fill his stomach with wine and his house with gold. — Frankish saying The Pope describes the decadent Lombards in a letter to Charlemagne and Carloman, in which he asks both Frankish kings not to marry a Lombard princess, for “the faithless and most vile Lombards (…) have certainly brought forth the lepe r s .” While not all Lombards are vile and untrustworthy, most of them have certain character flaws such as Deceitful, Lustful, Lazy, Indulgent, Proud, Selfish and Cowardly. Only after the Frankish conquest of Lombardy in 774 do they become more appreciated for their emulation of the dominant Carolingian culture. They are not particularly noted for their courage or energy, but most Lombards are fervent Christians (Love [God]).",
+    "skillsEN": "Their urban background makes Lombard knights intimately familiar with merchants (Stewardship) and politics (Intrigue). Y oung nobles receive their education at the wealthy and refined city courts, where they particularly develop the courtly skills (Courtesy, Dancing, Eloquence, Languages, Reading & W riting, Singing).",
+    "relationsEN": "At first, the Lombards are allied to the Franks by three royal weddings: T assilo of Bavaria, Carloman and Charlemagne each marry a daughter of the Lombard king. However, when Charlemagne repudiates his wife and Carloman dies in 771, things change radically. T wo years later, when King Desiderius threatens to take Rome, Charlemagne invades and conquers Lombardy. Once the Lombards become part of the Frankish empire, many become loyal vassals of Charlemagne. Those who resist the Frankish king flee to Benevento, Spoleto, Byzantium, Bavaria or Avarland. The Byzantines become allies in their revolt against the Franks in Italy.",
+    "dailyLifeEN": "The Italian peninsula is quite urbanized compared to the rest of the realm, much like Romanized lands such as Septimania and Provence. The rich Italian cities are walled and often have paved streets, bath houses, and various other Roman monuments like great statues, an aqueduct, or an amphitheater. Economy W ealth is primarily based on the important urban production centers and on long distance trade. Cities like Pavia and V enice are counted among the great ports for Oriental products.",
+    "warfareEN": "Lombards are rich and wellequipped. Like the Franks, they fight predominantly with shock cavalry. Urban militias fight only to defend their city and never follow their gastald on campaign abroad.",
+    "equipmentEN": "Nobles: Scale armor (12 points), shield (6 points); spear, sword, dagger; charger and rouncy (like the Romans, Lombard knights wear a cross on their helmet). Footmen/Urban militia: Cuirbouilli (6 points), shield (6 points); spear, hand axe, bow, dagger.",
+    "codeOfHonorEN": "The Lombards have a peculiar concept of honor and knighthood. Nobles derive a significant part of their authority from their wealth and mercantile success. Much like the Saracens, the world of the Lombards is all about money. In short, Lombard lords care more about the economic health of their city than for battle prowess and glory. Still, Lombard knights value their public credibility and a given word is sacred.",
+    "fortificationsEN": "Lombard lords do not build their castles in the country, but exclusively inside their cities. Such a castle is usually integrated into the city walls and other defensive works. However, the king can order the construction of a fortress in the general interest of the Lombard people, such as the Lombard Narrows."
   },
   {
     "key": "moors",
@@ -2173,7 +2254,16 @@ export const cultures = [
     "warfareKO": "아라비아마를 탄 경기병 군단이 사방에서 질풍노도처럼 화살과 투창을 쏟아붓고 바람처럼 퇴각하는 위력적인 기동 기습 전술을 펼칩니다.",
     "equipmentKO": "사라센 지휘관: 정밀 강철 흉갑과 터번 투구 (아머 10), 초승달 모양 시미터 곡도, 경기마.\n기병/풋맨: 가죽 갑옷 (아머 6), 목제 가벼운 가죽 방패, 투창 및 단궁.",
     "codeOfHonorKO": "프랑크의 기사도와 흡사한 자신들만의 독자적인 '유목 명예 규범(Furusiyya)'을 엄격히 수용하여 포로 대우와 사법 결투를 지킵니다.",
-    "fortificationsKO": "남부 에스파냐에 알카사르(Alcazar)라 불리는 웅장한 대리석 석조 요새와 기하학적 다각 성벽을 구축합니다."
+    "fortificationsKO": "남부 에스파냐에 알카사르(Alcazar)라 불리는 웅장한 대리석 석조 요새와 기하학적 다각 성벽을 구축합니다.",
+    "appearanceEN": "Most have curly black hair and copper, brown or black skin. Men wear short pointy beards and sometimes a thin mustache. However, the Saracens from the North African mountains are often fairhaired and blueeyed. They are not the most resilient of all people (–1 SIZ), but have a certain natural agility (+1 DEX). Like the Persians, Saracen men wear turbans. Ladies often wear large round golden earrings. Unmarried women hide their nose and mouth behind a transparent veil.",
+    "characterEN": "As pagans their characters are necessarily flawed. Their vices are numerous: they are cunning liars and regularly betray others and themselves (Deceitful, Arbitrary), they are extremely boastful (Proud), they sometimes torture their prisoners or sell them as slaves (Cruel). The emir has commanded a raiding gang all night! He’s taken towns and countrykeeps alike; He’s hacked the head of many a lawful squire And slit the breasts of their defenseless wives; He’s given their girls, all daughters of fine knights (…) to the scum at his side, Then bound them all in chains, criminallike; These girls cry out, lamenting loud their plight: “O, Charlemagne! Come and avenge this crime!” For gold and coin they’re bought and sold meanwhile. — Song of Aspremont , III T o boost their relatively low valor (Cowardly), some Saracens drink the blood of tigers, antelopes, and giraffes.They have a comparatively low Love [family]: “Tell Charlemagne you will follow him to Aachen And receive the Christian faith; You will be his vassal in honor and in all your goods. If he asks you hostages, send him some, Either ten or twenty, as a mark of good faith. Let us send him the sons of our wives; Even if it means his death, I shall send him mine. Far better for them to lose their heads there Than for us to lose our honor and our lands And be reduced to begging. ” — Song of Roland , III On the other hand, their culture highly values moderation in sexual and other appetites (Chaste, T emperate).",
+    "skillsEN": "The pagan science of healing is largely superior to the rudimentary skills of the Frankish monks (First Aid, Chirurgery). The Saracens have a long tradition of horsemanship and trick riding (Horsemanship). Their mercantile society gives them significant skill in Stewardship.",
+    "relationsEN": "At first, the Saracen attitude toward the Franks varies from awe and admiration to open hostility. T o distinguish themselves from the merchants, feudalized Moorish nobles try to uphold the ideals of honor and knighthood, which creates a sort of solidarity with Frankish knights. Therefore, Frankish exiles are often warmly welcomed by their noble counterparts at Saracen courts. In his youth, Charlemagne himself served the Moorish emir as an exiled mercenary knight! As the P aladin chronology advances, the initial respect fades and cedes its place to mutual hatred. After the Battle of Roncevaux many Christians from Spain seek refuge north of the Pyrenees. In the Frankish mind, the Mozarabs (Arabspeaking Christians living in Spain, a majority of the population!) are severely oppressed. One of the unexpected results for the Saracens is a sort of tacit alliance with the Byzantines in mutual opposition to the Franks and Persians.",
+    "dailyLifeEN": "A small number of Saracens are nomadic desert folk who ride on camels and live in tents. However, most Saracens live in cities. Houses are usually built from tamped earth. Since water is a constant problem, all cities are situated in river valleys. The surrounding fields are irrigated either by chain wells (a series of linked underground wells), or by norias (waterwheels with buckets driven by donkeys in order to lift underground water to the field). The numerous, often very large, cities have very narrow and sinuous streets, and in their central market squares a temple can usually be found. A Master of the Market (sahib alsuq) controls this central area, which is strictly nonresidential and deserted at night, when it is patrolled by guards. Jews usually have their own walled quarter. The wali lives in his citadel castle (alcazar) along the city wall. Saracen society has given rise to burgeoning urbancraft industries. Even during times of war, many caravans travel along the main trade routes, though political instability does not favor the commercial routes from Frankland leading into Spain via Saragossa. Saracen merchants trade with all other cultures around the Mediterranean Sea. Indeed, trade is so important in the Saracen world that their entire empire is a free trade area where one’s origin is no bar to travel. Foreign merchants are treated with respect, for commercial interests outweigh military hostility. Like the Byzantines and Persians, Saracen merchants prefer gold coins or silk bundles to silver pieces. Saracens are especially known for their flourishing slave trade. Note that no Moorish or Saracen slaves are allowed, nor can lawabiding taxpaying foreigners be enslaved. Slaves in Spain tend to be employed as domestic servants, administrators and soldiers, rather than peasants obliged to work in the fields. Moorish cities are famous for their leather, camels and purebred horses. Though well supplied with most luxury goods (silks, perfume, glass), the Moors have a chronic need for wood, since their lands are not very forested. The rural population, mostly Visigothic, make their living from sheep herding and farming cereal crops, grapevines and olive trees. Like the Persians, the Moors and Saracens practice intensive hydraulic agriculture around their cities. Inside the towns and cities lofty gardens produce fruits.",
+    "warfareEN": "The Saracens have a permanent standing army composed of askaris (warriors) and foreign mercenary soldiers. The better equipped nobles are faris, the equivalent of the Frankish knights. An almansour is a sort of banneret, while a wali is the ruler over a town or a small district (a kura, plural kuwar), quite like a count. A king is called an emir. The highest rank is that of sultan, comparable to an emperor. Saracens sometimes count enslaved giants or centaurs among their ranks. The Moors carry a white standard, the Sultan of Babylon raises a green banner. While they sometimes engage in full scale battles with the Franks, the Saracens are more feared for their quick raids and their piracy on the Mediterranean Sea. Their goal is often not conquest but the capture of plunder and slaves.",
+    "equipmentEN": "Faris: Light chain mail and a pointy helmet (10 points), small round shield (4 points); scimitar, mace, lance, compound bow, curved dagger; courser, charger, or camel. Askaris: Cuirbouilli and a pointy helmet (6 points), small round shield (4 points); spear, compound bow, curved dagger; courser. Footmen: Soft leather (4 points), small round shield (4 points); spear, mace, bow, curved dagger.",
+    "codeOfHonorEN": "The Moors and Saracens recognize some chivalric customs, like judicial combat to resolve conflicts. T o them, such a trial by combat duel is a cynical challenge to the Christian God to prove His power. “For the city which is my inherited right choose any man who is valiant in fight and I shall choose one of my line. Then we shall of our champions make trial. If your God has the power to inspire the defeat of my champion by your knight, then you will hold Rome free and for life. ” — The Coronation of Louis , XVIII Generally, they respect a word of honor from one military commander to another. Emir Galafre proposes to give hostages as proof of his honesty and trustworthiness: “If you suspect me of treacherous guile I shall let both my sons as hostages ride. No fortune so great will ransom their lives, you shall hang them both from a tree to die. ” — The Coronation of Louis , XIX When delivering a message to a Saracen court, Franks should be prudent, however, because there is a limit to the Saracens’ respect of diplomatic immunity.",
+    "fortificationsEN": "The Saracens are great builders. Their castles and fortresses are generally strong and much bigger than Frankish strongholds. Their cities, especially, often have high solid walls reinforced with many towers. In the countryside, the Saracens use a dense network of wooden guard towers to alert the surrounding villages and towns, making them difficult to surprise."
   },
   {
     "key": "persians",
@@ -2211,7 +2301,16 @@ export const cultures = [
     "warfareKO": "말의 머리와 가슴까지 덮는 강철 마갑 기병단과 동방 특유의 거대 백색 코끼리 타격 부대를 운용하여 강력한 위압감을 줍니다.",
     "equipmentKO": "귀족 기병: 정밀 정련 비늘 흉갑과 터번형 투구 (아머 12), 마갑 전투마, 복합식 합성궁.\n보병: 누비 가죽 조끼 (아머 6), 가죽 방패, 중형 초승달 곡도.",
     "codeOfHonorKO": "타협이 없으며 약속을 신성하게 여기는 동방의 고결한 도덕률을 수호하며 술과 돼지고기를 멀리하는 spartan 성정을 지켰습니다.",
-    "fortificationsKO": "두터운 사막 흙벽과 대리석 방벽, 거대 쇠창살 문으로 무장한 삼중의 원형 요새 성벽을 지어 방어합니다."
+    "fortificationsKO": "두터운 사막 흙벽과 대리석 방벽, 거대 쇠창살 문으로 무장한 삼중의 원형 요새 성벽을 지어 방어합니다.",
+    "appearanceEN": "Persians resemble the Saracens in stature (–1 SIZ, +1 DEX) and share the same other outward characteristics, though Persians are more handsome (+1 APP) with a copper tan, black curly hair, and deep brown eyes. Men wear a small pointy beard. They wear losefitting robes, turbans and ornamented curved daggers. Persian ladies wear ornamented dresses and a transparent veil which covers at least the upper half of their face.",
+    "characterEN": "The people from Persia form a tolerant and Just civilization. Like the Saracens, the Persian culture separates the private and public life of men and women (Chaste). Because of the eternal wars with Byzantium, many Persians Hate [Byzantines]. Their warriors are simply described as V alorous: “ Persians are brave, trusting to the horse no less than to their skill with weapons. ” — Ermold the Black. Unlike all other cultures (including Saracens), Persians do not drink wine nor any other alcoholic beverage (T emperate). Persians never look a foreign woman directly in the eyes.",
+    "skillsEN": "All noblemen are educated, are proficient in Reading & W riting and have a certain knowledge of Languages and Eloquence, but their pagan nature leads them to follow many superstitions (Faerie Lore). Compared to the Franks, the Persians have far more knowledge in the domains of sciences, manufacturing techniques and healing (Chirurgery). Persians are merchants by nature and travel great distances by land or sea to reach foreign markets (Stewardship). Life in the city has familiarized them with the subtleties of administrative and political machinations (Intrigue).",
+    "relationsEN": "Even though contact is difficult, the Persians are more or less allied with the Franks against the Moors and Saracens, especially when Harun alRashid comes to power. Under King Pepin’s rule an embassy is sent to Baghdad, which returns in 768, together with Persian ambassadors and numerous presents. In 777, Persian ambassadors come to Charlemagne to negotiate an alliance against Marsile in exchange for support and the protection of pilgrims in the Holy Land. From 797 on, a number of embassies are exchanged, this time looking for an alliance against the Byzantines. The caliph sends Charlemagne many fabulous presents, including a white elephant and a waterclock. The Persians brought the emperor an elephant, monkeys, balsam, nard, and various ointments, spices, perfumes, and different medicines to such an extent that the East seemed emptied and the West filled. — Notker , 2.8 Negotiations between the Franks and the Persians are often about the city of Jerusalem. Harun agrees to put it under Frankish overlordship, although the Persians maintain their military presence to protect the Christians against the Saracens. Harun: “I will give the Holy Land into Charlemagne’s power, and I will be the advocate over it. He himself, whenever it shall seem most opportune, may direct envoys to me, and he will find me a most faithful steward of all the income of this very province. ” — Notker , 2.9",
+    "dailyLifeEN": "Most Persians live close to a source of water, which they use to irrigate their fields. Other inhabited areas are the oases in the desert or the serails along the main caravan trails, where travelers and merchants spend time to rest and replenish their food and water supplies. Note that Persian food is very odd to Frankish taste and stomachs. The great Persian cities are supported by intensive irrigation agriculture. The trade in gold, horses, silk, spices and slaves is the prime source of wealth. Persian merchants have commercial relations with almost all known countries, including far Cathay and Sericane. Thanks to their farflung, international contacts, the Persians have made significant scientific progress in many domains. The Persian caliph himself employs many renowned scholars and accomplished artists, and his court has become a major home of innovation in many areas, such as astrology, pharmacology, alchemy, medicine, and music.",
+    "warfareEN": "The Persians are eternally at war with the Byzantines. The backbone of the caliph’s army consists of light, very mobile cavalry. The infantry is slow and not always reliable. Infantry archers are used to harass the enemy until the horsemen charge or maneuver to outflank the enemy. The goal is often to reach the enemy camp in order to plunder it. The Persians’ favorite tactics are feigned retreats and nocturnal ambushes. The Persian Caliph flies a black banner and his soldiers wear black, apart from the troops defending Jerusalem, who wear white clothes.",
+    "equipmentEN": "Nobles: Byzantine scale armor, conical pointed helmet (9 points) and a small shield (4 points); sword or mace, lance, curved dagger; a courser or a camel. Footmen: Light or no armor (0 to 2 points) and a small shield (4 points); spear or javelin or compound bow, curved dagger.",
+    "codeOfHonorEN": "The feudalized Persians appreciate the noble code of knighthood as much as the Franks, which reinforces their friendship. Some particularly noble Persian knights even respect the ways of chivalry, like Carahue: “Just king, ” says he, “good grace, hear me now! They took Ogier away from you, but lest no one Should believe I was involved in such a heinous act, I will constitute myself your prisoner and thus stay Until Ogier the Dane shall be delivered. ” “What a chivalrous pagan!” say the Franks cheerfully. — Enfances Ogier",
+    "fortificationsEN": "The coastal areas of the Holy Lands are defended by stone castles and guard towers in order to prevent Byzantine or Saracen raids. The cities in the Persian heartland are always protected by high walls and dozens of stone towers. In the countryside, all oases are guarded by a high stone tower. Even the caravan serails are often fortified."
   },
   {
     "key": "romans",
@@ -2249,7 +2348,16 @@ export const cultures = [
     "warfareKO": "스스로 군대를 육성할 능력이 거의 상실되어 로마 시민 자율 방범대와 교황청 소속의 프랑크 용병 대원들이 대신 전투를 전개합니다.",
     "equipmentKO": "방범 대원: 로마식 가죽 조끼 (아머 6), 구형 로마군 투구, 청동 단검 및 장창.\n시민: 백색 비단 토가 및 종교적 은제 십자가 장식 소지.",
     "codeOfHonorKO": "오직 현세의 이익과 교황청 정치적 영향력 보존만을 최고 가치로 삼으며 신학적 가치를 사법에 우선합니다.",
-    "fortificationsKO": "황제들이 건설한 거대 고대 벽돌 석조 요새인 '산탄젤로 성채(Castel Sant'Angelo)'를 최종 거점으로 사수합니다."
+    "fortificationsKO": "황제들이 건설한 거대 고대 벽돌 석조 요새인 '산탄젤로 성채(Castel Sant'Angelo)'를 최종 거점으로 사수합니다.",
+    "appearanceEN": "The Romans are handsome (+1 APP), rather small (–1 SIZ, –1 STR), darkhaired, often with an elegant but large nose. Men shave, and both sexes wear long robes, often white, and much jewelry.",
+    "characterEN": "The Romans are Proud of their city and its prestigious history. They are always scheming (Deceitful) and forever concerned about food (Indulgent) and money (Selfish).",
+    "skillsEN": "Due to their sophisticated education they speak well in public (Reading & W riting, Languages, Eloquence), and know their way around in a bureaucracy or at a senatorial meeting (Courtesy, Intrigue). Since Rome is the city of the Pope, the Christian dogmas and religion have no secrets for them (Religion). Many senior Church members are members of the local aristocracy, so the Church looks at the Romans citizens with a particular kind of affection (Standing [Church]).",
+    "relationsEN": "Ever since the Pope anointed Pepin the Short and made the king and his descendants the official Protectors of Rome, the Franks have been unswervingly loyal allies of the Eternal City. Rome has been besieged by enemies more than once, and each time the Franks have come across the Alps to prevent the capture of the city.",
+    "dailyLifeEN": "Of Roman origin, the rich papal cities are walled and often have paved streets, bathhouses, and various Roman monuments. Apart from the traditional economic functions of a great city, the most important source of income is the Church. The tithe brings in good money, as do the gifts of pilgrims and ambassadors seeking the favor of the Roman pontiff. In addition, the numerous cathedrals and abandoned tombs draw a lot of relic collectors from all over the West, and some unscrupulous Romans make a substantial living out of the relic trade.",
+    "warfareEN": "The Pope maintains a permanent city guard and a fleet to ward off Saracen pirates and raiders. Most of the warriors are Roman citizens, but in times of need Christian mercenaries are hired.",
+    "equipmentEN": "Equites (Knights): Scale armor and an iron helmet (10 points), wooden shield (6 points); sword, spear, dagger; charger and rouncy (note that Roman knights wear a cross on their helmet, instead of plumes). Footmen: Cuirbouilli armor and iron helmet (7 points), large shield (7 points); short sword, spear, dagger.",
+    "codeOfHonorEN": "Roman knights often swear oaths on God. They have a very acute sense of personal Honor and can be quite touchy and easily provoked.",
+    "fortificationsEN": "Rome is protected by impressive double walls and ancient stone guard towers. In times of extreme danger, the Pope and Roman citizens retreat to ancient fortified stone structures and brick monuments within the Eternal City."
   },
   {
     "key": "saxons",
@@ -2288,7 +2396,16 @@ export const cultures = [
     "warfareKO": "기마술이 없어 전원이 땅에 발을 딛고 거대한 둥근 목제 방패를 겹쳐 짠 '방패벽(Shield Wall)' 전술과 무시무시한 양손 도끼를 휘두릅니다.",
     "equipmentKO": "작센 족장: 가죽 흉갑 및 강철 뿔 투구 (아머 8), 중형 둥근 가죽 방패, 양손 도끼.\n전사: 짐승 모피옷 (아머 4), 프리지아제 롱 소드, 단검 및 단궁.",
     "codeOfHonorKO": "기독교를 기만으로 여기고 침엽수 삼림 깊은 곳의 거목 이르민술 아래에서 게르만 고대 신들에게 피의 맹세를 올리는 전사 도덕을 수호합니다.",
-    "fortificationsKO": "산꼭대기에 거대 흙벽 요새를 세우고 참호를 삼중으로 파내려 간 '시그부르크(Sigiburg)' 식 요새 성채를 운용합니다."
+    "fortificationsKO": "산꼭대기에 거대 흙벽 요새를 세우고 참호를 삼중으로 파내려 간 '시그부르크(Sigiburg)' 식 요새 성채를 운용합니다.",
+    "appearanceEN": "The Saxons are rather clumsy (–1 DEX) and ugly (–1 APP) but, like the Danes, they are strong (+1 STR) and tall (+1 SIZ). They are blueeyed and have blond hair with wild beards. Saxons wear golden necklaces (torcs) as status symbols.",
+    "characterEN": "The Saxons are sinful and evil devilworshipers, who have no honor (Arbitrary). These traitorous barbarians are Deceitful, and very V engeful and Cruel. The Saxons are ferocious by nature. They are much given to devil worship and they are hostile to our religion. They think it no dishonor to violate and transgress the laws of God and man. They are always willing to break the promises they make. Hardly a day passes without some incident which breaks the peace. Murder, robbery and arson are of constant occurrence. — Einhard",
+    "skillsEN": "Frisian merchants are cunning tricksters (Stewardship). They know the law and have a very keen legal mind: Beware of the Frisians, my son. Let me tell you the tale of the unwary Frankish merchant who exchanged a gold torque for as much dust as a Frisian could hold in his clothes. The man gathered dust everywhere, scattered it over a large area of land, and then loudly proclaimed it to be his! — Res Gestae Saxonicae",
+    "relationsEN": "The Saxons are the Franks’ most intimate and bitter enemies. Charles Martel and Pepin the Short both organized several punitive raids into Saxony, but they never aimed to conquer the land. T wo holy oaks were destroyed: one at Geismar, the other near Fritzlar, in 723. Allied to the Danes, the Saxons refuse to pay homage and regularly raid Austrasia and Thuringia. V ery early in his reign Charlemagne decides to conquer and convert his fierce neighbors. “W ar was duly declared on them. It was waged with immense hatred on both sides. ” — Einhard Slowly, the Franks take a physical and spiritual hold on Saxony. Missionaries build churches and the lands of its deported inhabitants are given to Frankish nobles or newly appointed Saxon counts. Paradoxically, the Saxon nobles (especially ladies) admire the refined Frankish court life. Indeed, several Saxon leaders rally to the Frankish cause at one time or another, for they are caught in a paradox: to effectively resist their Frankish neighbors, they must adopt the superior customs of feudalism and knighthood; but by doing so they lose the very things they are fighting for: their cultural identity and independence. After long years of bloody warfare, the Saxons are finally converted and assimilated, often becoming Charlemagne’s most loyal vassals. “United with the Franks, the Saxons came to form with them a single people. ” — Einhard",
+    "dailyLifeEN": "Saxons are a seminomadic people and have no cities. Their villages are isolated from each other by forests and valleys, which are partly covered with peat bogs. Saxons depend on agriculture and the rearing of horses. The grassy valleys are used for cattle grazing. Most temporary settlements can be found along the rivers Elbe and W eser, where the Saxons live in wooden stablehouses. Whenever food shortages occur, the men raid neighboring regions, usually the agriculturally more developed Franks or Slavs. The Frisians live in the coastal marshes, either in small harbor villages with a long street parallel to the coast or navigable waterway, or on artificial, flattopped clay mounds. Their wickerwork houses are daubed with clay to make them waterproof. They fish, raise cattle, horses and sheep on the nearby salt marshes, and grow grain on the higher marsh land. Saxons speak a Germanic language very similar to Frankish. They often give alliterative names to their children. Most Saxons are illiterate; only their shamans use runes to carve their secret formulas on stones or on pieces of wood, which they strap to a man’s arm with leather. Runes are mainly used as safeguards against illness, dangers and bad luck. Saxony is poorly developed and the economy is based on cattle breeding rather than on arable farming. Since to Saxons land cannot be individually owned, a man’s wealth is measured by his livestock. Instead of coins, they use small pieces of hacked silver like the Danes. Nobles trade by bartering agricultural produce or luxury items like swords, jewelry or linen gowns. The only things they produce for trade are salt and ore. Frankish merchants almost never venture into Saxony. In contrast to inland Saxons, the Frisians have a coinbased currency system. They are renowned merchants (or pirates), and possess a considerable fleet based at Dorestad harbor. They trade widely with the British Isles, Scandinavia, the Baltic and along the rivers into the mainland all the way down to Spain and Italy.",
+    "warfareEN": "The Saxons fight almost exclusively as infantry, because the dense forests doesn’t really favor mounted combat. Saxons often use shield walls, and they dig hidden ditches to disrupt enemy cavalry. In times of war, several clans come together and elect a warchief: The Old Saxons have no king but only a number of satraps who are set over the people and, when at any time war is about to break out, they cast lots impartially and all follow and obey the one on whom the lot falls, for the duration of the war. When the war is over, they all become satraps of equal rank again. — Bede",
+    "equipmentEN": "Edhilingui/Hearthguard: Ring mail and an open iron helmet (8 points), a shield (6 points); sword, bow, dagger; courser or rouncy. Ceorl: Leather armor (4 points), shield (6 points); spear, axe or sword, bow, dagger.",
+    "codeOfHonorEN": "Saxon warriors have no knightly honor, but they respect the traditions of hospitality. Generally, the only promises they keep are the ones they swear to their pagan gods. They do not hesitate to massacre women and children, and seem to delight in burning churches and killing monks and priests. However, sooner or later Saxon chiefs adopt the noble customs of knighthood.",
+    "fortificationsEN": "Rich nobles often have small wooden ring forts on hilltops. The Saxons no longer build stone castles."
   },
   {
     "key": "slavs",
@@ -2324,7 +2441,16 @@ export const cultures = [
     "warfareKO": "금속 갑옷이 전무하여 가벼운 나무 창과 활을 쏘고 재빨리 강 속으로 헤엄쳐 도망치는 늪지 생존 기습 전술을 펼칩니다.",
     "equipmentKO": "전사: 모피 쪼끼 및 가죽 아궁이 옷 (아머 4), 나무 방패, 목창, 뼈로 만든 화살 단궁.",
     "codeOfHonorKO": "기사도는 전혀 없으며, 동맹을 맺은 프랑크 영주들을 자신들의 고대 정령 신들 아래 정직하게 영접하는 신의율을 수호합니다.",
-    "fortificationsKO": "늪지대 한가운데에 고리 모양의 목조 요새인 '그라드(Grad)'를 건설하여 최종 대피소로 운용합니다."
+    "fortificationsKO": "늪지대 한가운데에 고리 모양의 목조 요새인 '그라드(Grad)'를 건설하여 최종 대피소로 운용합니다.",
+    "appearanceEN": "Slavs are small (–2 SIZ) with dark, braided hair.",
+    "characterEN": "Slavs value the sacred traditions of hospitality like no others. The word “slave” is derived from “Slav.” They are a relatively weak and submissive people (Modest, Cowardly), whose lands are conquered by the Saxons, Avars, Bulgars, Byzantines and Franks.",
+    "skillsEN": "The Slavs have no particular skills or qualities that set them apart from other civilizations.",
+    "relationsEN": "“What do these little frogs matter to me? I could carry seven, eight or nine of them about strung on my lance muttering I don’t know what! It’s a shame that our lord king and we should weary ourselves killing such worms!” — Notker the Stammerer , 12 The different Slavic tribes are constantly warring on each other, and these divisions are an opportunity exploited by Charlemagne, who sometimes uses one tribe to attack another. Conquered Slav tribes are either completely annihilated, or made subservient to a newly appointed local leader. Once converted, these tribes often become allies against the pagan Saxons.",
+    "dailyLifeEN": "Like the neighboring Saxons, the Slavs have no real cities. They live primarily as fishermen, cattleraising herdsmen, or farmers, and trade with Saxons, Franks and Byzantines along the great navigable rivers and along the coasts. Their armed merchants travel in groups and use hacksilver, pelts and pieces of cloth as means of payment. In the areas under Hunnic control, the Slavs pay silver and furs as a tribute to their overlords. They build their villages on steep promontories or in boggy places difficult to access. Undefended rural settlements are often near navigable rivers or a lake, giving villagers a way to escape in case of attack. Larger trading villages are surrounded by timber walls, earthen ramparts and ditches, with several entrances. All men are shaved bald except for a single thin tail at the back. For women, hairstyle indicates their social position, age and marital status. Nobles practice polygamy. Chiefs welcome their important guests by taking a sauna together.",
+    "warfareEN": "Internal strife, smallscale raids and ambushes are daily bread to the Slavs. A typical warrior band consists of around 200 warriors. They raid primarily to enhance wealth and community prestige for the leader and his druzhina, rather than to conquer. Slavs usually use ambushes, sudden attacks and tricks, often during the night. They tend not to fight in an organized fashion, nor do they like to fight in the open, but rather prefer difficult swampy grounds where heavy armored knights are at a disadvantage. Success against the Slavs depends mainly on speed, denying the targeted tribe time to organize its defenses. Their lack of military unity and strength makes them easy victims. Slav prisoners are often used as slave laborers by the Frankish army, deported into Frankland, or sold. Slavs themselves do not take slaves, but they do take war prisoners. However, they do not keep these indefinitely, but let them go after a certain period of time and payment of ransom.",
+    "equipmentEN": "Nobles: Leather armor and metal helmet (6 points), wooden shield (6 points); sword, dagger; pony or rouncy. Footmen: Padded armor (2 points), wooden shield (6 points); spear, axe, sling or bow, dagger.",
+    "codeOfHonorEN": "W arriors are loyal to their chief as long as he sustains them. They do not follow the customs of civilized warriors.",
+    "fortificationsEN": "The strongholds serve as homes for tribal chiefs and as refuges for the local population. They are usually built on hilltops and fortified with limestone ramparts or compact earthen ringworks, with an access to fresh water. The clan leaders each have their own limestone fortress. These rather weak strongholds are built for prestige as much as any military purpose. The Slavs’ best defense is the virgin forest, which acts as an impenetrable bufferzone. Sometimes, they build linear earthworks between forests and marshes for archers to cover a hasty retreat."
   },
   {
     "key": "visigoths",
@@ -2360,7 +2486,16 @@ export const cultures = [
     "warfareKO": "프랑크의 무거운 플레이트 메일 전술을 차용하여 강력한 돌격 마술(Horsemanship)과 궁정 검술을 유기적으로 조합해 싸웁니다.",
     "equipmentKO": "기사: 최고급 사슬 메일 조끼 (아머 10), 강철 원형 투구, 서고트식 롱소드, 스패니쉬 호스.\n풋맨: 가죽 옷 (아머 6), 투창 및 중형 카이트 쉴드 방패.",
     "codeOfHonorKO": "프랑크의 봉건제와 성문 사법, 기사도 맹세를 대단히 정직하게 준수하며 교회의 자선 사업에 막대한 부를 쾌척합니다.",
-    "fortificationsKO": "견고한 남부 석조 영지 성채와 방어용 벽돌 성탑 요새를 소유하여 영지를 안전하게 수호합니다."
+    "fortificationsKO": "견고한 남부 석조 영지 성채와 방어용 벽돌 성탑 요새를 소유하여 영지를 안전하게 수호합니다.",
+    "appearanceEN": "The Visigoths are slightly shorter than Franks (–1 SIZ) and usually have dark hair. The clothes worn by men and women differ little from the Gascon and Frankish styles, but Visigothic men have beards.",
+    "characterEN": "The Visigoths are an easygoing, openminded and Modest people.",
+    "skillsEN": "Even though they live in a rather urban and mercantile culture (Stewardship, Intrigue), the Visigoths are excellent horsemen (Horsemanship). The ethnic blend of their coastal towns contributes favorably to their Languages.",
+    "relationsEN": "Almost all of Provence is still under Moorish control in 767. The Franks wholly reconquered Septimania in 754, and the independent Christian kingdom of Asturias has become their loyal ally against the Moors. The blood line of the Frankish kings and that of the Asturias have become mingled since the marriage of Pepin the Short and the Asturian Princess Bertrada Broadfoot, daughter of Floris and Blancheflour. Chronology (Provence, Septimania, Spanish March) 714 The Saracens conquer the Iberian Peninsula. 725 The Saracens conquer Septimania and Provence, taking captive many knights, who are sold as slaves. 739 Partial liberation of Aquitaine by Charles Martel. 754 Pepin the Short takes Narbonne with the help of the Lombards and the local nobility, completing the liberation of Septimania. 776 Tiebaut besieges Narbonne. 788 Emir Hisham raids Septimania. 790 William Shortnose captures Nîmes. 791 William Shortnose captures Orange. 793 Battle of the Archant, where Vivien dies. 801 The Franks capture Barcelona. 803 Charlemagne creates the Spanish March which contains Septimania, Provence and the territories conquered in northern Spain. William Shortnose becomes its marquis. Chronology (Asturias) 730 King Pelagius of Asturias discovers the holy bones of Saint James the Great in Santiago de Compostela, which attracts many Christian pilgrims. 768 King Fruela assassinated. 771 Charlemagne affirms Aurelio as the King of Asturias. 774 King Aurelio succeeded by Silo. 778 After the Battle of Roncevaux, Silo annexes Galicia. 783 At Silo’s death, Mauregato assembles an army and claims the throne of Asturias. Prince Alphonso II flees to the Basque Country. 789 At Mauregato’s death, the monk Bermudo is elected king. 791 Bermudo, defeated by the Saracens, abdicates. He is succeeded by Alphonso II. 798 Alphonso conquers Luiserna. 813 Death of Alphonso. His sonin-law Hugo the Orphan becomes the King of Asturias. Territories and Nations Septimania: Also called the Narbonnaise (the region around Narbonne), it extends to Beziers and the Rhone in the east, the Black Hills of Carcassonne in the north, the Basque Pyrenees in the west, and the Pyrenees and the Mediterranean to the south. The most important cities are Béziers, Carcassonne, Nîmes and the capital Narbonne. Provence: This nominally Frankish region is under Saracen control at the start of Charlemagne’s reign. Provence stretches out in the Rhone valley south of Lyon to the Alps in the east and the Rhone in the west. Its major cities are Arles, Nîmes and Orange. Asturias: This poor and isolated Christian kingdom is situated north of the River Douro, in the northwestern part of Spain. Its capital is Oviedo. The kingdom is divided into 4 regions: Castilia (abandoned by the Moors), Galicia (annexed by Alphonso II in 792), Cantabria, and Leon. Emirate of Cordoba: Founded on the ancient Visigothic Kingdom, the Saracen emirate is still largely inhabited by Visigoths, especially the northern T arraconensis region.",
+    "dailyLifeEN": "The Visigothic territories were once rich farming lands producing wine and olive oil. The towns were autonomous and many Jews lived there in peace. But, at the start of Charlemagne’s reign, the lands of the Visigoths have been devastated by many years of warfare. T o recolonize these deserted lands, the king grants lands and immunities to Visigothic refugees on the condition that they resettle their ancient homes. These are usually small agrarian settlements and, rarely, towns. Normally, inherited land is partitioned between all adult sons by drawing lots, but Visigothic tradition allows married women to hold and to inherit property independently from their husbands. Visigothic women thus have a relatively important public role, all the more so since social structures are based on monetary as well as territorial wealth. In the towns, merchants and artisans have as much a say in local politics as knights. The harbor towns actively trade with cities in Italy, Spain, Frankland and the British Isles. A sizable Jewish merchant community can be found in most Visigothic towns. In the countryside, economic life is primarily local and centered around the rural villas. Sheep herding is the prime source of income in the mountains.",
+    "warfareEN": "The Visigoths of Septimania and Provence are renowned horsemen using repeated hitand-run tactics. They frequently serve as mercenaries in feuds.",
+    "equipmentEN": "Knights: Ring mail armor and an iron helmet (8 points), shield (6 points); sword, spear, dagger. Horsemen: Leather armor and an iron helmet (6 points); spear, bow, dagger. Footmen: Leather armor and cap (5 points), wooden shield (6 points); spear, bow, dagger.",
+    "codeOfHonorEN": "Visigothic knights follow the same code of knighthood as the Franks and have the same sense of honor. The only difference is the fact that Visigothic lords hold allodial lands, free from the feudal obligations encumbering many Frankish knights.",
+    "fortificationsEN": "Most castles are rather simple wooden or halfstone fortifications which serve to protect personal domains or abbeys."
   },
   {
     "key": "legendary",
@@ -2390,7 +2525,16 @@ export const cultures = [
     "warfareKO": "마법과 신비로운 괴수(히포그리프 등), 그리고 온몸을 불사르는 강력한 동방의 마법 방패를 무기로 사용하여 프랑크 기병을 제압합니다.",
     "equipmentKO": "귀족: 황금 비단 판금 의복 (아머 15), 마법 보석 반지, 투명 비단 안개 베일.\n유목: 동양의 신비로운 마법 곡도, 룬 마법 나팔.",
     "codeOfHonorKO": "프랑크의 기사도를 모르지만, 기사들의 고결한 맹세에 감복하여 침례를 받고 스스로 성기사단에 자청해 합류하기도 하는 신비로운 명예 규범을 가졌습니다.",
-    "fortificationsKO": "마법의 안개와 투명 주문으로 은폐되어 침입자들의 감각을 교란하는 공중 회전 성채를 소유합니다."
+    "fortificationsKO": "마법의 안개와 투명 주문으로 은폐되어 침입자들의 감각을 교란하는 공중 회전 성채를 소유합니다.",
+    "appearanceEN": "Mysterious figures from far-off lands of Cathay in the East and Ethiopia in the South. They wear garments of gold and silk, and carry exotic magical treasures and jewelry.",
+    "characterEN": "These travelers from unknown realms are fabulously rich and possess strange mystical abilities. In Cathay, they have so much gold that it is worthless to them. The Ethiopians are devout Christians who are deeply loyal to their king, Senapo.",
+    "skillsEN": "The people of these lands are well-versed in magic, illusions, and unique healing arts, and speak exotic foreign languages.",
+    "relationsEN": "The Ethiopians are allies of the Franks against the Saracens. Charlemagne helps them by sending grain, wine, and oil. The British knight, Astolf, visits Ethiopia during his travels in 776. Cathay's powerful magician sends his beautiful daughter and son to Charlemagne's court in 775.",
+    "dailyLifeEN": "Ethiopia is described as a Christian island surrounded by pagans, ruled by Senapo, thought by some to be the legendary Prester John. The capital of Cathay is the fabled, wondrous city of Albracca, ruled by a powerful magician, where wealth and magic flourish.",
+    "warfareEN": "They rely on magic, unique tactics, and legendary creatures such as the Hippogriff, or standard eastern mercenaries, to overwhelm their enemies.",
+    "equipmentEN": "Nobles: Golden silk plate garments (15 points armor), magical gem rings, invisible silk mist veils.\\nNomads: Mystical eastern scimitars, runic magic horns.",
+    "codeOfHonorEN": "They are noble and honorable figures who, though unfamiliar with Frankish chivalry, possess a deep spiritual sense of honor; some may choose to receive baptism and join the Paladins.",
+    "fortificationsEN": "They possess mystical levitating castles, magical abbeys, and ancient cities shielded from intruders by magic and illusion."
   }
 ];
 
@@ -3159,5 +3303,2238 @@ export const franklandTerritories = [
         "descKO": "대기사 장크트 가린(Garin of Monglane)의 명예가 서린 유서 깊은 성곽이었으나, 수십 년 전 이교 작센족의 방화 기습으로 뼈대만 남아 숯처럼 타버린 비장한 숲속의 고대 유적 잔해입니다."
       }
     ]
+  }
+];
+
+export const minorNpcs = [
+  {
+    "key": "alard",
+    "nameKO": "알라르",
+    "nameEN": "Alard",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "알라르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 백작 Aymon’s second 아들. Though he is not as strong and valiant as his elder 형제, the hot-headed Alard remains a fearsome and destructive opponent.",
+    "biographyEN": "Count Aymon’s second son. Though he is not as strong and valiant as his elder brother, the hot-headed Alard remains a fearsome and destructive opponent."
+  },
+  {
+    "key": "aymer_the_puny",
+    "nameKO": "왜소한 에메르",
+    "nameEN": "Aymer the Puny",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "왜소한 에메르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. William Shortnose’s younger 형제 gets captured at 론세스바예스 협곡, but after a few years he manages to escape. He vows to never again sleep under a roof, and to spend his whole life warring against the infidels (this gentle 기사 is slightly insane).",
+    "biographyEN": "William Shortnose’s younger brother gets captured at Roncevaux, but after a few years he manages to escape. He vows to never again sleep under a roof, and to spend his whole life warring against the infidels (this gentle knight is slightly insane)."
+  },
+  {
+    "key": "fulco_of_candie",
+    "nameKO": "캉디의 풀코",
+    "nameEN": "Fulco of Candie",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "캉디의 풀코 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 조카 of Vivien the Fearless is a fighter worthy of his 숙부’s fame, as well as being a courteous womanizer. He becomes the last 공작 of Spain by the peace terms of 810.",
+    "biographyEN": "The nephew of Vivien the Fearless is a fighter worthy of his uncle’s fame, as well as being a courteous womanizer. He becomes the last Duke of Spain by the peace terms of 810."
+  },
+  {
+    "key": "garin_of_anjou",
+    "nameKO": "안주의 가린",
+    "nameEN": "Garin of Anjou",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "안주의 가린 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. William Shortnose’s younger 형제 is the 부친 of Vivien. He gets captured after 론세스바예스 협곡 and is ================= liberated in exchange for his 아들. He 사망합니다 at the hands of the 작센인 in the 전투 of the Süntel Mountains in 782.",
+    "biographyEN": "William Shortnose’s younger brother is the father of Vivien. He gets captured after Roncevaux and is ================= liberated in exchange for his son. He dies at the hands of the Saxons in the Battle of the Süntel Mountains in 782."
+  },
+  {
+    "key": "garnier_of_nanteuil",
+    "nameKO": "낭퇴유의 가르니에",
+    "nameEN": "Garnier of Nanteuil",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "낭퇴유의 가르니에 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Raised at the royal 궁정, he ~의 곁에서 용감히 분투하였으며, Anseïs of Carthago. He later rescues his lover, Aye of Avignon, when she is imprisoned at Majorca. During the siege of his home castle, Garnier is 전사한 by Ganelon’s 형제, Milo.",
+    "biographyEN": "Raised at the royal court, he fights at the side of Anseïs of Carthago. He later rescues his lover, Aye of Avignon, when she is imprisoned at Majorca. During the siege of his home castle, Garnier is slain by Ganelon’s brother, Milo."
+  },
+  {
+    "key": "gerard_of_vienne",
+    "nameKO": "비엔의 제라르",
+    "nameEN": "Gerard of Vienne",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "비엔의 제라르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. When Oliver’s proud and independent 숙부 is insulted by 국왕 Carloman’s 아내, 왕비 Gerberga, he declares a 가문 간의 피의 복수극(Feud) and refuses to acknowledge himself as either Carloman’s or 샤를마뉴 대제’s vassal. “Whatever’s mine, my wealth, my land, my weal Not one shelled egg thereof I’ll ever yield To any man — Lord God alone I heed! Your 국왕 샤를마뉴 대제 I’ll never love nor fear; Let him come here and kneel down at my feet!” — The Song of Aspremont , I Peace is concluded after an aborted duel between his 조카 Oliver and Roland. On his horse Killvillian, the white-haired 백작 Gerard then joins 샤를마뉴 대제 for the First Spanish 원정 and 사망합니다 heroically at 론세스바예스 협곡.",
+    "biographyEN": "When Oliver’s proud and independent uncle is insulted by King Carloman’s wife, Queen Gerberga, he declares a feud and refuses to acknowledge himself as either Carloman’s or Charlemagne’s vassal. “Whatever’s mine, my wealth, my land, my weal Not one shelled egg thereof I’ll ever yield To any man — Lord God alone I heed! Your King Charlemagne I’ll never love nor fear; Let him come here and kneel down at my feet!” — The Song of Aspremont , I Peace is concluded after an aborted duel between his nephew Oliver and Roland. On his horse Killvillian, the white-haired Count Gerard then joins Charlemagne for the First Spanish Campaign and dies heroically at Roncevaux."
+  },
+  {
+    "key": "guichard_the_wild",
+    "nameKO": "야생마 기샤르",
+    "nameEN": "Guichard the Wild",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "야생마 기샤르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 백작 Aymon’s fourth 아들 is Bradamant’s twin 형제. His rash and reckless behavior earns him his surname.",
+    "biographyEN": "Count Aymon’s fourth son is Bradamant’s twin brother. His rash and reckless behavior earns him his surname."
+  },
+  {
+    "key": "guy_of_nanteuil",
+    "nameKO": "낭퇴유의 기 경",
+    "nameEN": "Guy of Nanteuil",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "낭퇴유의 기 경 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 그의 복수를 위해 부친’s death, Guy allies with the chivalrous W ali of Majorca and kills the vile Milo of Mayence in 전투, rekindling the 가문 간의 피의 복수극(Feud) between the houses of Nanteuil and Mayence.",
+    "biographyEN": "T o avenge his father’s death, Guy allies with the chivalrous W ali of Majorca and kills the vile Milo of Mayence in battle, rekindling the feud between the houses of Nanteuil and Mayence."
+  },
+  {
+    "key": "lion_of_bourges",
+    "nameKO": "부르주의 리옹",
+    "nameEN": "Lion of Bourges",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "부르주의 리옹 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The courteous 아들 of the destitute 백작 Herpin of Bourges lives an adventurous life, trying to find his parents, regain his ancestral fief, and punish traitors (who are often from the Mayence clan). The courageous and god-fearing Lion is sometimes assisted in his laudable projects by a holy White 기사.",
+    "biographyEN": "The courteous son of the destitute Count Herpin of Bourges lives an adventurous life, trying to find his parents, regain his ancestral fief, and punish traitors (who are often from the Mayence clan). The courageous and god-fearing Lion is sometimes assisted in his laudable projects by a holy White Knight."
+  },
+  {
+    "key": "milo_of_aiglent",
+    "nameKO": "에글랑의 밀로 공작",
+    "nameEN": "Milo of Aiglent",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "에글랑의 밀로 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 부친 of Roland is the strong, handsome, optimistic, valorous, and slightly naive 공작 of Septimania. He is the bastard 아들 of the false 왕비 Aliste and Bernard of Clermont. He is the royal seneschal until he falls in love with Bertha and they are exiled. After their marriage and reinstatement at 궁정, he is made 공작 of Septimania.",
+    "biographyEN": "The father of Roland is the strong, handsome, optimistic, valorous, and slightly naive Duke of Septimania. He is the bastard son of the false Queen Aliste and Bernard of Clermont. He is the royal seneschal until he falls in love with Bertha and they are exiled. After their marriage and reinstatement at court, he is made Duke of Septimania."
+  },
+  {
+    "key": "oliver_and_william_of_bourges",
+    "nameKO": "부르주의 올리버와 기욤",
+    "nameEN": "Oliver and William of Bourges",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "부르주의 올리버와 기욤 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. These twin brothers are the 아들들 of Lion of Bourges and Florentine of Sicily. After many adventures, they manage to recover their ancestral fief by sounding the town’s magical horn.",
+    "biographyEN": "These twin brothers are the sons of Lion of Bourges and Florentine of Sicily. After many adventures, they manage to recover their ancestral fief by sounding the town’s magical horn."
+  },
+  {
+    "key": "richard",
+    "nameKO": "리샤르",
+    "nameEN": "Richard",
+    "category": "Imperial Family & Court",
+    "subcategory": "⚔️ 반란 귀족 및 기타 기사 (Revolting Barons & Knights)",
+    "years": "",
+    "biographyKO": "리샤르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 백작 Aymon’s third 아들 is a doughty warrior. Unlike his brothers, the introverted Richard thinks before acting, and occasionally even plans things ahead. Even if Maugis remains the House of Aigremont’s uncontested master-brain, Richard sometimes saves his brothers from catastrophe by using a clever subterfuge. Minor Characters",
+    "biographyEN": "Count Aymon’s third son is a doughty warrior. Unlike his brothers, the introverted Richard thinks before acting, and occasionally even plans things ahead. Even if Maugis remains the House of Aigremont’s uncontested master-brain, Richard sometimes saves his brothers from catastrophe by using a clever subterfuge. Minor Characters"
+  },
+  {
+    "key": "pepin_the_short",
+    "nameKO": "단신왕 피핀 (714–768)",
+    "nameEN": "Pepin the Short (714–768)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 부모 (Parents)",
+    "years": "714–768",
+    "biographyKO": "단신왕 피핀 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s 부친 is the illustrious 아들 of the great 망치왕 샤를 마르텔 and Rothrude. He was anointed in 751, and crowned 국왕 of the Franks in 754. As a young 황자 he received his education at the 수도원 of St. Denis. Pepin is a clever man with a soothing voice, whose motto is: “Never take on more than one enemy at a time.”",
+    "biographyEN": "Charlemagne’s father is the illustrious son of the great Charles Martel and Rothrude. He was anointed in 751, and crowned King of the Franks in 754. As a young prince he received his education at the abbey of St. Denis. Pepin is a clever man with a soothing voice, whose motto is: “Never take on more than one enemy at a time.”"
+  },
+  {
+    "key": "bertrada_broadfoot",
+    "nameKO": "평발왕비 베르트라다 (726–783)",
+    "nameEN": "Bertrada Broadfoot (726–783)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 부모 (Parents)",
+    "years": "726–783",
+    "biographyKO": "피핀 3세의 총명한 평발 왕비이자 샤를마뉴의 자애로운 모친입니다. 아스트리아스 왕가의 딸로 태어나 제국 궁정의 외교 및 자녀들의 교양 교육에 지대한 영향력을 발휘하였습니다. 극도로 경건하고 지조 높은 정조를 가졌으며, 궁정의 대소사는 모두 그녀의 뜻을 거쳤습니다.",
+    "biographyEN": "Pepin the Short’s wife is the daughter of King Floris and Queen Blancheflour of Asturias. She plays an important role at the royal court until her death. As a mother, she favors Charlemagne over his brother Carloman. She spends much energy in finding suitably elegant and cultivated wives and husbands for her “barbarian” sons and daughters. Bertrada is a pious, chaste, generous and modest woman, who thinks everything that goes on at court is her business."
+  },
+  {
+    "key": "adelaid",
+    "nameKO": "아델라이드 (738–756)",
+    "nameEN": "Adelaid (738–756)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 형제 (Siblings)",
+    "years": "738–756",
+    "biographyKO": "아델라이드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 아내 of Aymon of Dordon and the 모친 of Renaud, his brothers, and 자매 Bradamant. Adelaid is a modest and generous 모친, a pious woman and a faithful 아내, who never loses her calm at the side of her irascible, and often, violent 남편.",
+    "biographyEN": "Wife of Aymon of Dordon and the mother of Renaud, his brothers, and sister Bradamant. Adelaid is a modest and generous mother, a pious woman and a faithful wife, who never loses her calm at the side of her irascible, and often, violent husband."
+  },
+  {
+    "key": "rothaid",
+    "nameKO": "로테이드 (744–789)",
+    "nameEN": "Rothaid (744–789)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 형제 (Siblings)",
+    "years": "744–789",
+    "biographyKO": "로테이드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A meek but handsome 공주, who 혼인합니다 백작 Anthony of Avignon, to whom she gives a fierce 딸, Aye of Avignon.",
+    "biographyEN": "A meek but handsome princess, who marries Count Anthony of Avignon, to whom she gives a fierce daughter, Aye of Avignon."
+  },
+  {
+    "key": "carloman_i",
+    "nameKO": "카를로만 1세 (750–771)",
+    "nameEN": "Carloman I (750–771)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 형제 (Siblings)",
+    "years": "750–771",
+    "biographyKO": "카를로만 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s younger and more intellectual 형제 was raised by Abbot Fulrad at the 수도원 of St. Denis, and is therefore in vogue among scholars. His military education was at the hands of 공작 Thierry of Ardennes, who 기사들 his royal squire in 767. A year later, 황자 Carloman inherits a large part of his 부친’s kingdom. He 혼인합니다 his beloved Gerberga of 롬바르디아 in 769, who bears him two 아들들: Pepin and Lothair. He is 사망한 by a furious Ogier In 771, but officially he 사망합니다 in a “hunting accident.” 샤를마뉴 대제 strongly dislikes his peevish younger 형제, who is always complaining about everything. As a 국왕, Carloman is surrounded by flattering courtiers who spend their time scheming and plotting.",
+    "biographyEN": "Charlemagne’s younger and more intellectual brother was raised by Abbot Fulrad at the abbey of St. Denis, and is therefore in vogue among scholars. His military education was at the hands of Duke Thierry of Ardennes, who knights his royal squire in 767. A year later, Prince Carloman inherits a large part of his father’s kingdom. He marries his beloved Gerberga of Lombardy in 769, who bears him two sons: Pepin and Lothair. He is killed by a furious Ogier In 771, but officially he dies in a “hunting accident.” Charlemagne strongly dislikes his peevish younger brother, who is always complaining about everything. As a king, Carloman is surrounded by flattering courtiers who spend their time scheming and plotting."
+  },
+  {
+    "key": "gertrude",
+    "nameKO": "게르트루드 (751–771)",
+    "nameEN": "Gertrude (751–771)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 형제 (Siblings)",
+    "years": "751–771",
+    "biographyKO": "게르트루드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A strong-willed woman who 혼인합니다 a Neustrian 백작. She 사망합니다 giving birth to a 딸, Avissa, the 모친 of Aiol.",
+    "biographyEN": "A strong-willed woman who marries a Neustrian count. She dies giving birth to a daughter, Avissa, the mother of Aiol."
+  },
+  {
+    "key": "gisela",
+    "nameKO": "기셀라 (757–810)",
+    "nameEN": "Gisela (757–810)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 형제 (Siblings)",
+    "years": "757–810",
+    "biographyKO": "기셀라 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This grave and distant girl is promised to the Lombard 황자 Adalgise at an early age, but later becomes a nun and abbess of Chelles, where she is nicknamed “ Alcuin’s 자매.” =================",
+    "biographyEN": "This grave and distant girl is promised to the Lombard prince Adalgise at an early age, but later becomes a nun and abbess of Chelles, where she is nicknamed “ Alcuin’s sister.” ================="
+  },
+  {
+    "key": "himiltrude",
+    "nameKO": "히밀트루드 (764–770)",
+    "nameEN": "Himiltrude (764–770)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황후 (Wives)",
+    "years": "764–770",
+    "biographyKO": "히밀트루드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This young Frankish 후궁 of modest origins is not officially 혼인했습니다 to 샤를마뉴 대제, even though she gives him two 아들들, Pepin and Louis, of which the first is, unfortunately, hunchbacked. She is repudiated and sent to a nunnery in 770.",
+    "biographyEN": "This young Frankish concubine of modest origins is not officially married to Charlemagne, even though she gives him two sons, Pepin and Louis, of which the first is, unfortunately, hunchbacked. She is repudiated and sent to a nunnery in 770."
+  },
+  {
+    "key": "desideria",
+    "nameKO": "데시데리아 (770–771)",
+    "nameEN": "Desideria (770–771)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황후 (Wives)",
+    "years": "770–771",
+    "biographyKO": "피핀 3세의 총명한 평발 왕비이자 샤를마뉴의 자애로운 모친입니다. 아스트리아스 왕가의 딸로 태어나 제국 궁정의 외교 및 자녀들의 교양 교육에 지대한 영향력을 발휘하였습니다. 극도로 경건하고 지조 높은 정조를 가졌으며, 궁정의 대소사는 모두 그녀의 뜻을 거쳤습니다.",
+    "biographyEN": "The third daughter of King Desiderius is a lovely and refined Lombard princess. Charlemagne sees her for the first time when Bertrada brings her back from Lombardy. He is smitten and agrees to marry her, but repudiates her for political reasons only a year later. During her short reign as queen the beautiful girl exasperates the courtiers with her pride, her endless chatting (in Latin only), and her immoderate taste for luxury. She travels accompanied by poets, singers and other artists. Her numerous servants carry her glass goblets, silver cutlery, and plates everywhere. Her dresses must be silk, and she abhors Charlemagne’s peasant-like lifestyle."
+  },
+  {
+    "key": "hildegard",
+    "nameKO": "힐데가르트 (771–783)",
+    "nameEN": "Hildegard (771–783)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황후 (Wives)",
+    "years": "771–783",
+    "biographyKO": "샤를마뉴 대제가 데시데리아 황후를 폐위한 후 맞이한 13세의 어린 알레마니아 출신 황후입니다. 제국 후손인 피핀, 샤를로 황자와 다섯 공주를 출산하였으며, 궁정에서 기사도적 예법과 고결한 도덕성의 기틀을 마련한 가장 온화하고 자비로운 어머니의 현신입니다.",
+    "biographyEN": "This Alemannian princess is only 13 years old when Charlemagne marries her in 771, after he repudiates Desideria. She is the daughter of Gerold I of Vinzgau and a cousin to T assilo III. This virtuous young woman gives birth to two princes: Pepin and Charlot, and five princesses: Rothrud, Bertha, Gisela, Hiltrude and Adaltrude. Hildegard is a model of virtue, though slightly jealous and vengeful towards the children her husband had with other women. Fastrada (784–794).  The daughter of Count Radulf of Thuringia is said to be elf-born, and is much disliked at court. Her extreme beauty barely conceals her ice cold, selfish, vengeful, and cruel nature. She bears Charlemagne two daughters: Theodrade and Hiltrude."
+  },
+  {
+    "key": "liutgard",
+    "nameKO": "리우트가르트 (795–800)",
+    "nameEN": "Liutgard (795–800)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황후 (Wives)",
+    "years": "795–800",
+    "biographyKO": "리우트가르트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A gentle Alemannian 공주, whom 샤를마뉴 대제 is already courting before Fastrada’s death.",
+    "biographyEN": "A gentle Alemannian princess, whom Charlemagne is already courting before Fastrada’s death."
+  },
+  {
+    "key": "gerswinda",
+    "nameKO": "게르스윈다",
+    "nameEN": "Gerswinda",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 후궁 (Concubines)",
+    "years": "",
+    "biographyKO": "게르스윈다 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 모친 of Adaltrude.",
+    "biographyEN": "Mother of Adaltrude."
+  },
+  {
+    "key": "madelgard",
+    "nameKO": "마델가르트",
+    "nameEN": "Madelgard",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 후궁 (Concubines)",
+    "years": "",
+    "biographyKO": "마델가르트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 모친 of a Ruothild.",
+    "biographyEN": "Mother of a Ruothild."
+  },
+  {
+    "key": "regina",
+    "nameKO": "레기나",
+    "nameEN": "Regina",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 후궁 (Concubines)",
+    "years": "",
+    "biographyKO": "레기나 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 모친 of Drogo and Hugo.",
+    "biographyEN": "Mother of Drogo and Hugo."
+  },
+  {
+    "key": "adallinda",
+    "nameKO": "아달린다",
+    "nameEN": "Adallinda",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 후궁 (Concubines)",
+    "years": "",
+    "biographyKO": "아달린다 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 모친 of Ricbod and Thierry.",
+    "biographyEN": "Mother of Ricbod and Thierry."
+  },
+  {
+    "key": "pepin_the_hunchback",
+    "nameKO": "꼽추 피핀 (765–811)",
+    "nameEN": "Pepin the Hunchback (765–811)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황자 (Sons)",
+    "years": "765–811",
+    "biographyKO": "꼽추 피핀 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The deformed 아들 of 샤를마뉴 대제’s 후궁 Himiltrude is reduced to the status of kitchen knave. The modest 황자 is honest and generous, but naive. Although very handsome, he remains unmarried all his life because of his malformation. After Hardrad’s failed coup in 785, Pepin is sent to the 수도원 of Prüm, where he 사망합니다 under mysterious circumstances.",
+    "biographyEN": "The deformed son of Charlemagne’s concubine Himiltrude is reduced to the status of kitchen knave. The modest prince is honest and generous, but naive. Although very handsome, he remains unmarried all his life because of his malformation. After Hardrad’s failed coup in 785, Pepin is sent to the monastery of Prüm, where he dies under mysterious circumstances."
+  },
+  {
+    "key": "louis_the_pious",
+    "nameKO": "경건왕 루이 (766)",
+    "nameEN": "Louis the Pious (766)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황자 (Sons)",
+    "years": "766",
+    "biographyKO": "경건왕 루이 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s least favorite 아들 is somewhat effeminate. His main qualities are intellectual, not military. The timid and very pious 황자 lacks confidence, and he especially dislikes his tutor, William Shortnose, who is his complete opposite. Louis is crowned 국왕 of 아키텐 in 그는 oulouse in 781, where he was raised. He 혼인합니다 William’s 자매, Blancheflour, and later Ermengard, the 딸 of 백작 Ingram of Hesbaye. As 샤를마뉴 대제’s only surviving 아들, Louis is crowned co-황제 in 813. At the end of his life, Ermold the Black describes Louis as “ the world’s Caesar, the glory of the Franks, the crown of 기독교인들, first in peace and faith, yet second to none in war, distinguished in learning and the works of piety. ”",
+    "biographyEN": "Charlemagne’s least favorite son is somewhat effeminate. His main qualities are intellectual, not military. The timid and very pious prince lacks confidence, and he especially dislikes his tutor, William Shortnose, who is his complete opposite. Louis is crowned King of Aquitaine in T oulouse in 781, where he was raised. He marries William’s sister, Blancheflour, and later Ermengard, the daughter of Count Ingram of Hesbaye. As Charlemagne’s only surviving son, Louis is crowned co-emperor in 813. At the end of his life, Ermold the Black describes Louis as “ the world’s Caesar, the glory of the Franks, the crown of Christians, first in peace and faith, yet second to none in war, distinguished in learning and the works of piety. ”"
+  },
+  {
+    "key": "charlot",
+    "nameKO": "샤를로 황자 (772–811)",
+    "nameEN": "Charlot (772–811)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황자 (Sons)",
+    "years": "772–811",
+    "biographyKO": "샤를로 황자 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Also known as “Charles the Y ounger, ” the 국왕’s favorite 아들 is raised at the 궁정 of 공작 Thierry of Ardennes. Despite his achievements as a valorous army leader, 황자 Charlot suffers from a lack of recognition from the 성기사단, who suspect his vain, suspicious, deceitful, selfish character. In 789, 황자 Charlot becomes 공작 of the Breton March, and from 793 onwards he acts as his 부친’s supreme representative at 궁정. At the end of his life, the embittered Charlot lets himself be deluded by the Black 기사들. Carloman/Pepin (774–810): Born Carloman, but re-세례를 받은 in 780, 황자 Pepin is crowned 국왕 of Italy as a child a year later, under 샤를마뉴 대제’s 사촌 Adalhard’s tutelage. 국왕 Pepin becomes an astute 전투 commander, but lacks political and courtly skills. Bastard 아들들 Drogo (801–855), Hugo (802–844), Ricbod (805–844) and Thierry (807–?).",
+    "biographyEN": "Also known as “Charles the Y ounger, ” the king’s favorite son is raised at the court of Duke Thierry of Ardennes. Despite his achievements as a valorous army leader, Prince Charlot suffers from a lack of recognition from the paladins, who suspect his vain, suspicious, deceitful, selfish character. In 789, Prince Charlot becomes Duke of the Breton March, and from 793 onwards he acts as his father’s supreme representative at court. At the end of his life, the embittered Charlot lets himself be deluded by the Black Knights. Carloman/Pepin (774–810): Born Carloman, but re-baptized in 780, Prince Pepin is crowned King of Italy as a child a year later, under Charlemagne’s cousin Adalhard’s tutelage. King Pepin becomes an astute battle commander, but lacks political and courtly skills. Bastard sons Drogo (801–855), Hugo (802–844), Ricbod (805–844) and Thierry (807–?)."
+  },
+  {
+    "key": "rothrud",
+    "nameKO": "로트루드 공주 (773–810)",
+    "nameEN": "Rothrud (773–810)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황녀 (Daughters)",
+    "years": "773–810",
+    "biographyKO": "로트루드 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. She is first promised to the Greek 황제 (781), but finally stays at 궁정 and bears her lover, 백작 Rorgo of Le Mans, a 아들 named Louis.",
+    "biographyEN": "She is first promised to the Greek Emperor (781), but finally stays at court and bears her lover, Count Rorgo of Le Mans, a son named Louis."
+  },
+  {
+    "key": "bertha",
+    "nameKO": "베르타 공주 (779–826)",
+    "nameEN": "Bertha (779–826)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 황녀 (Daughters)",
+    "years": "779–826",
+    "biographyKO": "베르타 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This frivolous and proud 공주 혼인합니다 Angilbert (a diplomat and the Lay Abbot of Saint Riquier from 790 to his death in 814), with whom she has a 아들, Nithard. Gisela (781–808),Theodrada (785–844), Hiltrude (786), Adaltrude (787), Rhuothild (790): All other 딸들 born after Bertha are raised at 궁정 and generally end their lives as the honorific abbess of a royal nunnery.",
+    "biographyEN": "This frivolous and proud princess marries Angilbert (a diplomat and the Lay Abbot of Saint Riquier from 790 to his death in 814), with whom she has a son, Nithard. Gisela (781–808),Theodrada (785–844), Hiltrude (786), Adaltrude (787), Rhuothild (790): All other daughters born after Bertha are raised at court and generally end their lives as the honorific abbess of a royal nunnery."
+  },
+  {
+    "key": "adalhard",
+    "nameKO": "아달하르트 (751–827)",
+    "nameEN": "Adalhard (751–827)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "751–827",
+    "biographyKO": "아달하르트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s favorite 사촌 에서 양육되었으며, 궁정 as the 아들 of 숙부 Bernard. At Carloman’s death, he goes to 롬바르디아 with Ogier, but returns to favor later and becomes the Lay Abbot of Corbie (800). He is the tutor of 샤를마뉴 대제’s 아들, 국왕 Pepin of Italy.",
+    "biographyEN": "Charlemagne’s favorite cousin was raised at court as the son of uncle Bernard. At Carloman’s death, he goes to Lombardy with Ogier, but returns to favor later and becomes the Lay Abbot of Corbie (800). He is the tutor of Charlemagne’s son, King Pepin of Italy."
+  },
+  {
+    "key": "angilbert",
+    "nameKO": "안길베르트 (751–814)",
+    "nameEN": "Angilbert (751–814)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "751–814",
+    "biographyKO": "안길베르트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s 아들-in-law 에서 양육되었으며, royal 궁정. At first, he is young 국왕 Pepin of Italy’s palace 백작, but later he returns to 궁정 as a poet and diplomat. There he enjoys a very worldly lifestyle, and becomes the lover of young 공주 Bertha. At the end of his life, Angilbert retires to the 수도원 of St. Riquier, where he 사망합니다 as a saint.",
+    "biographyEN": "Charlemagne’s son-in-law was raised at royal court. At first, he is young King Pepin of Italy’s palace count, but later he returns to court as a poet and diplomat. There he enjoys a very worldly lifestyle, and becomes the lover of young Princess Bertha. At the end of his life, Angilbert retires to the monastery of St. Riquier, where he dies as a saint."
+  },
+  {
+    "key": "bertha",
+    "nameKO": "베르타 공주 (735–)",
+    "nameEN": "Bertha (735–)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "735–",
+    "biographyKO": "베르타 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A year before giving birth to Roland in 750, 샤를마뉴 대제’s 사촌 was banished from 궁정 with her lover, 백작 Milo of Aiglent. After a period of exile, she finally 혼인했습니다 Milo and raised their 아들, Roland. Her 남편 was made Minor Characters ================= 공작 of Septimania. After Milo’s death in 771, Bertha 혼인합니다 백작 Ganelon, to whom she gives a 아들, named Baldwin. At her second 남편’s shameful death, she retires to a nunnery.",
+    "biographyEN": "A year before giving birth to Roland in 750, Charlemagne’s cousin was banished from court with her lover, Count Milo of Aiglent. After a period of exile, she finally married Milo and raised their son, Roland. Her husband was made Minor Characters ================= Duke of Septimania. After Milo’s death in 771, Bertha marries Count Ganelon, to whom she gives a son, named Baldwin. At her second husband’s shameful death, she retires to a nunnery."
+  },
+  {
+    "key": "bernard",
+    "nameKO": "베르나르 (736–787)",
+    "nameEN": "Bernard (736–787)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "736–787",
+    "biographyKO": "베르나르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s 숙부 is a bastard 아들 of 단신왕 피핀. He is 혼인했습니다 to a 작센인 귀족 woman. The discrete and humble Bernard acts as one of 샤를마뉴 대제’s army commanders in the Lombard wars. He is the 부친 of 샤를마뉴 대제’s favorite cousins, Adalhard and W ala.",
+    "biographyEN": "Charlemagne’s uncle is a bastard son of Pepin the Short. He is married to a Saxon noble woman. The discrete and humble Bernard acts as one of Charlemagne’s army commanders in the Lombard wars. He is the father of Charlemagne’s favorite cousins, Adalhard and W ala."
+  },
+  {
+    "key": "childebrand_ii",
+    "nameKO": "킬데브란트 2세 (779–826)",
+    "nameEN": "Childebrand II (779–826)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "779–826",
+    "biographyKO": "킬데브란트 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s diligent and shrewd 사촌, 아들 of 백작 Nibelung I, is a palatine 백작 and a missus dominicus. Childebrand is a very discreet and perspicacious nobleman.",
+    "biographyEN": "Charlemagne’s diligent and shrewd cousin, son of Count Nibelung I, is a palatine count and a missus dominicus. Childebrand is a very discreet and perspicacious nobleman."
+  },
+  {
+    "key": "gontrada",
+    "nameKO": "곤트라다",
+    "nameEN": "Gontrada",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "",
+    "biographyKO": "곤트라다 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Adalhard and W ala’s 자매 is 샤를마뉴 대제’s chaste 사촌 and a good friend.",
+    "biographyEN": "Adalhard and W ala’s sister is Charlemagne’s chaste cousin and a good friend."
+  },
+  {
+    "key": "lothair",
+    "nameKO": "로타르 (744–768)",
+    "nameEN": "Lothair (744–768)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "744–768",
+    "biographyKO": "로타르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This unfortunate 사촌 is 사망한 by Bevis of Aigremont, which sparks the 가문 간의 피의 복수극(Feud) between 샤를마뉴 대제 and Aymon’s 아들들.",
+    "biographyEN": "This unfortunate cousin is killed by Bevis of Aigremont, which sparks the feud between Charlemagne and Aymon’s sons."
+  },
+  {
+    "key": "nibelung_i",
+    "nameKO": "니벨룽 1세 (725–771)",
+    "nameEN": "Nibelung I (725–771)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "725–771",
+    "biographyKO": "니벨룽 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 샤를마뉴 대제’s distant 숙부 is the 아들 of Childebrand I, who was 망치왕 샤를 마르텔’s half-형제. He is the stern and just 백작 of Paris, as well as 샤를마뉴 대제’s palace 백작.",
+    "biographyEN": "Charlemagne’s distant uncle is the son of Childebrand I, who was Charles Martel’s half-brother. He is the stern and just Count of Paris, as well as Charlemagne’s palace count."
+  },
+  {
+    "key": "w_ala",
+    "nameKO": "W ala (755–836)",
+    "nameEN": "W ala (755–836)",
+    "category": "Imperial Family & Court",
+    "subcategory": "👑 황실 친족 (Other Relatives)",
+    "years": "755–836",
+    "biographyKO": "W ala 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Adalhard’s younger 형제 is 숙부 Bernard’s second 아들. 그는n influential royal councilor, and one of 샤를마뉴 대제’s personal friends. He 혼인합니다 Lady Rollinda, William Shortnose’s only 딸, and later retires to Corbie, where he succeeds his 형제 as abbot.",
+    "biographyEN": "Adalhard’s younger brother is uncle Bernard’s second son. He is an influential royal councilor, and one of Charlemagne’s personal friends. He marries Lady Rollinda, William Shortnose’s only daughter, and later retires to Corbie, where he succeeds his brother as abbot."
+  },
+  {
+    "key": "ganelon_of_ponthieu",
+    "nameKO": "퐁티외의 가늘롱 백작 (736–778)",
+    "nameEN": "Ganelon of Ponthieu (736–778)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 대신 (Courtiers)",
+    "years": "736–778",
+    "biographyKO": "퐁티외의 가늘롱 백작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The valorous 백작 of Mayence inherited his ancestor Doon’s blazon: “St. George (as a 기사) decapitating a 이교도.” Ganelon is 샤를마뉴 대제’s childhood friend, and 혼인합니다 공주 Bertha after 공작 Milo d’ Aiglent’s death in 771. Ganelon starts to hate his 아들-in-law, Roland, when Roland makes peace with Oliver at the duel of Vienne, a fief 샤를마뉴 대제 would have given to Ganelon had Roland won. When, years later, Roland laughingly advises 샤를마뉴 대제 to send Ganelon on a virtually suicidal mission to Emir Masile’s 궁정, the 백작 of Mayence decides to avenge himself. His 반역 results in the 전투 of 론세스바예스 협곡, and his vengeful, arbitrary, proud and deceitful character is finally revealed. In 전투, Ganelon wields the blessed 성검 Murgleis.",
+    "biographyEN": "The valorous Count of Mayence inherited his ancestor Doon’s blazon: “St. George (as a knight) decapitating a pagan.” Ganelon is Charlemagne’s childhood friend, and marries Princess Bertha after Duke Milo d’ Aiglent’s death in 771. Ganelon starts to hate his son-in-law, Roland, when Roland makes peace with Oliver at the duel of Vienne, a fief Charlemagne would have given to Ganelon had Roland won. When, years later, Roland laughingly advises Charlemagne to send Ganelon on a virtually suicidal mission to Emir Masile’s court, the Count of Mayence decides to avenge himself. His treason results in the Battle of Roncevaux, and his vengeful, arbitrary, proud and deceitful character is finally revealed. In battle, Ganelon wields the blessed sword Murgleis."
+  },
+  {
+    "key": "naymo_of_bavaria",
+    "nameKO": "바이에른의 네모 공작 (732–815)",
+    "nameEN": "Naymo of Bavaria (732–815)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 대신 (Courtiers)",
+    "years": "732–815",
+    "biographyKO": "바이에른의 네모 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Another of 샤를마뉴 대제’s childhood friends, and the 국왕’s most trusted advisor. The modest and wise palatine 공작 is the 부친 of Aquilon (raised as Anibal by the 사라센), Bertrand (사망한 by Ogier in 773), and Wistace (Garin of Anjou’s 아내 and Vivien the Fearless’ 모친). The wise Naymo is unswervingly loyal, just, moderate, forgiving, merciful and prudent. He acts in all respects as if he were 샤를마뉴 대제’s elder 형제, and is at the 황제’s side until the end. Many learned abbots and bishops live at 궁정 permanently, or for several months a year, to assist 샤를마뉴 대제 in the administration of his kingdom. The Palace Academy is founded in 780 by Alcuin. All its members have a skill of at least 16 in Eloquence, Intrigue, Languages, Reading & W riting, and Religion. They all have classical nicknames; 샤를마뉴 대제 himself, for example, is known as David.",
+    "biographyEN": "Another of Charlemagne’s childhood friends, and the king’s most trusted advisor. The modest and wise palatine duke is the father of Aquilon (raised as Anibal by the Saracens), Bertrand (killed by Ogier in 773), and Wistace (Garin of Anjou’s wife and Vivien the Fearless’ mother). The wise Naymo is unswervingly loyal, just, moderate, forgiving, merciful and prudent. He acts in all respects as if he were Charlemagne’s elder brother, and is at the emperor’s side until the end. Many learned abbots and bishops live at court permanently, or for several months a year, to assist Charlemagne in the administration of his kingdom. The Palace Academy is founded in 780 by Alcuin. All its members have a skill of at least 16 in Eloquence, Intrigue, Languages, Reading & W riting, and Religion. They all have classical nicknames; Charlemagne himself, for example, is known as David."
+  },
+  {
+    "key": "alcuin",
+    "nameKO": "알쿠인 (735–804)",
+    "nameEN": "Alcuin (735–804)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "735–804",
+    "biographyKO": "알쿠인 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The tall British monk is a calm and honest man with great diplomatic and persuasive skills. 그는 magister at Y ork until he becomes 샤를마뉴 대제’s personal councilor and tutor in 780. The wise and most learned Northumbrian founds the royal Palace Academy, where he is nicknamed Flaccus. He goes back to Y ork in 790, but a few years later he returns to Frankland. In 796 he retires from 궁정 as the Abbot of St. Martin’s (and several other satellite abbeys and monasteries), where he 사망합니다 in 804.",
+    "biographyEN": "The tall British monk is a calm and honest man with great diplomatic and persuasive skills. He is a magister at Y ork until he becomes Charlemagne’s personal councilor and tutor in 780. The wise and most learned Northumbrian founds the royal Palace Academy, where he is nicknamed Flaccus. He goes back to Y ork in 790, but a few years later he returns to Frankland. In 796 he retires from court as the Abbot of St. Martin’s (and several other satellite abbeys and monasteries), where he dies in 804."
+  },
+  {
+    "key": "arno_of_salzburg",
+    "nameKO": "잘츠부르크의 아르노 (750–821)",
+    "nameEN": "Arno of Salzburg (750–821)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "750–821",
+    "biographyKO": "잘츠부르크의 아르노 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This Bavarian bishop enters the Palace Academy as Aquila, a year after 그는 assilo’s banishment to the 수도원 of Jumieges. 국왕 샤를마뉴 대제 appoints him as Archbishop of Germania (798), Abbot of St. Amand, and later Archbishop of the Avar March (805). He is frequently sent out as missus dominicus.",
+    "biographyEN": "This Bavarian bishop enters the Palace Academy as Aquila, a year after T assilo’s banishment to the Monastery of Jumieges. King Charlemagne appoints him as Archbishop of Germania (798), Abbot of St. Amand, and later Archbishop of the Avar March (805). He is frequently sent out as missus dominicus."
+  },
+  {
+    "key": "benedict_of_aniane",
+    "nameKO": "아니안의 베네딕토 (747–821)",
+    "nameEN": "Benedict of Aniane (747–821)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "747–821",
+    "biographyKO": "아니안의 베네딕토 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 아들 of the Visigothic 백작 Aigulf of Gellone grows up at the royal 궁정, where he becomes the personal friend of Alcuin and Theodulf. He lives in a Burgundian 수도원 for a while, but in 781 he becomes 국왕 Louis’ spiritual mentor. He writes a new Benedictine Rule for the numerous monasteries he founds in Septimania and 아키텐, such as Aniane (782) and Gellone (804, for his boyhood friend, William Shortnose). By the time Louis is crowned 황제, the dynamic Benedict has become a living saint: “Thanks to his help, the holy fortresses [monasteries] are now pleasing to God. A beautiful will reigned in his sacred conduct; he was as holy as it is allowed man to be. ” Ermoldus , II",
+    "biographyEN": "The son of the Visigothic Count Aigulf of Gellone grows up at the royal court, where he becomes the personal friend of Alcuin and Theodulf. He lives in a Burgundian monastery for a while, but in 781 he becomes King Louis’ spiritual mentor. He writes a new Benedictine Rule for the numerous monasteries he founds in Septimania and Aquitaine, such as Aniane (782) and Gellone (804, for his boyhood friend, William Shortnose). By the time Louis is crowned Emperor, the dynamic Benedict has become a living saint: “Thanks to his help, the holy fortresses [monasteries] are now pleasing to God. A beautiful will reigned in his sacred conduct; he was as holy as it is allowed man to be. ” Ermoldus , II"
+  },
+  {
+    "key": "clement",
+    "nameKO": "클레멘트 (750–818)",
+    "nameEN": "Clement (750–818)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "750–818",
+    "biographyKO": "클레멘트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. An eloquent and patient Irish monk who arrives at 샤를마뉴 대제’s 궁정 in 775 and rapidly becomes the magister of the University of Paris. As Alcuin’s right hand at 궁정, he is in charge of the education of the royal children.",
+    "biographyEN": "An eloquent and patient Irish monk who arrives at Charlemagne’s court in 775 and rapidly becomes the magister of the University of Paris. As Alcuin’s right hand at court, he is in charge of the education of the royal children."
+  },
+  {
+    "key": "dagulf",
+    "nameKO": "다굴프 (743–809)",
+    "nameEN": "Dagulf (743–809)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "743–809",
+    "biographyKO": "다굴프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. During summer, the conscientious library master travels through the realm to visit the royal scriptoria. In winter, he supervises the monks at 궁정.",
+    "biographyEN": "During summer, the conscientious library master travels through the realm to visit the royal scriptoria. In winter, he supervises the monks at court."
+  },
+  {
+    "key": "dungal",
+    "nameKO": "둥갈 (749–828)",
+    "nameEN": "Dungal (749–828)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "749–828",
+    "biographyKO": "둥갈 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This Irish monk is 샤를마뉴 대제’s 궁정 점성술사. He teaches the liberal arts at the Palace Academy.",
+    "biographyEN": "This Irish monk is Charlemagne’s court astrologer. He teaches the liberal arts at the Palace Academy."
+  },
+  {
+    "key": "einhard",
+    "nameKO": "아인하르트 (770–840)",
+    "nameEN": "Einhard (770–840)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "770–840",
+    "biographyKO": "풀다 수도원 출신의 지극히 총명한 왜소증 수도사이자 학자입니다. 샤를마뉴 대제의 전속 비서이자 공식 대전기 작가로 임명되어 성기사들의 연대기를 기록하였습니다. 조각, 보석 세공, 금속 세공의 명장이며, 대제의 공주와 은밀한 로맨스를 나눈 궁정의 기재입니다.",
+    "biographyEN": "A very talented and versatile dwarfsized monk from Fulda. He is a scholar, and skilled in metal working, wood-carving, and gem cutting. He becomes Charlemagne’s biographer, and continues the paladins’ chronicles where T urpin left them. At court, he woos one of Charlemagne’s daughters. His academic nickname is Nardulus. Einhard undertakes several ================= diplomatic missions in the emperor’s name to the Saxons and the Romans. He is King Louis’ arch-chaplain, and possesses a personal chapel with relics outside the Royal Palace."
+  },
+  {
+    "key": "fredegise",
+    "nameKO": "프레데지스 (791–834)",
+    "nameEN": "Fredegise (791–834)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "791–834",
+    "biographyKO": "프레데지스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A British disciple of Alcuin, nicknamed Nathanaël, who succeeds his master as the Abbot of 그는 ours after Alcuin’s death in 804. His specialization is theology.",
+    "biographyEN": "A British disciple of Alcuin, nicknamed Nathanaël, who succeeds his master as the Abbot of T ours after Alcuin’s death in 804. His specialization is theology."
+  },
+  {
+    "key": "fulrad",
+    "nameKO": "Fulrad (710–784)",
+    "nameEN": "Fulrad (710–784)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "710–784",
+    "biographyKO": "Fulrad 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Abbot of St. Denis, who owns many rich domains all over Frankland, is the tutor and friend of 국왕 Carloman. After Carloman’s death, this holy monk becomes 샤를마뉴 대제’s arch-chaplain and ambassador. At his death he is declared a saint.",
+    "biographyEN": "The Abbot of St. Denis, who owns many rich domains all over Frankland, is the tutor and friend of King Carloman. After Carloman’s death, this holy monk becomes Charlemagne’s arch-chaplain and ambassador. At his death he is declared a saint."
+  },
+  {
+    "key": "george_the_byzantine",
+    "nameKO": "비잔틴의 조지 (755–817)",
+    "nameEN": "George the Byzantine (755–817)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "755–817",
+    "biographyKO": "비잔틴의 조지 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A very erudite Greek, he speaks Latin, Arabic and Hebrew. 그는 bishop in 롬바르디아, but leaves Pope Stephen III’s service to become the Bishop of Amiens. 샤를마뉴 대제 regularly charges George with embassies to 로마 and Byzantium.",
+    "biographyEN": "A very erudite Greek, he speaks Latin, Arabic and Hebrew. He is a bishop in Lombardy, but leaves Pope Stephen III’s service to become the Bishop of Amiens. Charlemagne regularly charges George with embassies to Rome and Byzantium."
+  },
+  {
+    "key": "hildebald_of_cologne",
+    "nameKO": "쾰른의 힐데발트 (761–818)",
+    "nameEN": "Hildebald of Cologne (761–818)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "761–818",
+    "biographyKO": "쾰른의 힐데발트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A personal friend of 샤를마뉴 대제, nicknamed Aaron at the Academy, this wise and energetic scholar is a wandering missionary bishop. At 궁정, he fulfils the offices of arch-chaplain and chancellor.",
+    "biographyEN": "A personal friend of Charlemagne, nicknamed Aaron at the Academy, this wise and energetic scholar is a wandering missionary bishop. At court, he fulfils the offices of arch-chaplain and chancellor."
+  },
+  {
+    "key": "ludger",
+    "nameKO": "루트거 (742–809)",
+    "nameEN": "Ludger (742–809)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "742–809",
+    "biographyKO": "루트거 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A 귀족 Frisian monk who teaches at the Utrecht cathedral school. 그는 peaceful and patient missionary among the Frisians. In 793, he miraculously cures and converts the blind Frisian skald Bernlef. Later, Ludger is the chief missionary in Saxony (793), and he becomes Abbot and Bishop of Münster (805), where he 사망합니다 as a saint.",
+    "biographyEN": "A noble Frisian monk who teaches at the Utrecht cathedral school. He is a peaceful and patient missionary among the Frisians. In 793, he miraculously cures and converts the blind Frisian skald Bernlef. Later, Ludger is the chief missionary in Saxony (793), and he becomes Abbot and Bishop of Münster (805), where he dies as a saint."
+  },
+  {
+    "key": "modoin",
+    "nameKO": "모도인 (770–840)",
+    "nameEN": "Modoin (770–840)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "770–840",
+    "biographyKO": "모도인 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A Visigothic monk raised at 궁정, where he is known as Ovid. Modoin is a 궁정 poet and a member of 국왕 Louis’ household.",
+    "biographyEN": "A Visigothic monk raised at court, where he is known as Ovid. Modoin is a court poet and a member of King Louis’ household."
+  },
+  {
+    "key": "paul_the_deacon",
+    "nameKO": "부제 바오로 (720–802)",
+    "nameEN": "Paul the Deacon (720–802)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "720–802",
+    "biographyKO": "부제 바오로 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The venerable Lombard Bishop of Aquileia is a renowned grammarian. He arrives at 궁정 in 774, where he is nicknamed Timothee, and he becomes Angilbert’s tutor. In 787 샤를마뉴 대제 appoints him as the new Archbishop of V enice, and he accompanies 국왕 Pepin during the Avar 원정.",
+    "biographyEN": "The venerable Lombard Bishop of Aquileia is a renowned grammarian. He arrives at court in 774, where he is nicknamed Timothee, and he becomes Angilbert’s tutor. In 787 Charlemagne appoints him as the new Archbishop of V enice, and he accompanies King Pepin during the Avar campaign."
+  },
+  {
+    "key": "peter_of_pisa",
+    "nameKO": "피사의 피에트로 (744–799)",
+    "nameEN": "Peter of Pisa (744–799)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "744–799",
+    "biographyKO": "피사의 피에트로 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A humorless Lombard from Pavia who teaches Latin at the Palace Academy. He is the tutor of 샤를마뉴 대제’s children. In 790 he retires from 궁정 to become a lay abbot.",
+    "biographyEN": "A humorless Lombard from Pavia who teaches Latin at the Palace Academy. He is the tutor of Charlemagne’s children. In 790 he retires from court to become a lay abbot."
+  },
+  {
+    "key": "raban_maur",
+    "nameKO": "라바누스 마우루스 (780–856)",
+    "nameEN": "Raban Maur (780–856)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "780–856",
+    "biographyKO": "라바누스 마우루스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A quiet and diligent monk from Fulda, and a pupil of Alcuin at 그는 ours, he comes to 궁정 to write teaching manuals.",
+    "biographyEN": "A quiet and diligent monk from Fulda, and a pupil of Alcuin at T ours, he comes to court to write teaching manuals."
+  },
+  {
+    "key": "theodulf",
+    "nameKO": "테오둘프 주교 (759–821)",
+    "nameEN": "Theodulf (759–821)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "759–821",
+    "biographyKO": "테오둘프 주교 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Visigothic Bishop of Orleans (798) and Abbot of Fleury studied under Benedict of Aniane. Theodulf is at 궁정 from 780 to 797, where he is named Pindor. He acts as a missus dominicus together with Bishop Leidrad of Lyon.",
+    "biographyEN": "The Visigothic Bishop of Orleans (798) and Abbot of Fleury studied under Benedict of Aniane. Theodulf is at court from 780 to 797, where he is named Pindor. He acts as a missus dominicus together with Bishop Leidrad of Lyon."
+  },
+  {
+    "key": "willihad",
+    "nameKO": "빌리하드 (741–789)",
+    "nameEN": "Willihad (741–789)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "741–789",
+    "biographyKO": "빌리하드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A pure monk from Y ork, where he became Alcuin’s friend. 그는 ~로 유배당해 Frisia and Saxony as a missionary in 765, but flees in despair after a 작센인 massacre in 782. He briefly retreats to the 수도원 of Echternach, and later becomes the Bishop of W orms.",
+    "biographyEN": "A pure monk from Y ork, where he became Alcuin’s friend. He is sent to Frisia and Saxony as a missionary in 765, but flees in despair after a Saxon massacre in 782. He briefly retreats to the abbey of Echternach, and later becomes the Bishop of W orms."
+  },
+  {
+    "key": "wido",
+    "nameKO": "위도 (761–802)",
+    "nameEN": "Wido (761–802)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "761–802",
+    "biographyKO": "위도 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Alcuin’s most talented pupil and companion is the personal tutor of 공주 Gisela. Wido succeeds his master as head of the Palace Academy, where he is nicknamed Candidus. Officers Most important administrative offices are held by educated members of the clergy. Laymen are largely excluded from these functions. The major offices are given here:",
+    "biographyEN": "Alcuin’s most talented pupil and companion is the personal tutor of Princess Gisela. Wido succeeds his master as head of the Palace Academy, where he is nicknamed Candidus. Officers Most important administrative offices are held by educated members of the clergy. Laymen are largely excluded from these functions. The major offices are given here:"
+  },
+  {
+    "key": "chamberlain",
+    "nameKO": "궁정 시종장 (Chamberlain)",
+    "nameEN": "Chamberlain",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "궁정 시종장 (Chamberlain) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The chamberlain takes care of the personal belongings of the royal household, including the treasury, called the “chamber, ” which is a veritable warehouse filled with coffers of jewels, gold and silver, crowns, silks, illuminated manuscripts and other luxurious goods. Adalgise (768–782); Meginfred (783–791), Eberhard (792–812); Jeremy (813–814).",
+    "biographyEN": "The chamberlain takes care of the personal belongings of the royal household, including the treasury, called the “chamber, ” which is a veritable warehouse filled with coffers of jewels, gold and silver, crowns, silks, illuminated manuscripts and other luxurious goods. Adalgise (768–782); Meginfred (783–791), Eberhard (792–812); Jeremy (813–814)."
+  },
+  {
+    "key": "chancellor",
+    "nameKO": "제국 대법관 (Chancellor)",
+    "nameEN": "Chancellor",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "제국 대법관 (Chancellor) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. He oversees the royal charters and archives, assists on the appointment of bishops and abbots, and is the 국왕’s principal councilor on religious matters in general. Fulrad, Abbot of Saint Denis (771–784); Bishop Angilram of Metz (784–791); Archbishop Hildebald of Cologne (791–814).",
+    "biographyEN": "He oversees the royal charters and archives, assists on the appointment of bishops and abbots, and is the king’s principal councilor on religious matters in general. Fulrad, Abbot of Saint Denis (771–784); Bishop Angilram of Metz (784–791); Archbishop Hildebald of Cologne (791–814)."
+  },
+  {
+    "key": "chaplain",
+    "nameKO": "궁정 성직자 (Chaplain)",
+    "nameEN": "Chaplain",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "궁정 성직자 (Chaplain) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The guardian of the cape (chapelle) of St. Martin, the most holy relic of the Frankish kings, and master of the 궁정 library. Itherius (767–775); Abbot Rado of Arras (776–797); Archibald (797–812); Archbishop Jeremy of Sens (812–814). Marshal/Constable: The master of the royal horses and stud farms. Geilo (768–772); Fago (773–786); Gimbold (787–799); Gerricus (799–804); Burchard (805–814).",
+    "biographyEN": "The guardian of the cape (chapelle) of St. Martin, the most holy relic of the Frankish kings, and master of the court library. Itherius (767–775); Abbot Rado of Arras (776–797); Archibald (797–812); Archbishop Jeremy of Sens (812–814). Marshal/Constable: The master of the royal horses and stud farms. Geilo (768–772); Fago (773–786); Gimbold (787–799); Gerricus (799–804); Burchard (805–814)."
+  },
+  {
+    "key": "master_of_the_kitchens",
+    "nameKO": "궁정 주방 마스터 (Master of Kitchens)",
+    "nameEN": "Master of the Kitchens",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "궁정 주방 마스터 (Master of Kitchens) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Often the subject of gentle raillery, the master cook is nevertheless an important figure at 궁정. Bego (768–778); Audulf (778–801); Hortmar (801–814).",
+    "biographyEN": "Often the subject of gentle raillery, the master cook is nevertheless an important figure at court. Bego (768–778); Audulf (778–801); Hortmar (801–814)."
+  },
+  {
+    "key": "magister",
+    "nameKO": "아카데미 원장 (Magister)",
+    "nameEN": "Magister",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "아카데미 원장 (Magister) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The head of the Palace Academy. Alcuin (780–796); Wido (796–814).",
+    "biographyEN": "The head of the Palace Academy. Alcuin (780–796); Wido (796–814)."
+  },
+  {
+    "key": "palace_count",
+    "nameKO": "궁정 백작 (Palace Count)",
+    "nameEN": "Palace Count",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "궁정 백작 (Palace Count) 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The principal royal advisor and president of the permanent special royal tribunal. He commands the scarae and is responsible for the 궁정’s security. 백작 Nibelung I (768–771); 백작 Anselm (771–778); 백작 Sturm (779–800); 백작 Childebrand II (800–814).",
+    "biographyEN": "The principal royal advisor and president of the permanent special royal tribunal. He commands the scarae and is responsible for the court’s security. Count Nibelung I (768–771); Count Anselm (771–778); Count Sturm (779–800); Count Childebrand II (800–814)."
+  },
+  {
+    "key": "seneschal",
+    "nameKO": "궁정 궁내관 (Seneschal)",
+    "nameEN": "Seneschal",
+    "category": "Imperial Family & Court",
+    "subcategory": "🏰 궁정 학자 (Academicians)",
+    "years": "",
+    "biographyKO": "풀다 수도원 출신의 지극히 총명한 왜소증 수도사이자 학자입니다. 샤를마뉴 대제의 전속 비서이자 공식 대전기 작가로 임명되어 성기사들의 연대기를 기록하였습니다. 조각, 보석 세공, 금속 세공의 명장이며, 대제의 공주와 은밀한 로맨스를 나눈 궁정의 기재입니다.",
+    "biographyEN": "Also known as the steward, he manages the provisions of the court, an especially important and difficult task. Eggihard (768–778); Ludfrid (779–791); Audulf (791– 801); Einhard (802–808); Ansegise (809–814)."
+  },
+  {
+    "key": "angelica",
+    "nameKO": "안젤리카 공주",
+    "nameEN": "Angelica",
+    "category": "Imperial Family & Court",
+    "subcategory": "🔮 신비한 마법사 (Magicians)",
+    "years": "",
+    "biographyKO": "안젤리카 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A stunning and chaste 공주 of Cathay, who wears a powerful 마법의 ring of invisibility and 마법의 negation. She may herself produce only minor enchantments, but her supernatural beauty (APP 30) often works as a Love spell on men. She is saved from a sea monster by Rogero (775) and wooed by Roland, but finally falls in love with a young Moor, Medoro, with whom she returns to Cathay.",
+    "biographyEN": "A stunning and chaste princess of Cathay, who wears a powerful magic ring of invisibility and magic negation. She may herself produce only minor enchantments, but her supernatural beauty (APP 30) often works as a Love spell on men. She is saved from a sea monster by Rogero (775) and wooed by Roland, but finally falls in love with a young Moor, Medoro, with whom she returns to Cathay."
+  },
+  {
+    "key": "atlantes",
+    "nameKO": "아틀란테스",
+    "nameEN": "Atlantes",
+    "category": "Imperial Family & Court",
+    "subcategory": "🔮 신비한 마법사 (Magicians)",
+    "years": "",
+    "biographyKO": "아틀란테스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The most powerful Saracen 점성술사 and 흑마법사 lives in a 마법의 mountain castle. He loves Rogero as his 아들, and tries to protect him from harm and adventure by locking him up inside his steel prison-palace. The deceitful and cunning Atlantes owns a powerful spell book of illusions, a 방패 of Blinding and a hippogriff. Carelessness is his weakness. The magician finally 사망합니다 of a broken heart when Rogero leaves, converts to Christianity, and 혼인합니다 Bradamant.",
+    "biographyEN": "The most powerful Saracen astrologer and sorcerer lives in a magic mountain castle. He loves Rogero as his son, and tries to protect him from harm and adventure by locking him up inside his steel prison-palace. The deceitful and cunning Atlantes owns a powerful spell book of illusions, a Shield of Blinding and a hippogriff. Carelessness is his weakness. The magician finally dies of a broken heart when Rogero leaves, converts to Christianity, and marries Bradamant."
+  },
+  {
+    "key": "basin",
+    "nameKO": "Basin (Elegast)",
+    "nameEN": "Basin (Elegast)",
+    "category": "Imperial Family & Court",
+    "subcategory": "🔮 신비한 마법사 (Magicians)",
+    "years": "Elegast",
+    "biographyKO": "Basin 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Frankish 백작 of Geneva is a skillful 마법사, who was born and raised at his fief of Huy. He mainly uses herbs to produce 마법의 effects such as opening locks, understanding animal speech, putting people to sleep, and healing wounds. Ever loyal to 샤를마뉴 대제, he nevertheless is accused of betrayal and destituted (781). Impoverished, he becomes the robber 기사 Elegast, wandering through the Austrasian forests. 샤를마뉴 대제 forgives Basin and reinstates him in 786. At the end of his life he becomes the Archbishop of 그는 rier (802). He has three 아들들: Berenger, Renier, and Aubery.",
+    "biographyEN": "The Frankish Count of Geneva is a skillful enchanter, who was born and raised at his fief of Huy. He mainly uses herbs to produce magic effects such as opening locks, understanding animal speech, putting people to sleep, and healing wounds. Ever loyal to Charlemagne, he nevertheless is accused of betrayal and destituted (781). Impoverished, he becomes the robber knight Elegast, wandering through the Austrasian forests. Charlemagne forgives Basin and reinstates him in 786. At the end of his life he becomes the Archbishop of T rier (802). He has three sons: Berenger, Renier, and Aubery."
+  },
+  {
+    "key": "maugis",
+    "nameKO": "모지",
+    "nameEN": "Maugis",
+    "category": "Imperial Family & Court",
+    "subcategory": "🔮 신비한 마법사 (Magicians)",
+    "years": "",
+    "biographyKO": "모지 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The most famous Frankish 마법기사-기사, from the family of Aigremont, was raised by a faerie lady and studied 마법의 at 그는 oledo. Renaud’s 사촌 possesses a very useful spell book which he sometimes consults. However, he only relies on his 마법의 when all other means have failed. He uses powders to make others sleep or sneeze, and to conjure up demons who he may send on an errand or foretell him the future: ================= Maugis took his tome. To understand this matter more, He called four demons up from hell. See how his mind was terrified! See how he shook, by heavenly God! He saw, as before his eyes, 샤를마뉴 대제 dead, his 궁정 destroyed. — Orlando Innamorato , 1.1.XXXVI Maugis becomes 샤를마뉴 대제’s most hated adversary in his 가문 간의 피의 복수극(Feud) with the house of Aigremont. On several occasions, the 마법사 plays tricks on his sovereign, though never with the intention to harm him.",
+    "biographyEN": "The most famous Frankish wizard-knight, from the family of Aigremont, was raised by a faerie lady and studied magic at T oledo. Renaud’s cousin possesses a very useful spell book which he sometimes consults. However, he only relies on his magic when all other means have failed. He uses powders to make others sleep or sneeze, and to conjure up demons who he may send on an errand or foretell him the future: ================= Maugis took his tome. To understand this matter more, He called four demons up from hell. See how his mind was terrified! See how he shook, by heavenly God! He saw, as before his eyes, Charlemagne dead, his court destroyed. — Orlando Innamorato , 1.1.XXXVI Maugis becomes Charlemagne’s most hated adversary in his feud with the house of Aigremont. On several occasions, the enchanter plays tricks on his sovereign, though never with the intention to harm him."
+  },
+  {
+    "key": "merlin",
+    "nameKO": "메를린",
+    "nameEN": "Merlin",
+    "category": "Imperial Family & Court",
+    "subcategory": "🔮 신비한 마법사 (Magicians)",
+    "years": "",
+    "biographyKO": "사악한 마옌스(Mayence) 가문의 마지막 백작이자 흑색 기사단(Black Knights)의 악명 높은 우두머리입니다. 교활하고 비열한 음모가로 대제의 총애를 받는 샤를로 황자를 흑색 세력으로 타락시켰으며, 위고 경 일행을 기습 암살하려다 도리어 파멸을 맞이한 가문 파멸의 원흉입니다.",
+    "biographyEN": "The long-dead magician is sometimes present as a living spirit inside a cave or a tomb, from where he makes prophecies and gives his good counsel to any passing knights. No king is free of internal intrigue, and Charlemagne is no exception. The followers of Duke Hunold of Aquitaine, who is killed in 769, claim that at least one of the late duke’s children is still alive and can pretend to the lordship of Aquitaine. They do not foment open rebellion, but they use rather subversive ways of achieving their objectives. It is noteworthy that the Frankish king almost never visits the southern part of the Franklands. T o consolidate his power in the south, Charlemagne has his son Louis crowned King of Aquitaine in 781 with the help of William Shortnose. On this occasion, nobles such as Arneïs and the relatives of old Richard of Orleans cause quite a stir. Afterwards, the Aquitainian faction at court is seriously weakened, but their thirst for independence and their personal ambitions of power are still very much alive. At his brother’s unfortunate death in 771, Charlemagne claims the lands of Carloman II and becomes the sole leader of the Franks. This shocks several high noblemen, since normally Carloman’s title should have been passed on to his two healthy sons, for whom Charlemagne refuses to appoint a regent. Rather than serve a usurper, Ogier and his friends openly rebel against their new king. When Carloman’s widow, Gerberga of Pavia, flees to her father’s court, Frankish nobles accompany the princess and her two sons to Lombardy. Charlemagne captures his sister-in-law and his two young cousins, as well as Ogier the Dane, during his successful campaign against the Lombards in 773. Charlemagne sends the royal Lombards (King Desiderius, Queen Ansa, Princess Gerberga and her sons) to separate monasteries, and he has Ogier locked up in a castle under Duke Naymo’s care. As far as the king is concerned, the Lombard royal dynasty is no more, and Charlemagne distributes titles and lands to his loyal Frankish followers. Most surviving Lombard nobles swear fealty to their new king. But not all of them. Others prefer to flee, especially to Avarland or Bavaria. They are welcomed with open arms at the Agilolfing court, as Duke T assilo of Bavaria is himself married to the Lombard Princess Liutperga. Indeed, the disinherited Gerberga and her relatives have many powerful discontented friends. Among their allies are some Franks who remain loyal to Carloman II and his sons. Abroad, the Bavarian-Lombard faction is supported by Constantinople (the refuge of the vengeful Prince Adalgise), the Avars, and the independent Italian duchies of Benevento, Spoleto and Friuli. The House of Mayence is one of the most powerful clans of the kingdom. Their leader, Ganelon of Ponthieu, Count of Mainz, is a trusted councilor until he betrays his lord king out of hate for Roland, his step-son. Ganelon is accused after the battle of Roncevaux. His honor is defended by his champion and cousin, Pinabel the Gascon (an excellent swordsman and a skilled thief ), who loses his judicial duel against Count Thierry of Anjou. Ganelon is quartered by horses. Apart from Baldwin the Brave, all other Mayence knights are black-hearted traitors and ideally suited to figure as villains in an adventure. They want power by all means and, not surprisingly, they are among the founders of the Black Knights. Regularly, wronged vassals — including some paladins — oppose King Charlemagne. Even though they continue to recognize him as their lawful king, and respect him as such, they fight him to obtain justice or reparation for a crime. The four sons of Count Aymon defy the king’s power for several years, just like their cousin Maugis and their friend Ogier the Dane. Other powerful counts, like Gerard of Vienne and his family, or Garnier and Guy of Nanteuil, refuse to submit to Charlemagne on his conditions. All these revolting barons end up making peace, after having defeated their king in battle, or a forceful intervention from the paladins, or a miracle from God. Charlemagne’s repudiated son, sweet-faced but unfortunately hunchbacked, lives a miserable life in the court’s kitchens. His mother Himiltrude is safely locked away in a nunnery. But at court, flatterers tell Pepin that he should take his life back into his own hands, change his destiny and become king, or even emperor, himself ! These “friends” would gladly help to install Pepin on the Frankish throne in order to obtain high positions for themselves. On several occasions, high nobles conspire against their king in order to seize the throne. Count Hardrad of Thuringia comes close in 785, but his vast conspiracy ultimately fails. Minor Characters ================= After the failed coup of Count Hardrad, some of his relatives ally themselves with the House of Mayence. They create a secret but influential brotherhood, the Black Knights, whose first leader is Macharias of Lausanne, Hardrad’s nephew. Their goal is to further their political interests by manipulating Prince Charlot, Charlemagne’s favorite son. The Black Knights are mostly courtiers, always intriguing and scheming. Whenever their leader sends them out to do dirty business (up to assassination), the anonymous knights all dress in black, hence the name of their organization. They recognize each other by a small secret token, like a blue stone or a ribbon. The prince himself almost never participates and usually stays back at court. However, in 809 the Black Knights and their leader, Amaury de Hauteville, ambush Huon of Bordeaux and his men, and in the ensuing fight Prince Charlot is killed."
+  },
+  {
+    "key": "amaury_of_hauteville",
+    "nameKO": "오트빌의 아모리 백작",
+    "nameEN": "Amaury of Hauteville",
+    "category": "Enemies Within",
+    "subcategory": "⚔️ 흑색 기사단 (Black Knights)",
+    "years": "",
+    "biographyKO": "사악한 마옌스(Mayence) 가문의 마지막 백작이자 흑색 기사단(Black Knights)의 악명 높은 우두머리입니다. 교활하고 비열한 음모가로 대제의 총애를 받는 샤를로 황자를 흑색 세력으로 타락시켰으며, 위고 경 일행을 기습 암살하려다 도리어 파멸을 맞이한 가문 파멸의 원흉입니다.",
+    "biographyEN": "The last member of the House of Mayence becomes Count of Mayence in 803. A few years later, he replaces Fulco of Morillon as the chief of Charlot’s Black Knights. Amaury is a dastardly backstabber, corrupt and cruel, fatally proud, and over-confident."
+  },
+  {
+    "key": "dorame",
+    "nameKO": "도라메",
+    "nameEN": "Dorame",
+    "category": "Foreigners",
+    "subcategory": "❄️ 아바르 (Avars)",
+    "years": "",
+    "biographyKO": "도라메 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The decadent khagan of the Avars (784–790).",
+    "biographyEN": "The decadent khagan of the Avars (784–790)."
+  },
+  {
+    "key": "otxoa",
+    "nameKO": "옥초아 공작",
+    "nameEN": "Otxoa",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 바스크 (Basques)",
+    "years": "",
+    "biographyKO": "옥초아 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The treacherous 공작 of the 바스크족 allies with the 무어인 against the Franks, resulting in the disaster of 론세스바예스 협곡, where Otxoa meets his end.",
+    "biographyEN": "The treacherous Duke of the Basques allies with the Moors against the Franks, resulting in the disaster of Roncevaux, where Otxoa meets his end."
+  },
+  {
+    "key": "orthez",
+    "nameKO": "오르테즈 공작",
+    "nameEN": "Orthez",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 바스크 (Basques)",
+    "years": "",
+    "biographyKO": "오르테즈 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. He succeeds his 부친 as a 공작 in 778, and although he pledges fealty to 샤를마뉴 대제, he tries to remain as independent from his Frankish overlord as possible.",
+    "biographyEN": "He succeeds his father as a duke in 778, and although he pledges fealty to Charlemagne, he tries to remain as independent from his Frankish overlord as possible."
+  },
+  {
+    "key": "aquin",
+    "nameKO": "아캥 왕",
+    "nameEN": "Aquin",
+    "category": "Foreigners",
+    "subcategory": "🏹 브르타뉴 (Bretons)",
+    "years": "",
+    "biographyKO": "아캥 왕 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 이교도 국왕 of 브르타뉴 is bald, with a hoary white beard. He wields a 마법의 창 and is known for his wisdom, cunning and valor. He is one of the very few Bretons to be literate. His war cry is “Manbrie!.” He reigns until 786.",
+    "biographyEN": "The pagan king of Brittany is bald, with a hoary white beard. He wields a magic lance and is known for his wisdom, cunning and valor. He is one of the very few Bretons to be literate. His war cry is “Manbrie!.” He reigns until 786."
+  },
+  {
+    "key": "doret_of_gardain",
+    "nameKO": "가르댕의 도레",
+    "nameEN": "Doret of Gardain",
+    "category": "Foreigners",
+    "subcategory": "🏹 브르타뉴 (Bretons)",
+    "years": "",
+    "biographyKO": "가르댕의 도레 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Aquin’s youngest 아들 is eager to prove himself in 전투.",
+    "biographyEN": "King Aquin’s youngest son is eager to prove himself in battle."
+  },
+  {
+    "key": "erdisa",
+    "nameKO": "에르디사 왕비",
+    "nameEN": "Erdisa",
+    "category": "Foreigners",
+    "subcategory": "🏹 브르타뉴 (Bretons)",
+    "years": "",
+    "biographyKO": "에르디사 왕비 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Breton 왕비 is very beautiful and exceptionally modest and wise.",
+    "biographyEN": "The Breton queen is very beautiful and exceptionally modest and wise."
+  },
+  {
+    "key": "grimoart_of_dinard",
+    "nameKO": "디나르의 그리모아르",
+    "nameEN": "Grimoart of Dinard",
+    "category": "Foreigners",
+    "subcategory": "🏹 브르타뉴 (Bretons)",
+    "years": "",
+    "biographyKO": "디나르의 그리모아르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Aquin’s eldest 아들 is a boastful, cruel and selfish man.",
+    "biographyEN": "King Aquin’s eldest son is a boastful, cruel and selfish man."
+  },
+  {
+    "key": "lubien_and_macabray",
+    "nameKO": "루비앙과 마카브레",
+    "nameEN": "Lubien and Macabray",
+    "category": "Foreigners",
+    "subcategory": "🏹 브르타뉴 (Bretons)",
+    "years": "",
+    "biographyKO": "루비앙과 마카브레 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 그는 wo aggressive local warlords, who regularly stage raids into Frankland for loot and prestige. 사망한 in 785. c o Nverts",
+    "biographyEN": "T wo aggressive local warlords, who regularly stage raids into Frankland for loot and prestige. Killed in 785. c o Nverts"
+  },
+  {
+    "key": "offa",
+    "nameKO": "오파 국왕",
+    "nameEN": "Offa",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "오파 국왕 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The clever and learned 국왕 of 머시아 (757–796) annexed W essex (by marriage), Kent, Sussex and East Anglia, unifying southern England. An enlightened ruler, Offa is a great admirer and a faithful ally of 샤를마뉴 대제, who in return protects British merchants and pilgrims on the continent.",
+    "biographyEN": "The clever and learned King of Mercia (757–796) annexed W essex (by marriage), Kent, Sussex and East Anglia, unifying southern England. An enlightened ruler, Offa is a great admirer and a faithful ally of Charlemagne, who in return protects British merchants and pilgrims on the continent."
+  },
+  {
+    "key": "clarice",
+    "nameKO": "클라리스",
+    "nameEN": "Clarice",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "클라리스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Offa’s beautiful 자매 혼인합니다 the widowed Ogier in 780.",
+    "biographyEN": "King Offa’s beautiful sister marries the widowed Ogier in 780."
+  },
+  {
+    "key": "ecfrid",
+    "nameKO": "엑프리드",
+    "nameEN": "Ecfrid",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "엑프리드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Offa’s 아들 is crowned co-ruler of 머시아 in 787, and rules as the sole 국왕 from his 부친’s death to his own, five months later. Like his 부친, he is a loyal ally of the Franks in their common struggle against the 덴마크인.",
+    "biographyEN": "Offa’s son is crowned co-ruler of Mercia in 787, and rules as the sole king from his father’s death to his own, five months later. Like his father, he is a loyal ally of the Franks in their common struggle against the Danes."
+  },
+  {
+    "key": "coenwulf",
+    "nameKO": "코엔울프",
+    "nameEN": "Coenwulf",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "코엔울프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The pious and ruthless 국왕 of 머시아 (796–821). NortHu Mbria",
+    "biographyEN": "The pious and ruthless King of Mercia (796–821). NortHu Mbria"
+  },
+  {
+    "key": "ahlred",
+    "nameKO": "알레드",
+    "nameEN": "Ahlred",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "알레드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 노섬브리아 (765–774).",
+    "biographyEN": "King of Northumbria (765–774)."
+  },
+  {
+    "key": "aethelred_i",
+    "nameKO": "에텔레드 1세",
+    "nameEN": "Aethelred I",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "에텔레드 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 노섬브리아 (774–779).",
+    "biographyEN": "King of Northumbria (774–779)."
+  },
+  {
+    "key": "aelfwald_i",
+    "nameKO": "엘프왈드 1세",
+    "nameEN": "Aelfwald I",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "엘프왈드 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 노섬브리아 (779–788).",
+    "biographyEN": "King of Northumbria (779–788)."
+  },
+  {
+    "key": "osred_ii",
+    "nameKO": "오스레드 2세",
+    "nameEN": "Osred II",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "오스레드 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 노섬브리아 (788–796).",
+    "biographyEN": "King of Northumbria (788–796)."
+  },
+  {
+    "key": "eardwulf",
+    "nameKO": "어드울프",
+    "nameEN": "Eardwulf",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "어드울프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 노섬브리아 (796–806), whose blazon is “d’azur à une couronne de fleurs argent” (a crown of silver flowers on a blue field).",
+    "biographyEN": "King of Northumbria (796–806), whose blazon is “d’azur à une couronne de fleurs argent” (a crown of silver flowers on a blue field)."
+  },
+  {
+    "key": "gilmer",
+    "nameKO": "길머",
+    "nameEN": "Gilmer",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "길머 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Zerbin’s valiant 조카 serves at the 궁정 of William Shortnose.",
+    "biographyEN": "Zerbin’s valiant nephew serves at the court of William Shortnose."
+  },
+  {
+    "key": "zerbin",
+    "nameKO": "제르뱅 왕자",
+    "nameEN": "Zerbin",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "제르뱅 왕자 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The romantic 황자 of 스코틀랜드 is the lover of Isabella of Galicia, 공작 Hamon’s 딸. Zerbin aids in finding back Roland’s wits. He recovers Roland’s arms and armor, but is then 전사한 by the cruel Mandricard (776). w esseX",
+    "biographyEN": "The romantic prince of Scotland is the lover of Isabella of Galicia, Duke Hamon’s daughter. Zerbin aids in finding back Roland’s wits. He recovers Roland’s arms and armor, but is then slain by the cruel Mandricard (776). w esseX"
+  },
+  {
+    "key": "cynewulf",
+    "nameKO": "키네울프",
+    "nameEN": "Cynewulf",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "키네울프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of W essex (757–786).",
+    "biographyEN": "King of W essex (757–786)."
+  },
+  {
+    "key": "bertric",
+    "nameKO": "베르트릭",
+    "nameEN": "Bertric",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "베르트릭 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of W essex (786–802).",
+    "biographyEN": "King of W essex (786–802)."
+  },
+  {
+    "key": "egbert_the_great",
+    "nameKO": "에그버트 대왕",
+    "nameEN": "Egbert the Great",
+    "category": "Foreigners",
+    "subcategory": "🏹 브리튼 (Britons)",
+    "years": "",
+    "biographyKO": "에그버트 대왕 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. As a chivalrous youth, 황자 Egbert spends some time at 샤를마뉴 대제’s 궁정. After Offa’s death, he rules W essex as an independent sovereign (802–839). e MPerors",
+    "biographyEN": "As a chivalrous youth, Prince Egbert spends some time at Charlemagne’s court. After Offa’s death, he rules W essex as an independent sovereign (802–839). e MPerors"
+  },
+  {
+    "key": "constantine_v",
+    "nameKO": "콘스탄티누스 5세",
+    "nameEN": "Constantine V",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "콘스탄티누스 5세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 바실레우스(그리스 황제) (741–775), whom the Franks call Hugo the Strong, is an ambitious man and a skilled military commander. One of his 딸들, Iakobine, has a child from the 성기사 Oliver, named Galien. The 비잔틴인 irreverently nickname him “Copronymos” (“dung-named”). =================",
+    "biographyEN": "The Basileus (741–775), whom the Franks call Hugo the Strong, is an ambitious man and a skilled military commander. One of his daughters, Iakobine, has a child from the paladin Oliver, named Galien. The Byzantines irreverently nickname him “Copronymos” (“dung-named”). ================="
+  },
+  {
+    "key": "leo_iv",
+    "nameKO": "레오 4세",
+    "nameEN": "Leo IV",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "레오 4세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Nicknamed “the Khazar” because his 모친 was a Circassian 공주, 황제 Leo IV (775–780) is a wise and tolerant ruler.",
+    "biographyEN": "Nicknamed “the Khazar” because his mother was a Circassian princess, Emperor Leo IV (775–780) is a wise and tolerant ruler."
+  },
+  {
+    "key": "constantine_vi",
+    "nameKO": "콘스탄티누스 6세",
+    "nameEN": "Constantine VI",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "콘스탄티누스 6세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This weak 황제 (780–797) is consumed by his ill-fated love for the Frankish 공주 Rothrud.",
+    "biographyEN": "This weak emperor (780–797) is consumed by his ill-fated love for the Frankish Princess Rothrud."
+  },
+  {
+    "key": "irene_of_athens",
+    "nameKO": "아테네의 이레네 여제",
+    "nameEN": "Irene of Athens",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "아테네의 이레네 여제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Leo IV’s 아내, she becomes the empress-regent (780–797), and later empress (797–802), then is exiled to Lesbos. Irene is an unscrupulous, energetic, intelligent, and very generous lady.",
+    "biographyEN": "Leo IV’s wife, she becomes the empress-regent (780–797), and later empress (797–802), then is exiled to Lesbos. Irene is an unscrupulous, energetic, intelligent, and very generous lady."
+  },
+  {
+    "key": "nikephoros",
+    "nameKO": "니케포로스 서로마 황제",
+    "nameEN": "Nikephoros",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "니케포로스 서로마 황제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This 황제 (802–811) is notorious for his devouring ambition and cruelty. 사망한 at the 전투 of Pliska.",
+    "biographyEN": "This emperor (802–811) is notorious for his devouring ambition and cruelty. Killed at the battle of Pliska."
+  },
+  {
+    "key": "staurakios_the_paralyzed",
+    "nameKO": "반신불수 스타우라키오스",
+    "nameEN": "Staurakios the Paralyzed",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "반신불수 스타우라키오스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 바실레우스(그리스 황제) of the Greeks (811). Named co-황제 with his 부친, Nikephoros, in 803. He abdicates in favor of Michael Rangabe, and 사망합니다 in 812 of wounds received at the 전투 of Pliska.",
+    "biographyEN": "Basileus of the Greeks (811). Named co-emperor with his father, Nikephoros, in 803. He abdicates in favor of Michael Rangabe, and dies in 812 of wounds received at the Battle of Pliska."
+  },
+  {
+    "key": "michael_rangabe",
+    "nameKO": "미하일 랑가베",
+    "nameEN": "Michael Rangabe",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "미하일 랑가베 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A skilled politician, 황제 Michael (811–813) tries to reconcile the opposing factions in order to unite his people against the 페르시아.",
+    "biographyEN": "A skilled politician, Emperor Michael (811–813) tries to reconcile the opposing factions in order to unite his people against the Persians."
+  },
+  {
+    "key": "leo_v",
+    "nameKO": "레오 5세",
+    "nameEN": "Leo V",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "레오 5세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 황제 of Byzantium (813–820). PatriarcHs",
+    "biographyEN": "Emperor of Byzantium (813–820). PatriarcHs"
+  },
+  {
+    "key": "niketas_the_slav",
+    "nameKO": "슬라브인 니케타스",
+    "nameEN": "Niketas the Slav",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "슬라브인 니케타스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Patriarch from 766 to 780.",
+    "biographyEN": "Patriarch from 766 to 780."
+  },
+  {
+    "key": "paul_the_new",
+    "nameKO": "신형 바오로",
+    "nameEN": "Paul the New",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "신형 바오로 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Patriarch from 780 to 784, when he retires to a 수도원.",
+    "biographyEN": "Patriarch from 780 to 784, when he retires to a monastery."
+  },
+  {
+    "key": "t_arasios",
+    "nameKO": "타라시오스",
+    "nameEN": "T arasios",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "타라시오스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This patriarch (784–806) is a very wise and learned lay scholar.",
+    "biographyEN": "This patriarch (784–806) is a very wise and learned lay scholar."
+  },
+  {
+    "key": "nikephoros",
+    "nameKO": "니케포로스 서로마 황제",
+    "nameEN": "Nikephoros",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "니케포로스 서로마 황제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 그는 arasios’ successor (806–815) is a simple but learned monk, known for his chastity and his tolerant attitude. o tHers",
+    "biographyEN": "T arasios’ successor (806–815) is a simple but learned monk, known for his chastity and his tolerant attitude. o tHers"
+  },
+  {
+    "key": "stauriakos",
+    "nameKO": "스타우리아코스",
+    "nameEN": "Stauriakos",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "스타우리아코스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A eunuch, a patrician and a logothete. He is Empress Irene’s right hand and favorite diplomat until his death in 800.",
+    "biographyEN": "A eunuch, a patrician and a logothete. He is Empress Irene’s right hand and favorite diplomat until his death in 800."
+  },
+  {
+    "key": "elissa",
+    "nameKO": "엘리사",
+    "nameEN": "Elissa",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "엘리사 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A 궁정 eunuch who acts as 공주 Rothrud’s tutor.",
+    "biographyEN": "A court eunuch who acts as Princess Rothrud’s tutor."
+  },
+  {
+    "key": "pancratios",
+    "nameKO": "판크라티오스",
+    "nameEN": "Pancratios",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "판크라티오스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 비잔틴 제국 궁정 점성술사.",
+    "biographyEN": "The Byzantine court astrologer."
+  },
+  {
+    "key": "salmadrine",
+    "nameKO": "살마드린 공주",
+    "nameEN": "Salmadrine",
+    "category": "Foreigners",
+    "subcategory": "👑 비잔틴 제국 (Byzantines)",
+    "years": "",
+    "biographyKO": "살마드린 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This beautiful 공주, Constantine V’s 자매, is 혼인했습니다 to the heroic Sir Landri of La Roche, the 아들 of Doon of La Roche and 공주 Olive of the Franks.",
+    "biographyEN": "This beautiful princess, Constantine V’s sister, is married to the heroic Sir Landri of La Roche, the son of Doon of La Roche and Princess Olive of the Franks."
+  },
+  {
+    "key": "godfrid_i",
+    "nameKO": "고드프리드 1세",
+    "nameEN": "Godfrid I",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "작센인들의 총사령관이자 '숲의 자식'으로 불린 위대한 샤먼 전사입니다. 보이지 않는 은신 마법과 야만 신앙을 부리며 기독교 프랑크 제국에 평생 가혹한 철혈 저항을 이끌었습니다. 785년 마침내 대제에게 굴복하여 기독교 세례를 받고 개종한 후 라이헤나우 수도원에서 생을 마감했습니다.",
+    "biographyEN": "The proud and illustrious Frankish King of the Danes (740–781), was married to Duchess Passerose of Bavaria, Duke Naymo’s cousin. After her death in 751, the old but valiant King Godfrid married a Danish princess named Belissende, who pushed him to make war on the Frankish king. Defeated in battle, King Godfrid agreed to send his son, Ogier, as a hostage to the Frankish court. The noble king becomes Widukind’s ally in the Saxon’s resistance against the Frankish conquest. Guyon/Hemming I: Ogier’s chaste and thoughtful half-brother is crowned after their father’s violent death in a campaign against invading giants. Under King Hemming I’s rule (781–798), the relations between the Franks and the Danes are relatively peaceful."
+  },
+  {
+    "key": "magnus_the_strong",
+    "nameKO": "힘센 마그누스",
+    "nameEN": "Magnus the Strong",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "힘센 마그누스 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A Danish convert who serves as a 기사 at the Frisian 궁정 under 공작 Lohier. In 800, carrying the enchanted Frisian banner he helps 국왕 샤를마뉴 대제 to liberate 로마 and he becomes the 공작 of Frisia.",
+    "biographyEN": "A Danish convert who serves as a knight at the Frisian court under Duke Lohier. In 800, carrying the enchanted Frisian banner he helps King Charlemagne to liberate Rome and he becomes the duke of Frisia."
+  },
+  {
+    "key": "sigfrid",
+    "nameKO": "지크프리트",
+    "nameEN": "Sigfrid",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "지크프리트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This rich and selfish warlord manages to usurp the title of 국왕 of Denmark in 798, after 국왕 Hemming I’s death. Godfrid II avenges his 부친 and kills Sigfrid in 전투 in 804.",
+    "biographyEN": "This rich and selfish warlord manages to usurp the title of King of Denmark in 798, after King Hemming I’s death. Godfrid II avenges his father and kills Sigfrid in battle in 804."
+  },
+  {
+    "key": "godfrid_ii",
+    "nameKO": "고드프리드 2세",
+    "nameEN": "Godfrid II",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "고드프리드 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Hemming I’s 아들 rules from 804 to 810, when he is 사망한 by a Danish traitor. The wealthy and prudent Godfrid II builds the Danevirke to protect his lands from the Franks.",
+    "biographyEN": "King Hemming I’s son rules from 804 to 810, when he is killed by a Danish traitor. The wealthy and prudent Godfrid II builds the Danevirke to protect his lands from the Franks."
+  },
+  {
+    "key": "hemming_ii",
+    "nameKO": "헤밍 2세",
+    "nameEN": "Hemming II",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "헤밍 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Godfrid II’s 조카 is a wise and prudent 국왕 (811–812). He makes war with the Franks and favors prosperity through trade.",
+    "biographyEN": "King Godfrid II’s nephew is a wise and prudent king (811–812). He makes war with the Franks and favors prosperity through trade."
+  },
+  {
+    "key": "reginald",
+    "nameKO": "레지널드",
+    "nameEN": "Reginald",
+    "category": "Foreigners",
+    "subcategory": "🌊 북방 덴마크 (Danes)",
+    "years": "",
+    "biographyKO": "레지널드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Hemming I’s youngest 아들 사망합니다 in 전투 in 808. a quitaiNiaN 귀족들",
+    "biographyEN": "King Hemming I’s youngest son dies in battle in 808. a quitaiNiaN  Nobles"
+  },
+  {
+    "key": "w_aifer",
+    "nameKO": "W aifer",
+    "nameEN": "W aifer",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "W aifer 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 공작 of 아키텐 (748–767) is an ally of the rebellious 황자 Grifo (국왕 Pepin’s half-형제).",
+    "biographyEN": "The Duke of Aquitaine (748–767) is an ally of the rebellious Prince Grifo (King Pepin’s half-brother)."
+  },
+  {
+    "key": "hunold",
+    "nameKO": "위놀드 공작",
+    "nameEN": "Hunold",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "위놀드 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of 아키텐 (767–768), 공작 W aifer’s 아들.",
+    "biographyEN": "Duke of Aquitaine (767–768), Duke W aifer’s son."
+  },
+  {
+    "key": "alice",
+    "nameKO": "앨리스 공작부인",
+    "nameEN": "Alice",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "앨리스 공작부인 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Duchess-regent of 아키텐 (803–810), Sevin’s 아내 and 모친 of Huon of Bordeaux.",
+    "biographyEN": "Duchess-regent of Aquitaine (803–810), Sevin’s wife and mother of Huon of Bordeaux."
+  },
+  {
+    "key": "lupus",
+    "nameKO": "루푸스 공작",
+    "nameEN": "Lupus",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "루푸스 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 공작 of Gascony (759–768) betrays his ally 공작 W aifer of 아키텐, formally submits to 샤를마뉴 대제, and becomes a faithful Frankish 백작. He 사망합니다 at 론세스바예스 협곡.",
+    "biographyEN": "The Duke of Gascony (759–768) betrays his ally Duke W aifer of Aquitaine, formally submits to Charlemagne, and becomes a faithful Frankish count. He dies at Roncevaux."
+  },
+  {
+    "key": "yo_n",
+    "nameKO": "요네 공작",
+    "nameEN": "Yo n",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "요네 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The 공작 of Gascony (768–786) 혼인합니다 his eldest 딸 Clarissa to Renaud of Montalban, his second 딸 Ayglentine becomes the 아내 of Guy of Nanteuil, and the third weds the valiant Sir Bevis of Commarchis.",
+    "biographyEN": "The Duke of Gascony (768–786) marries his eldest daughter Clarissa to Renaud of Montalban, his second daughter Ayglentine becomes the wife of Guy of Nanteuil, and the third weds the valiant Sir Bevis of Commarchis."
+  },
+  {
+    "key": "odalric",
+    "nameKO": "오달릭",
+    "nameEN": "Odalric",
+    "category": "Foreigners",
+    "subcategory": "🏔️ 가스코뉴 & 아키텐 (Gascons & Aquitainians)",
+    "years": "",
+    "biographyKO": "오달릭 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 Lupus’ second 아들 captures his rival, 공작 Chorso of 그는 oulouse, in 787 and vainly tries to restore the independence of Gascony. He is forced to surrender and is sent to a 수도원 to reflect upon his numerous sins.",
+    "biographyEN": "Duke Lupus’ second son captures his rival, Duke Chorso of T oulouse, in 787 and vainly tries to restore the independence of Gascony. He is forced to surrender and is sent to a monastery to reflect upon his numerous sins."
+  },
+  {
+    "key": "kurguz",
+    "nameKO": "쿠르구즈",
+    "nameEN": "Kurguz",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "쿠르구즈 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The fat and decadent ceremonial khagan.",
+    "biographyEN": "The fat and decadent ceremonial khagan."
+  },
+  {
+    "key": "unguimer",
+    "nameKO": "웅구이메르",
+    "nameEN": "Unguimer",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "웅구이메르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A traitor tarkan who helps the Franks conquer the Avar Ring in 794. b ulgar k HagaNs",
+    "biographyEN": "A traitor tarkan who helps the Franks conquer the Avar Ring in 794. b ulgar  k HagaNs"
+  },
+  {
+    "key": "t_elerig",
+    "nameKO": "텔레리그",
+    "nameEN": "T elerig",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "텔레리그 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Successful in his wars with Byzantium, the cruel khagan is nevertheless chased from power by one of his own in 776. Minor Characters =================",
+    "biographyEN": "Successful in his wars with Byzantium, the cruel khagan is nevertheless chased from power by one of his own in 776. Minor Characters ================="
+  },
+  {
+    "key": "krum",
+    "nameKO": "크룸",
+    "nameEN": "Krum",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "크룸 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Rogero’s successor is a skillful 전투 leader and a subtle diplomat. His rule (784–814) is based on austerity, discipline and ruthless military efficiency. He maintains the alliance with the Franks to annihilate his Avar rivals. c ircassiaN t sars",
+    "biographyEN": "King Rogero’s successor is a skillful battle leader and a subtle diplomat. His rule (784–814) is based on austerity, discipline and ruthless military efficiency. He maintains the alliance with the Franks to annihilate his Avar rivals. c ircassiaN  t sars"
+  },
+  {
+    "key": "sacripant",
+    "nameKO": "사크리판트 차르",
+    "nameEN": "Sacripant",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "동방 카타이 제국에서 온 절세의 미모를 지닌 이국적인 공주입니다. 온 세상 남자들을 홀리는 마성의 미모(APP 30)와 마법을 무효화하고 투명화 상태로 만드는 영험한 마법 반지를 소유했습니다. 성기사 롤랑을 광증에 빠뜨린 장본인이자 동방 전설의 마법적 상징입니다.",
+    "biographyEN": "The courteous tsar of Circassia (or Khazaria) is a vain contender for the love of Angelica of Cathay. He rides the fabulous horse Frontino, until it is stolen from underneath him by Brunello. s ericaNe  k HagaNs"
+  },
+  {
+    "key": "agrican",
+    "nameKO": "아그리칸 카간",
+    "nameEN": "Agrican",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "동방 카타이 제국에서 온 절세의 미모를 지닌 이국적인 공주입니다. 온 세상 남자들을 홀리는 마성의 미모(APP 30)와 마법을 무효화하고 투명화 상태로 만드는 영험한 마법 반지를 소유했습니다. 성기사 롤랑을 광증에 빠뜨린 장본인이자 동방 전설의 마법적 상징입니다.",
+    "biographyEN": "Roland kills this noble and worthy khagan in a duel for Angelica’s love in 775. Just before he expires, Agrican demands that Roland baptize him."
+  },
+  {
+    "key": "gradasso",
+    "nameKO": "그라다소 카간",
+    "nameEN": "Gradasso",
+    "category": "Foreigners",
+    "subcategory": "❄️ 불가르 & 훈족 (Bulgars & Huns)",
+    "years": "",
+    "biographyKO": "그라다소 카간 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This chivalrous but arrogant khagan of the 그는 artars attacks Frankland and defies 샤를마뉴 대제 in order to win Bayard and Durendal for himself. He is finally 사망한 by Roland at the threefold duel of Lampedusa (776).",
+    "biographyEN": "This chivalrous but arrogant khagan of the T artars attacks Frankland and defies Charlemagne in order to win Bayard and Durendal for himself. He is finally killed by Roland at the threefold duel of Lampedusa (776)."
+  },
+  {
+    "key": "isaac",
+    "nameKO": "유대인 이삭",
+    "nameEN": "Isaac",
+    "category": "Foreigners",
+    "subcategory": "⛪ 유대인 (Jews)",
+    "years": "",
+    "biographyKO": "유대인 이삭 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A wise and wealthy merchant who speaks Hebrew, Latin, Greek, and Arabic. 샤를마뉴 대제 sends him on an embassy to Harun al-Rashid in 799. r oyal l o Mbard f a Mily",
+    "biographyEN": "A wise and wealthy merchant who speaks Hebrew, Latin, Greek, and Arabic. Charlemagne sends him on an embassy to Harun al-Rashid in 799. r oyal  l o Mbard  f a Mily"
+  },
+  {
+    "key": "desiderius",
+    "nameKO": "데시데리우스 국왕",
+    "nameEN": "Desiderius",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "데시데리우스 국왕 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The former 공작 of 그는 uscany, now 국왕 of 롬바르디아, is too old to fight on the battlefield. He prefers to advance his plans through political alliances, by marrying his children to the rich and powerful. 그는 ~로 유배당해 a 수도원 after the fall of Pavia in 774.",
+    "biographyEN": "The former Duke of T uscany, now King of Lombardy, is too old to fight on the battlefield. He prefers to advance his plans through political alliances, by marrying his children to the rich and powerful. He is sent to a monastery after the fall of Pavia in 774."
+  },
+  {
+    "key": "ansa",
+    "nameKO": "안사 왕비",
+    "nameEN": "Ansa",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "안사 왕비 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Desiderius’ beautiful and proud 아내.",
+    "biographyEN": "King Desiderius’ beautiful and proud wife."
+  },
+  {
+    "key": "adalchis",
+    "nameKO": "아달지스 왕자",
+    "nameEN": "Adalchis",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "아달지스 왕자 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 Desiderius’ only 아들 is the exiled leader of the anti-Frankish alliance. He is resentful, cruel, and rather a coward.",
+    "biographyEN": "King Desiderius’ only son is the exiled leader of the anti-Frankish alliance. He is resentful, cruel, and rather a coward."
+  },
+  {
+    "key": "liutperga",
+    "nameKO": "리우트베르가 공주",
+    "nameEN": "Liutperga",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "리우트베르가 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Desiderius’ eldest 딸 is 혼인했습니다 to 공작 그는 assilo III of 바이에른. She cultivates an intense and overt hate of 국왕 샤를마뉴 대제, to whom she never bows.",
+    "biographyEN": "Desiderius’ eldest daughter is married to Duke T assilo III of Bavaria. She cultivates an intense and overt hate of King Charlemagne, to whom she never bows."
+  },
+  {
+    "key": "gerberga",
+    "nameKO": "게르베르가 왕비",
+    "nameEN": "Gerberga",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "게르베르가 왕비 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Desiderius’ second 딸 is 국왕 Carloman’s 아내. At her 남편’s death, she flees to Pavia.",
+    "biographyEN": "Desiderius’ second daughter is King Carloman’s wife. At her husband’s death, she flees to Pavia."
+  },
+  {
+    "key": "desideria",
+    "nameKO": "데시데리아",
+    "nameEN": "Desideria",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "데시데리아 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. See Wives.",
+    "biographyEN": "See Wives."
+  },
+  {
+    "key": "adalperga",
+    "nameKO": "아달페르가 공주",
+    "nameEN": "Adalperga",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "아달페르가 공주 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Desiderius’ fourth 딸 is 혼인했습니다 to 공작 Arichis of Benevento. b eNeveNto",
+    "biographyEN": "Desiderius’ fourth daughter is married to Duke Arichis of Benevento. b eNeveNto"
+  },
+  {
+    "key": "arichis",
+    "nameKO": "아리키스 공작",
+    "nameEN": "Arichis",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "아리키스 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The stubborn and haughty 공작 (758–787) calls himself “황자, ” and refuses to submit after the Frankish conquest of 롬바르디아. He is pious and cultivated, and delights in intrigues and dastardly plots, quite like his 비잔틴 제국 friends. He is 혼인했습니다 to 공주 Adalperga of 롬바르디아.",
+    "biographyEN": "The stubborn and haughty duke (758–787) calls himself “prince, ” and refuses to submit after the Frankish conquest of Lombardy. He is pious and cultivated, and delights in intrigues and dastardly plots, quite like his Byzantine friends. He is married to Princess Adalperga of Lombardy."
+  },
+  {
+    "key": "grimoald_iii",
+    "nameKO": "그리모알드 3세",
+    "nameEN": "Grimoald III",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "그리모알드 3세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Arichis’ youngest 아들 is taken hostage by 샤를마뉴 대제 in 787, then released and installed as 공작 (788–806). He remains loyal and even fights against his former 비잔틴 제국 allies.",
+    "biographyEN": "Arichis’ youngest son is taken hostage by Charlemagne in 787, then released and installed as duke (788–806). He remains loyal and even fights against his former Byzantine allies."
+  },
+  {
+    "key": "grimoald_iv",
+    "nameKO": "그리모알드 4세",
+    "nameEN": "Grimoald IV",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "그리모알드 4세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. He was Grimoald’s treasurer, and takes the throne from Grimoald III’s 아들, Ilderic, in 806. He rules by brute force until his 암살 in 817. f riuli",
+    "biographyEN": "He was Grimoald’s treasurer, and takes the throne from Grimoald III’s son, Ilderic, in 806. He rules by brute force until his assassination in 817. f riuli"
+  },
+  {
+    "key": "rhodgaud",
+    "nameKO": "로드고드 공작",
+    "nameEN": "Rhodgaud",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "로드고드 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Rebellious and fickle 공작 of Friuli (767–776).",
+    "biographyEN": "Rebellious and fickle Duke of Friuli (767–776)."
+  },
+  {
+    "key": "marcarius",
+    "nameKO": "마르카리우스 공작",
+    "nameEN": "Marcarius",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "마르카리우스 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of Friuli (776–789), appointed by 샤를마뉴 대제 himself.",
+    "biographyEN": "Duke of Friuli (776–789), appointed by Charlemagne himself."
+  },
+  {
+    "key": "aio",
+    "nameKO": "아이오 공작",
+    "nameEN": "Aio",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "아이오 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of Friuli (799–816), arrogant but respected. s Poleto",
+    "biographyEN": "Duke of Friuli (799–816), arrogant but respected. s Poleto"
+  },
+  {
+    "key": "theodicius",
+    "nameKO": "테오디키우스 공작",
+    "nameEN": "Theodicius",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "테오디키우스 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Lombard 공작 (767–773) 사망합니다 in the war against the Franks.",
+    "biographyEN": "The Lombard duke (767–773) dies in the war against the Franks."
+  },
+  {
+    "key": "hildeprand",
+    "nameKO": "힐데프란드 공작",
+    "nameEN": "Hildeprand",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "힐데프란드 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A valorous Frankish 공작 (774–789), who 사망합니다 in 전투 against the 비잔틴인.",
+    "biographyEN": "A valorous Frankish duke (774–789), who dies in battle against the Byzantines."
+  },
+  {
+    "key": "winichis",
+    "nameKO": "위니키스 공작",
+    "nameEN": "Winichis",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "위니키스 공작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A just and loyal Frankish 공작 (789–822). v eNice",
+    "biographyEN": "A just and loyal Frankish duke (789–822). v eNice"
+  },
+  {
+    "key": "galbaio",
+    "nameKO": "갈바이오 도제",
+    "nameEN": "Galbaio",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "갈바이오 도제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The wealthy doge (공작) of V enice (764–787) is a shrewd and prudent man.",
+    "biographyEN": "The wealthy doge (duke) of V enice (764–787) is a shrewd and prudent man."
+  },
+  {
+    "key": "giovanni",
+    "nameKO": "조반니 도제",
+    "nameEN": "Giovanni",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "조반니 도제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Galbaio’s 아들 and his successor as doge (787–805) is a vengeful, cruel character and an unscrupulous slave trader.",
+    "biographyEN": "Galbaio’s son and his successor as doge (787–805) is a vengeful, cruel character and an unscrupulous slave trader."
+  },
+  {
+    "key": "oberlier",
+    "nameKO": "오벨리어 도제",
+    "nameEN": "Oberlier",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "오벨리어 도제 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. As doge (805–810) he wisely 혼인합니다 a Frankish woman and remains loyal to 샤를마뉴 대제. o tHers",
+    "biographyEN": "As doge (805–810) he wisely marries a Frankish woman and remains loyal to Charlemagne. o tHers"
+  },
+  {
+    "key": "garnier",
+    "nameKO": "갈리에 대공",
+    "nameEN": "Garnier",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "갈리에 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The perfidious 공작 of Calabria.",
+    "biographyEN": "The perfidious Duke of Calabria."
+  },
+  {
+    "key": "gregorio",
+    "nameKO": "그레고리오 대공",
+    "nameEN": "Gregorio",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "그레고리오 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of Campania.",
+    "biographyEN": "Duke of Campania."
+  },
+  {
+    "key": "milo",
+    "nameKO": "밀로 대공",
+    "nameEN": "Milo",
+    "category": "Foreigners",
+    "subcategory": "🛡️ 롬바르드 (Lombards)",
+    "years": "",
+    "biographyKO": "밀로 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of Apulia.",
+    "biographyEN": "Duke of Apulia."
+  },
+  {
+    "key": "al_mansour",
+    "nameKO": "알 만수르 칼리프",
+    "nameEN": "Al-Mansour",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알 만수르 칼리프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This generous and just caliph (754–775) stimulates the arts and sciences that make the Persian realm flourish.",
+    "biographyEN": "This generous and just caliph (754–775) stimulates the arts and sciences that make the Persian realm flourish."
+  },
+  {
+    "key": "al_mahdi",
+    "nameKO": "알 마흐디 칼리프",
+    "nameEN": "Al-Mahdi",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알 마흐디 칼리프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Al-Mansour’s 아들 is a just and stern caliph (775–785), who manages to keep the peace. He imprisons his vizier, Jacub, when he suspects him of 반역.",
+    "biographyEN": "Al-Mansour’s son is a just and stern caliph (775–785), who manages to keep the peace. He imprisons his vizier, Jacub, when he suspects him of treason."
+  },
+  {
+    "key": "al_hadi",
+    "nameKO": "알 하디 칼리프",
+    "nameEN": "Al-Hadi",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알 하디 칼리프 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Al-Mahdi’s 아들 is briefly caliph from 785 to 786, until he is assassinated by a family member.",
+    "biographyEN": "Al-Mahdi’s son is briefly caliph from 785 to 786, until he is assassinated by a family member."
+  },
+  {
+    "key": "harun_al_rashid",
+    "nameKO": "하룬 알 라시드",
+    "nameEN": "Harun al-Rashid",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "하룬 알 라시드 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The enlightened, just and very learned caliph (786–809) is 샤를마뉴 대제’s respected ally.",
+    "biographyEN": "The enlightened, just and very learned caliph (786–809) is Charlemagne’s respected ally."
+  },
+  {
+    "key": "al_amin",
+    "nameKO": "알 아민",
+    "nameEN": "Al-Amin",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알 아민 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Harun’s 아들 and successor (809–813). o tHers",
+    "biographyEN": "Harun’s son and successor (809–813). o tHers"
+  },
+  {
+    "key": "jafar",
+    "nameKO": "자파르 재상",
+    "nameEN": "Jafar",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "자파르 재상 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Harun’s grand vizier is a shrewd, powerful, and very demanding nobleman. =================",
+    "biographyEN": "Harun’s grand vizier is a shrewd, powerful, and very demanding nobleman. ================="
+  },
+  {
+    "key": "carahue_the_courteous",
+    "nameKO": "예의 바른 카라후",
+    "nameEN": "Carahue the Courteous",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "예의 바른 카라후 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. An extremely chivalrous 기사, who earns Ogier’s respect at the siege of 로마 in 767, and becomes his life-long friend. He finally accepts 세례 in 784, when he 혼인합니다 공주 Gloriande (the late Sultan Corsuble’s 딸) and takes a mission to convert the people of Cathay. Roman Popes",
+    "biographyEN": "An extremely chivalrous knight, who earns Ogier’s respect at the siege of Rome in 767, and becomes his life-long friend. He finally accepts baptism in 784, when he marries Princess Gloriande (the late Sultan Corsuble’s daughter) and takes a mission to convert the people of Cathay. Roman Popes"
+  },
+  {
+    "key": "paul_i",
+    "nameKO": "교황 바오로 1세",
+    "nameEN": "Paul I",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "교황 바오로 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Pope until his death in 767, Stephen II’s energetic 형제 is a learned aristocrat and a fine diplomat.",
+    "biographyEN": "Pope until his death in 767, Stephen II’s energetic brother is a learned aristocrat and a fine diplomat."
+  },
+  {
+    "key": "constantine_ii",
+    "nameKO": "대립교황 콘스탄티누스 2세",
+    "nameEN": "Constantine II",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "대립교황 콘스탄티누스 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A dogmatic and humorless lay anti-Pope (767–768), installed at the Lateran Palace under threat of military action by his 형제, 공작 그는 oto of Nepi.",
+    "biographyEN": "A dogmatic and humorless lay anti-Pope (767–768), installed at the Lateran Palace under threat of military action by his brother, Duke T oto of Nepi."
+  },
+  {
+    "key": "stephen_iii",
+    "nameKO": "교황 스테파노 3세",
+    "nameEN": "Stephen III",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "교황 스테파노 3세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A prudent and somewhat paranoid Pope (768–772), who wants to control everything and everybody around him.",
+    "biographyEN": "A prudent and somewhat paranoid Pope (768–772), who wants to control everything and everybody around him."
+  },
+  {
+    "key": "adrian_i",
+    "nameKO": "교황 하드리아노 1세",
+    "nameEN": "Adrian I",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "교황 하드리아노 1세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. An aristocrat from a very wealthy patrician family, this Pope (772–795) is a subtle politician and skilled diplomat. He cares little for theology.",
+    "biographyEN": "An aristocrat from a very wealthy patrician family, this Pope (772–795) is a subtle politician and skilled diplomat. He cares little for theology."
+  },
+  {
+    "key": "leo_iii",
+    "nameKO": "교황 레오 3세",
+    "nameEN": "Leo III",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "교황 레오 3세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. He is not a member of the Roman aristocracy, but as a Pope (795–816) he manages his affairs among the Romans with success. His adversaries reproach him for caring too much for temporal power and pleasures. 무어인 e Mirs of c ordoba",
+    "biographyEN": "He is not a member of the Roman aristocracy, but as a Pope (795–816) he manages his affairs among the Romans with success. His adversaries reproach him for caring too much for temporal power and pleasures. Moors e Mirs  of  c ordoba"
+  },
+  {
+    "key": "galafre_of_aufalerne",
+    "nameKO": "아우팔레른의 갈라프르",
+    "nameEN": "Galafre of Aufalerne",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "아우팔레른의 갈라프르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕 and Galienna’s 부친 was a cultivated poet and a man of peace. The tolerant emir (750–765) was loved by his people. 사망한 in 전투 by the caliph of 페르시아.",
+    "biographyEN": "Marsile and Galienna’s father was a cultivated poet and a man of peace. The tolerant emir (750–765) was loved by his people. Killed in battle by the caliph of Persia."
+  },
+  {
+    "key": "marsile_of_cordoba",
+    "nameKO": "코르도바의 마르실 왕",
+    "nameEN": "Marsile of Cordoba",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "코르도바의 마르실 왕 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. (765–779) 마르실 왕 is Emir Galafre’s 아들 and the older 형제 of Sultan 발리강. Ever since his youth, he has strongly disliked the Franks in general, and 샤를마뉴 대제 in particular. He is driven by jealousy and his unreasonable ambition to conquer Frankland. He wields a 성검 called Precieuse. Hisham the Cruel, also known as 마르실 왕 II: 마르실 왕’s 아들 is even more cruel and hateful than his 부친, hence his nickname. During his long and violent reign (780–808), he gets briefly imprisoned by his rival Deramay (793–794), but returns to power and systematically eliminates all those he suspects of disloyalty, causing long-lasting revolts and unrest all over the emirate.",
+    "biographyEN": "(765–779) Marsile is Emir Galafre’s son and the older brother of Sultan Baligant. Ever since his youth, he has strongly disliked the Franks in general, and Charlemagne in particular. He is driven by jealousy and his unreasonable ambition to conquer Frankland. He wields a sword called Precieuse. Hisham the Cruel, also known as Marsile II: Marsile’s son is even more cruel and hateful than his father, hence his nickname. During his long and violent reign (780–808), he gets briefly imprisoned by his rival Deramay (793–794), but returns to power and systematically eliminates all those he suspects of disloyalty, causing long-lasting revolts and unrest all over the emirate."
+  },
+  {
+    "key": "deramay_the_usurper",
+    "nameKO": "찬탈자 데라마이",
+    "nameEN": "Deramay the Usurper",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "찬탈자 데라마이 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The deceitful and vain W ali of Cordoba captures Emir 마르실 왕 II and claims the title of emir for himself (793–794). 귀족들",
+    "biographyEN": "The deceitful and vain W ali of Cordoba captures Emir Marsile II and claims the title of emir for himself (793–794). Nobles"
+  },
+  {
+    "key": "abdul_rahman",
+    "nameKO": "압둘 라흐만",
+    "nameEN": "Abdul Rahman",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "압둘 라흐만 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Hisham’s chivalrous youngest 아들 has a poetic soul, but feels the burden of fulfilling his 부친’s insane ambitions.",
+    "biographyEN": "Hisham’s chivalrous youngest son has a poetic soul, but feels the burden of fulfilling his father’s insane ambitions."
+  },
+  {
+    "key": "agolant",
+    "nameKO": "아골란트",
+    "nameEN": "Agolant",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "아골란트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The proud and valiant W ali of Compostela.",
+    "biographyEN": "The proud and valiant W ali of Compostela."
+  },
+  {
+    "key": "aragon_of_orange",
+    "nameKO": "오렌지의 아라공",
+    "nameEN": "Aragon of Orange",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "오렌지의 아라공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Tiebaut’s eldest 아들.",
+    "biographyEN": "Tiebaut’s eldest son."
+  },
+  {
+    "key": "blancandrin_of_v_alfond",
+    "nameKO": "발퐁드의 블랑캉드랭",
+    "nameEN": "Blancandrin of V alfond",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "발퐁드의 블랑캉드랭 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Emir 마르실 왕’s white-bearded ambassador; a despicable, sly, ruthless character, who is even willing to sacrifice his own 아들들 in his quest for wealth and power.",
+    "biographyEN": "Emir Marsile’s white-bearded ambassador; a despicable, sly, ruthless character, who is even willing to sacrifice his own sons in his quest for wealth and power."
+  },
+  {
+    "key": "bramimonde",
+    "nameKO": "브라미몽드 왕비",
+    "nameEN": "Bramimonde",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "브라미몽드 왕비 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕’s 아내 is a romantic 왕비, who is captured and 세례를 받은 as Juliana at Aachen after the 전투 of 론세스바예스 협곡.",
+    "biographyEN": "Marsile’s wife is a romantic queen, who is captured and baptized as Juliana at Aachen after the Battle of Roncevaux."
+  },
+  {
+    "key": "corsolt",
+    "nameKO": "코르솔트",
+    "nameEN": "Corsolt",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "코르솔트 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The cruel W ali of Barbastro in 802 (not to be confused with the disreputable giant who cuts off William’s nose in a duel near 로마 in 781).",
+    "biographyEN": "The cruel W ali of Barbastro in 802 (not to be confused with the disreputable giant who cuts off William’s nose in a duel near Rome in 781)."
+  },
+  {
+    "key": "dardinel",
+    "nameKO": "다르디넬",
+    "nameEN": "Dardinel",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "다르디넬 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕’s courteous half-형제 and 황자 of 그는 oledo, 사망한 in 전투 by Renaud of Montalban in 775.",
+    "biographyEN": "Marsile’s courteous half-brother and prince of T oledo, killed in battle by Renaud of Montalban in 775."
+  },
+  {
+    "key": "ganor_of_aufalerne",
+    "nameKO": "아우팔레른의 가노르",
+    "nameEN": "Ganor of Aufalerne",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "아우팔레른의 가노르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. This pious, courteous, and relatively autonomous wali is the bastard 아들 of Emir Galafre. He is in love with Aye of Avignon, whom he captures and 혼인합니다.",
+    "biographyEN": "This pious, courteous, and relatively autonomous wali is the bastard son of Emir Galafre. He is in love with Aye of Avignon, whom he captures and marries."
+  },
+  {
+    "key": "gaudissa",
+    "nameKO": "고디사",
+    "nameEN": "Gaudissa",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "고디사 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕 I’s lovely 딸. She converts and 혼인합니다 공작 Anseïs of Carthago. Otrant of Nîmes: The W ali of Nîmes, who gets 사망한 when William captures his city in 790.",
+    "biographyEN": "Marsile I’s lovely daughter. She converts and marries Duke Anseïs of Carthago. Otrant of Nîmes: The W ali of Nîmes, who gets killed when William captures his city in 790."
+  },
+  {
+    "key": "siglorel",
+    "nameKO": "시글로렐",
+    "nameEN": "Siglorel",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "시글로렐 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕’s 궁정 마법사.",
+    "biographyEN": "Marsile’s court enchanter."
+  },
+  {
+    "key": "sulayman",
+    "nameKO": "슐레이만",
+    "nameEN": "Sulayman",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "슐레이만 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The W ali of Barcelona is the head of the Persian faction in Spain. He secretly travels to Paderborn in 777 to enlist Frankish support against Emir 마르실 왕 of Cordoba.",
+    "biographyEN": "The W ali of Barcelona is the head of the Persian faction in Spain. He secretly travels to Paderborn in 777 to enlist Frankish support against Emir Marsile of Cordoba."
+  },
+  {
+    "key": "tiebaut",
+    "nameKO": "티에보",
+    "nameEN": "Tiebaut",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "티에보 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The former W ali of Orange (776–791) is Lady Orable’s first 남편 before she converts and 혼인합니다 William. 그는 learned, cunning man and a proud warrior. c o Nverts",
+    "biographyEN": "The former W ali of Orange (776–791) is Lady Orable’s first husband before she converts and marries William. He is a learned, cunning man and a proud warrior. c o Nverts"
+  },
+  {
+    "key": "florismart",
+    "nameKO": "플로리스마르",
+    "nameEN": "Florismart",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "플로리스마르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A courteous and romantic Moor 개종한 by Roland, whose friend he becomes. His lover is the 이교도 공주 Flordelis. He is 사망한 by Gradasso at Lampedusa in 776.",
+    "biographyEN": "A courteous and romantic Moor converted by Roland, whose friend he becomes. His lover is the pagan Princess Flordelis. He is killed by Gradasso at Lampedusa in 776."
+  },
+  {
+    "key": "orable",
+    "nameKO": "Orable (Guibourc)",
+    "nameEN": "Orable (Guibourc)",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "Guibourc",
+    "biographyKO": "Orable 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 마르실 왕’s 자매 is forced to marry Tiebaut, but she is secretly in love with Sir William Shortnose, whom she 혼인합니다 after her 세례 as Guibourc, in 791. 그녀는 loyal, courageous, willful, romantic 공주, who knows some minor 마법의. She loves William so much that she entirely denies her 이교도 relatives, apart from Rainouart, whom she converts.",
+    "biographyEN": "Marsile’s sister is forced to marry Tiebaut, but she is secretly in love with Sir William Shortnose, whom she marries after her baptism as Guibourc, in 791. She is a loyal, courageous, willful, romantic princess, who knows some minor magic. She loves William so much that she entirely denies her pagan relatives, apart from Rainouart, whom she converts."
+  },
+  {
+    "key": "marfisa",
+    "nameKO": "마르피사",
+    "nameEN": "Marfisa",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "마르피사 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Rogero’s twin 자매 is a fierce warrior-maiden.",
+    "biographyEN": "Rogero’s twin sister is a fierce warrior-maiden."
+  },
+  {
+    "key": "otuel",
+    "nameKO": "Otuel (Ferrau)",
+    "nameEN": "Otuel (Ferrau)",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "Ferrau",
+    "biographyKO": "Otuel 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A courteous semi-giant, miraculously 개종한 by Roland during the First Spanish 원정 in 771. His 아내 is the beautiful Belisarde. In 775, he slays Khagan Argalia of Sericane in a duel.",
+    "biographyEN": "A courteous semi-giant, miraculously converted by Roland during the First Spanish Campaign in 771. His wife is the beautiful Belisarde. In 775, he slays Khagan Argalia of Sericane in a duel."
+  },
+  {
+    "key": "corsuble",
+    "nameKO": "코르쉬블",
+    "nameEN": "Corsuble",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "코르쉬블 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The honorable and chivalrous Sultan (752– 774) who claims 로마 as his heritage.",
+    "biographyEN": "The honorable and chivalrous Sultan (752– 774) who claims Rome as his heritage."
+  },
+  {
+    "key": "baligant",
+    "nameKO": "발리강 에미르",
+    "nameEN": "Baligant",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "발리강 에미르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Emir 마르실 왕’s younger 형제 is the monstrous, reckless and pretentious Sultan of Babylon (775–778). He is 사망한 by 샤를마뉴 대제 himself in the second part of the 전투 of 론세스바예스 협곡.",
+    "biographyEN": "Emir Marsile’s younger brother is the monstrous, reckless and pretentious Sultan of Babylon (775–778). He is killed by Charlemagne himself in the second part of the Battle of Roncevaux."
+  },
+  {
+    "key": "bruhier",
+    "nameKO": "브뤼히에 술탄",
+    "nameEN": "Bruhier",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "브뤼히에 술탄 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A valorous but arrogant Sultan (779–780), who believes himself to be invincible, until Ogier kills him in a duel.",
+    "biographyEN": "A valorous but arrogant Sultan (779–780), who believes himself to be invincible, until Ogier kills him in a duel."
+  },
+  {
+    "key": "norandin",
+    "nameKO": "노란딘 술탄",
+    "nameEN": "Norandin",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "노란딘 술탄 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The greedy and iniquitous Sultan (781–802) is 사망한 at Jerusalem in a 전투 with 백작 Simon of Apulia. Minor Characters =================",
+    "biographyEN": "The greedy and iniquitous Sultan (781–802) is killed at Jerusalem in a battle with Count Simon of Apulia. Minor Characters ================="
+  },
+  {
+    "key": "gaudisso",
+    "nameKO": "고디소 술탄",
+    "nameEN": "Gaudisso",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "고디소 술탄 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A vain and decadent Sultan (803–811), who is 전사한 by Huon of Bordeaux. The young 성기사 혼인합니다 the Sultan’s gorgeous 딸, Clarimunda.",
+    "biographyEN": "A vain and decadent Sultan (803–811), who is slain by Huon of Bordeaux. The young paladin marries the Sultan’s gorgeous daughter, Clarimunda."
+  },
+  {
+    "key": "agrapard",
+    "nameKO": "아그라파르 술탄",
+    "nameEN": "Agrapard",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "아그라파르 술탄 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Sultan of Babylon (811–814). 귀족들",
+    "biographyEN": "The Sultan of Babylon (811–814). Nobles"
+  },
+  {
+    "key": "brunello_the_dwarf",
+    "nameKO": "난쟁이 브루넬로",
+    "nameEN": "Brunello the Dwarf",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "동방 카타이 제국에서 온 절세의 미모를 지닌 이국적인 공주입니다. 온 세상 남자들을 홀리는 마성의 미모(APP 30)와 마법을 무효화하고 투명화 상태로 만드는 영험한 마법 반지를 소유했습니다. 성기사 롤랑을 광증에 빠뜨린 장본인이자 동방 전설의 마법적 상징입니다.",
+    "biographyEN": "A master-thief who steals Angelica’s magic ring, Sacripant’s horse, and Marfisa’s sword (775). He fails to kill Bradamant, who ties him to a tree. Brunello is liberated by Marfisa, but is then hanged by the Saracen Emir Agramant (776)."
+  },
+  {
+    "key": "ferragut",
+    "nameKO": "무어 거인 페라구",
+    "nameEN": "Ferragut",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "무어 거인 페라구 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A courteous but stupid 무어인 giant, Emir 마르실 왕’s 조카, who is completely invulnerable to weapons (except at his navel) thanks to a 마법의 healing balm. He is 사망한 in a duel by Roland in 771.",
+    "biographyEN": "A courteous but stupid Moorish giant, Emir Marsile’s nephew, who is completely invulnerable to weapons (except at his navel) thanks to a magic healing balm. He is killed in a duel by Roland in 771."
+  },
+  {
+    "key": "lengoulaffre",
+    "nameKO": "랭굴라프르 에미르",
+    "nameEN": "Lengoulaffre",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "랭굴라프르 에미르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Sultan Bruhier’s 형제 is the W ali of Alexandria. He gets 사망한 in a duel with Carahue in 784.",
+    "biographyEN": "Sultan Bruhier’s brother is the W ali of Alexandria. He gets killed in a duel with Carahue in 784."
+  },
+  {
+    "key": "mandricard",
+    "nameKO": "만드리카르드",
+    "nameEN": "Mandricard",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알제의 자랑스러운 사라센 군주이자 전설의 이교도 에미르입니다. 비할 바 없는 강력한 완력과 오만한 성정을 지녔으나, 갈리시아의 이사벨라 공주를 불의로 죽게 한 후 깊이 뉘우쳤습니다. 그녀의 무덤 다리를 지키며 1년간 결투를 벌이다 장렬히 무력으로 전사했습니다.",
+    "biographyEN": "Rodomont’s rival for the love of Princess Doralice."
+  },
+  {
+    "key": "rodomont_of_algiers",
+    "nameKO": "알제의 로도몽트",
+    "nameEN": "Rodomont of Algiers",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "알제의 자랑스러운 사라센 군주이자 전설의 이교도 에미르입니다. 비할 바 없는 강력한 완력과 오만한 성정을 지녔으나, 갈리시아의 이사벨라 공주를 불의로 죽게 한 후 깊이 뉘우쳤습니다. 그녀의 무덤 다리를 지키며 1년간 결투를 벌이다 장렬히 무력으로 전사했습니다.",
+    "biographyEN": "This extremely boastful, yet courteous, Emir of Algiers is the father of Galacienne (Rogero’s mother), and himself in love with Princess Doralice of Granada (who prefers Mandricard). Rodomont accidentally kills Princess Isabella of Galicia, for whom he builds a bridge and a tomb. In her memory, he defends the bridge leading to the funerary monument for an entire year. He is killed by Roland at Bradamant’s wedding (777)."
+  },
+  {
+    "key": "yvorin_of_monbranc",
+    "nameKO": "몽브랑의 이보랭",
+    "nameEN": "Yvorin of Monbranc",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "몽브랑의 이보랭 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Sultan Gaudisso’s 형제. c o Nverts",
+    "biographyEN": "Sultan Gaudisso’s brother. c o Nverts"
+  },
+  {
+    "key": "iroldo",
+    "nameKO": "이롤도",
+    "nameEN": "Iroldo",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "이롤도 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Prasildo’s gallant companion, and Roland’s friend.",
+    "biographyEN": "Prasildo’s gallant companion, and Roland’s friend."
+  },
+  {
+    "key": "moisan",
+    "nameKO": "모아상 에미르",
+    "nameEN": "Moisan",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "모아상 에미르 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Emir of Jerusalem converts in 782, after having witnessed a miracle. His 딸 Clara demands 세례 and 혼인합니다 Ogier’s companion, W alter.",
+    "biographyEN": "The Emir of Jerusalem converts in 782, after having witnessed a miracle. His daughter Clara demands baptism and marries Ogier’s companion, W alter."
+  },
+  {
+    "key": "prasildo",
+    "nameKO": "프라실도",
+    "nameEN": "Prasildo",
+    "category": "Foreigners",
+    "subcategory": "🐫 페르시아 & 바빌론 (Persians)",
+    "years": "",
+    "biographyKO": "프라실도 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Roland’s friend, and Iroldo’s chivalrous companion.",
+    "biographyEN": "Roland’s friend, and Iroldo’s chivalrous companion."
+  },
+  {
+    "key": "abbio_and_wibrecht",
+    "nameKO": "아비오와 위브레히트",
+    "nameEN": "Abbio and Wibrecht",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "작센인들의 총사령관이자 '숲의 자식'으로 불린 위대한 샤먼 전사입니다. 보이지 않는 은신 마법과 야만 신앙을 부리며 기독교 프랑크 제국에 평생 가혹한 철혈 저항을 이끌었습니다. 785년 마침내 대제에게 굴복하여 기독교 세례를 받고 개종한 후 라이헤나우 수도원에서 생을 마감했습니다.",
+    "biographyEN": "Widukind’s sons, who are forcibly baptized in their father’s company in 785."
+  },
+  {
+    "key": "brun",
+    "nameKO": "브룬",
+    "nameEN": "Brun",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "브룬 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The chief of the Angarians.",
+    "biographyEN": "The chief of the Angarians."
+  },
+  {
+    "key": "cimosco",
+    "nameKO": "시모스코",
+    "nameEN": "Cimosco",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "시모스코 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The chief of the Frisians.",
+    "biographyEN": "The chief of the Frisians."
+  },
+  {
+    "key": "dyalas",
+    "nameKO": "디알라스 기사",
+    "nameEN": "Dyalas",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "작센인들의 총사령관이자 '숲의 자식'으로 불린 위대한 샤먼 전사입니다. 보이지 않는 은신 마법과 야만 신앙을 부리며 기독교 프랑크 제국에 평생 가혹한 철혈 저항을 이끌었습니다. 785년 마침내 대제에게 굴복하여 기독교 세례를 받고 개종한 후 라이헤나우 수도원에서 생을 마감했습니다.",
+    "biographyEN": "Widukind’s third son is a chivalric knight who denies his Saxon heritage and demands to be baptized as “Widukind the Convert.” Charlemagne appoints him Duke of Saxony after Baldwin’s untimely death in 783."
+  },
+  {
+    "key": "hessi",
+    "nameKO": "헤시 백작",
+    "nameEN": "Hessi",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "헤시 백작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The Eastphalian leader, who submits to 샤를마뉴 대제 in 775.",
+    "biographyEN": "The Eastphalian leader, who submits to Charlemagne in 775."
+  },
+  {
+    "key": "widukind",
+    "nameKO": "샤먼 전사 위두킨트",
+    "nameEN": "Widukind",
+    "category": "Foreigners",
+    "subcategory": "🌲 작센 & 프리시아 (Saxons & Frisians)",
+    "years": "",
+    "biographyKO": "작센인들의 총사령관이자 '숲의 자식'으로 불린 위대한 샤먼 전사입니다. 보이지 않는 은신 마법과 야만 신앙을 부리며 기독교 프랑크 제국에 평생 가혹한 철혈 저항을 이끌었습니다. 785년 마침내 대제에게 굴복하여 기독교 세례를 받고 개종한 후 라이헤나우 수도원에서 생을 마감했습니다.",
+    "biographyEN": "His name means “child of the forest.” Widukind is the uncontested leader of the W estphalians, and later even of all rebel Saxons. He is a shamanic warrior who possesses the power of invisibility; a vengeful and cruel man. He is married to Lady Sebile, who is in love with Roland’s half-brother, Baldwin, whom she marries after having received baptism in 783. Widukind is allied with the Danes, with whom he relentlessly fights the hated Franks, until he is finally captured and baptized in 785. Widukind then becomes a monk at the Abbey of Reichenau until his death in 810."
+  },
+  {
+    "key": "dragovit",
+    "nameKO": "드라고비트 대공",
+    "nameEN": "Dragovit",
+    "category": "Foreigners",
+    "subcategory": "🌲 슬라브 (Slavs)",
+    "years": "",
+    "biographyKO": "드라고비트 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 황자 of the Wilzi.",
+    "biographyEN": "Prince of the Wilzi."
+  },
+  {
+    "key": "godelaid",
+    "nameKO": "고들라이드 대공",
+    "nameEN": "Godelaid",
+    "category": "Foreigners",
+    "subcategory": "🌲 슬라브 (Slavs)",
+    "years": "",
+    "biographyKO": "고들라이드 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 황자, 아들 of Thrasico.",
+    "biographyEN": "Prince, son of Thrasico."
+  },
+  {
+    "key": "lecho",
+    "nameKO": "레초 대공",
+    "nameEN": "Lecho",
+    "category": "Foreigners",
+    "subcategory": "🌲 슬라브 (Slavs)",
+    "years": "",
+    "biographyKO": "레초 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 황자 of the Czechs.",
+    "biographyEN": "Prince of the Czechs."
+  },
+  {
+    "key": "miliduoch",
+    "nameKO": "밀리두오크 대공",
+    "nameEN": "Miliduoch",
+    "category": "Foreigners",
+    "subcategory": "🌲 슬라브 (Slavs)",
+    "years": "",
+    "biographyKO": "밀리두오크 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 황자 of the Serbs.",
+    "biographyEN": "Prince of the Serbs."
+  },
+  {
+    "key": "thrasico",
+    "nameKO": "트라시코 대공",
+    "nameEN": "Thrasico",
+    "category": "Foreigners",
+    "subcategory": "🌲 슬라브 (Slavs)",
+    "years": "",
+    "biographyKO": "트라시코 대공 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The last independent 국왕 of the Slavs. k iNgs of a sturias",
+    "biographyEN": "The last independent King of the Slavs. k iNgs  of  a sturias"
+  },
+  {
+    "key": "fruela_the_cruel",
+    "nameKO": "잔혹왕 프루엘라",
+    "nameEN": "Fruela the Cruel",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "잔혹왕 프루엘라 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 아스투리아스 until his 암살 (757–768).",
+    "biographyEN": "King of Asturias until his assassination (757–768)."
+  },
+  {
+    "key": "aurelio",
+    "nameKO": "아우렐리오",
+    "nameEN": "Aurelio",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "아우렐리오 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A good-hearted and generous 국왕 (768–774) who gains the throne upon the death of his 사촌. His rank is re-affirmed by 샤를마뉴 대제 in 771.",
+    "biographyEN": "A good-hearted and generous king (768–774) who gains the throne upon the death of his cousin. His rank is re-affirmed by Charlemagne in 771."
+  },
+  {
+    "key": "silo",
+    "nameKO": "실로",
+    "nameEN": "Silo",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "실로 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. An ambitious 국왕 (774–783) and a subtle diplomat.",
+    "biographyEN": "An ambitious king (774–783) and a subtle diplomat."
+  },
+  {
+    "key": "mauregato_the_usurper",
+    "nameKO": "찬탈자 마우레가토",
+    "nameEN": "Mauregato the Usurper",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "찬탈자 마우레가토 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 국왕 of 아스투리아스 (783–789). He is the evil, scheming, bastard 아들 of Alphonso I and a Saracen 후궁. He is 형제 to Fruela the Cruel.",
+    "biographyEN": "King of Asturias (783–789). He is the evil, scheming, bastard son of Alphonso I and a Saracen concubine. He is brother to Fruela the Cruel."
+  },
+  {
+    "key": "bermudo_the_deacon",
+    "nameKO": "부제 베르무도",
+    "nameEN": "Bermudo the Deacon",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "부제 베르무도 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A merciful and pious 국왕 (789– 791), who abdicates and retires to a 수도원.",
+    "biographyEN": "A merciful and pious king (789– 791), who abdicates and retires to a monastery."
+  },
+  {
+    "key": "alphonso_ii_the_chaste",
+    "nameKO": "경건왕 알폰소 2세",
+    "nameEN": "Alphonso II the Chaste",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "경건왕 알폰소 2세 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. An enlightened 국왕 (791–813), reputed to be chaste, generous, temperate, pious and valorous.",
+    "biographyEN": "An enlightened king (791–813), reputed to be chaste, generous, temperate, pious and valorous."
+  },
+  {
+    "key": "hugo_the_orphan",
+    "nameKO": "외로운 위고",
+    "nameEN": "Hugo the Orphan",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "외로운 위고 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. Raymond of St. Giles’ only 아들 혼인합니다 Alphonso’s 여성 후계자 Sorplante, and becomes the first Frankish 국왕 of 아스투리아스 in 813. o tHers",
+    "biographyEN": "Raymond of St. Giles’ only son marries Alphonso’s heiress Sorplante, and becomes the first Frankish King of Asturias in 813. o tHers"
+  },
+  {
+    "key": "beato_of_liebana",
+    "nameKO": "리에바나의 베아토",
+    "nameEN": "Beato of Liebana",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "리에바나의 베아토 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. A learned monk at the Asturian 궁정; strongly opposed to Adoptionism and an intimate friend of Alcuin.",
+    "biographyEN": "A learned monk at the Asturian court; strongly opposed to Adoptionism and an intimate friend of Alcuin."
+  },
+  {
+    "key": "bera",
+    "nameKO": "베라 백작",
+    "nameEN": "Bera",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "베라 백작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. The loyal and valorous 백작 of Carcassonne is made 백작 of Barcelona after its conquest in 801.",
+    "biographyEN": "The loyal and valorous Count of Carcassonne is made Count of Barcelona after its conquest in 801."
+  },
+  {
+    "key": "isabella_of_galicia",
+    "nameKO": "갈리시아의 이사벨라 공주",
+    "nameEN": "Isabella of Galicia",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "알제의 자랑스러운 사라센 군주이자 전설의 이교도 에미르입니다. 비할 바 없는 강력한 완력과 오만한 성정을 지녔으나, 갈리시아의 이사벨라 공주를 불의로 죽게 한 후 깊이 뉘우쳤습니다. 그녀의 무덤 다리를 지키며 1년간 결투를 벌이다 장렬히 무력으로 전사했습니다.",
+    "biographyEN": "Duke Hamon’s romantic daughter, in love with Prince Zerbin of Scotland. She is slain by the cruel Rodomonte in 775."
+  },
+  {
+    "key": "raymond",
+    "nameKO": "레이몽 백작",
+    "nameEN": "Raymond",
+    "category": "Foreigners",
+    "subcategory": "⛪ 비시고트 & 아스투리아스 (Visigoths & Asturias)",
+    "years": "",
+    "biographyKO": "레이몽 백작 경은 카롤링거 제국의 운명을 뒤흔든 주요 인물로, 원문에 따르면 다음과 같이 고증되어 있습니다. 공작 of Navarra (779–803).",
+    "biographyEN": "Duke of Navarra (779–803)."
   }
 ];

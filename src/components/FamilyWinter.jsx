@@ -2753,7 +2753,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       mult = 0.75; outcome = "실패";
     }
 
-    const revenue = Math.floor(6 * mult);
+    const revenue = Math.round(6 * mult);
     setHarvestMult(mult);
     setHarvestRevenue(revenue);
     setHarvestApplied(false);
