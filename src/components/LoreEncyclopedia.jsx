@@ -1218,8 +1218,9 @@ export default function LoreEncyclopedia() {
                     );
                   })()}
               </div>
-            </section>
-          )}
+            </div>
+          </section>
+        )}
         </div>
       )}
 
