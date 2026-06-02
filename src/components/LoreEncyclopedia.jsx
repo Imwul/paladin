@@ -695,6 +695,7 @@ export default function LoreEncyclopedia() {
           <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
               🏛️ 제국 대강역 강역 (Territories)
+            </h3>
             {/* 🗺️ 제국 지도 컬렉션 (Map Collection) */}
             <div 
               onClick={() => {
