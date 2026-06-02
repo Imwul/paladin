@@ -931,3 +931,1465 @@ export const bibliography = {
   ]
 };
 
+/**
+ * Carolingian Lore Database Additions (Chapter 16 & 17)
+ */
+
+export const npcs = [
+  {
+    "key": "charlemagne",
+    "nameKO": "샤를마뉴 대제 (King Charlemagne)",
+    "nameEN": "King Charlemagne (Anno 768)",
+    "titleKO": "프랑크인들의 국왕, 서로마 황제, 로마의 보호자",
+    "titleEN": "King of the Franks; Protector of Rome",
+    "glory": 15000,
+    "stats": {
+      "SIZ": 23,
+      "DEX": 13,
+      "STR": 22,
+      "CON": 30,
+      "APP": 15,
+      "HP": 53,
+      "MW": 30,
+      "UC": 13,
+      "KD": 23,
+      "HR": 5
+    },
+    "damage": "8d6",
+    "armor": "12+shield+3+5 (마법 투구)",
+    "move": 4,
+    "traits": {
+      "Chaste": 13,
+      "Energetic": 25,
+      "Forgiving": 17,
+      "Generous": 20,
+      "Honest": 16,
+      "Just": 14,
+      "Merciful": 15,
+      "Modest": 13,
+      "Prudent": 10,
+      "Temperate": 15,
+      "Trusting": 17,
+      "Valorous": 28
+    },
+    "directedTraits": "복수심 (반역자들 대상) +15",
+    "passions": [
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 25
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 19
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 20
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous), 신앙적인 기사 (Religious, 768년 이후)",
+    "skills": [
+      "경계 (Awareness) 18",
+      "예의 (Courtesy) 16",
+      "웅변 (Eloquence) 15",
+      "수렵 (Hunting) 20",
+      "음모 (Intrigue) 18",
+      "외국어 (Languages) 10",
+      "수영 (Swimming) 25"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 25",
+      "공선 (Siege) 20",
+      "검술 (Sword) 22",
+      "도끼 (Axe) 20",
+      "마상창 (Lance) 18",
+      "단검 (Dagger) 18"
+    ],
+    "significantItems": [
+      "조이외즈 (Joyeuse - 신성 성검)",
+      "블랑샤르 (Blanchard - 명마)",
+      "샤를마뉴의 투구 (방어도 +5 마법 투구)",
+      "샤를마뉴의 셉터 (왕권 상징)",
+      "샤를마뉴의 부적",
+      "파스트라다의 반지 (783년 이후)"
+    ],
+    "biographyKO": "프랑크의 위대한 지배자이자 기독교 제국인 신성로마제국의 수립자입니다. 무한한 정력과 거인 같은 위엄을 자랑하며, 공명정대하고 Compassionate(자비)한 사법 재판관으로 명성을 떨쳤습니다. 아침저녁으로 예배에 충실히 출석하는 가장 경건한 주님의 전사이기도 합니다. 숲에서 아우록스 야생 들소를 수렵하고 Aachen의 온천에서 기사들과 수영 경주를 벌이길 즐겼습니다. 그의 전설적인 성검 조이외즈(Joyeuse)는 전설의 명검 듀란달과 같은 강철로 제련되어 푸른 별빛을 뿜어냅니다.",
+    "biographyEN": "The glorious leader of the Franks and the perfect embodiment of a king and emperor, divinely inspired and guided in his mission to build a solid Christian realm. He is robust, extremely energetic, and wields the holy sword Joyeuse."
+  },
+  {
+    "key": "turpin",
+    "nameKO": "투르팽 대주교 (Archbishop Turpin)",
+    "nameEN": "Archbishop Turpin (Anno 768)",
+    "titleKO": "랭스 대주교, 제국의 성기사 (Paladin)",
+    "titleEN": "Archbishop of the Franks, Paladin",
+    "glory": 7300,
+    "stats": {
+      "SIZ": 15,
+      "DEX": 10,
+      "STR": 18,
+      "CON": 23,
+      "APP": 8,
+      "HP": 38,
+      "MW": 23,
+      "UC": 10,
+      "KD": 15,
+      "HR": 4
+    },
+    "damage": "6d6",
+    "armor": "10+방패+3",
+    "move": 3,
+    "traits": {
+      "Chaste": 20,
+      "Energetic": 25,
+      "Forgiving": 16,
+      "Generous": 20,
+      "Honest": 16,
+      "Just": 8,
+      "Merciful": 16,
+      "Modest": 18,
+      "Prudent": 10,
+      "Temperate": 19,
+      "Trusting": 16,
+      "Valorous": 21
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 20
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 10
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 20
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 25
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous), 신앙적인 기사 (Religious)",
+    "skills": [
+      "웅변 (Eloquence) 16",
+      "음모 (Intrigue) 17",
+      "외국어 (Languages) 11",
+      "문해력 (Read/Write) 10",
+      "인식 (Recognize) 18",
+      "종교 지식 (Religion) 19",
+      "가무 (Singing) 16"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 14",
+      "공선 (Siege) 10",
+      "검술 (Sword) 21",
+      "둔기 (Bludgeon) 20",
+      "창 (Spear/Polearm) 11",
+      "단검 (Dagger) 13",
+      "마상창 (Lance) 15"
+    ],
+    "significantItems": [
+      "알마스 (Almace - 성검)"
+    ],
+    "biographyKO": "생드니의 수도사 출신이자 랭스의 대주교로 임명된 카롤링거의 위대한 전사 대주교입니다. 부친이 전사하자 십자가와 경전을 내려두고 칼과 철퇴를 쥐고 샤를마뉴 대제와 함께 이교도들과 맞서 싸웠습니다. 기사와 사제라는 이중적인 역할을 가장 성공적으로 수행하며 성 교회의 대의를 대변합니다. 왕실의 비서이자 황제의 가장 충직한 고문이며, 론세스바예스 협곡에서 롤랑과 올리버의 영웅적 항전을 영적인 사함과 무력으로 지켜낸 후 장렬히 전사합니다.",
+    "biographyEN": "A monk of Saint Denis who became Archbishop of Reims and decided to take up arms. Turpin represents the Church's active military support of Charlemagne's holy wars and serves as the royal biographer."
+  },
+  {
+    "key": "ogier",
+    "nameKO": "덴마크인 오지에 경 (Sir Ogier the Dane)",
+    "nameEN": "Sir Ogier the Dane (Anno 768)",
+    "titleKO": "덴마크의 왕자, 제국의 성기사 (Paladin)",
+    "titleEN": "Prince of Denmark; Paladin",
+    "glory": 4200,
+    "stats": {
+      "SIZ": 26,
+      "DEX": 10,
+      "STR": 28,
+      "CON": 20,
+      "APP": 10,
+      "HP": 46,
+      "MW": 20,
+      "UC": 12,
+      "KD": 26,
+      "HR": 5
+    },
+    "damage": "9d6",
+    "armor": "10+방패+3",
+    "move": 4,
+    "traits": {
+      "Chaste": 12,
+      "Energetic": 16,
+      "Forgiving": 4,
+      "Generous": 13,
+      "Honest": 5,
+      "Just": 19,
+      "Merciful": 8,
+      "Modest": 10,
+      "Prudent": 5,
+      "Temperate": 4,
+      "Trusting": 10,
+      "Valorous": 24
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 16
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 14
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 23
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 11
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "예의 (Courtesy) 16",
+      "요정 전설 (Faerie Lore) 16",
+      "마술/보드게임 (Gaming) 16",
+      "마술 (Horsemanship) 20",
+      "수영 (Swimming) 1"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 19",
+      "공선 (Siege) 12",
+      "검술 (Sword) 21+9 (쿠르탱 보너스)",
+      "도끼 (Axe) 20",
+      "단검 (Dagger) 16",
+      "마상창 (Lance) 15"
+    ],
+    "significantItems": [
+      "브루아피에 (Broiefer - 전투마)",
+      "쿠르탱 (Courtain - 성검, +9 보너스)"
+    ],
+    "biographyKO": "덴마크 국왕 고드프리드의 거인급 육체를 지닌 아들로, 인질로 끌려와 프랑크 왕국에서 자랐습니다. 극도로 용맹스럽고 무시무시한 힘(STR 28, SIZ 26)을 지녀, 적의 거대 야수들을 단칼에 동강 내는 능력을 보여줍니다. 대제와 불화와 갈등을 겪으면서도 12성기사의 영광을 지켰으며, 덴마크와 프랑크 사이의 수많은 반란 시기를 조율한 의롭고 완고한 영웅입니다. 그의 칼 쿠르탱(Courtain)은 마력을 머금어 전투에 강력한 파괴적 예리함을 제공합니다.",
+    "biographyEN": "King Godfrid's semi-giant son raised as a hostage. Though frequently in conflict with Charlemagne, the irate and stubborn Dane remains incredibly loyal to the paladins and defeats cumbersome giants."
+  },
+  {
+    "key": "roland",
+    "nameKO": "성기사 롤랑 경 (Sir Roland)",
+    "nameEN": "Sir Roland (Anno 768)",
+    "titleKO": "브르타뉴 변경백, 서로마 최고의 기사, 제국의 성기사 (Paladin)",
+    "titleEN": "Count of the Breton March; Paladin",
+    "glory": 4500,
+    "stats": {
+      "SIZ": 20,
+      "DEX": 16,
+      "STR": 26,
+      "CON": 20,
+      "APP": 16,
+      "HP": 40,
+      "MW": 22,
+      "UC": 10,
+      "KD": 18,
+      "HR": 5
+    },
+    "damage": "8d6+13 (듀란달 보너스)",
+    "armor": "23+방패+3 (헥토르의 갑옷 포함)",
+    "move": 4,
+    "traits": {
+      "Chaste": 19,
+      "Energetic": 19,
+      "Forgiving": 16,
+      "Generous": 19,
+      "Honest": 11,
+      "Just": 13,
+      "Merciful": 16,
+      "Modest": 1,
+      "Prudent": 1,
+      "Temperate": 12,
+      "Trusting": 15,
+      "Valorous": 25
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 25
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 15
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 23
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 14
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "예의 (Courtesy) 18",
+      "매사냥 (Falconry) 17",
+      "마술 (Horsemanship) 18",
+      "수렵 (Hunting) 19",
+      "수영 (Swimming) 20"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 16",
+      "공선 (Siege) 11",
+      "검술 (Sword) 20+13 (듀란달 보너스)",
+      "창 (Spear/Polearm) 21",
+      "단검 (Dagger) 15",
+      "마상창 (Lance) 17"
+    ],
+    "significantItems": [
+      "베일랑티프 (Veillantif - 전쟁 군마)",
+      "헥토르의 마법 갑옷 (아머 극대화)",
+      "듀란달 (Durendal - 천상의 보검, +13 관통 보너스)",
+      "올리판트 (Oliphant - 상아 뿔나팔)"
+    ],
+    "biographyKO": "샤를마뉴 대제의 누이 베르타와 미요 백작 사이에서 출생하여 제국 최고의 무용을 떨친 영예로운 조카이자 성기사단의 단장입니다. 마법 성검 듀란달(Durendal)과 고대 트로이의 영웅 헥토르의 갑옷(Hector's Armor)을 수령하여 난공불락의 불패 투사가 되었습니다. 그러나 성격적인 크나큰 결함으로 오만함(Modest 1)과 극단적 무모함(Prudent 1)을 지녀, 론세스바예스 협곡에서 증원 뿔나팔을 부는 명예를 거부하다가 전우 올리버를 잃고 장렬히 눈을 감았습니다. 격노 시 이성을 잃는 간질성 '신성한 광분(Divine Fury)'을 발작하기도 합니다.",
+    "biographyEN": "Charlemagne's nephew, Count of the Breton March, engagement to Oliver's sister Aude. Nigh-invincible after obtaining Durendal and Hector's Armor. His ultimate flaws are excessive pride and reckless zeal."
+  },
+  {
+    "key": "oliver",
+    "nameKO": "비엔의 올리버 경 (Sir Oliver of Vienne)",
+    "nameEN": "Sir Oliver of Vienne (Anno 768)",
+    "titleKO": "비엔의 영주, 지혜의 성기사 (Paladin)",
+    "titleEN": "Paladin of the Realm",
+    "glory": 2800,
+    "stats": {
+      "SIZ": 18,
+      "DEX": 22,
+      "STR": 18,
+      "CON": 26,
+      "APP": 23,
+      "HP": 44,
+      "MW": 26,
+      "UC": 11,
+      "KD": 18,
+      "HR": 4
+    },
+    "damage": "6d6",
+    "armor": "10+방패",
+    "move": 4,
+    "traits": {
+      "Chaste": 16,
+      "Energetic": 16,
+      "Forgiving": 12,
+      "Generous": 13,
+      "Honest": 15,
+      "Just": 14,
+      "Merciful": 16,
+      "Modest": 10,
+      "Prudent": 19,
+      "Temperate": 10,
+      "Trusting": 13,
+      "Valorous": 18
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 19
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 15
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 23
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 18
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "예의 (Courtesy) 19",
+      "웅변 (Eloquence) 16",
+      "매사냥 (Falconry) 18",
+      "구급 (First Aid) 16",
+      "마술 (Horsemanship) 20",
+      "종교 지식 (Religion) 10",
+      "장원 관리 (Stewardship) 10"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 25",
+      "공선 (Siege) 15",
+      "검술 (Sword) 24",
+      "창술 (Spear) 21",
+      "단검 (Dagger) 13",
+      "마상창 (Lance) 17"
+    ],
+    "significantItems": [
+      "페랑 (Ferrant - 명마)",
+      "오트클레르 (Halteclere - 성검, 론세스바예스 돌파검)"
+    ],
+    "biographyKO": "몽글란 가문 출신으로, 롤랑과 비견되는 제국의 지혜의 성기사입니다. 극도로 수려한 외모(APP 23)와 민첩성(DEX 22)을 자랑하며, 지혜롭고 사려 깊어 롤랑의 오만함과 무모함을 언제나 든든하게 보완해 주었습니다. '롤랑은 용맹하지만, 올리버는 현명하다'는 롤랑의 노래 87절의 구절이 그의 정체성을 상징합니다. 그의 성검 오트클레르(Halteclere)는 은으로 제련된 아름다운 자루와 무시무시한 참수력을 가졌으며 론세스바예스 전투에서 수많은 아랍 전사를 쓰러뜨렸습니다.",
+    "biographyEN": "A member of the House of Monglane. Known for his great wisdom and keen senses, representing the intellectual and cautious counterpart to Roland. 'Roland is valiant, Oliver is wise.'"
+  },
+  {
+    "key": "astolf",
+    "nameKO": "잉글랜드의 아스톨프 경 (Sir Astolf of England)",
+    "nameEN": "Sir Astolf of England (Anno 773)",
+    "titleKO": "잉글랜드의 왕자, 기상천외한 성기사 (Paladin)",
+    "titleEN": "Prince of England; Paladin",
+    "glory": 4100,
+    "stats": {
+      "SIZ": 16,
+      "DEX": 7,
+      "STR": 17,
+      "CON": 24,
+      "APP": 20,
+      "HP": 30,
+      "MW": 17,
+      "UC": 8,
+      "KD": 13,
+      "HR": 3
+    },
+    "damage": "5d6",
+    "armor": "10+방패+3",
+    "move": 2,
+    "traits": {
+      "Chaste": 15,
+      "Energetic": 17,
+      "Forgiving": 16,
+      "Generous": 18,
+      "Honest": 19,
+      "Just": 14,
+      "Merciful": 15,
+      "Modest": 10,
+      "Prudent": 6,
+      "Temperate": 12,
+      "Trusting": 16,
+      "Valorous": 17
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 18
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 15
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 21
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 15
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "인식/경계 (Awareness) 18",
+      "예의 (Courtesy) 20",
+      "웅변 (Eloquence) 20",
+      "음모 (Intrigue) 15",
+      "인식 (Recognize) 18",
+      "연애예법 (Romance) 15"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 15",
+      "공선 (Siege) 10",
+      "검술 (Sword) 20",
+      "창술 (Spear) 20",
+      "단검 (Dagger) 10",
+      "마상창 (Lance) 12"
+    ],
+    "significantItems": [
+      "황금 마창 (Golden Lance - 건드리기만 해도 낙마시키는 100% 명중마창)",
+      "공포의 뿔나팔 (Horn of Terror - 듣는 적을 도망치게 만드는 뿔피리)",
+      "주문 해제 고서 (Book of Spell Breaking - 요정의 마법 해제)"
+    ],
+    "biographyKO": "잉글랜드 오파 국왕의 둘째 아들로, 검술이나 물리적인 완력은 떨어지지만 뛰어난 사교성, 미려한 용모(APP 20), 그리고 무엇보다도 기상천외한 마법 유물들을 모으고 다루는 재주가 뛰어난 천재적인 기사입니다. 상대를 무조건 낙마시키는 황금 마창(Golden Lance)과 악마마저 도망치게 만드는 공포의 뿔나팔(Horn of Terror)을 무기로 썼습니다. 전설적인 히포그리프(반독수리 반말)를 타고 달나라까지 올라가 롤랑이 사랑의 고열로 상실했던 이성(Wits)을 병에 담아 복구해 낸 신화적인 업적을 이룬 위대한 모험가입니다. 말년에 마옌스 백작으로서 성자 대열에 합류하였습니다.",
+    "biographyEN": "King Offa's second son. Famous for his good looks, courtly courtesy, and legendary magic items (Golden Lance, Horn of Terror, Spell Book). He rode a hippogriff to the moon to recover Roland's lost wits."
+  },
+  {
+    "key": "renaud",
+    "nameKO": "몽토방의 르노 경 (Sir Renaud of Montalban)",
+    "nameEN": "Sir Renaud of Montalban (Anno 768)",
+    "titleKO": "몽토방의 백작, 반란의 성기사 (Paladin)",
+    "titleEN": "Paladin of the Realm",
+    "glory": 3300,
+    "stats": {
+      "SIZ": 20,
+      "DEX": 18,
+      "STR": 22,
+      "CON": 18,
+      "APP": 12,
+      "HP": 52,
+      "MW": 18,
+      "UC": 9,
+      "KD": 18,
+      "HR": 4
+    },
+    "damage": "7d6",
+    "armor": "10+방패",
+    "move": 4,
+    "traits": {
+      "Chaste": 4,
+      "Energetic": 17,
+      "Forgiving": 6,
+      "Generous": 10,
+      "Honest": 16,
+      "Just": 9,
+      "Merciful": 17,
+      "Modest": 1,
+      "Prudent": 14,
+      "Temperate": 16,
+      "Trusting": 11,
+      "Valorous": 22
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 15
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 24
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 22
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 9
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "요정 전설 (Faerie Lore) 14",
+      "구급 (First Aid) 16",
+      "마술/보드게임 (Gaming) 16",
+      "문장학 (Heraldry) 16",
+      "마술 (Horsemanship) 24"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 15",
+      "공선 (Siege) 15",
+      "검술 (Sword) 20+14 (프로베르주 보너스)",
+      "창술 (Spear) 17",
+      "단검 (Dagger) 14",
+      "마상창 (Lance) 14"
+    ],
+    "significantItems": [
+      "바야르 (Bayard - 마법 비행 군마)",
+      "프로베르주 (Froberge - 마법성검, +14 공격 보너스)"
+    ],
+    "biographyKO": "에몽 백작의 네 아들 중 첫째이자 가장 뛰어난 기사로, 대제에게 무릎 꿇지 않는 기백을 가졌습니다. 사촌 마법사 모지 경과 협력하여 난공불락의 요새 몽토방(Montalban)을 건설하고, 마법마 바야르를 타고 샤를마뉴 대제의 봉건적 억압에 정면으로 대항했습니다. 성격적으로 엄청난 오만함을 가졌으나, 가족애와 용맹만큼은 그 누구보다 높습니다. 대제와의 평화를 위해 눈물을 머금고 자신의 마법마 바야르를 헌상하여 희생하였고, 이후 여생을 예루살렘 성지 십자군 전역에서 속죄하며 보낸 파란만장한 영웅입니다. 그의 칼 프로베르주(Froberge)는 이교도의 혼을 쥐고 흔드는 붉은 검광을 내뿜습니다.",
+    "biographyEN": "The eldest and most formidable of Aymon's four sons. Renaud is the proudest knight of Frankland, riding the magic horse Bayard. He staged a legendary rebellion against Charlemagne before making peace and crusading."
+  },
+  {
+    "key": "william",
+    "nameKO": "창코 기욤 / 나르본의 기욤 경 (Sir William Shortnose)",
+    "nameEN": "Sir William Shortnose (Anno 775)",
+    "titleKO": "셉티마니아 공작, 제국의 성기사 (Paladin)",
+    "titleEN": "Paladin of the Realm",
+    "glory": 5400,
+    "stats": {
+      "SIZ": 21,
+      "DEX": 14,
+      "STR": 24,
+      "CON": 20,
+      "APP": 9,
+      "HP": 40,
+      "MW": 20,
+      "UC": 10,
+      "KD": 20,
+      "HR": 4
+    },
+    "damage": "7d6",
+    "armor": "10+방패+3",
+    "move": 4,
+    "traits": {
+      "Chaste": 12,
+      "Energetic": 19,
+      "Forgiving": 14,
+      "Generous": 20,
+      "Honest": 6,
+      "Just": 16,
+      "Merciful": 17,
+      "Modest": 5,
+      "Prudent": 10,
+      "Temperate": 5,
+      "Trusting": 5,
+      "Valorous": 20
+    },
+    "directedTraits": "없음",
+    "passions": [
+      {
+        "name": "샤를마뉴에 대한 사랑 (Love [Charlemagne])",
+        "value": 18
+      },
+      {
+        "name": "가족에 대한 사랑 (Love [Family])",
+        "value": 20
+      },
+      {
+        "name": "영예 (Honor)",
+        "value": 25
+      },
+      {
+        "name": "신에 대한 사랑 (Love [God])",
+        "value": 18
+      }
+    ],
+    "ideals": "기사도적 기사 (Chivalrous)",
+    "skills": [
+      "경계 (Awareness) 16",
+      "예의 (Courtesy) 16",
+      "수렵 (Hunting) 17",
+      "음모 (Intrigue) 16",
+      "외국어 (Languages) 13",
+      "인식 (Recognize) 19",
+      "연애예법 (Romance) 12"
+    ],
+    "combatSkills": [
+      "전술 (Battle) 18",
+      "공선 (Siege) 17",
+      "검술 (Sword) 23",
+      "창술 (Spear/Polearm) 21",
+      "단검 (Dagger) 13",
+      "마상창 (Lance) 22"
+    ],
+    "significantItems": [
+      "보호의 액막이 부적 (Protective Talisman)"
+    ],
+    "biographyKO": "몽글란 가문의 나르본 백작 아이메리의 아들로, 사라센과의 일대 결투 중 코끝이 잘려 나가 '창코 기욤(Shortnose)'이라는 영광스러운 훈명을 얻은 전사입니다. 물려받을 영지가 없는 가난한 무지 기사로 시작했으나, 타고난 낙천적인 배짱과 호탕함, 불타는 애국심으로 남부 프랑크 영토를 위협하는 사라고사의 아랍 침략자들을 물리쳐 셉티마니아 공작이 되었습니다. 샤를마뉴의 억지스러운 아들 왕세자 루이를 보필하며 제국 최후의 충성 보루가 되었습니다. 화가 나면 성문지기를 단숨에 때려죽이는 불같은 다혈질이기도 하지만, 언제나 사후에 유족에게 명예로운 배상금(Wergild)을 정중하게 지불했던 특유의 상남자 기질을 품었습니다.",
+    "biographyEN": "Aymeri's brave son who acquired the title Duke of Septimania in 790. Known for his boisterous laugh, quick temper, and absolute loyalty to the crown, defending the southern marches against Saracens."
+  }
+];
+
+export const paladins = [
+  {
+    "nameEN": "Anseïs of Carthago",
+    "nameKO": "카르타고의 안세이스",
+    "knighted": "779년",
+    "companion": "창코 기욤",
+    "desc": "브르타뉴 리파이 경의 아들로 론세스바예스에서 장렬히 전사한 후 코르도바 공주 고디사와 혼인하여 스페인 공작으로 분투함."
+  },
+  {
+    "nameEN": "Anseïs the Proud",
+    "nameKO": "오만한 안세이스",
+    "knighted": "767년",
+    "companion": "삼손",
+    "desc": "디종 자작의 아들로 롤랑, 오지에와 함께 전장에서 함께 첫 서임을 받았던 제국 1세대 명예로운 오만한 성기사."
+  },
+  {
+    "nameEN": "Aymonnet",
+    "nameKO": "에모네 (르노의 장남)",
+    "knighted": "795년",
+    "companion": "요네 (동생)",
+    "desc": "르노 경의 맏아들로 동생 요네와 절대 떨어지지 않는 단짝이며 주로 가문의 적인 비열한 마옌스 가문과의 불화 복수극에서 대활약함."
+  },
+  {
+    "nameEN": "Baldwin the Brave",
+    "nameKO": "용맹한 보두앵",
+    "knighted": "779년",
+    "companion": "베라르",
+    "desc": "배신자 가늘롱 백작의 셋째 아들이나, 부친의 사악함과 달리 지극히 신의 있고 예의 바른 신앙 기사로 작센 공작을 역임하다 전사."
+  },
+  {
+    "nameEN": "Berard of Ardennes",
+    "nameKO": "아르덴의 베라르",
+    "knighted": "781년",
+    "companion": "용맹한 보두앵",
+    "desc": "아르덴의 티에리 공작의 첫째 아들로 무모하고 Lustful(욕망)한 기질이 돋보이는 전사로, 작센과의 혹한 삼림 전쟁에서 활약."
+  },
+  {
+    "nameEN": "Berenger the Gascon",
+    "nameKO": "가스코뉴의 베랑제",
+    "knighted": "767년",
+    "companion": "오도 경",
+    "desc": "겸손한 종자들의 전투에서 대공을 세우고 즉시 성기사로 발탁된 날랜 전사로, 제국 최고의 고참 승마술의 일인자."
+  },
+  {
+    "nameEN": "Bertrand of Narbonne",
+    "nameKO": "나르본의 베르트랑",
+    "knighted": "792년",
+    "companion": "용맹한 비비앙",
+    "desc": "창코 기욤 백작의 용감한 조카로 예하 기사단과 함께 프로방스 수복 전쟁의 최선봉에 서서 바르바스트로에서 활약하고 아라비아 공주와 혼인."
+  },
+  {
+    "nameEN": "Bradamant the Maiden",
+    "nameKO": "여전사 브라다만테",
+    "knighted": "773년",
+    "companion": "로제로 (남편)",
+    "desc": "에몽 백작의 고결하고 용맹무쌍한 딸이자 12성기사의 유일한 여성 기사. 적장 로제로와 사랑에 빠져 그를 침례하고 운명적 혼인을 맺음."
+  },
+  {
+    "nameEN": "Engelier of Bordeaux",
+    "nameKO": "보르도의 앙젤리에",
+    "knighted": "773년",
+    "companion": "안주의 제라르",
+    "desc": "오지에가 이탈리아로 탈영하자 황제가 징집한 정중한 궁정 예법의 명가 출신 성기사로, 고도의 마상창 기술과 감미로운 음악 재능 소유자."
+  },
+  {
+    "nameEN": "Eric of Friuli",
+    "nameKO": "프리울리의 에리크",
+    "knighted": "789년",
+    "companion": "바이에른의 게롤트",
+    "desc": "에티코니드 가문의 기둥이자 프리울리 공작. 뛰어난 대열 전술가이자 지휘관으로 아바르 족의 반란에 맞서 웅장하게 전사함."
+  },
+  {
+    "nameEN": "Galien the Restored",
+    "nameKO": "정화자 갈리앙",
+    "knighted": "788년",
+    "companion": "없음 (단독)",
+    "desc": "성기사 올리버와 비잔티움 공주 사이에 태어나 동양에서 자란 후, 아버지를 해친 사라센 악귀들을 징벌하고 예루살렘의 국왕에 오름."
+  },
+  {
+    "nameEN": "Geoffrey of Anjou",
+    "nameKO": "안주의 조프루아",
+    "knighted": "786년",
+    "companion": "없음 (단독)",
+    "desc": "안주의 티에리 백작의 아들로 평소에는 극도로 신사적이고 온화하지만, 전선에 서면 짐승 같은 괴력을 뿜어내는 공포의 전사."
+  },
+  {
+    "nameEN": "Gerard of Anjou",
+    "nameKO": "안주의 제라르",
+    "knighted": "773년",
+    "companion": "앙젤리에",
+    "desc": "사치와 화려한 궁정 예법을 멀리하고 극도로 spartan하고 금욕적인 신앙 생활을 일관하여 살아있는 성자로 대우받은 경건 기사."
+  },
+  {
+    "nameEN": "Gerold II of Bavaria",
+    "nameKO": "바이에른의 게롤트 2세",
+    "knighted": "789년",
+    "companion": "프리울리의 에리크",
+    "desc": "황제의 처남이자 검술 스승으로 명망이 높았으며 타실로 공작의 폐위 이후 바이에른의 공작 겸 수호 성기사단장으로 부임함."
+  },
+  {
+    "nameEN": "Guy of Burgundy",
+    "nameKO": "부르고뉴의 기",
+    "knighted": "767년",
+    "companion": "와랭 경",
+    "desc": "가스코뉴 공작 욘의 친척이자 몽글란 가문의 영광스러운 후손으로, 항상 쾌활하고 호탕한 유머 감각을 자랑하는 전투 사령관."
+  },
+  {
+    "nameEN": "Hamon of Galicia",
+    "nameKO": "갈리시아의 아몽",
+    "knighted": "779년",
+    "companion": "프리지아의 랭볼",
+    "desc": "갈리시아의 고결한 공작으로 프리지아 백작 랭볼과 긴밀한 형제 서약을 맺고 아바르 캠페인에서 제국의 국경을 수호하다 전사."
+  },
+  {
+    "nameEN": "Huon of Bordeaux",
+    "nameKO": "보르도의 위옹",
+    "knighted": "808년",
+    "companion": "오베론 (요정왕)",
+    "desc": "용맹하지만 다혈질인 청년으로, 황제의 미움을 사 불가능한 요정 숲 퀘스트를 수행하고 아발론 요정왕 오베론의 후계자가 됨."
+  },
+  {
+    "nameEN": "Ivory the Foundling",
+    "nameKO": "고아 이보리",
+    "knighted": "767년",
+    "companion": "검은 이보",
+    "desc": "도온 백작 밑에서 자란 고아로 모든 Moors(이교도)들을 몰아내거나 성수를 입히기 전까진 결코 여인을 안지 않겠다는 무서운 고결 맹세 기사."
+  },
+  {
+    "nameEN": "Maillefer",
+    "nameKO": "마유페르",
+    "knighted": "810년",
+    "companion": "없음",
+    "desc": "사라센 거인의 괴력과 성기사의 지혜를 동시에 물려받아 아헨의 궁성을 멀리하고 단독으로 알프스 바위 절벽을 방랑하는 철퇴 기사."
+  },
+  {
+    "nameEN": "Odo of Lengres",
+    "nameKO": "랑그르의 오도",
+    "knighted": "767년",
+    "companion": "베랑제",
+    "desc": "매우 감미로운 사랑 노래와 로맨틱한 시를 지어 어전을 황홀하게 미소 짓게 만든 음유시인 출신의 백작이자 성기사단원."
+  },
+  {
+    "nameEN": "Rainouart",
+    "nameKO": "레누아르 (거인 성기사)",
+    "knighted": "793년",
+    "companion": "없음",
+    "desc": "사라센 에미르의 아들이었으나 프랑크 왕실 주방의 심부름꾼으로 자랐다. 300kg에 달하는 거대한 쇠몽둥이로 아랍 군대를 날려버림."
+  },
+  {
+    "nameEN": "Raimbold of Frisia",
+    "nameKO": "프리지아의 랭볼",
+    "knighted": "779년",
+    "companion": "갈리시아의 아몽",
+    "desc": "평생 청빈과 소박을 서약하고 고향 프리지아인들을 전원 가톨릭으로 침례 시키는 성스러운 목적을 달성한 선교 전사 성기사."
+  },
+  {
+    "nameEN": "Rogero the Moor",
+    "nameKO": "무어인 로제로",
+    "knighted": "779년",
+    "companion": "브라다만테 (부인)",
+    "desc": "사라센 제일의 용사이자 마술사 아틀란테스의 보살핌을 받았던 불패의 무인. 운명의 상대 브라다만테를 만나 개종하고 불가리아의 왕이 됨."
+  },
+  {
+    "nameEN": "Salomon of Brittany",
+    "nameKO": "브르타뉴의 살로몽",
+    "knighted": "779년",
+    "companion": "덴마크인 오지에",
+    "desc": "브르타뉴의 Samson 공작의 장남으로 프랑크 법률 학문을 완전히 공부한 행정가였으며 브르타뉴 공국을 수호하다 마상 대회 중 낙마사함."
+  },
+  {
+    "nameEN": "Samson of Brittany",
+    "nameKO": "브르타뉴의 삼손",
+    "knighted": "767년",
+    "companion": "오만한 안세이스",
+    "desc": "본래 켈트 브레통 인질이었으나 세례를 받고 제국에 귀화한 1세대 대성기사로, 자신의 옛 부족과의 수많은 변경 분쟁을 철저하게 진압함."
+  },
+  {
+    "nameEN": "Sancho the Gascon",
+    "nameKO": "가스코뉴의 산초",
+    "knighted": "786년",
+    "companion": "없음",
+    "desc": "가스코뉴 욘 공작의 장남으로 어릴 때 인질로 궁정에서 자란 후, 황제 아들 루이 9세 예하에서 스페인 정벌의 최고 돌격사령관이 됨."
+  },
+  {
+    "nameEN": "Sevin of Bordeaux",
+    "nameKO": "보르도의 세뱅",
+    "knighted": "779년",
+    "companion": "아스톨프",
+    "desc": "보르도의 위옹의 부친이자 기옌의 대공작. 오랜 로렌 가문과의 친족 혈투 때문에 북방 프랑크 백작들에게 의심을 사나, 황태자를 구하고 장렬히 전사."
+  },
+  {
+    "nameEN": "Thierry of Anjou",
+    "nameKO": "안주의 티에리",
+    "knighted": "783년",
+    "companion": "없음",
+    "desc": "전사한 보두앵과 베라르의 복수를 서약하고 일어선 안주의 젊은 기사로, 론세스바예스 배신 재판에서 가늘롱 가문의 결투 투사 피나벨을 결투로 척살함."
+  },
+  {
+    "nameEN": "Vivien the Fearless",
+    "nameKO": "용맹무쌍 비비앙",
+    "knighted": "792년",
+    "companion": "나르본의 베르트랑",
+    "desc": "창코 기욤의 불같은 성정을 그대로 물려받은 조카로 서임식 날 '사라센 기병 앞에서 단 한 보도 물러서지 않겠다'고 서약하여 아르샹에서 최후까지 버티다 순국."
+  },
+  {
+    "nameEN": "Warin of Vergy",
+    "nameKO": "베르지의 와랭",
+    "knighted": "767년",
+    "companion": "부르고뉴의 기",
+    "desc": "아베르뉴 출신의 수렵과 덫의 명수이자 제국 12인의 오리지널 대성기사 중 한 명. 그의 아들 이장바르는 훗날 전쟁 중 샤를마뉴의 목숨을 구함."
+  },
+  {
+    "nameEN": "Yonnet",
+    "nameKO": "요네 (르노의 차남)",
+    "knighted": "795년",
+    "companion": "에모네 (형)",
+    "desc": "르노 경과 사라센 왕녀 클라리사의 둘째 아들로, 형 에모네와 함께 몽토방 가문의 성검 명예를 회복하기 위해 제국 궁정의 음모에 맞서 싸움."
+  },
+  {
+    "nameEN": "Yvo the Black",
+    "nameKO": "검은 이보",
+    "knighted": "767년",
+    "companion": "고아 이보리",
+    "desc": "바젤의 수호 백작으로 가슴 밑까지 내려오는 무성한 검은 수염과 흑색 장발이 특징인 맹장이며 친구 이보리의 모든 스페인 순례길을 끝까지 호위함."
+  }
+];
+
+export const cultures = [
+  {
+    "key": "basques",
+    "nameKO": "바스크 산악 세력 (Basques)",
+    "nameEN": "The Basques",
+    "emoji": "⛰️",
+    "modifiers": {
+      "SIZ": "-1",
+      "CON": "+1"
+    },
+    "names": {
+      "men": "Aitor, Centulo, Domingo, Eneko, Lupus, Otxoa, Pelayo, Sancho, Xabier",
+      "women": "Garbina, Munia, Oneca, Zutoia, Sancha"
+    },
+    "appearanceKO": "피레네 산맥의 단단하고 강인한 체구(SIZ -1, CON +1)를 지닌 검은 머리의 산악인들입니다. 이교도에 버금가는 매서운 독수리 눈빛을 가졌습니다.",
+    "characterKO": "독립심과 부족적 자부심(Proud)이 극도로 높으며, 외세의 강제적 사법 권위를 극도로 거부(Arbitrary)하고 부족 법률만 따릅니다. 가문 복수극을 즐깁니다.",
+    "skillsKO": "산악 추적 및 덫 설치, 기습 징후 포착(Awareness +5), 고산 요정 숲 전설(Faerie Lore/Folk Lore +5)",
+    "relationsKO": "768년 가스코뉴 대공이 황제에게 복종했으나 바스크인들은 계속 게릴라 항쟁을 전개했습니다. 778년 론세스바예스 고개에서 아랍 무어인 세력과 결탁하여 롤랑의 프랑크 후위군을 습격하고 전멸시켰습니다.",
+    "chronology": [
+      {
+        "year": "768년",
+        "event": "바스크의 옥초아 대공이 대제에게 형식적인 연공 상납을 조인했으나 실제 독립을 고수함."
+      },
+      {
+        "year": "778년",
+        "event": "론세스바예스 협곡 습격. 롤랑과 12성기사가 장렬히 순국하고 옥초아 대공도 전사함."
+      },
+      {
+        "year": "812년",
+        "event": "제2차 론세스바예스 산악 전투 발생 후 프랑크 황실에 조건부 굴복."
+      }
+    ],
+    "dailyLifeKO": "피레네 산간 협곡의 척박한 판자촌에서 양을 치며 목축업으로 먹고삽니다. 모계 사회 전통이 남아 있어 귀부인들이 재산을 상속하며 영향력 있는 사법 고문관을 맡습니다.",
+    "warfareKO": "중기병 마창 기동은 전혀 하지 않으며 경무장 기마 포니를 애용합니다. 숲과 협곡에 숨어 있다가 휩쓸고 지나가는 Hit-and-Run 기습 전술의 명수입니다.",
+    "equipmentKO": "족장: 가죽 갑옷 (아머 6), 목제 둥근 방패, 투창 및 산악용 검.\n풋맨: 산짐승 모피 갑옷 (아머 4), 화살 및 돌팔매 물맷돌.",
+    "codeOfHonorKO": "프랑크의 기사도 서약이나 봉건제(Homage)를 이교도의 기만술로 취급하여 절대 따르지 않으며 오직 친족(Family Loyalty)과 가문의 복수만을 최고의 의무로 삼습니다.",
+    "fortificationsKO": "성곽을 짓지 않고 대신 높은 봉우리에 목조 망루(Watch Tower)를 조밀하게 세워 적의 침입 시 신속히 동굴로 대피합니다."
+  },
+  {
+    "key": "bretons",
+    "nameKO": "켈트 브레통 세력 (Bretons)",
+    "nameEN": "The Bretons",
+    "emoji": "⛵",
+    "modifiers": {
+      "SIZ": "-2",
+      "CON": "+1",
+      "APP": "-1"
+    },
+    "names": {
+      "men": "Aquin, Conan, Doret, Eon, Gwion, Karadeg, Morvan, Nominuë, Salaoun, Warok",
+      "women": "Azenor, Enored, Erdisa, Madenn, Nolwenn"
+    },
+    "appearanceKO": "프랑크의 서쪽 반도 끝자락에 거주하는 왜소하고 단단한 켈트인들입니다. 야성적인 털수염을 기르고 흑백의 누비옷을 걸치고 다닙니다.",
+    "characterKO": "매우 고집이 세고 완고하며 호전적입니다. 프랑크인들은 이들을 '야수와 같다'고 혹평하였으며, 끈질긴 반란 투지(Energetic)를 자랑합니다.",
+    "skillsKO": "늪지대 길 찾기, 삼림 사냥 및 도끼 던지기, 신비로운 켈트 요정 숲 전설(Faerie Lore +5)",
+    "relationsKO": "삼손 공작과 살로몽 공작을 성기사로 흡수하였으나 부족민들은 끝없이 반란을 전개하여 브르타뉴 변경백인 롤랑 경이 철통 방어선을 유지했습니다.",
+    "chronology": [
+      {
+        "year": "753년",
+        "event": "피핀 국왕이 브르타뉴 변경령을 최초 설치하고 군대를 전진 배치함."
+      },
+      {
+        "year": "768년",
+        "event": "롤랑 경이 브르타뉴 변경백으로 임명되어 철통 요새를 사수함."
+      },
+      {
+        "year": "786년",
+        "event": "대제의 대규모 징벌군 진입 후 살로몽 공작을 영주로 봉하고 잠정 굴복시킴."
+      }
+    ],
+    "dailyLifeKO": "울창한 참나무 숲과 갯벌 근방의 통나무 요새촌에 밀집하여 수산업과 가축 사육으로 생계를 꾸려 나갑니다. 무역은 거의 전무하여 몹시 가난합니다.",
+    "warfareKO": "마구 마갑이 없는 정찰용 Rouncy 경기병을 활용하며, 삼림 덤불 속에 깊은 참호를 파 기마 돌격을 무력화시키는 늪지 전술을 씁니다.",
+    "equipmentKO": "족장: 사슬 메일 조끼 (아머 8), 라운드 철제 투구, 전투용 검.\n풋맨: 누비 가죽옷 (아머 6), 마상창, 단검 및 활.",
+    "codeOfHonorKO": "야만적인 부족 결의만 중시하며 포로 몸값 협상 대신 오직 동등한 포로 맞교환(Exchange)만을 수락하는 거친 사법률을 가졌습니다.",
+    "fortificationsKO": "강변의 통로를 거대 통나무 바리케이드로 봉쇄하는 게르슈(Guerche) 방벽 요새를 운용합니다."
+  },
+  {
+    "key": "britons",
+    "nameKO": "아일랜드 & 브리튼 연맹 (Britons)",
+    "nameEN": "The Britons",
+    "emoji": "🛡️",
+    "modifiers": {
+      "DEX": "+0"
+    },
+    "names": {
+      "men": "Ailward, Cenric, Coenwulf, Ecfrid, Edmund, Egbert, Harold, Offa, Zerbin",
+      "women": "Alvina, Ethel, Maud, Mildredd, Rowena, Wilona"
+    },
+    "appearanceKO": "바다 너머 브리튼 섬에 거주하는 전사들로 프랑크인과 흡사하나 적발과 금발이 흔합니다. 귀족들은 단정한 수염을 다듬고 체크무늬 모직 옷을 입습니다.",
+    "characterKO": "샤를마뉴 대제를 존경하며 성실하게 복무하길 갈망합니다. 몹시 성실하고 정직하며(Honest), 검소하고 경건한(Temperate) 기사도 신사입니다.",
+    "skillsKO": "해안선 항해 및 도서 지리 지식, 사교 예법(Courtesy +5), 웅변 및 풍자 시 작시(Eloquence +5)",
+    "relationsKO": "대제를 큰아버지이자 은인으로 여겨 덴마크 해적 바이킹을 몰아내는 방패로 삼았으며 아스톨프 왕자를 아헨의 궁정에 사절로 파견했습니다.",
+    "chronology": [
+      {
+        "year": "789년",
+        "event": "대제가 아들을 오파 국왕의 딸과 정략혼 하려 했으나 혼인 조건 마찰로 조율 실패."
+      },
+      {
+        "year": "793년",
+        "event": "덴마크 바이킹 해적들이 노섬브리아의 린디스파른 성당을 약탈하자 프랑크와 연대 구축."
+      },
+      {
+        "year": "796년",
+        "event": "대제의 우방 오파 국왕이 서거하자 브리튼 전역이 심각한 전란에 휩싸임."
+      }
+    ],
+    "dailyLifeKO": "로마가 건설한 고대 가도와 항구를 관리하며 양모 가공업과 상업을 전개합니다. 성당과 스크립토륨(필사실) 중심의 기독교 학문 부흥에 열성입니다.",
+    "warfareKO": "말이 몹시 비싸고 귀하여 전투 시 말에서 내려 방패벽을 짜고 싸우며, 후방에서 롱보우 장궁의 정밀 화망 지원을 전개하는 전술을 애용합니다.",
+    "equipmentKO": "기사: 사슬 갑옷과 철제 투구 (아머 8), 목제 카이트 쉴드, 브로드소드.\n보병: 가죽 흉갑 및 모자 (아머 5), 투창 및 목제 단궁.",
+    "codeOfHonorKO": "프랑크의 정통 기사도 법률(Chivalry)과 사법 결투, 봉건 맹세를 완벽히 신뢰하고 정중히 따릅니다.",
+    "fortificationsKO": "로마의 석조 성벽을 보강하여 사용하거나 언덕 위에 목조 모트-앤-베일리(Motte-and-Bailey) 성채를 건설하여 항전합니다."
+  },
+  {
+    "key": "byzantines",
+    "nameKO": "비잔티움 제국 (Byzantines)",
+    "nameEN": "The Byzantines",
+    "emoji": "👑",
+    "modifiers": {
+      "SIZ": "-1",
+      "DEX": "+1",
+      "STR": "-1",
+      "APP": "+1"
+    },
+    "names": {
+      "men": "Aristakes, Basil, Constantinos, Galien, Leo, Manuel, Michael, Nikephoros, Tarasios",
+      "women": "Aelia, Anastasia, Ariadne, Eudocia, Irene, Metrodora, Thecla, Sofia"
+    },
+    "appearanceKO": "지중해의 찬란한 태양 아래 자란 날씬하고 수려한 귀족들입니다. 우아한 로마식 비단 튜닉과 금실 망토를 걸치고 머리를 단정히 매만집니다.",
+    "characterKO": "스스로를 천하 유일의 진짜 로마 황제이자 정통 기독교 후예라고 자부합니다. 음모와 암투(Deceitful)에 능하며 프랑크 야만인들을 의심(Suspicious)합니다.",
+    "skillsKO": "제국 법률 및 행정(Stewardship +5), 고도의 법정 정치와 이간책(Intrigue +5), 그리스어 및 신학 토론(Religion/Eloquence +5)",
+    "relationsKO": "프랑크인들이 로마 황제의 작위를 강탈했다고 분노하면서도 사라센의 침략을 막기 위해 조건부 우방 제안과 파혼을 반복하는 오만한 라이벌입니다.",
+    "chronology": [
+      {
+        "year": "769년",
+        "event": "샤를마뉴 대제가 예루살렘과 콘스탄티노플을 비공식 순방하여 교류를 트기 시작함."
+      },
+      {
+        "year": "781년",
+        "event": "대제의 딸 로트루드 공주와 콘스탄티누스 6세 황제의 조기 약혼 조인."
+      },
+      {
+        "year": "802년",
+        "event": "여제 이레네가 대제에게 서로마-동로마의 황실 통합 대혼인을 제안했으나 궁정 쿠데타로 유배됨."
+      }
+    ],
+    "dailyLifeKO": "세계 최고의 대도시 콘스탄티노플을 거점으로 전 지중해의 비단, 향료, 노예 무역을 통제합니다. 황실의 내시(Eunuch) 관료들이 사법 전반을 지휘합니다.",
+    "warfareKO": "최첨단 국영 방산 공장에서 생산된 통일된 철제 비늘 갑옷을 보급하며, 불을 뿜는 화염방사기 '그리스의 불(Greek Fire)'과 정예 카타프락토이 중기병을 씁니다.",
+    "equipmentKO": "장군: 정밀 철제 비늘 갑옷과 폐쇄형 마스크 투구 (아머 14), 마갑 입힌 군마.\n보병: 경화 가죽 흉갑 (아머 6), 대형 원형 방패, 활 및 단검.",
+    "codeOfHonorKO": "명예를 입으로 숭상하나 정치가 가문을 우선하기에, 정적의 씨를 말리기 위해 실명시키거나 거세하여 요양원으로 보내는 비장한 제국 법률을 선호합니다.",
+    "fortificationsKO": "삼중으로 둘러쳐진 장엄한 석조 요새 성벽(테오도시우스 성벽)과 해자로 대도시 전체를 완벽히 통제합니다."
+  },
+  {
+    "key": "danes",
+    "nameKO": "북방 바이킹 덴마크 (Danes)",
+    "nameEN": "The Danes",
+    "emoji": "🪓",
+    "modifiers": {
+      "SIZ": "+1",
+      "DEX": "-2",
+      "STR": "+1",
+      "CON": "+1",
+      "APP": "-2"
+    },
+    "names": {
+      "men": "Ake, Bjorn, Brand, Halfdan, Harald, Ivar, Knut, Ragnar, Sigurd, Svein, Ulf",
+      "women": "Asa, Freydis, Gudrun, Gunhild, Ragnhild, Sigrid"
+    },
+    "appearanceKO": "북해의 해풍을 맞고 자란 엄청난 거구(SIZ +1, STR +1)의 맹장들입니다. 땋아 내린 긴 금발과 매서운 푸른 눈, 목에 두른 무거운 황동 목걸이가 인상적입니다.",
+    "characterKO": "겨울의 동토가 잉태한 가장 사나운 복수귀(Vengeful, Cruel)들입니다. 승마술을 전혀 모르며, 대량의 꿀술을 퍼마시는 폭음(Indulgent) 전통을 가졌습니다.",
+    "skillsKO": "해안선 원거리 항해 및 생존, 수영(Swimming +5), 룬 문자 조각 및 북유럽 신화 전설(Folk Lore +5)",
+    "relationsKO": "이교 작센 족의 맹방으로 참전하여 프랑크 제국의 연안을 습격했으며 793년 영국의 린디스파른 수도원을 대약탈하여 기독교 세계에 공포를 심었습니다.",
+    "chronology": [
+      {
+        "year": "757년",
+        "event": "피핀 국왕이 덴마크 국경을 압박하자 어린 오지에 왕자를 인질로 상납함."
+      },
+      {
+        "year": "793년",
+        "event": "덴마크 해적 바이킹들이 잉글랜드 린디스파른 성당을 피로 물들이며 바이킹 시대 개막."
+      },
+      {
+        "year": "810년",
+        "event": "고드프리드 2세 국왕이 프리지아를 약탈한 후 암살당하자 프랑크와 잠정 강화 조인."
+      }
+    ],
+    "dailyLifeKO": "척박하고 차가운 노르딕 반도에서 농업과 연안 어업을 하며 먹고삽니다. 해적선 장포단들이 일구어 온 가문의 명예와 노예 쟁탈을 최고의 성취로 봅니다.",
+    "warfareKO": "파도를 가르는 드래곤쉽 장선(Longship)을 타고 침투하여 기습 상륙 작전을 편 후, 지상에서는 거대한 도끼와 방패 장막을 펼치고 난투를 벌입니다.",
+    "equipmentKO": "바이킹 족장: 사슬갑옷 및 독수리 가면 투구 (아머 10), 둥근 목제 방패, 양손도끼.\n선원: 가죽 자켓 (아머 6), 투창, 브로드소드, 도끼 및 단검.",
+    "codeOfHonorKO": "적을 약탈하고 살육하는 야만적 용맹(Valorous)을 최고의 미덕으로 삼으며, 오딘과 토르 신에게 가축과 포로를 바치는 거친 제례를 올립니다.",
+    "fortificationsKO": "국경선 전체를 진흙과 돌벽으로 방어하는 웅장한 40km 흙벽 요새인 다네비르케(Danevirke)를 사수합니다."
+  },
+  {
+    "key": "gascons",
+    "nameKO": "가스코뉴 기병 세력 (Gascons)",
+    "nameEN": "The Gascons",
+    "emoji": "🏇",
+    "modifiers": {
+      "SIZ": "-1",
+      "DEX": "+1",
+      "STR": "-1",
+      "APP": "+1"
+    },
+    "names": {
+      "men": "Arnalt, Centule, Garcia, Lupus, Menant, Remon, Sancho, Ximen",
+      "women": "Azenor, Aude, Bertrada, Clarissa, Sancha"
+    },
+    "appearanceKO": "제국 남부 피레네 구릉지에 거주하는 기민하고 날랜 기사들입니다. 프랑크인보다 키가 작고 어두운 피부를 지녔으나 몹시 민첩합니다.",
+    "characterKO": "자랑하기를 몹시 좋아하는 허풍선이(Proud)이며 대단히 정열적이고 호전적이지만, 한편으로는 프랑크 주군에 대한 맹세를 쉽게 바꿉니다(Deceitful).",
+    "skillsKO": "마상 승마 돌격 및 마상 추적, 웅변 및 연애 시 낭송(Courtesy/Eloquence +5), 정찰(Awareness +5)",
+    "relationsKO": "768년 룹스 공작이 샤를마뉴 대제에게 굴복하여 스페인과 피레네 변방의 기마 선봉 수호대로 충직하게 복무했습니다.",
+    "chronology": [
+      {
+        "year": "768년",
+        "event": "룹스 대공이 대제에게 세습 충성을 맹세하고 가스코뉴를 프랑크 주권령으로 조인함."
+      },
+      {
+        "year": "787년",
+        "event": "오달릭 백작이 가스코뉴의 독립을 선포하고 봉기하였으나 진압당하고 수도원으로 추방됨."
+      },
+      {
+        "year": "800년",
+        "event": "성기사 산초 경이 루이 국왕 예하 스페인 정벌 공로로 가스코뉴 공작으로 임명됨."
+      }
+    ],
+    "dailyLifeKO": "기후가 따뜻하고 포도가 풍부히 재배되는 비옥한 평야에서 군마를 육성하며 살아갑니다. 프랑크의 기사 예법과 음유시인 예술을 가장 빠르게 도입했습니다.",
+    "warfareKO": "제국 기병대 중 가장 빠르고 우수한 승마술을 보유한 경기병 군단을 운용하며 적의 후방을 교란하는 우회 돌격을 선호합니다.",
+    "equipmentKO": "기사: 사슬 메일 조끼 (아머 8), 강철 투구, 가벼운 마창 및 스패타 검.\n풋맨: 가죽 옷 (아머 6), 투창, 활 및 가벼운 목제 방패.",
+    "codeOfHonorKO": "프랑크 기사도(Chivalry)의 거의 모든 예법과 낭만적 법률을 정중히 수용하여 따르며 마상 시합을 즐깁니다.",
+    "fortificationsKO": "프랑크식 언덕 성채를 그대로 도입하여 곳곳에 목조 초소를 세워 변방의 국경을 방어합니다."
+  },
+  {
+    "key": "huns",
+    "nameKO": "훈족 & 불가르족 세력 (Huns & Bulgars)",
+    "nameEN": "The Huns and Bulgars",
+    "emoji": "🏹",
+    "modifiers": {
+      "SIZ": "-2",
+      "DEX": "+1",
+      "STR": "+1",
+      "CON": "-1"
+    },
+    "names": {
+      "men": "Dorame, Krum, Kurguz, Medoro, Rogero, Sacripant, Unguimer",
+      "women": "Marfisa, Sumaya, Zora"
+    },
+    "appearanceKO": "판노니아 평원과 불가리아 동부에서 온 아시아계 기마 전사들의 후예입니다. 작고 단단하며 흉터가 많고 모피 모자를 깊게 눌러 씁니다.",
+    "characterKO": "초원의 말 위에서 태어나 평생을 약탈과 유목으로 일관하는 용맹한 궁수들입니다. 군율이 매우 엄격하고 가차 없으며 사납습니다(Cruel).",
+    "skillsKO": "마상 궁술(Bow +5), 야외 생존 및 사막 길 찾기, 동물 승마술(Horsemanship +5)",
+    "relationsKO": "동부 국경의 주적으로 군림하며 아바르의 거대한 금은보화 요새(Avar Ring)를 두고 대제와 수차례 피의 공방을 벌였습니다.",
+    "chronology": [
+      {
+        "year": "777년",
+        "event": "무어 전사 로제로가 기독교로 개종하고 Telerig II로 명명되어 불가리아 국왕으로 등극."
+      },
+      {
+        "year": "794년",
+        "event": "대제의 장남 칼로만이 유목 전사단의 본진인 아바르 링(Avar Ring)을 함락시키고 황금을 대약탈함."
+      },
+      {
+        "year": "811년",
+        "event": "크룸 국왕이 동로마 황제를 사살하고 그의 해골로 전술 축제 술잔을 주조함."
+      }
+    ],
+    "dailyLifeKO": "이동식 텐트 게르를 치고 소와 말 무리를 끌며 광활한 동유럽 평원을 이동합니다. 황금과 노예 약탈품 배분을 통해 부족 세력을 유지합니다.",
+    "warfareKO": "모든 전사가 승마하며, 적에게 달려들다 몸을 돌려 등 뒤로 활을 쏘는 '파르티안 샷(Parthian Shot)' 마상 궁술로 적 기병대를 요리합니다.",
+    "equipmentKO": "궁수 귀족: 가벼운 가죽 비늘 조끼 (아머 8), 합성 복합궁, 철제 곡도, 경기마.\n풋맨: 모피 누더기 옷 (아머 4), 화살통, 단검 및 포획용 올가미 로프.",
+    "codeOfHonorKO": "초원의 칼의 법률만 따르며, 전사한 적장의 해골을 금으로 장식하여 술잔으로 쓰는 혹독한 복수 명예율을 지녔습니다.",
+    "fortificationsKO": "둥근 환상 철책 요새인 '아바르 링(Avar Ring)'을 구축하여 제국 전역의 황금을 비축하는 비밀 거점으로 썼습니다."
+  },
+  {
+    "key": "jews",
+    "nameKO": "유대인 상인 집단 (Jews)",
+    "nameEN": "The Jews",
+    "emoji": "📜",
+    "modifiers": {
+      "SIZ": "-1",
+      "DEX": "-2"
+    },
+    "names": {
+      "men": "Isaac, Joseph, Nathan, Samuel, Solomon",
+      "women": "Esther, Judith, Rachel, Rebecca, Sarah"
+    },
+    "appearanceKO": "제국의 주요 행정 도시와 콘스탄티노플, 바그다드에 상주하는 아시아계 지식인들입니다. 긴 수염을 기르고 긴 종교적 외투를 걸치고 다닙니다.",
+    "characterKO": "세상의 모진 핍박 속에서도 고결한 경전의 율법을 수호합니다. 몹시 현명하며 평화적 협상과 교육(Prudent)을 중시합니다.",
+    "skillsKO": "화폐 감정 및 무역 계산(Stewardship +10), 외국어 통역 및 외교 기술(Languages/Eloquence +5), 율법 필사(Read/Write +5)",
+    "relationsKO": "샤를마뉴 대제는 이들을 제국의 귀중한 외교관이자 통상 거점으로 여겨 신변을 특별히 보호하였고 아라비아 대칼리프 외교에 통역사로 동행시켰습니다.",
+    "chronology": [
+      {
+        "year": "797년",
+        "event": "대제가 유대인 이삭(Isaac)을 바그다드 대칼리프 하루날 라시드 궁정에 특별 외교 특사로 파견함."
+      },
+      {
+        "year": "802년",
+        "event": "이삭이 대칼리프의 백색 전투 코끼리 아불 아바스를 아헨의 대궐까지 안전하게 인도하여 기증식 대성공."
+      }
+    ],
+    "dailyLifeKO": "도시의 전용 거주 구역에 거주하며 상업, 장원 세금 징수, 학술 필사 및 약학 연구에 종사합니다. 철저히 종교 회당(Synagogue)의 율법에 복종합니다.",
+    "warfareKO": "절대 물리적 전투에 참여하지 않으며, 무기를 들 의무를 면제받는 대신 제국 왕실에 막대한 통상 보조세를 상납합니다.",
+    "equipmentKO": "비무장: 비단 외투 및 종교 경전 고서적 궤짝 소지.",
+    "codeOfHonorKO": "성경의 모세 율법과 십계명을 철저히 목숨 바쳐 준수하며 평화적 타협과 계약(Honest)을 신성히 여깁니다.",
+    "fortificationsKO": "성곽이 없으며 도시의 치안 판사 및 프랑크 수호 영주가 제공하는 공공 성벽 예하에서 보호받습니다."
+  },
+  {
+    "key": "lombards",
+    "nameKO": "롬바르드 귀족 세력 (Lombards)",
+    "nameEN": "The Lombards",
+    "emoji": "🦁",
+    "modifiers": {
+      "DEX": "+0"
+    },
+    "names": {
+      "men": "Adalgis, Arichis, Desiderius, Grimoald, Hildeprand, Winichis",
+      "women": "Adalperga, Ansa, Desideria, Gerberga, Liutperga"
+    },
+    "appearanceKO": "이탈리아 반도의 비옥함 속에서 자란 세련되고 화려한 북부의 전사들입니다. 미학적인 장발을 자랑하며 화려한 이탈리아식 의복을 입습니다.",
+    "characterKO": "샤를마뉴 대제에게 왕국을 빼앗긴 피의 grudges(원한)를 품었습니다. 몹시 오만하며(Proud), 교묘한 정치적 배신(Deceitful)의 귀재들입니다.",
+    "skillsKO": "마상 결투 및 검술(Sword +5), 제국 궁정 예절과 정치(Courtesy/Intrigue +5), 사법 율법 지식",
+    "relationsKO": "대제가 롬바르드 공주 데시데리아를 아내로 맞았다가 파혼하여 전쟁이 터졌으며, 774년 파비아가 함락된 후 작위를 상실하고 와해되었습니다.",
+    "chronology": [
+      {
+        "year": "770년",
+        "event": "대제가 롬바르드 데시데리아 공주와 정략 결혼을 맺었으나 1년 만에 파문하고 돌려보내 전쟁 유발."
+      },
+      {
+        "year": "774년",
+        "event": "파비아 공방전 대승. 데시데리우스 국왕이 폐위당하고 대제가 '롬바르드의 철왕관'을 직접 직접 씀."
+      },
+      {
+        "year": "787년",
+        "event": "남부 베네벤토의 아리키스 공작이 황제에게 반기를 들었으나 즉각 패배하고 차남을 인질로 상납."
+      }
+    ],
+    "dailyLifeKO": "밀라노, 파비아 등 대도시의 화려한 대리석 저택에서 예술과 웅변을 즐기며 살아갑니다. 황실의 행정과 법정 사법의 요직을 독차지했습니다.",
+    "warfareKO": "프랑크식 중기병을 완벽히 흡수하여 강철 마갑과 이탈리아 검술을 조합한 강력한 카발리에리(Cavalieri) 돌격 전술을 운용합니다.",
+    "equipmentKO": "기사: 최고급 사슬 메일 갑옷 (아머 10), 강철 반면형 투구, 롬바르드식 날카로운 스패타 검.\n풋맨: 가죽 옷 (아머 6), 투창 및 중형 둥근 나무 방패.",
+    "codeOfHonorKO": "로마 법률에 기초한 기사도 서약(Chivalry)을 완벽히 사용하나 가문의 영지 보존을 위해서라면 황제와의 약속도 기꺼이 기만합니다.",
+    "fortificationsKO": "고대 로마의 장엄한 석조 방벽과 다층식 성탑 요새를 결합하여 난공불락의 강력한 성곽을 사수합니다."
+  },
+  {
+    "key": "moors",
+    "nameKO": "안달루스 무어 & 사라센 세력 (Moors & Saracens)",
+    "nameEN": "The Moors and Saracens",
+    "emoji": "🌙",
+    "modifiers": {
+      "SIZ": "-1",
+      "DEX": "+1"
+    },
+    "names": {
+      "men": "Agolant, Baligant, Hisham, Marsile, Medoro, Tiebaut",
+      "women": "Ayglente, Gaudissa, Guibourc, Orable"
+    },
+    "appearanceKO": "에스파냐 남부 및 북아프리카에서 진출한 날렵하고 수려한 무인들입니다. 갈색 피부와 곱슬머리, 비단 터번과 초승달 단검이 특징입니다.",
+    "characterKO": "프랑크 서사시에서 묘사되길 오만하고 용맹한 이교의 불패 전사입니다. 극도의 용맹(Valorous)과 조국 수호 열망(Love [Country])이 높습니다.",
+    "skillsKO": "사막 승마술 및 모래 폭풍 속 길 찾기, 정밀 검술 및 곡도 베기(Sword +5), 마상 투창 사격",
+    "relationsKO": "피레네 이남 사라고사를 거점으로 제국 남부 변경을 끊임없이 침공하여 성기사 롤랑의 목숨을 앗아간 프랑크 최고의 최대 라이벌입니다.",
+    "chronology": [
+      {
+        "year": "778년",
+        "event": "사라고사 원정 및 론세스바예스 대참사. 마르실레 국왕의 간계로 프랑크 성기사단 괴멸."
+      },
+      {
+        "year": "793년",
+        "event": "무어인 에미르 데라메가 제국 남부 수호를 박살 내고 아르샹에서 비비앙 경을 사살함."
+      },
+      {
+        "year": "810년",
+        "event": "대제의 끈질긴 반격 끝에 스페인 변경령(Spanish March)을 획득하고 평화 협정 조인."
+      }
+    ],
+    "dailyLifeKO": "코르도바의 찬란한 석조 궁전에서 기하학, 천문학, 약학을 연구하며 화려한 비단 무역을 운용합니다. 종교적 사원 중심의 도시 행정을 자랑합니다.",
+    "warfareKO": "아라비아마를 탄 경기병 군단이 사방에서 질풍노도처럼 화살과 투창을 쏟아붓고 바람처럼 퇴각하는 위력적인 기동 기습 전술을 펼칩니다.",
+    "equipmentKO": "사라센 지휘관: 정밀 강철 흉갑과 터번 투구 (아머 10), 초승달 모양 시미터 곡도, 경기마.\n기병/풋맨: 가죽 갑옷 (아머 6), 목제 가벼운 가죽 방패, 투창 및 단궁.",
+    "codeOfHonorKO": "프랑크의 기사도와 흡사한 자신들만의 독자적인 '유목 명예 규범(Furusiyya)'을 엄격히 수용하여 포로 대우와 사법 결투를 지킵니다.",
+    "fortificationsKO": "남부 에스파냐에 알카사르(Alcazar)라 불리는 웅장한 대리석 석조 요새와 기하학적 다각 성벽을 구축합니다."
+  },
+  {
+    "key": "persians",
+    "nameKO": "바빌론 & 페르시아 제국 (Persians)",
+    "nameEN": "The Persians",
+    "emoji": "🕌",
+    "modifiers": {
+      "SIZ": "-1",
+      "DEX": "+1",
+      "APP": "+1"
+    },
+    "names": {
+      "men": "Abdallaziz, Harun, Jafar, Mansur, Rashid, Suleiman, Yusuf",
+      "women": "Asma, Dinazade, Halima, Layla, Sherazade"
+    },
+    "appearanceKO": "지중해 동부 너머 바그다드에서 진출한 구리빛 피부의 극도로 아름다운 귀족들입니다. 비단 터번과 투명한 보석 면사포를 씁니다.",
+    "characterKO": "동방 최고의 고대 학문과 풍요를 누리는 지혜로운(Just) 신사입니다. 술을 절대 마시지 않으며(Temperate), 도덕적 순결함(Chaste)이 높습니다.",
+    "skillsKO": "고대 수학 및 연금술 연구(Faerie Lore +5), 웅변술 및 아라비아 문자 필사(Read/Write +5), 정밀 복합궁 사격",
+    "relationsKO": "동로마 비잔티움 제국을 공통의 주적으로 삼았기에 프랑크 제국과는 원거리 동맹을 맺고 호랑이 가죽, 보석, 코끼리를 우호 상납한 절친한 우방입니다.",
+    "chronology": [
+      {
+        "year": "786년",
+        "event": "현명한 하루날 라시드가 대칼리프에 올라 바그다드를 세계 최대 무역지로 육성함."
+      },
+      {
+        "year": "797년",
+        "event": "대제와 대칼리프 하루날 라시드 사이에 최초의 동방-서방 거대 평화 외교 동맹 수립."
+      },
+      {
+        "year": "802년",
+        "event": "페르시아의 사절단이 백색 코끼리를 황제에게 헌상하여 우방 관계의 정점을 찍음."
+      }
+    ],
+    "dailyLifeKO": "동방 물품이 집결하는 바그다드의 거대한 시장과 대도서관을 기반으로 천문학과 철학을 탐구합니다. 대칼리프 어전의 수상(Vizier)이 전권을 대리합니다.",
+    "warfareKO": "말의 머리와 가슴까지 덮는 강철 마갑 기병단과 동방 특유의 거대 백색 코끼리 타격 부대를 운용하여 강력한 위압감을 줍니다.",
+    "equipmentKO": "귀족 기병: 정밀 정련 비늘 흉갑과 터번형 투구 (아머 12), 마갑 전투마, 복합식 합성궁.\n보병: 누비 가죽 조끼 (아머 6), 가죽 방패, 중형 초승달 곡도.",
+    "codeOfHonorKO": "타협이 없으며 약속을 신성하게 여기는 동방의 고결한 도덕률을 수호하며 술과 돼지고기를 멀리하는 spartan 성정을 지켰습니다.",
+    "fortificationsKO": "두터운 사막 흙벽과 대리석 방벽, 거대 쇠창살 문으로 무장한 삼중의 원형 요새 성벽을 지어 방어합니다."
+  },
+  {
+    "key": "romans",
+    "nameKO": "로마 귀족 세력 (Romans)",
+    "nameEN": "The Romans",
+    "emoji": "🏛️",
+    "modifiers": {
+      "SIZ": "-1",
+      "STR": "-1",
+      "APP": "+1"
+    },
+    "names": {
+      "men": "Ambrosius, Aurelius, Claudius, Gaius, Gregorius, Hadrianus, Lucius, Tiberius",
+      "women": "Agrippina, Camilla, Crispina, Drusilla, Julia, Novella"
+    },
+    "appearanceKO": "로마 교황청 근방에 거주하는 체구가 작고 이목구비가 뚜렷한 고대 로마인들의 후예입니다. 항상 백색 로마 토가를 걸치고 다닙니다.",
+    "characterKO": "자신들의 고대 역사와 대리석 유적에 대해 대단한 프라이드(Proud)가 있으나 실제론 탐욕적이며(Selfish), 식탐이 높고 변덕스럽습니다(Indulgent).",
+    "skillsKO": "교황청 라틴어 필사 및 율법 논쟁(Read/Write +10), 교황청 법정 외교(Courtesy +5), 종교 신학 지식(Religion +5)",
+    "relationsKO": "샤를마뉴 대제에게 교황청 수호를 구걸하였으며 800년 크리스마스 날 대제에게 서로마 황제의 관을 씌워준 역사적인 협력 집단입니다.",
+    "chronology": [
+      {
+        "year": "774년",
+        "event": "대제가 파비아를 함락시키고 로마를 방문하여 교황청 영토 보존을 엄숙히 조인함."
+      },
+      {
+        "year": "800년",
+        "event": "대제가 로마 성 베드로 성당에서 성탄절 날 교황 레오 3세에 의해 서로마 황제로 등극함."
+      },
+      {
+        "year": "809년",
+        "event": "로마 폭동 발생 시 프랑크 정예 성기사단이 즉각 진입하여 교황의 신변을 철저히 사수함."
+      }
+    ],
+    "dailyLifeKO": "로마 콜로세움과 포룸 유적 주변의 판잣집과 저택에 모여 살며 교황청 배급과 종교 관광 기부금으로 살아갑니다. 추기경단이 사법을 통제합니다.",
+    "warfareKO": "스스로 군대를 육성할 능력이 거의 상실되어 로마 시민 자율 방범대와 교황청 소속의 프랑크 용병 대원들이 대신 전투를 전개합니다.",
+    "equipmentKO": "방범 대원: 로마식 가죽 조끼 (아머 6), 구형 로마군 투구, 청동 단검 및 장창.\n시민: 백색 비단 토가 및 종교적 은제 십자가 장식 소지.",
+    "codeOfHonorKO": "오직 현세의 이익과 교황청 정치적 영향력 보존만을 최고 가치로 삼으며 신학적 가치를 사법에 우선합니다.",
+    "fortificationsKO": "황제들이 건설한 거대 고대 벽돌 석조 요새인 '산탄젤로 성채(Castel Sant'Angelo)'를 최종 거점으로 사수합니다."
+  },
+  {
+    "key": "saxons",
+    "nameKO": "작센 & 프리지아 세력 (Saxons & Frisians)",
+    "nameEN": "The Saxons and Frisians",
+    "emoji": "🌲",
+    "modifiers": {
+      "SIZ": "+1",
+      "DEX": "-1",
+      "STR": "+1",
+      "CON": "-1"
+    },
+    "names": {
+      "men": "Adalbert, Bruno, Egil, Gerold, Imma, Radbod, Sturm, Widukind, Wulf",
+      "women": "Geva, Oda, Sebile, Thekla"
+    },
+    "appearanceKO": "제국 북동부 작센 밀림과 프리지아 해안가에 살며 멧집이 매우 좋은 장사(SIZ +1, STR +1)들입니다. 털가죽 망토를 두르고 다닙니다.",
+    "characterKO": "대제의 억압적 가톨릭 개종 정책에 피로 항쟁하는 강인한 전사들입니다. 독립성이 극도로 높고 완고하며 이교 전통(Arbitrary)이 굳건합니다.",
+    "skillsKO": "밀림 수렵 및 추적(Hunting +5), 혹한 야외 생존 및 겨울 늪지 지리(Awareness +5), 도끼 전투술(Axe +5)",
+    "relationsKO": "대제가 평생 동안 무려 30년 넘게 피의 정벌(Saxon Wars)을 전개한 최대의 영적 숙적이자 변경의 공포 대상입니다.",
+    "chronology": [
+      {
+        "year": "772년",
+        "event": "대제가 작센의 심장인 신성한 거목 이르민술(Irminsul)을 철저히 베어버려 피의 복수전 촉발."
+      },
+      {
+        "year": "782년",
+        "event": "쥔텔 산맥 대첩 및 베르덴 참수형. 대제가 하루 만에 4,500명의 작센 포로를 처형함."
+      },
+      {
+        "year": "785년",
+        "event": "작센의 영웅 비두킨드(Widukind) 대공이 대제에게 세례를 받고 굴복하여 전쟁의 첫 기틀 완화."
+      }
+    ],
+    "dailyLifeKO": "라인강 너머 울창한 침엽수 삼림 속의 목조 방벽 마을에서 농사를 짓고 사냥하며 거친 삶을 일굽니다. 전사 평의회 알팅(Althing)의 평결을 따릅니다.",
+    "warfareKO": "기마술이 없어 전원이 땅에 발을 딛고 거대한 둥근 목제 방패를 겹쳐 짠 '방패벽(Shield Wall)' 전술과 무시무시한 양손 도끼를 휘두릅니다.",
+    "equipmentKO": "작센 족장: 가죽 흉갑 및 강철 뿔 투구 (아머 8), 중형 둥근 가죽 방패, 양손 도끼.\n전사: 짐승 모피옷 (아머 4), 프리지아제 롱 소드, 단검 및 단궁.",
+    "codeOfHonorKO": "기독교를 기만으로 여기고 침엽수 삼림 깊은 곳의 거목 이르민술 아래에서 게르만 고대 신들에게 피의 맹세를 올리는 전사 도덕을 수호합니다.",
+    "fortificationsKO": "산꼭대기에 거대 흙벽 요새를 세우고 참호를 삼중으로 파내려 간 '시그부르크(Sigiburg)' 식 요새 성채를 운용합니다."
+  },
+  {
+    "key": "slavs",
+    "nameKO": "동부 슬라브 집단 (Slavs)",
+    "nameEN": "The Slavs",
+    "emoji": "🐸",
+    "modifiers": {
+      "SIZ": "-2"
+    },
+    "names": {
+      "men": "Celeadrag, Dragan, Lecho, Pribina, Radost, Vladimir, Witzan",
+      "women": "Brana, Doba, Nadia, Rada, Slata, Vera, Vesna"
+    },
+    "appearanceKO": "제국 극동쪽 엘베강 너머 습지대에 서식하는 왜소한(SIZ -2) 체구의 동유럽 원주민들입니다. 머리를 길게 땋아 내린 것이 특징입니다.",
+    "characterKO": "손님에게 음식을 대접하는 환대(Hospitality) 전통이 최고로 깊습니다. 그러나 외세에 복종(Modest)하여 억압받는 경우가 대다수입니다.",
+    "skillsKO": "늪지 및 강가 생존법, 낚시 및 통나무 배 제작, 약초 지식",
+    "relationsKO": "대제는 이들을 가치가 미미한 벌레와 같이 무시했으나, 교묘한 외교 공작을 통해 작센 족을 견제하는 이이제이(以夷制夷) 동맹 세력으로 썼습니다.",
+    "chronology": [
+      {
+        "year": "780년",
+        "event": "오보드리트 슬라브 부족이 프랑크와 최초로 군사 우방 조약을 체결함."
+      },
+      {
+        "year": "789년",
+        "event": "대제가 엘베강을 도하하여 빌치 부족을 복종시키고 제국의 동쪽 경계선을 확립함."
+      },
+      {
+        "year": "812년",
+        "event": "가톨릭으로 개종한 슬라브 연맹이 제국을 도와 덴마크 바이킹 습격 방어에 동참."
+      }
+    ],
+    "dailyLifeKO": "질척이는 늪지와 강변의 움집에서 농사를 짓고 야생 벌꿀을 채집하며 가난하게 살아갑니다. 부족 족장 평의회가 사법 전반을 대리합니다.",
+    "warfareKO": "금속 갑옷이 전무하여 가벼운 나무 창과 활을 쏘고 재빨리 강 속으로 헤엄쳐 도망치는 늪지 생존 기습 전술을 펼칩니다.",
+    "equipmentKO": "전사: 모피 쪼끼 및 가죽 아궁이 옷 (아머 4), 나무 방패, 목창, 뼈로 만든 화살 단궁.",
+    "codeOfHonorKO": "기사도는 전혀 없으며, 동맹을 맺은 프랑크 영주들을 자신들의 고대 정령 신들 아래 정직하게 영접하는 신의율을 수호합니다.",
+    "fortificationsKO": "늪지대 한가운데에 고리 모양의 목조 요새인 '그라드(Grad)'를 건설하여 최종 대피소로 운용합니다."
+  },
+  {
+    "key": "visigoths",
+    "nameKO": "남부 서고트 명가 (Visigoths)",
+    "nameEN": "The Visigoths",
+    "emoji": "🏹",
+    "modifiers": {
+      "SIZ": "-1"
+    },
+    "names": {
+      "men": "Adalric, Agobard, Bera, Chorso, Galindo, Milo, Sanilo, Tancred",
+      "women": "Dodila, Esclarmunda, Guibourc, Radegonda, Sybil"
+    },
+    "appearanceKO": "프로방스와 피레네 이북 남부 도시에 거주하는 작은(SIZ -1) 체구의 서고트족 기사들입니다. 프랑크인과 흡사하나 구레나룻 턱수염을 단정히 기릅니다.",
+    "characterKO": "남부의 비옥함 속에서 살아가는 예의 바르고(Modest) 합리적인 성정을 가졌습니다. 상업과 사법 행정에 대단한 소질이 돋보입니다.",
+    "skillsKO": "승마 돌격 및 마술(Horsemanship +5), 화폐 통상 및 영지 행정(Stewardship +5), 지중해 다국어 구사(Languages +5)",
+    "relationsKO": "사라센 침략자들에 맞서 스페인 변경령에서 프랑크 제국과 연대하였으며, 아스투리아스 기독교 왕국과 왕실 족보가 조밀하게 얽힌 든든한 동맹입니다.",
+    "chronology": [
+      {
+        "year": "714년",
+        "event": "사라센이 스페인을 병탄하자 서고트 명가들이 피레네 이북 아키텐으로 대탈출하여 안착함."
+      },
+      {
+        "year": "754년",
+        "event": "피핀 국왕이 셉티마니아를 완벽히 해방시키자 서고트 귀족들이 제국의 사법관으로 귀부함."
+      },
+      {
+        "year": "804년",
+        "event": "서고트 명문 출신의 베네딕트 성자가 젤론 수도원을 창설하고 기욤 대공을 영접함."
+      }
+    ],
+    "dailyLifeKO": "지중해 남부 해안 도시의 비옥한 장원을 관리하고 올리브유와 과수 무역을 관장하며 부유하게 살아갑니다. 철저히 로마 성문법을 신뢰합니다.",
+    "warfareKO": "프랑크의 무거운 플레이트 메일 전술을 차용하여 강력한 돌격 마술(Horsemanship)과 궁정 검술을 유기적으로 조합해 싸웁니다.",
+    "equipmentKO": "기사: 최고급 사슬 메일 조끼 (아머 10), 강철 원형 투구, 서고트식 롱소드, 스패니쉬 호스.\n풋맨: 가죽 옷 (아머 6), 투창 및 중형 카이트 쉴드 방패.",
+    "codeOfHonorKO": "프랑크의 봉건제와 성문 사법, 기사도 맹세를 대단히 정직하게 준수하며 교회의 자선 사업에 막대한 부를 쾌척합니다.",
+    "fortificationsKO": "견고한 남부 석조 영지 성채와 방어용 벽돌 성탑 요새를 소유하여 영지를 안전하게 수호합니다."
+  },
+  {
+    "key": "legendary",
+    "nameKO": "전설의 땅 - 에티오피아 & 카테이 (Legendary Lands)",
+    "nameEN": "Legendary Lands",
+    "emoji": "✨",
+    "modifiers": {},
+    "names": {
+      "men": "Senapo, Agrican, Gradasso, Brunello",
+      "women": "Angelica, Clarice"
+    },
+    "appearanceKO": "제국의 영역을 아득히 벗어난 머나먼 극동과 아프리카의 존재들입니다. 황금 비단 외투를 걸치고 신비로운 마법 장신구를 두르고 있습니다.",
+    "characterKO": "아득히 먼 미지의 세상에서 온 신비로운 영웅들입니다. 황금을 가볍게 여기며 고도의 신비로운 환술을 부립니다.",
+    "skillsKO": "마법 주문 해제 및 환상 식별(Faerie Lore +10), 외국어 마스터(Languages +10)",
+    "relationsKO": "사라센 세력의 배후 동맹이거나, 신비로운 보석을 지키는 존재들이며, 아스톨프 기사가 히포그리프를 타고 방문하여 우방의 인연을 맺었습니다.",
+    "chronology": [
+      {
+        "year": "775년",
+        "event": "동방 카테이(중국)의 안젤리카 공주가 대제의 어전에 출현하여 성기사단의 이성을 홀려 비장한 소동 유발."
+      },
+      {
+        "year": "776년",
+        "event": "성기사 아스톨프 경이 아프리카 에티오피아의 세나포 국왕을 아라비아 괴수들의 고난에서 구하고 동맹 구축."
+      }
+    ],
+    "dailyLifeKO": "황금 성벽이 번쩍이고 공중 정원이 회전하는 장엄한 동방의 대수도 알브라카(Albracca)에서 마법적 번영을 누리며 풍족하게 삽니다.",
+    "warfareKO": "마법과 신비로운 괴수(히포그리프 등), 그리고 온몸을 불사르는 강력한 동방의 마법 방패를 무기로 사용하여 프랑크 기병을 제압합니다.",
+    "equipmentKO": "귀족: 황금 비단 판금 의복 (아머 15), 마법 보석 반지, 투명 비단 안개 베일.\n유목: 동양의 신비로운 마법 곡도, 룬 마법 나팔.",
+    "codeOfHonorKO": "프랑크의 기사도를 모르지만, 기사들의 고결한 맹세에 감복하여 침례를 받고 스스로 성기사단에 자청해 합류하기도 하는 신비로운 명예 규범을 가졌습니다.",
+    "fortificationsKO": "마법의 안개와 투명 주문으로 은폐되어 침입자들의 감각을 교란하는 공중 회전 성채를 소유합니다."
+  }
+];

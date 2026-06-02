@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography } from '../data/lore';
+import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures } from '../data/lore';
 import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw } from 'lucide-react';
 import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
@@ -10,6 +10,9 @@ export default function LoreEncyclopedia() {
   const [selectedScenario, setSelectedScenario] = useState(soloScenarios[0]);
   const [selectedRegion, setSelectedRegion] = useState(gazetteer[0]);
   const [selectedMonster, setSelectedMonster] = useState(bestiary[0]);
+  const [selectedNPC, setSelectedNPC] = useState(npcs ? npcs[0] : null);
+  const [selectedCulture, setSelectedCulture] = useState(cultures ? cultures[0] : null);
+  const [npcViewMode, setNpcViewMode] = useState('major'); // 'major', 'paladins'
   const [searchQuery, setSearchQuery] = useState('');
 
   // Name Generator State
@@ -117,6 +120,27 @@ export default function LoreEncyclopedia() {
     e.desc.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const filteredNPCs = (npcs || []).filter(n =>
+    n.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    n.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    n.titleKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    n.biographyKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    n.significantItems.some(item => item.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const filteredPaladins = (paladins || []).filter(p =>
+    p.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    p.desc.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const filteredCultures = (cultures || []).filter(c =>
+    c.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.characterKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    c.appearanceKO.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="cs-page view-animate">
       {/* Tutorial Header Banner */}
@@ -144,6 +168,40 @@ export default function LoreEncyclopedia() {
           onClick={() => { setActiveSubTab('families'); setSearchQuery(''); }}
         >
           <Shield size={16} /> 8대 위대한 가문
+        </button>
+        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
+        <button 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontSize: '1rem', 
+            fontWeight: activeSubTab === 'npcs' ? 'bold' : 'normal', 
+            color: activeSubTab === 'npcs' ? 'var(--color-crimson)' : 'var(--color-ink-light)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onClick={() => { setActiveSubTab('npcs'); setSearchQuery(''); setSelectedNPC(npcs[0]); }}
+        >
+          <Award size={16} /> 주요 인물 &amp; 영웅 (Ch.16)
+        </button>
+        <span style={{ color: 'var(--color-gold-light)' }}>|</span>
+        <button 
+          style={{ 
+            background: 'none', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontSize: '1rem', 
+            fontWeight: activeSubTab === 'cultures' ? 'bold' : 'normal', 
+            color: activeSubTab === 'cultures' ? 'var(--color-crimson)' : 'var(--color-ink-light)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+          onClick={() => { setActiveSubTab('cultures'); setSearchQuery(''); setSelectedCulture(cultures[0]); }}
+        >
+          <Globe size={16} /> 외래 문화 &amp; 세력 (Ch.17)
         </button>
         <span style={{ color: 'var(--color-gold-light)' }}>|</span>
         <button 
@@ -260,6 +318,8 @@ export default function LoreEncyclopedia() {
               activeSubTab === 'scenarios' ? "시나리오 이름 또는 규칙 검색..." :
               activeSubTab === 'gazetteer' ? "지역 영지 이름 또는 영주 검색..." :
               activeSubTab === 'bestiary' ? "괴수/야수 이름 또는 카테고리 검색..." :
+              activeSubTab === 'npcs' ? "인물 이름, 작위 또는 성물 검색..." :
+              activeSubTab === 'cultures' ? "세력 이름, 기질 또는 연표 검색..." :
               activeSubTab === 'names' ? "현대 이름 또는 프랑크어 동의어 검색..." :
               "도서명, 저자, 또는 설명 검색..."
             }
@@ -765,7 +825,437 @@ export default function LoreEncyclopedia() {
         </div>
       )}
 
-      {/* 3. FEUDAL & HISTORICAL INFO TAB */}
+
+      {/* 2.5. NPCS TAB (Chapter 16) */}
+      {activeSubTab === 'npcs' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* NPC View Mode Switcher */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
+            <button 
+              onClick={() => { setNpcViewMode('major'); setSearchQuery(''); }}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '4px',
+                border: '1.5px solid var(--color-gold)',
+                background: npcViewMode === 'major' ? 'var(--color-crimson)' : '#fff',
+                color: npcViewMode === 'major' ? '#fff' : 'var(--color-ink)',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '0.85rem'
+              }}
+            >
+              👑 전설의 8대 영웅 (Major Heroes)
+            </button>
+            <button 
+              onClick={() => { setNpcViewMode('paladins'); setSearchQuery(''); }}
+              style={{
+                padding: '6px 12px',
+                borderRadius: '4px',
+                border: '1.5px solid var(--color-gold)',
+                background: npcViewMode === 'paladins' ? 'var(--color-crimson)' : '#fff',
+                color: npcViewMode === 'paladins' ? '#fff' : 'var(--color-ink)',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+                fontSize: '0.85rem'
+              }}
+            >
+              🛡️ 32인 제국 성기사단 로스터 (Paladins Roster)
+            </button>
+          </div>
+
+          {npcViewMode === 'major' && (
+            <div className="cs-row" style={{ alignItems: 'flex-start', gap: '20px' }}>
+              {/* Left List */}
+              <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
+                  전설의 8대 영웅 일람
+                </h3>
+                {filteredNPCs.map(n => (
+                  <div 
+                    key={n.key}
+                    onClick={() => setSelectedNPC(n)}
+                    style={{ 
+                      padding: '12px', 
+                      border: selectedNPC?.key === n.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                      borderRadius: '4px',
+                      background: selectedNPC?.key === n.key ? 'rgba(179,143,67,0.06)' : '#fff',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <div>
+                      <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>👑</span>
+                      <strong style={{ fontSize: '0.95rem', color: selectedNPC?.key === n.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{n.nameKO.split(' (')[0]}</strong>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{n.nameEN.split(' (')[0]}</div>
+                    </div>
+                    <ChevronRight size={16} color="var(--color-gold)" />
+                  </div>
+                ))}
+                {filteredNPCs.length === 0 && (
+                  <p style={{ textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', padding: '20px 0' }}>검색 결과가 없습니다.</p>
+                )}
+              </div>
+
+              {/* Right Details */}
+              {selectedNPC && (
+                <section className="cs-section" style={{ flex: '2 1 450px' }}>
+                  <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3>👑 {selectedNPC.nameKO}</h3>
+                    <span style={{ fontSize: '0.8rem', padding: '2px 6px', background: 'rgba(255,255,255,0.2)', color: '#fff', borderRadius: '4px', fontWeight: 'bold' }}>
+                      명예: {selectedNPC.glory.toLocaleString()} Glory
+                    </span>
+                  </div>
+                  <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
+                    
+                    {/* Title & Combat derived values */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                        <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 신분 및 작위</div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedNPC.titleKO}</div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>{selectedNPC.titleEN}</div>
+                      </div>
+                      <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>⚔️ 피해 (Damage)</div>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--color-crimson)' }}>{selectedNPC.damage}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>🛡️ 아머 (Armor)</div>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>{selectedNPC.armor}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Character Stats Grid */}
+                    <div style={{ border: '1px solid var(--color-gold-light)', borderRadius: '6px', background: '#fff', padding: '12px', boxShadow: '0 2px 6px rgba(0,0,0,0.02)' }}>
+                      <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '8px' }}>📊 캐릭터 고유 속성 (Attributes)</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px', marginBottom: '10px' }}>
+                        {['STR', 'CON', 'SIZ', 'DEX', 'APP'].map(att => (
+                          <div key={att} style={{ textAlign: 'center', background: '#faf8f5', padding: '4px', borderRadius: '4px', border: '1px solid var(--color-grey-light)' }}>
+                            <div style={{ fontSize: '0.65rem', color: 'var(--color-grey)', fontWeight: 'bold' }}>{att}</div>
+                            <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-ink)' }}>{selectedNPC.stats[att]}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
+                        <div style={{ background: '#fff5f5', padding: '6px 8px', borderRadius: '4px', border: '1px solid #ffab91' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>
+                            <span>HP (생명력)</span>
+                            <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold' }}>{selectedNPC.stats.HP}</span>
+                          </div>
+                          <div style={{ height: '5px', background: '#e0e0e0', borderRadius: '2.5px', overflow: 'hidden' }}>
+                            <div style={{ height: '100%', width: '100%', background: 'var(--color-crimson)' }} />
+                          </div>
+                        </div>
+                        <div style={{ textAlign: 'center', background: '#faf8f5', padding: '4px', borderRadius: '4px', border: '1px solid var(--color-grey-light)', fontSize: '0.75rem' }}>
+                          <div style={{ color: 'var(--color-grey)', fontSize: '0.6rem' }}>MW (치명상)</div>
+                          <strong style={{ color: 'var(--color-ink)' }}>{selectedNPC.stats.MW}</strong>
+                        </div>
+                        <div style={{ textAlign: 'center', background: '#faf8f5', padding: '4px', borderRadius: '4px', border: '1px solid var(--color-grey-light)', fontSize: '0.75rem' }}>
+                          <div style={{ color: 'var(--color-grey)', fontSize: '0.6rem' }}>UC (기절치)</div>
+                          <strong style={{ color: 'var(--color-ink)' }}>{selectedNPC.stats.UC}</strong>
+                        </div>
+                        <div style={{ textAlign: 'center', background: '#faf8f5', padding: '4px', borderRadius: '4px', border: '1px solid var(--color-grey-light)', fontSize: '0.75rem' }}>
+                          <div style={{ color: 'var(--color-grey)', fontSize: '0.6rem' }}>KD (낙마치)</div>
+                          <strong style={{ color: 'var(--color-ink)' }}>{selectedNPC.stats.KD}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 12 Chivalrous Traits Grid with visual sliders */}
+                    <div style={{ border: '1px dashed var(--color-gold)', borderRadius: '6px', background: 'rgba(179,143,67,0.02)', padding: '12px' }}>
+                      <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '8px' }}>⚖️ 기사단 12 성향치 (Chivalrous Traits)</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 8px', fontSize: '0.8rem' }}>
+                        {Object.entries(selectedNPC.traits).map(([trait, val]) => {
+                          const opposingMap = {
+                            Chaste: 'Lustful', Energetic: 'Lazy', Forgiving: 'Vengeful',
+                            Generous: 'Selfish', Honest: 'Deceitful', Just: 'Arbitrary',
+                            Merciful: 'Cruel', Modest: 'Proud', Prudent: 'Reckless',
+                            Temperate: 'Indulgent', Trusting: 'Suspicious', Valorous: 'Cowardly'
+                          };
+                          const opposing = opposingMap[trait] || '';
+                          const total = 20;
+                          const firstPct = Math.min((val / total) * 100, 100);
+                          return (
+                            <div key={trait} style={{ borderBottom: '1px solid rgba(0,0,0,0.04)', paddingBottom: '4px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px', fontWeight: '500' }}>
+                                <span style={{ color: val >= 16 ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{trait} ({val})</span>
+                                <span style={{ color: 'var(--color-grey)', fontSize: '0.75rem' }}>{opposing}</span>
+                              </div>
+                              <div style={{ height: '4px', background: '#e0e0e0', borderRadius: '2px', overflow: 'hidden', display: 'flex' }}>
+                                <div style={{ width: `${firstPct}%`, background: val >= 16 ? 'var(--color-crimson)' : 'var(--color-gold)' }} />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {selectedNPC.directedTraits && selectedNPC.directedTraits !== "없음" && (
+                        <div style={{ marginTop: '8px', fontSize: '0.78rem', borderTop: '1px dashed var(--color-gold-light)', paddingTop: '6px' }}>
+                          <strong>🎯 지향성 성향 (Directed Traits):</strong> <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold' }}>{selectedNPC.directedTraits}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Passions & Ideals */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                        <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>❤️ 마음의 열망 (Passions)</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                          {selectedNPC.passions.map((p, idx) => (
+                            <div key={idx} style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between' }}>
+                              <span style={{ color: 'var(--color-ink-light)' }}>{p.name}</span>
+                              <strong style={{ color: 'var(--color-crimson)' }}>{p.value}</strong>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                        <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>⚜️ 기사적 이상 (Ideals)</div>
+                        <div style={{ fontSize: '0.82rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', fontFamily: 'var(--font-korean-serif)', lineHeight: '1.4' }}>
+                          {selectedNPC.ideals}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Skills Grid */}
+                    <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>📜 기사도 기술 (Courtly &amp; Common Skills)</div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {selectedNPC.skills.map((s, idx) => (
+                          <span key={idx} style={{ fontSize: '0.78rem', background: '#f5f5f5', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-ink)' }}>{s}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Combat Skills Grid */}
+                    <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>⚔️ 전투 무기 기술 (Combat Weapon Skills)</div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {selectedNPC.combatSkills.map((cs, idx) => (
+                          <span key={idx} style={{ fontSize: '0.78rem', background: '#fff5f5', border: '1px solid #ffcdd2', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-crimson)', fontWeight: '500' }}>{cs}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Significant Items */}
+                    <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: 'rgba(179,143,67,0.02)' }}>
+                      <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '6px' }}>✨ 핵심 장비 및 성물 (Significant Items)</div>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                        {selectedNPC.significantItems.map((item, idx) => (
+                          <span key={idx} style={{ fontSize: '0.78rem', background: '#fff', border: '1px solid var(--color-gold)', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-gold-dark)', fontWeight: '500' }}>{item}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Biography */}
+                    <div>
+                      <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '6px' }}>📖 성사기 고증 약사 및 해설</h4>
+                      <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
+                        {selectedNPC.biographyKO}
+                      </p>
+                      <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
+                        {selectedNPC.biographyEN}
+                      </p>
+                    </div>
+
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
+
+          {npcViewMode === 'paladins' && (
+            <div className="cs-row" style={{ width: '100%' }}>
+              <section className="cs-section" style={{ flex: '1 1 100%' }}>
+                <div className="sheet-ribbon">
+                  <h3>🛡️ 32인 제국 성기사단 로스터 (Official Roster of Paladins)</h3>
+                </div>
+                <div className="cs-section-inner" style={{ overflowX: 'auto', backgroundColor: '#fff' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid var(--color-gold)', textAlign: 'left', color: 'var(--color-gold-dark)' }}>
+                        <th style={{ padding: '10px 8px' }}>성기사 이름 (Name)</th>
+                        <th style={{ padding: '10px 8px' }}>서임 시기 (Knighted)</th>
+                        <th style={{ padding: '10px 8px' }}>동료 기사 (Companion)</th>
+                        <th style={{ padding: '10px 8px' }}>룰북 공식 행적 및 서사적 고증 요약</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredPaladins.map((p, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid var(--color-grey-light)', background: idx % 2 === 0 ? 'rgba(179,143,67,0.02)' : '#fff' }}>
+                          <td style={{ padding: '10px 8px', fontWeight: 'bold', color: 'var(--color-crimson)', minWidth: '150px' }}>
+                            {p.nameKO} <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)', fontWeight: 'normal' }}>{p.nameEN}</div>
+                          </td>
+                          <td style={{ padding: '10px 8px', fontWeight: '500', minWidth: '80px' }}>{p.knighted}</td>
+                          <td style={{ padding: '10px 8px', color: 'var(--color-royal-blue)', minWidth: '120px' }}>{p.companion}</td>
+                          <td style={{ padding: '10px 8px', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{p.desc}</td>
+                        </tr>
+                      ))}
+                      {filteredPaladins.length === 0 && (
+                        <tr>
+                          <td colSpan={4} style={{ padding: '20px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic' }}>검색 결과가 없습니다.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* 2.7. CULTURES TAB (Chapter 17) */}
+      {activeSubTab === 'cultures' && (
+        <div className="cs-row" style={{ alignItems: 'flex-start', gap: '20px' }}>
+          {/* Left List */}
+          <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
+              제국 16대 외래 집단 일람
+            </h3>
+            {filteredCultures.map(c => (
+              <div 
+                key={c.key}
+                onClick={() => setSelectedCulture(c)}
+                style={{ 
+                  padding: '12px', 
+                  border: selectedCulture?.key === c.key ? '2px solid var(--color-gold)' : '1px solid var(--color-grey-light)',
+                  borderRadius: '4px',
+                  background: selectedCulture?.key === c.key ? 'rgba(179,143,67,0.06)' : '#fff',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{c.emoji}</span>
+                  <strong style={{ fontSize: '0.95rem', color: selectedCulture?.key === c.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{c.nameKO.split(' (')[0]}</strong>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{c.nameEN}</div>
+                </div>
+                <ChevronRight size={16} color="var(--color-gold)" />
+              </div>
+            ))}
+            {filteredCultures.length === 0 && (
+              <p style={{ textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', padding: '20px 0' }}>검색 결과가 없습니다.</p>
+            )}
+          </div>
+
+          {/* Right Details */}
+          {selectedCulture && (
+            <section className="cs-section" style={{ flex: '2 1 450px' }}>
+              <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>{selectedCulture.emoji} {selectedCulture.nameKO}</h3>
+                <span style={{ fontSize: '0.9rem', color: '#fff', fontWeight: 'bold' }}>{selectedCulture.nameEN}</span>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
+                
+                {/* Physical Modifiers from Table 17-1 */}
+                <div style={{ border: '1.5px solid var(--color-gold)', padding: '12px', borderRadius: '6px', background: '#fffef9' }}>
+                  <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px' }}>📊 신체 능력치 증감 보정치 (Table 17-1 Physical Modifiers)</div>
+                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    {Object.keys(selectedCulture.modifiers).length > 0 ? (
+                      Object.entries(selectedCulture.modifiers).map(([att, val]) => (
+                        <span key={att} style={{ fontSize: '0.85rem', padding: '4px 10px', background: 'rgba(179,143,67,0.04)', border: '1.5px solid var(--color-gold)', borderRadius: '4px', fontWeight: 'bold', color: 'var(--color-ink)' }}>
+                          {att}: <strong style={{ color: val.startsWith('-') ? 'var(--color-crimson)' : 'var(--color-royal-blue)' }}>{val}</strong>
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', fontStyle: 'italic' }}>기본 인간 속성 적용 (보정치 없음)</span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Naming 풀 및 대표 외모 */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🗣️ 대표 작명 풀 (Representative Names)</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--color-ink)' }}>
+                      <div><strong>남성:</strong> {selectedCulture.names.men}</div>
+                      <div style={{ marginTop: '4px' }}><strong>여성:</strong> {selectedCulture.names.women}</div>
+                    </div>
+                  </div>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>👥 신체 및 외모적 특징</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.appearanceKO}</div>
+                  </div>
+                </div>
+
+                {/* Character, Skills, Relations */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>⚖️ 세력의 문화적 기질</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.characterKO}</div>
+                  </div>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>📜 문화적 특기 기술</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.skillsKO}</div>
+                  </div>
+                </div>
+
+                {/* Relations with Franks */}
+                <div style={{ border: '1px dashed var(--color-gold)', padding: '10px', borderRadius: '4px', background: 'rgba(179,143,67,0.02)' }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>⚜️ 프랑크 제국 황실과의 관계</div>
+                  <div style={{ fontSize: '0.84rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.relationsKO}</div>
+                </div>
+
+                {/* Daily Life, Warfare, Equipment, Honor, Fortifications */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🏕️ 사회 및 경제 생활방식</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.dailyLifeKO}</div>
+                  </div>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>⚔️ 전투 방식 및 전술</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.warfareKO}</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🛡️ 표준 무장 (Standard Equipment)</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.equipmentKO}</div>
+                  </div>
+                  <div style={{ border: '1px solid var(--color-grey-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
+                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>🏰 요새화 수준 (Fortifications)</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.fortificationsKO}</div>
+                  </div>
+                </div>
+
+                <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: 'rgba(179,143,67,0.02)' }}>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>⚖️ 세력의 고유 명예율 (Code of Honor)</div>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.4', fontFamily: 'var(--font-korean-serif)' }}>{selectedCulture.codeOfHonorKO}</div>
+                </div>
+
+                {/* Chronology Timeline */}
+                {selectedCulture.chronology && selectedCulture.chronology.length > 0 && (
+                  <div style={{ borderTop: '1px solid var(--color-grey-light)', paddingTop: '12px' }}>
+                    <h4 style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', marginBottom: '8px' }}>
+                      📅 제국 대역사 속 핵심 연표 (Chronology)
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {selectedCulture.chronology.map((c, idx) => (
+                        <div key={idx} style={{ display: 'flex', gap: '8px', fontSize: '0.82rem', lineHeight: '1.4' }}>
+                          <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', minWidth: '55px' }}>{c.year}</span>
+                          <span style={{ color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>{c.event}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </section>
+          )}
+        </div>
+      )}
+
+            {/* 3. FEUDAL & HISTORICAL INFO TAB */}
       {activeSubTab === 'feudal' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
