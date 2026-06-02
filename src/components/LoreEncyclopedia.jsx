@@ -938,7 +938,7 @@ export default function LoreEncyclopedia() {
           )}
 
           {selectedTerritory === null && (
-            <section className="cs-section" style={{ flex: '2 1 480px' }}>
+            <section className="cs-section" style={{ flex: '3.5 1 720px' }}>
               <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>🗺️ 제국 공식 지도첩 (Carolingian Atlas)</h3>
               </div>
@@ -986,16 +986,16 @@ export default function LoreEncyclopedia() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', alignItems: 'center', width: '100%' }}>
                   {(() => {
                     const territoryHotspots = [
-                      { key: 'austrasia', name: '오스트라시아 (Austrasia)', top: '22%', left: '41%', width: '12%', height: '14%' },
-                      { key: 'neustria', name: '네우스트리아 (Neustria)', top: '28%', left: '23%', width: '12%', height: '14%' },
-                      { key: 'burgundy', name: '부르군트 (Burgundy)', top: '48%', left: '38%', width: '11%', height: '14%' },
-                      { key: 'aquitaine', name: '아키텐 (Aquitaine)', top: '56%', left: '19%', width: '13%', height: '15%' },
-                      { key: 'gascony', name: '가스코뉴 (Gascony)', top: '74%', left: '13%', width: '10%', height: '10%' },
-                      { key: 'provence', name: '프로방스 (Provence)', top: '70%', left: '42%', width: '10%', height: '10%' },
-                      { key: 'septimania', name: '셉티마니아 (Septimania)', top: '72%', left: '26%', width: '11%', height: '10%' },
-                      { key: 'alemannia', name: '알레마니아 (Alemannia)', top: '38%', left: '48%', width: '10%', height: '12%' },
-                      { key: 'bavaria', name: '바이에른 (Bavaria)', top: '40%', left: '59%', width: '11%', height: '13%' },
-                      { key: 'thuringia', name: '튀링겐 (Thuringia)', top: '22%', left: '53%', width: '10%', height: '12%' }
+                      { key: 'austrasia', name: '오스트라시아 (Austrasia)', top: '22%', left: '36.8%', width: '17.6%', height: '14%' },
+                      { key: 'neustria', name: '네우스트리아 (Neustria)', top: '28%', left: '10.3%', width: '17.6%', height: '14%' },
+                      { key: 'burgundy', name: '부르군트 (Burgundy)', top: '48%', left: '32.4%', width: '16.2%', height: '14%' },
+                      { key: 'aquitaine', name: '아키텐 (Aquitaine)', top: '56%', left: '4.4%', width: '19.1%', height: '15%' },
+                      { key: 'gascony', name: '가스코뉴 (Gascony)', top: '74%', left: '1%', width: '15%', height: '10%' },
+                      { key: 'provence', name: '프로방스 (Provence)', top: '70%', left: '38.2%', width: '14.7%', height: '10%' },
+                      { key: 'septimania', name: '셉티마니아 (Septimania)', top: '72%', left: '14.7%', width: '16.2%', height: '10%' },
+                      { key: 'alemannia', name: '알레마니아 (Alemannia)', top: '38%', left: '47.1%', width: '14.7%', height: '12%' },
+                      { key: 'bavaria', name: '바이에른 (Bavaria)', top: '40%', left: '63.2%', width: '16.2%', height: '13%' },
+                      { key: 'thuringia', name: '튀링겐 (Thuringia)', top: '22%', left: '54.4%', width: '14.7%', height: '12%' }
                     ];
 
                     const handleHotspotClick = (key) => {
@@ -1158,7 +1158,7 @@ export default function LoreEncyclopedia() {
                                     <strong style={{ color: 'var(--color-crimson)' }}>{hoveredHotspot.passionKO.split(' 또는')[0]}</strong>
                                   </div>
                                 </div>
-                                <div style={{ fontSize: '0.78rem', borderTop: '1px dashed rgba(179,143,67,0.1)', paddingTop: '6px' }}>
+                                <div style={{ fontSize: '0.78rem', borderTop: '1px dashed rgba(179,143,67,0.15)', paddingTop: '6px' }}>
                                   <span style={{ color: 'var(--color-grey)', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>📊 고향 보정치 (Homeland Modifiers)</span>
                                   <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                     {hoveredHotspot.modifiers.map((m, idx) => (
@@ -1187,7 +1187,7 @@ export default function LoreEncyclopedia() {
                             <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.5, textAlign: 'left', marginBottom: '12px' }}>
                               플레이어 성기사들이 어린 시절 교육받고 모험을 시작하는 아르덴 공국 및 바스토뉴(Bastogne) 요새도시 중심의 세부 강역도입니다. 울창한 원시 삼림과 복잡한 지류, 신비 유적 및 수도원들의 상세 입지가 결합되어 있습니다.
                             </p>
-                            <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)' }}>
+                            <div style={{ border: '2px solid var(--color-gold-light)', padding: '6px', borderRadius: '4px', background: '#fff', boxShadow: '0 4px 10px rgba(0,0,0,0.06)', maxWidth: '650px', margin: '0 auto' }}>
                               <img 
                                 src={ardennesMap} 
                                 alt="Map of the Ardennes" 
