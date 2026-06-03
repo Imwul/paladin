@@ -165,13 +165,11 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const isGapYear = (yr, stage) => {
-    if (stage.startsWith('gf')) {
-      return [724, 726, 727, 730, 733, 734].includes(yr);
-    } else if (stage.startsWith('f')) {
-      return [748, 752, 755, 759].includes(yr);
-    }
+    // 모든 연도는 고유 핸들러 또는 runGfOrdinaryYear/runFOrdinaryYear로 처리됨
+    // 갭 연도(공백기 자동통과) 개념은 사용하지 않음
     return false;
   };
+
 
   const saveChronicleHistory = () => {
     const snapshot = {
