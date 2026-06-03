@@ -170,6 +170,13 @@ export default function FamilyWinter({ character, setCharacter }) {
     return false;
   };
 
+  // 룰북에 이벤트 테이블이 없어 주사위 판정 없이 자동 통과해야 하는 연도
+  const isAutoPassYear = (yr, stage) => {
+    if (stage === 'gf_running') {
+      return [724, 726, 727, 730, 733, 734].includes(yr);
+    }
+    return false;
+  };
 
   const saveChronicleHistory = () => {
     const snapshot = {
@@ -3984,30 +3991,51 @@ export default function FamilyWinter({ character, setCharacter }) {
                               </div>
                             ) : (
                               <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid rgba(179,143,67,0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력:</span>
-                                    <input
-                                      type="text"
-                                      placeholder="예: 15"
-                                      value={chronicleManualD20}
-                                      onChange={e => setChronicleManualD20(e.target.value)}
-                                      style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                    />
+                                {isAutoPassYear(interactiveYear, interactiveStage) ? (
+                                  // 자동 통과 연도: 주사위 없이 바로 통과 버튼
+                                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                                    <span style={{ fontSize: '0.82rem', color: 'var(--color-grey)', textAlign: 'center' }}>
+                                      📖 이 해는 룰북에 이벤트 테이블이 없습니다. 주사위 판정 없이 자동으로 넘어갑니다.
+                                    </span>
+                                    <button
+                                      type="button"
+                                      className="btn-medieval btn-medieval-primary"
+                                      style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--color-success)', borderColor: 'var(--color-success)' }}
+                                      onClick={rollSingleYearInteractive}
+                                    >
+                                      ✅ {interactiveYear}년 자동 통과
+                                    </button>
                                   </div>
-                                  <button
-                                    type="button"
-                                    className="btn-medieval btn-medieval-primary"
-                                    style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px' }}
-                                    onClick={rollSingleYearInteractive}
-                                  >
-                                    ⚔️ {interactiveYear}년 운명 주사위 판정
-                                  </button>
-                                </div>
-                                <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
-                                </span>
+                                ) : (
+                                  // 일반 연도: 주사위 입력 + 판정 버튼
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력:</span>
+                                      <input
+                                        type="text"
+                                        placeholder="예: 15"
+                                        value={chronicleManualD20}
+                                        onChange={e => setChronicleManualD20(e.target.value)}
+                                        style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                      />
+                                    </div>
+                                    <button
+                                      type="button"
+                                      className="btn-medieval btn-medieval-primary"
+                                      style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px' }}
+                                      onClick={rollSingleYearInteractive}
+                                    >
+                                      ⚔️ {interactiveYear}년 운명 주사위 판정
+                                    </button>
+                                  </div>
+                                )}
+                                {!isAutoPassYear(interactiveYear, interactiveStage) && (
+                                  <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
+                                    * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
+                                  </span>
+                                )}
                               </div>
+
                             )
                           )}
 
