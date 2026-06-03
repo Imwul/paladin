@@ -64,7 +64,17 @@ const getTitleByNameAndClass = (koName, enName, statusClass) => {
 };
 
 const splitName = (fullName) => {
-  return parseName(fullName);
+  if (!fullName) return { ko: '', en: '' };
+  const regex = /([^(]+)\s*(?:\(([^)]+)\))?/;
+  const match = fullName.match(regex);
+  let koPart = fullName;
+  let enPart = '';
+  
+  if (match) {
+    koPart = match[1].trim();
+    enPart = match[2] ? match[2].trim() : '';
+  }
+  return { ko: koPart, en: enPart };
 };
 
 export default function FamilyTree({ character, setCharacter }) {
@@ -89,7 +99,12 @@ export default function FamilyTree({ character, setCharacter }) {
   const treeContainerRef = useRef(null);
   const [lines, setLines] = useState([]);
 
-  const members = character.family?.members || [];
+  const members = (character.family?.members || []).map(m => {
+    if (m.relation === '본인' || m.id === 'roland') {
+      return { ...m, name: character.personal?.name || m.name };
+    }
+    return m;
+  });
 
   // Default Template for reset
   const defaultMembers = [
@@ -591,7 +606,7 @@ export default function FamilyTree({ character, setCharacter }) {
         <div>
           <h4 style={{ fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>🏰 {character.family.name} 가문 계보도</h4>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginTop: '2px' }}>
-            가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 롤랑 경 중심)
+            가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 {character.personal?.name || '롤랑 경'} 중심)
           </p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
