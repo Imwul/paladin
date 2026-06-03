@@ -4429,17 +4429,31 @@ export default function FamilyWinter({ character, setCharacter }) {
                             </div>
                           )}
 
-                          {/* Undo button */}
-                          {chronicleHistory.length > 0 && interactiveStage !== 'completed' && (
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px', marginBottom: '8px' }}>
+                          {/* Undo & Reset buttons */}
+                          {interactiveStage !== 'completed' && (
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px', marginBottom: '8px' }}>
                               <button
                                 type="button"
                                 className="btn-medieval"
-                                style={{ fontSize: '0.78rem', padding: '4px 10px', color: 'var(--color-grey)', borderColor: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent' }}
-                                onClick={undoLastChronicleStep}
+                                style={{ fontSize: '0.78rem', padding: '4px 10px', color: 'var(--color-crimson)', borderColor: 'rgba(185, 28, 28, 0.3)', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent' }}
+                                onClick={() => {
+                                  if (window.confirm("⚠️ 정말 연대기를 처음(723년)부터 다시 시작하시겠습니까?\n이때까지 기록된 모든 연대기 진행 내역이 초기화됩니다.")) {
+                                    startInteractiveChronicle();
+                                  }
+                                }}
                               >
-                                ↩️ 뒤로가기 (직전 판정 취소)
+                                🔄 연대기 초기화 (처음부터)
                               </button>
+                              {chronicleHistory.length > 0 && (
+                                <button
+                                  type="button"
+                                  className="btn-medieval"
+                                  style={{ fontSize: '0.78rem', padding: '4px 10px', color: 'var(--color-grey)', borderColor: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'center', gap: '4px', background: 'transparent' }}
+                                  onClick={undoLastChronicleStep}
+                                >
+                                  ↩️ 뒤로가기 (직전 판정 취소)
+                                </button>
+                              )}
                             </div>
                           )}
 
