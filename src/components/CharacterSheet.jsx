@@ -617,6 +617,39 @@ export default function CharacterSheet({ character, setCharacter }) {
     const characteristic = familyCharacteristics[customCharIndex];
     characteristic.apply(newChar);
 
+    // Sync with FamilyWinter characteristic roll system
+    const indexToRoll = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    const charRoll = indexToRoll[customCharIndex] || 1;
+
+    const charIndexToEffect = [
+      { skills: { awareness: 5 } },        // 0: 예리한 감각
+      { skills: { firstAid: 5 } },         // 1: 타고난 상처 치유력
+      { skills: { heraldry: 5, recognize: 5 } }, // 2: 얼굴과 방패
+      { skills: { horsemanship: 5 } },     // 3: 말 위에서
+      { skills: { hunting: 5 } },          // 4: 자연과의 호흡
+      { skills: { swimming: 10 } },        // 5: 수달의 재능
+      { skills: { courtesy: 10 } },        // 6: 예절
+      { skills: { dancing: 10 } },         // 7: 가벼운 발걸음
+      { skills: { eloquence: 10 } },        // 8: 이야기꾼
+      { skills: { falconry: 10 } },        // 9: 매들의 군주
+      { skills: { gaming: 10 } },          // 10: 지혜로운 노련미
+      { skills: { intrigue: 10 } },        // 11: 놀라운 통찰
+      { skills: { playInstruments: 10 } }, // 12: 타고난 악사
+      { skills: { singing: 10 } },         // 13: 축복받은 목소리
+      { skills: { battle: 5, siege: 5 } }  // 14: 전장의 지배자
+    ];
+
+    const effect = charIndexToEffect[customCharIndex] || { skills: {} };
+
+    newChar.family.characteristic = {
+      gender: 'male',
+      roll: charRoll,
+      desc: characteristic.name,
+      bonusText: characteristic.benefit,
+      applied: true,
+      appliedBonus: effect
+    };
+
     const father = fathersClasses[customFatherIndex];
     if (father.skillsAdd) {
       newChar.skills.sword += Math.floor(father.skillsAdd / 2);
@@ -1195,6 +1228,14 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </div>
               );
             })}
+            {character?.family?.characteristic?.applied && (
+              <div className="cs-field cs-field-full" style={{ gridColumn: 'span 2', backgroundColor: 'rgba(46,107,51,0.03)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(46,107,51,0.15)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.78rem', color: '#2e6b33', fontWeight: 'bold' }}>🛡️ 가문 전승 특징:</span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--color-royal-blue)' }}>
+                  <strong>{character.family.characteristic.desc}</strong> ({character.family.characteristic.bonusText})
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </section>

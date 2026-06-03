@@ -3,10 +3,248 @@ import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Comp
 import { greatFamilies } from '../data/lore';
 import FamilyTree from './FamilyTree';
 
+const MALE_CHARACTERISTICS = {
+  1: { desc: "Keen of eye and ear (예리한 오감)", bonus: { skill: "awareness", value: 5 } },
+  2: { desc: "Keen of eye and ear (예리한 오감)", bonus: { skill: "awareness", value: 5 } },
+  3: { desc: "Natural healers of wounds (천부적인 상처 응급처치)", bonus: { skill: "firstAid", value: 5 } },
+  4: { desc: "Never forget a face or a shield (문장 및 인물 기억)", bonus: { skill: "heraldry", value: 5, skill2: "recognize", value2: 5 } },
+  5: { desc: "Born in the saddle (마상의 귀재)", bonus: { skill: "horsemanship", value: 5 } },
+  6: { desc: "Born in the saddle (마상의 귀재)", bonus: { skill: "horsemanship", value: 5 } },
+  7: { desc: "At home in nature (야생과 자연의 친화)", bonus: { skill: "hunting", value: 5 } },
+  8: { desc: "At home in nature (야생과 자연의 친화)", bonus: { skill: "hunting", value: 5 } },
+  9: { desc: "Like otters in the river (수중의 수달)", bonus: { skill: "swimming", value: 10 } },
+  10: { desc: "Like otters in the river (수중의 수달)", bonus: { skill: "swimming", value: 10 } },
+  11: { desc: "Polite, elegant, lovable (품위와 사교성)", bonus: { skill: "courtesy", value: 10 } },
+  12: { desc: "Light-footed and elegant (가벼운 발놀림과 예술)", bonus: { skill: "dancing", value: 10 } },
+  13: { desc: "Good speakers and storyteller (유창한 웅변과 전설)", bonus: { skill: "eloquence", value: 10 } },
+  14: { desc: "Masters of birds (매 사냥의 대가)", bonus: { skill: "falconry", value: 10 } },
+  15: { desc: "Clever at games (체스 및 전략 게임)", bonus: { skill: "gaming", value: 10 } },
+  16: { desc: "Surprisingly deductive (예리한 직관과 수색)", bonus: { skill: "intrigue", value: 10 } },
+  17: { desc: "Gifted musicians (선천적인 악기 연주)", bonus: { skill: "playInstruments", value: 10 } },
+  18: { desc: "Excellent voice (천상의 노랫소리)", bonus: { skill: "singing", value: 10 } },
+  19: { desc: "Master tacticians (전술과 공성 지휘)", bonus: { skill: "battle", value: 5, skill2: "siege", value2: 5 } },
+  20: { desc: "Player’s choice (기사단 가문 자유 선택)", bonus: { choice: true } }
+};
+
+const FEMALE_CHARACTERISTICS = {
+  1: { desc: "Great beauty (절세의 미모)", bonus: { attribute: "app", value: 5 } },
+  2: { desc: "Great beauty (절세의 미모)", bonus: { attribute: "app", value: 5 } },
+  3: { desc: "Great beauty (절세의 미모)", bonus: { attribute: "app", value: 5 } },
+  4: { desc: "Great beauty (절세의 미모)", bonus: { attribute: "app", value: 5 } },
+  5: { desc: "Nimble fingers (섬세한 손재주와 공업)", bonus: { skill: "industry", value: 10 } },
+  6: { desc: "Natural healers (천부적인 응급처치와 치유)", bonus: { skill: "firstAid", value: 5, skill2: "chirurgery", value2: 5 } },
+  7: { desc: "Natural healers (천부적인 응급처치와 치유)", bonus: { skill: "firstAid", value: 5, skill2: "chirurgery", value2: 5 } },
+  8: { desc: "Natural healers (천부적인 응급처치와 치유)", bonus: { skill: "firstAid", value: 5, skill2: "chirurgery", value2: 5 } },
+  9: { desc: "Natural healers (천부적인 응급처치와 치유)", bonus: { skill: "firstAid", value: 5, skill2: "chirurgery", value2: 5 } },
+  10: { desc: "Natural healers (천부적인 응급처치와 치유)", bonus: { skill: "firstAid", value: 5, skill2: "chirurgery", value2: 5 } },
+  11: { desc: "Good with animals (동물과의 소통과 사냥)", bonus: { skill: "falconry", value: 5, skill2: "horsemanship", value2: 5 } },
+  12: { desc: "Good with animals (동물과의 소통과 사냥)", bonus: { skill: "falconry", value: 5, skill2: "horsemanship", value2: 5 } },
+  13: { desc: "Good with animals (동물과의 소통과 사냥)", bonus: { skill: "falconry", value: 5, skill2: "horsemanship", value2: 5 } },
+  14: { desc: "Good with animals (동물과의 소통과 사냥)", bonus: { skill: "falconry", value: 5, skill2: "horsemanship", value2: 5 } },
+  15: { desc: "Good with animals (동물과의 소통과 사냥)", bonus: { skill: "falconry", value: 5, skill2: "horsemanship", value2: 5 } },
+  16: { desc: "Beautiful voice (아름다운 음색과 가창)", bonus: { skill: "eloquence", value: 5, skill2: "singing", value2: 5 } },
+  17: { desc: "Beautiful voice (아름다운 음색과 가창)", bonus: { skill: "eloquence", value: 5, skill2: "singing", value2: 5 } },
+  18: { desc: "Caretakers (영지 가계와 치안)", bonus: { skill: "stewardship", value: 10 } },
+  19: { desc: "Caretakers (영지 가계와 치안)", bonus: { skill: "stewardship", value: 10 } },
+  20: { desc: "Player’s choice (가문 숙원 자유 선택)", bonus: { choice: true } }
+};
+
+const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue, choiceAttribute) => {
+  if (!roll) return null;
+  const table = gender === 'female' ? FEMALE_CHARACTERISTICS : MALE_CHARACTERISTICS;
+  const entry = table[roll];
+  if (!entry) return null;
+
+  if (entry.bonus.choice) {
+    if (gender === 'female') {
+      if (choiceAttribute === 'app') {
+        return {
+          desc: entry.desc + " (능력치 APP +5 선택)",
+          bonusText: "능력치 APP +5",
+          effect: { attributes: { app: 5 } }
+        };
+      } else {
+        const skillName = choiceSkill || 'industry';
+        const val = choiceValue || 10;
+        return {
+          desc: entry.desc + ` (스킬 ${skillName} +${val} 선택)`,
+          bonusText: `스킬 ${skillName} +${val}`,
+          effect: { skills: { [skillName]: val } }
+        };
+      }
+    } else {
+      const skillName = choiceSkill || 'awareness';
+      const val = choiceValue || 10;
+      return {
+        desc: entry.desc + ` (스킬 ${skillName} +${val} 선택)`,
+        bonusText: `스킬 ${skillName} +${val}`,
+        effect: { skills: { [skillName]: val } }
+      };
+    }
+  }
+
+  const effect = { skills: {}, attributes: {} };
+  let bonusText = "";
+
+  const b = entry.bonus;
+  if (b.skill) {
+    effect.skills[b.skill] = b.value;
+    bonusText += `스킬 [${b.skill}] +${b.value}`;
+  }
+  if (b.skill2) {
+    effect.skills[b.skill2] = b.value2;
+    bonusText += `, 스킬 [${b.skill2}] +${b.value2}`;
+  }
+  if (b.attribute) {
+    effect.attributes[b.attribute] = b.value;
+    bonusText += `능력치 [${b.attribute.toUpperCase()}] +${b.value}`;
+  }
+
+  return {
+    desc: entry.desc,
+    bonusText,
+    effect
+  };
+};
+
 export default function FamilyWinter({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('family');
   const [winterStep, setWinterStep] = useState(1);
   const [logMessages, setLogMessages] = useState([]);
+
+  // --- 가문 고유 특징 (Family Characteristic) 상태 ---
+  const [fcGender, setFcGender] = useState('male');
+  const [fcRoll, setFcRoll] = useState(null);
+  const [fcManualD20, setFcManualD20] = useState('');
+  const [fcChoiceSkill, setFcChoiceSkill] = useState('awareness');
+  const [fcChoiceValue, setFcChoiceValue] = useState(10);
+  const [fcChoiceAttribute, setFcChoiceAttribute] = useState('app');
+
+  useEffect(() => {
+    if (character.family?.characteristic) {
+      const c = character.family.characteristic;
+      setFcGender(c.gender || 'male');
+      setFcRoll(c.roll || null);
+    }
+  }, [character.family]);
+
+  const rollFamilyCharacteristic = () => {
+    let r;
+    if (fcManualD20 && !isNaN(fcManualD20)) {
+      r = parseInt(fcManualD20);
+      if (r < 1 || r > 20) {
+        alert("수동 주사위는 1에서 20 사이여야 합니다.");
+        return;
+      }
+    } else {
+      r = Math.floor(Math.random() * 20) + 1;
+    }
+    setFcRoll(r);
+    setFcManualD20('');
+  };
+
+  const applyFamilyCharacteristic = () => {
+    if (!fcRoll) {
+      alert("먼저 가문 특징 주사위를 굴려주세요!");
+      return;
+    }
+
+    const details = getCharacteristicDetails(fcRoll, fcGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute);
+    if (!details) return;
+
+    // 만약 이미 다른 가문 보너스가 반영되어 있다면 롤백 진행
+    const prevApplied = character.family?.characteristic?.appliedBonus;
+    
+    setCharacter(prev => {
+      const nextSkills = { ...prev.skills };
+      const nextAttributes = { ...prev.attributes };
+
+      // 이전 보너스 롤백
+      if (prevApplied && prev.family?.characteristic?.applied) {
+        if (prevApplied.skills) {
+          Object.entries(prevApplied.skills).forEach(([sKey, val]) => {
+            nextSkills[sKey] = Math.max(0, (nextSkills[sKey] || 0) - val);
+          });
+        }
+        if (prevApplied.attributes) {
+          Object.entries(prevApplied.attributes).forEach(([aKey, val]) => {
+            nextAttributes[aKey] = Math.max(3, (nextAttributes[aKey] || 0) - val);
+          });
+        }
+      }
+
+      // 새 보너스 반영 (최대 20)
+      if (details.effect.skills) {
+        Object.entries(details.effect.skills).forEach(([sKey, val]) => {
+          nextSkills[sKey] = Math.min(20, (nextSkills[sKey] || 0) + val);
+        });
+      }
+      if (details.effect.attributes) {
+        Object.entries(details.effect.attributes).forEach(([aKey, val]) => {
+          nextAttributes[aKey] = Math.min(20, (nextAttributes[aKey] || 0) + val);
+        });
+      }
+
+      return {
+        ...prev,
+        skills: nextSkills,
+        attributes: nextAttributes,
+        family: {
+          ...prev.family,
+          characteristic: {
+            gender: fcGender,
+            roll: fcRoll,
+            desc: details.desc,
+            bonusText: details.bonusText,
+            applied: true,
+            appliedBonus: details.effect
+          }
+        }
+      };
+    });
+
+    alert(`가문 특징 [${details.desc}] 보너스가 캐릭터 시트에 성공적으로 반영되었습니다!\n(${details.bonusText})`);
+  };
+
+  const removeFamilyCharacteristic = () => {
+    const prevApplied = character.family?.characteristic?.appliedBonus;
+    if (!prevApplied || !character.family?.characteristic?.applied) {
+      alert("현재 캐릭터 시트에 반영된 가문 특징이 없습니다.");
+      return;
+    }
+
+    setCharacter(prev => {
+      const nextSkills = { ...prev.skills };
+      const nextAttributes = { ...prev.attributes };
+
+      if (prevApplied.skills) {
+        Object.entries(prevApplied.skills).forEach(([sKey, val]) => {
+          nextSkills[sKey] = Math.max(0, (nextSkills[sKey] || 0) - val);
+        });
+      }
+      if (prevApplied.attributes) {
+        Object.entries(prevApplied.attributes).forEach(([aKey, val]) => {
+          nextAttributes[aKey] = Math.max(3, (nextAttributes[aKey] || 0) - val);
+        });
+      }
+
+      return {
+        ...prev,
+        skills: nextSkills,
+        attributes: nextAttributes,
+        family: {
+          ...prev.family,
+          characteristic: {
+            ...prev.family.characteristic,
+            applied: false,
+            appliedBonus: null
+          }
+        }
+      };
+    });
+
+    alert("반영되었던 가문 특징 보너스를 캐릭터 시트에서 안전하게 해제했습니다.");
+  };
 
   // --- 구원 및 성인 판정 (Salvation & Canonization) 추가 상태 ---
   const [salvationDeedsPaladin, setSalvationDeedsPaladin] = useState(false);
@@ -4002,6 +4240,174 @@ export default function FamilyWinter({ character, setCharacter }) {
                 <textarea className="form-input" rows={2} value={character.family.enemies || ''} style={{ width: '100%', padding: '6px' }}
                   onChange={e => handleFamilyChange('enemies', e.target.value)} />
               </div>
+            </div>
+
+            {/* ⚔️ 가문 고유 특징 (Family Characteristic) 결정기 섹션 */}
+            <div style={{ marginTop: '24px', borderTop: '2px dashed var(--color-gold-light)', paddingTop: '16px' }}>
+              <h4 style={{ margin: '0 0 10px 0', color: 'var(--color-royal-blue)', fontFamily: 'var(--font-korean)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem' }}>
+                <Shield size={16} />
+                ⚔️ 가문 특징 결정기 (Family Characteristic - 챕터 2)
+              </h4>
+              <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginBottom: '14px', lineHeight: 1.4 }}>
+                모든 귀족 가문은 선천적으로 한 가지 뛰어난 자질(능력)을 가집니다. 성별에 맞게 테이블을 선택하고 1d20을 굴려 가문 특징을 정하십시오. 
+                이 보너스는 <strong>캐릭터 생성 시 스킬 15 제한을 초과하여 최대 20까지</strong> 올릴 수 있습니다.
+              </p>
+
+              <div style={{ backgroundColor: 'rgba(201,168,76,0.04)', border: '1px solid rgba(201,168,76,0.18)', borderRadius: '8px', padding: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px' }}>
+                  
+                  {/* Left panel: Roll settings */}
+                  <div>
+                    <div style={{ marginBottom: '12px' }}>
+                      <span className="cs-field-label" style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>대상 성별 테이블 선택:</span>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <label style={{ fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                          <input type="radio" checked={fcGender === 'male'} onChange={() => setFcGender('male')} />
+                          남성 기사단/종자 (Table 1-1)
+                        </label>
+                        <label style={{ fontSize: '0.86rem', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                          <input type="radio" checked={fcGender === 'female'} onChange={() => setFcGender('female')} />
+                          여성 (Table 1-2)
+                        </label>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', marginBottom: '2px' }}>수동 주사위 (d20):</span>
+                        <input
+                          type="number"
+                          placeholder="수동입력"
+                          value={fcManualD20}
+                          onChange={e => setFcManualD20(e.target.value)}
+                          style={{ width: '80px', padding: '6px', fontSize: '0.82rem', border: '1px solid #ccc', borderRadius: '4px' }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-medieval btn-medieval-primary"
+                        onClick={rollFamilyCharacteristic}
+                        style={{ height: '36px', marginTop: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: '0 16px' }}
+                      >
+                        <Dices size={14} />
+                        특징 판정 주사위 굴림
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Right panel: Roll results */}
+                  <div style={{ borderLeft: '1px solid rgba(201,168,76,0.15)', paddingLeft: '16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    {fcRoll ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <div>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>판정 주사위 (d20) 결과:</span>
+                          <strong style={{ fontSize: '1rem', color: 'var(--color-crimson)', marginLeft: '6px' }}>🎲 {fcRoll}</strong>
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>가문 고유 자질:</span>
+                          <strong style={{ fontSize: '0.94rem', color: 'var(--color-royal-blue)', display: 'block', marginTop: '2px' }}>
+                            {getCharacteristicDetails(fcRoll, fcGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.desc}
+                          </strong>
+                        </div>
+                        <div>
+                          <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>시트 반영 효과:</span>
+                          <span style={{ fontSize: '0.88rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', display: 'block' }}>
+                            {getCharacteristicDetails(fcRoll, fcGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.bonusText}
+                          </span>
+                        </div>
+
+                        {/* Player's Choice detail selects */}
+                        {(fcRoll === 20) && (
+                          <div style={{ marginTop: '8px', border: '1px solid #ddd', padding: '8px', borderRadius: '4px', backgroundColor: '#fff', fontSize: '0.82rem' }}>
+                            <strong style={{ display: 'block', color: 'var(--color-crimson)', marginBottom: '4px' }}>🎯 자유 선택 설정:</strong>
+                            {fcGender === 'female' ? (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <input type="radio" checked={fcChoiceAttribute === 'app'} onChange={() => setFcChoiceAttribute('app')} />
+                                  능력치 APP +5
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                  <input type="radio" checked={fcChoiceAttribute !== 'app'} onChange={() => setFcChoiceAttribute('')} />
+                                  스킬 직접 선택
+                                </label>
+                                {fcChoiceAttribute !== 'app' && (
+                                  <div style={{ display: 'flex', gap: '6px' }}>
+                                    <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '4px', fontSize: '0.78rem' }}>
+                                      {Object.keys(character.skills).map(s => (
+                                        <option key={s} value={s}>{s}</option>
+                                      ))}
+                                    </select>
+                                    <select value={fcChoiceValue} onChange={e => setFcChoiceValue(parseInt(e.target.value))} style={{ padding: '4px', fontSize: '0.78rem' }}>
+                                      <option value={10}>+10</option>
+                                      <option value={5}>+5</option>
+                                    </select>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div style={{ display: 'flex', gap: '6px' }}>
+                                <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '4px', fontSize: '0.78rem' }}>
+                                  {Object.keys(character.skills).map(s => (
+                                    <option key={s} value={s}>{s}</option>
+                                  ))}
+                                </select>
+                                <select value={fcChoiceValue} onChange={e => setFcChoiceValue(parseInt(e.target.value))} style={{ padding: '4px', fontSize: '0.78rem' }}>
+                                  <option value={10}>+10</option>
+                                  <option value={5}>+5</option>
+                                </select>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div style={{ marginTop: '10px', display: 'flex', gap: '8px' }}>
+                          <button
+                            type="button"
+                            className="btn-medieval btn-medieval-primary"
+                            style={{ fontSize: '0.78rem', padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                            onClick={applyFamilyCharacteristic}
+                          >
+                            <Check size={13} />
+                            시트에 특징 반영
+                          </button>
+                          {character.family?.characteristic?.applied && (
+                            <button
+                              type="button"
+                              className="btn-medieval"
+                              style={{ fontSize: '0.78rem', padding: '6px 12px', color: 'var(--color-danger)', borderColor: 'var(--color-danger)' }}
+                              onClick={removeFamilyCharacteristic}
+                            >
+                              반영 해제
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.82rem', color: 'var(--color-grey)', fontStyle: 'italic' }}>
+                        주사위를 굴리면 가문 특징의 내용과 시트 반영 기능이 노출됩니다.
+                      </span>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+
+              {/* 현재 반영 상태 요약 카드 */}
+              {character.family?.characteristic?.applied && (
+                <div style={{ marginTop: '10px', backgroundColor: 'rgba(46,107,51,0.05)', border: '1px solid rgba(46,107,51,0.2)', borderRadius: '6px', padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: '0.82rem' }}>
+                    <span style={{ color: '#2e6b33', fontWeight: 'bold' }}>✓ 적용 완료</span>: 현재 가문의 고유 자질 <strong>[{character.family.characteristic.desc}]</strong> ({character.family.characteristic.bonusText})이 캐릭터 시트에 정상 합산되었습니다.
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-medieval"
+                    style={{ fontSize: '0.72rem', padding: '4px 8px', color: 'var(--color-danger)', borderColor: 'var(--color-danger)', height: '24px' }}
+                    onClick={removeFamilyCharacteristic}
+                  >
+                    해제
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 📜 룰북 기반 조상 연대기 발전기 */}
