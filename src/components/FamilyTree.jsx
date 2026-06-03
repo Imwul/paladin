@@ -100,7 +100,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [lines, setLines] = useState([]);
 
   const members = (character.family?.members || []).map(m => {
-    if (m.relation === '본인' || m.id === 'roland') {
+    if (m.relation === '본인') {
       return { ...m, name: character.personal?.name || m.name };
     }
     return m;
@@ -340,8 +340,8 @@ export default function FamilyTree({ character, setCharacter }) {
         });
       }
 
-      // If editing player main character (relation === '본인' or id === 'roland'), sync character name
-      const isPlayer = modalMode === 'edit' && (editingMember.relation === '본인' || editingMember.id === 'roland');
+      // If editing player main character (relation === '본인'), sync character name
+      const isPlayer = modalMode === 'edit' && editingMember.relation === '본인';
 
       setCharacter(prev => {
         const nextChar = {
@@ -522,7 +522,7 @@ export default function FamilyTree({ character, setCharacter }) {
   };
 
   const renderMemberCard = (member) => {
-    const isKnight = member.relation === '본인' || member.id === 'roland';
+    const isKnight = member.relation === '본인';
     const statusColor = getStatusColor(member.status);
     const isDeceased = member.status === '사망';
 

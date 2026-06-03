@@ -6057,11 +6057,51 @@ export default function FamilyWinter({ character, setCharacter }) {
 
           setCharacter(prev => {
             const updated = JSON.parse(JSON.stringify(prev));
+            
+            const oldName = prev.personal.name || "롤랑 경";
+            const currentYear = prev.personal.campaignYear || 768;
+            const newName = "계승자 " + oldName.replace(" 경", "").replace("Sir ", "");
+            
+            // Find old self in family tree
+            const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
+            let oldSelfId = 'roland';
+            let oldSelfGen = 2;
+            
+            if (oldSelfIndex !== -1 && updated.family && updated.family.members) {
+              const oldSelf = updated.family.members[oldSelfIndex];
+              oldSelfId = oldSelf.id;
+              oldSelfGen = oldSelf.generation;
+              
+              // Transition previous self to be "부친" and set as "사망"
+              oldSelf.relation = '부친';
+              oldSelf.status = '사망';
+              const birthYear = currentYear - (prev.personal.age || 18);
+              oldSelf.lifeYears = `${birthYear}~${currentYear}`;
+              oldSelf.note = `대대적인 무공을 세우고 영면을 맞이한 선조. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
+            }
+            
+            // Create new heir member
+            const heirId = 'heir_' + Date.now();
+            const newHeirMember = {
+              id: heirId,
+              name: newName,
+              relation: '본인',
+              generation: oldSelfGen + 1,
+              status: '생존',
+              lifeYears: `${currentYear}~`,
+              note: `위대한 가문의 법통을 계승하는 새로운 후계 성기사 종자.`,
+              parentId: oldSelfId
+            };
+            
+            if (updated.family && updated.family.members) {
+              updated.family.members.push(newHeirMember);
+            }
+
             // Heirloom / legacy bonuses
             updated.gear.gloryTotal = Math.floor((updated.gear.gloryTotal || 1000) * 1.1); // Inherit 1.1x total glory in next generation
             updated.personal.age = 18;
             updated.personal.personalClass = "종자 (Squire)";
-            updated.personal.name = "계승자 " + updated.personal.name.replace(" 경", "").replace("Sir ", "");
+            updated.personal.name = newName;
 
             if (isSaint) {
               updated.personal.blessing = "가문의 수호 성인 축복 (Saintly Lineage)";
@@ -6069,7 +6109,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             return updated;
           });
 
-          alert("기사의 은퇴 판정 유산이 성기사 캐릭터 시트에 영구히 반영되었습니다!\n(다음 세대 계승자 종자가 준비되었습니다!)");
+          alert("기사의 은퇴 판정 유산이 성기사 캐릭터 시트에 영구히 반영되었습니다!\n(다음 세대 계승자 종자가 가계도와 시트에 추가되었습니다!)");
         };
 
         return (

@@ -2024,11 +2024,22 @@ export default function SoloOracles({ character, setCharacter }) {
         updated.horses = {
           ...prev.horses,
           warhorse: {
+            ...prev.horses?.warhorse,
+            type: label,
             hp: itemData.hp,
             armor: itemData.armor,
             damage: itemData.damage
           }
         };
+      } else if (category === 'armor') {
+        const currentShield = prev.gear?.armorShield?.includes('방패') ? ' + 방패 (+3)' : '';
+        updated.gear.armorShield = label + currentShield;
+      } else if (category === 'shield') {
+        const currentArmor = prev.gear?.armorShield?.split('+')[0]?.trim() || '사슬갑옷 (10점)';
+        updated.gear.armorShield = currentArmor + ' + ' + label;
+      } else if (category === 'weapon') {
+        const currentGear = prev.gear?.personalGear ? prev.gear.personalGear + ', ' : '';
+        updated.gear.personalGear = currentGear + label;
       }
       
       return updated;

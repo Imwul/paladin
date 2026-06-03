@@ -1586,7 +1586,7 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
         </section>
         <section className="cs-section">
-          <div className="sheet-ribbon"><h3>전투마 (Charger)</h3></div>
+          <div className="sheet-ribbon"><h3>전투마 ({character?.horses?.warhorse?.type || 'Charger'})</h3></div>
           <div className="cs-section-inner">
             <div className="cs-companion-fields">
               <div className="cs-companion-row">
@@ -1639,6 +1639,74 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
         </section>
       </div>
+
+      {/* ══════ GEAR & TREASURY ══════ */}
+      <section className="cs-section" style={{ marginTop: '16px' }}>
+        <div className="sheet-ribbon"><h3>장비 및 금고 (Gear & Treasury)</h3></div>
+        <div className="cs-section-inner">
+          <div className="cs-companion-fields" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+            <div className="cs-companion-field">
+              <label>소지금 (Cash):</label>
+              <div className="cs-num-ctrl">
+                <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('gear', 'cash', Math.max(0, (character?.gear?.cash || 0) - 1))}>−</button>
+                <input type="number" value={character?.gear?.cash || 0}
+                  onChange={e => handleInputChange('gear', 'cash', parseInt(e.target.value) || 0)} />
+                <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('gear', 'cash', (character?.gear?.cash || 0) + 1)}>+</button>
+              </div>
+            </div>
+            <div className="cs-companion-field">
+              <label>갑옷 및 방패 (Armor & Shield):</label>
+              <input type="text" value={character?.gear?.armorShield || ''}
+                onChange={e => handleInputChange('gear', 'armorShield', e.target.value)}
+                placeholder="예: 사슬갑옷 (10점) + 방패 (+3)" />
+            </div>
+            <div className="cs-companion-field">
+              <label>의상 (Clothing):</label>
+              <input type="text" value={character?.gear?.clothing || ''}
+                onChange={e => handleInputChange('gear', 'clothing', e.target.value)}
+                placeholder="예: £2 상당의 궁정 튜닉" />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '12px' }}>
+            <div className="cs-companion-field" style={{ display: 'flex', flexDirection: 'column' }}>
+              <label style={{ marginBottom: '4px' }}>개인 소지품 (Personal Gear):</label>
+              <textarea 
+                value={character?.gear?.personalGear || ''}
+                onChange={e => handleInputChange('gear', 'personalGear', e.target.value)}
+                placeholder="예: 나무 십자가, 숫돌, 리넨 천 뭉치"
+                style={{ 
+                  width: '100%', 
+                  minHeight: '80px', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+                  border: '1px solid var(--color-border)', 
+                  borderRadius: '4px',
+                  padding: '8px',
+                  fontFamily: 'inherit',
+                  fontSize: '0.85rem'
+                }}
+              />
+            </div>
+            <div className="cs-companion-field" style={{ display: 'flex', flexDirection: 'column' }}>
+              <label style={{ marginBottom: '4px' }}>영지 소유물 (Home Possessions):</label>
+              <textarea 
+                value={character?.gear?.homePossessions || ''}
+                onChange={e => handleInputChange('gear', 'homePossessions', e.target.value)}
+                placeholder="예: 곡물 상자, 여분의 검 두 자루, 조상의 태피스트리"
+                style={{ 
+                  width: '100%', 
+                  minHeight: '80px', 
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+                  border: '1px solid var(--color-border)', 
+                  borderRadius: '4px',
+                  padding: '8px',
+                  fontFamily: 'inherit',
+                  fontSize: '0.85rem'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
     </div>
   );
