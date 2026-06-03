@@ -263,86 +263,109 @@ export default function FamilyTree({ character, setCharacter }) {
   // Save Modal Form Data
   const handleSave = (e) => {
     e.preventDefault();
-    if (!formNameKo.trim()) {
-      alert("한국어 이름을 입력해 주세요!");
-      return;
-    }
+    try {
+      if (!formNameKo.trim()) {
+        alert("한국어 이름을 입력해 주세요!");
+        return;
+      }
 
-    const combinedName = getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass);
-    let updatedMembers = [...members];
+      if (modalMode === 'edit' && !editingMember) {
+        alert("수정할 대상 인물이 지정되지 않았습니다.");
+        return;
+      }
 
-    if (modalMode === 'add') {
-      const newId = 'm-' + Date.now();
-      const newMember = {
-        id: newId,
-        name: combinedName,
-        relation: formRelation,
-        generation: Number(formGeneration),
-        status: formStatus,
-        lifeYears: formLifeYears,
-        note: formNote,
-        memberClass: formMemberClass,
-        deathCause: formStatus === '사망' ? formDeathCause : undefined,
-        parentId: formParentId || undefined,
-        spouseId: formSpouseId || undefined
-      };
+      const combinedName = getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass);
+      let updatedMembers = [...members];
 
-      updatedMembers.push(newMember);
+      if (modalMode === 'add') {
+        const newId = 'm-' + Date.now();
+        const newMember = {
+          id: newId,
+          name: combinedName,
+          relation: formRelation,
+          generation: Number(formGeneration),
+          status: formStatus,
+          lifeYears: formLifeYears,
+          note: formNote,
+          memberClass: formMemberClass,
+          deathCause: formStatus === '사망' ? formDeathCause : undefined,
+          parentId: formParentId || undefined,
+          spouseId: formSpouseId || undefined
+        };
 
-      // If spouse selected, mutually link them
-      if (formSpouseId) {
+        updatedMembers.push(newMember);
+
+        // If spouse selected, mutually link them
+        if (formSpouseId) {
+          updatedMembers = updatedMembers.map(m => {
+            if (m && m.id === formSpouseId) {
+              return { ...m, spouseId: newId };
+            }
+            return m;
+          });
+        }
+      } else {
+        // Edit mode
+        const prevSpouseId = editingMember.spouseId;
+
         updatedMembers = updatedMembers.map(m => {
-          if (m.id === formSpouseId) {
-            return { ...m, spouseId: newId };
+          if (!m) return m;
+          if (m.id === editingMember.id) {
+            return {
+              ...m,
+              name: combinedName,
+              relation: formRelation,
+              generation: Number(formGeneration),
+              status: formStatus,
+              lifeYears: formLifeYears,
+              note: formNote,
+              memberClass: formMemberClass,
+              deathCause: formStatus === '사망' ? formDeathCause : undefined,
+              parentId: formParentId || undefined,
+              spouseId: formSpouseId || undefined
+            };
           }
+          
+          // Remove link from previous spouse if spouse changed
+          if (prevSpouseId && prevSpouseId !== formSpouseId && m.id === prevSpouseId) {
+            return { ...m, spouseId: undefined };
+          }
+
+          // Add link to new spouse
+          if (formSpouseId && m.id === formSpouseId) {
+            return { ...m, spouseId: editingMember.id };
+          }
+
           return m;
         });
       }
-    } else {
-      // Edit mode
-      const prevSpouseId = editingMember.spouseId;
 
-      updatedMembers = updatedMembers.map(m => {
-        if (m.id === editingMember.id) {
-          return {
-            ...m,
-            name: combinedName,
-            relation: formRelation,
-            generation: Number(formGeneration),
-            status: formStatus,
-            lifeYears: formLifeYears,
-            note: formNote,
-            memberClass: formMemberClass,
-            deathCause: formStatus === '사망' ? formDeathCause : undefined,
-            parentId: formParentId || undefined,
-            spouseId: formSpouseId || undefined
+      // If editing player main character (relation === '본인' or id === 'roland'), sync character name
+      const isPlayer = modalMode === 'edit' && (editingMember.relation === '본인' || editingMember.id === 'roland');
+
+      setCharacter(prev => {
+        const nextChar = {
+          ...prev,
+          family: {
+            ...prev.family,
+            members: updatedMembers
+          }
+        };
+        if (isPlayer) {
+          nextChar.personal = {
+            ...prev.personal,
+            name: combinedName
           };
         }
-        
-        // Remove link from previous spouse if spouse changed
-        if (prevSpouseId && prevSpouseId !== formSpouseId && m.id === prevSpouseId) {
-          return { ...m, spouseId: undefined };
-        }
-
-        // Add link to new spouse
-        if (formSpouseId && m.id === formSpouseId) {
-          return { ...m, spouseId: editingMember.id };
-        }
-
-        return m;
+        return nextChar;
       });
+
+      setIsModalOpen(false);
+      setEditingMember(null);
+    } catch (err) {
+      console.error("Error in FamilyTree handleSave:", err);
+      alert("정보 저장 중 오류가 발생했습니다: " + err.message);
     }
-
-    setCharacter(prev => ({
-      ...prev,
-      family: {
-        ...prev.family,
-        members: updatedMembers
-      }
-    }));
-
-    setIsModalOpen(false);
-    setEditingMember(null);
   };
 
   // Delete Member
