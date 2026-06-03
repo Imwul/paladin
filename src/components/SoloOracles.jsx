@@ -1071,16 +1071,16 @@ export default function SoloOracles({ character, setCharacter }) {
     let pMod = 0;
     let oMod = 0;
 
-    // Lance vs Spear mounted anti-charge rules
+    // Mounted vs Foot spear/halberd modifiers (Chapters 5 & Chapter 8 Combat Rules)
     if (playerMounted && !opponentMounted) {
+      if (opponentWeapon === 'spear' || opponentWeapon === 'halberd') {
+        oMod = 5;
+        oModName = '보병의 대기마 창/할버드 방어 보정 (+5)';
+      }
       if (playerWeapon === 'lance' && isCharging) {
         if (opponentWeapon === 'spear' || opponentWeapon === 'halberd') {
-          // Spearfoot defense: Opponent gets +5, Player loses the charge bonus!
-          oMod = 5;
-          oModName = '보병의 대기마 창 방어 보정 (+5)';
-          pModName = '상대 보병의 창 방어로 인한 기마 랜스 충격 무효화';
+          pModName = '상대 보병의 창/할버드 방어로 인한 기마 랜스 충격 무효화';
         } else {
-          // Lance charge adds +5
           pMod = 5;
           pModName = '기마 랜스 돌격 차징 보정 (+5)';
         }
@@ -1088,26 +1088,18 @@ export default function SoloOracles({ character, setCharacter }) {
     }
 
     if (opponentMounted && !playerMounted) {
+      if (playerWeapon === 'spear' || playerWeapon === 'halberd') {
+        pMod = 5;
+        pModName = '보병의 대기마 창/할버드 방어 보정 (+5)';
+      }
       if (opponentWeapon === 'lance' && isCharging) {
         if (playerWeapon === 'spear' || playerWeapon === 'halberd') {
-          pMod = 5;
-          pModName = '보병의 대기마 창 방어 보정 (+5)';
-          oModName = '기사의 창 방어로 인한 상대방 랜스 보너스 무효화';
+          oModName = '기사의 창/할버드 방어로 인한 상대방 랜스 보너스 무효화';
         } else {
           oMod = 5;
           oModName = '기마 랜스 돌격 차징 보정 (+5)';
         }
       }
-    }
-
-    // Halberd foot vs horse modifier
-    if (playerWeapon === 'halberd' && !playerMounted && opponentMounted) {
-      pMod = 5;
-      pModName = '할버드 보병 대기마 대적 보정 (+5)';
-    }
-    if (opponentWeapon === 'halberd' && !opponentMounted && playerMounted) {
-      oMod = 5;
-      oModName = '할버드 보병 대기마 대적 보정 (+5)';
     }
 
     const pTarget = pSkill + pMod;
