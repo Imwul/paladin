@@ -505,6 +505,35 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   const handleApplyPreset = () => {
     const preset = presets[selectedPreset];
+    
+    // Mapping of family characteristics corresponding to each preset knight
+    const presetCharacteristics = [
+      {
+        gender: 'male',
+        roll: 5, // Born in the saddle
+        desc: "말 위에서 태어남 (Born in the saddle)",
+        bonusText: "스킬 [horsemanship] +5",
+        applied: true,
+        appliedBonus: { skills: { horsemanship: 5 } }
+      },
+      {
+        gender: 'male',
+        roll: 13, // Good speakers and storytellers
+        desc: "훌륭한 이야기꾼 (Good speakers and storytellers)",
+        bonusText: "스킬 [eloquence] +10",
+        applied: true,
+        appliedBonus: { skills: { eloquence: 10 } }
+      },
+      {
+        gender: 'male',
+        roll: 3, // Natural healers of wounds
+        desc: "타고난 상처 치유력 (Natural healers of wounds)",
+        bonusText: "스킬 [firstAid] +5",
+        applied: true,
+        appliedBonus: { skills: { firstAid: 5 } }
+      }
+    ];
+
     setCharacter(prev => {
       return {
         ...prev,
@@ -531,6 +560,10 @@ export default function CharacterSheet({ character, setCharacter }) {
         standings: {
           ...prev.standings,
           ...preset.stats.standings
+        },
+        family: {
+          ...prev.family,
+          characteristic: presetCharacteristics[selectedPreset] || null
         }
       };
     });
