@@ -93,7 +93,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // Default Template for reset
   const defaultMembers = [
-    { id: 'godefroy', name: '고드프루아 경 (Sir Godefroy)', relation: '시조', generation: 0, status: '사망', lifeYears: '702~765', deathCause: '노환', note: '아르덴 가문의 위대한 기틀을 세운 초대 시조.' },
+    { id: 'godefroy', name: '고드프루아 경 (Sir Godefroy)', relation: '증조부', generation: 0, status: '사망', lifeYears: '702~765', deathCause: '노환', note: '아르덴 가문의 위대한 기틀을 세운 초대 시조.' },
     { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '725~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
     { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '745~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
     { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
@@ -402,7 +402,7 @@ export default function FamilyTree({ character, setCharacter }) {
   // Group Members by Generation
   const generations = [0, 1, 2, 3, 4, 5];
   const genLabels = [
-    "시조 세대 (Ancestors)",
+    "증조부 세대 (Great-Grandparents)",
     "조부모 세대 (Grandparents)",
     "부모 세대 (Parents)",
     "본인 및 형제 세대 (Knight's Gen)",

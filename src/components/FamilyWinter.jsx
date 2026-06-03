@@ -115,13 +115,13 @@ export default function FamilyWinter({ character, setCharacter }) {
     737: "아비뇽(Avignon) 공성전 및 반역 징벌전: 무어인들과 결탁해 프랑크 왕국을 배신한 서고트(Visigoth) 귀족들을 처벌하기 위해 아비뇽(Avignon) 성벽을 공성 병기로 부수고 돌입하였으며, 성내의 모든 반역 이교도들을 학살하고 도시를 초토화시켰습니다.",
     738: "부르고뉴(Burgundy) 무어 평정 및 보르들레(Bordelais) 습격전: 로렌(Lorraine) 가문을 지원하여 부르고뉴 지방 깊숙이 침입한 무어인 군세를 소탕하거나, 오랜 가문 복수의 화신인 보르들레(Bordelais) 세력의 거점을 소탕하는 야간 습격전에 나섰습니다.",
     739: "셉티마니아(Septimania) 사라센 축출전: 단신왕 피핀(Pepin the Short) and 롬바르디아 왕 리우트프란트(Liutprand)의 동맹군에 종군하여, 무어인(Moors)들의 남부 요새들을 포위 공성하고 협력자들의 영지를 몰수하는 전투에서 큰 무공을 세워 전리품을 배분받았습니다.",
-    740: "로슈브룬(Rochebrune) 성곽 수호전과 덴마크 왕 정벌: 덴마크(Denmark)의 침략군에 맞서 나이모(Naimon) 대공의 사촌인 파스루즈(Passerose)가 농성하던 로슈브룬(Rochebrune) 성을 성공적으로 방어 및 탈환했습니다. 이후 할아버님(고드프루아 경)께서는 덴마크 본토까지 전격 돌입하여 덴마크 왕을 전사시키고 왕위를 찬탈한 영웅적 쾌거를 기록했습니다. 귀로에는 로바스트르(Robastre) 경이 이교도 거인 모리에(Morhier)를 결투 끝에 참수하며 거인들의 타워를 함락시켰습니다.",
+    740: "로슈브룬(Rochebrune) 성곽 수호전과 덴마크 왕 정벌: 덴마크(Denmark)의 침략군에 맞서 나이모(Naimon) 대공의 사촌인 파스루즈(Passerose)가 농성하던 로슈브룬(Rochebrune) 성을 성공적으로 방어 및 탈환했습니다. 이후 증조부님(고드프루아 경)께서는 덴마크 본토까지 전격 돌입하여 덴마크 왕을 전사시키고 왕위를 찬탈한 영웅적 쾌거를 기록했습니다. 귀로에는 로바스트르(Robastre) 경이 이교도 거인 모리에(Morhier)를 결투 끝에 참수하며 거인들의 타워를 함락시켰습니다.",
     741: "궁재 카롤루스 마르텔(Charles Martel) 서거 및 안덴 장례식: 30여 년간 왕국을 지배한 공의 안덴(Andenne) 대성당 장례식에 참석하여 슬픔을 나누고, 유산을 분할받은 두 아들 카를로만(Carloman)과 피핀(Pepin)에 반기를 든 그리포(Grifo) 왕자의 반란군을 격퇴해 기사를 생포했습니다.",
     742: "쾰른 백작 두온 드 라 로슈(Doon de La Roche)의 성대한 왕실 혼례: 국왕 피핀(Pepin)의 아름다운 누이인 올리브(Olive) 공주와 충신 두온(Doon) 백작의 쾰른(Cologne) 대성당 결혼식에 공식 하객으로 참석하여 연회를 즐겼습니다.",
     743: "레겐스부르크(Regensburg) 대결전 및 삼면 평정 원정: 바이에른(Bavaria)을 영구 병합하기 위해 도나우 강변의 레겐스부르크(Regensburg)에서 오딜로(Odilo) 공작 군대를 격파하고, 아키텐의 반란군 및 북방 작센(Saxony) 이교도 국경지대를 불태우는 징벌 원정에 나섰습니다.",
-    744: "조조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
+    744: "증조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
 
-    745: "부친 제라르(Gerard) 경의 정식 혼례와 왕실 공인: 조부 고드프루아 경의 은퇴와 함께 기사 직위를 계승받고, 왕실과 가문의 번영을 다지기 위해 가문 간의 결합을 성취하여 영광의 기틀을 닦으셨습니다.",
+    745: "부친 제라르(Gerard) 경의 정식 혼례와 왕실 공인: 증조부 고드프루아 경의 은퇴와 함께 기사 직위를 계승받고, 왕실과 가문의 번영을 다지기 위해 가문 간의 결합을 성취하여 영광의 기틀을 닦으셨습니다.",
     746: "롤랑 경 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
     747: "롬바르디아 및 로마(Rome) 순례 동행: 세속의 명예를 내려놓고 롬바르디아(Lombardy)를 거쳐 몬테카시노(Monte Cassino) 수도원으로 귀의하려는 카를로만(Carloman) 공을 호위하며 성지 로마에 당도하여 엄숙한 면죄 성사를 받았습니다.",
     748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)]의 속죄 순례 및 그리포 반란: 베르니에(Bernier)와 베아트릭스(Beatrix) 부부가 속죄 순례 도중 무어인의 기습을 받아 포로로 감금되는 시련을 겪었습니다. [역사] 왕국의 반역자 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 탈출하였으며 타실로 3세(Tassilo III)가 바이에른 공작으로 취임했습니다.",
@@ -143,6 +143,16 @@ export default function FamilyWinter({ character, setCharacter }) {
     764: "라 로슈(La Roche) 탈환 공성전 및 툴루즈 함락: 오베리(Auberi) 주교의 복수군에 참전해 라 로슈 성을 맹렬히 격파해 탈환하고 쾰른(Cologne)을 수복하였으며, 아키텐 와이페르 공작의 수도 툴루즈(Toulouse)를 최종 점령했습니다.",
     765: "오트페이유(Hautefeuille) 포위 공성전 및 작센 족장 브로히막스 격파: 쾰른의 평화를 위협하는 작센 군대를 요격하기 위해 오트페이유 공성전에서 목숨을 건 격전을 벌였으며, 국왕 피핀을 납치하려는 작센의 악랄한 족장 브로히막스(Brohimax) 세력을 참수 토벌했습니다.",
     766: "몽펠리에(Montpellier) 및 에그르몽(Aigremont) 최후 대공성전: 부친 제라르 경의 영광스러운 현역 마지막 해로, 후계자 샤를마뉴 왕자 및 위비앙(Vivien)의 프랑크 성전 연합군에 합류해 몽펠리에와 이교도의 요새 에그르몽 성벽을 격파하여 최후의 기사도 불꽃을 피워냈습니다."
+  };
+
+  const getEventText = (yr) => {
+    if (!ANCESTOR_EVENTS[yr]) return "";
+    const ancestorName = character.family.ancestor || '고드프루아';
+    return ANCESTOR_EVENTS[yr]
+      .replace(/조조부/g, '증조부')
+      .replace(/할아버님/g, '증조부님')
+      .replace(/조부 고드프루아/g, '증조부 고드프루아')
+      .replace(/고드프루아/g, ancestorName);
   };
 
   const isGapYear = (yr, stage) => {
@@ -204,7 +214,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const handleGapYearInteractive = () => {
     saveChronicleHistory();
-    const event = ANCESTOR_EVENTS[interactiveYear];
+    const event = getEventText(interactiveYear);
     const logMsg = `🏰 ${interactiveYear}년: [역사] ${event}\n  └ 📖 평온한 공백기: 무사히 한 해를 보냈습니다.`;
     setAncestorRollLog(prev => [...prev, logMsg]);
     setCurrentYearRolled(true);
@@ -614,7 +624,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         return { dead, gloryGained, cause, rollDescText };
       };
 
-      const event = ANCESTOR_EVENTS[yr];
+      const event = getEventText(yr);
       if (yr === 723) {
         if (d20 <= 10) {
           logMsg = `🏰 723년: [역사] ${event}\n  └ [주사위 ${d20}] - 후방 수비대(Garrison) 의무를 안전하게 수행했습니다.`;
@@ -1268,7 +1278,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         return { dead, gloryGained, cause, rollDescText };
       };
 
-      const event = ANCESTOR_EVENTS[yr];
+      const event = getEventText(yr);
       if (yr === 745) {
         logMsg = `👰 745년: [가문] ${event}\n  └ [주사위 ${d20}] - 부친께서 `;
         if (d20 <= 5) {
@@ -1985,7 +1995,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       if (nextYr > 744) {
         const deathYr = 744 + rollD20();
         const cause = "평화로운 영면 (Old Age)";
-        const finalMsg = `👴 ${deathYr}년: 은퇴한 할아버님(시조 고드프루아 경)께서 평화롭게 침상에서 영면에 드셨습니다.`;
+        const finalMsg = `👴 ${deathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'} 경)께서 평화롭게 침상에서 영면에 드셨습니다.`;
         
         setGfDead(true);
         setGrandfatherDeathYear(deathYr);
@@ -2087,7 +2097,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const rollD6 = () => Math.floor(Math.random() * 6) + 1;
     const rollD3 = () => Math.floor(Math.random() * 3) + 1;
 
-    logs.push("📜 [조조부의 생애: 연대기 시작 723년]");
+    logs.push(`📜 [${character.family.ancestor || '고드프루아'} 경(증조부)의 생애: 연대기 시작 723년]`);
     let gfGlory = 2500;
     let gfHateSaxons = 0;
     let gfHateMoors = 0;
@@ -2246,7 +2256,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       logs.push(logMsg);
     };
 
-    // 👴 [조조부의 연대기 (723~744)]
+    // 👴 [증조부의 연대기 (723~744)]
     for (let yr = 723; yr <= 744; yr++) {
       if (gfDead) continue;
 
@@ -2566,7 +2576,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           runCombatSurvival(yr, event + " (아키텐 진압)", true, 0, true, 25);
         }
       } else if (yr === 744) {
-        const event = "조조부 은퇴 전 최후의 원정: 궁정의 간첩을 적발하고 최후의 작센 습격을 차단하며 기사로서의 영예로운 일생을 매듭지었습니다.";
+        const event = "증조부 은퇴 전 최후의 원정: 궁정의 간첩을 적발하고 최후의 작센 습격을 차단하며 기사로서의 영예로운 일생을 매듭지었습니다.";
         const roll = rollD20();
         if (roll <= 10) {
           logs.push(`🏰 744년: [역사] ${event} -> 주사위 ${roll} - 노장이 되어 고향 영지를 지켰습니다.`);
@@ -2590,7 +2600,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     if (!gfDead) {
       gfDeathYr = 744 + rollD20();
       gfCause = "평화로운 영면 (Old Age)";
-      logs.push(`👴 ${gfDeathYr}년: 은퇴한 할아버님(시조 고드프루아 경)께서 평화롭게 침상에서 영면에 드셨습니다.`);
+      logs.push(`👴 ${gfDeathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'} 경)께서 평화롭게 침상에서 영면에 드셨습니다.`);
     }
 
     setGrandfatherGlory(gfGlory);
@@ -3007,19 +3017,19 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       if (updated.family && updated.family.members) {
         updated.family.members = updated.family.members.map(m => {
-          if (m.id === 'albert' || m.relation === '조부') {
+          if (m.id === 'godefroy' || m.relation === '증조부') {
             return {
               ...m,
-              lifeYears: `700~${grandfatherDeathYear}`,
+              lifeYears: `702~${grandfatherDeathYear}`,
               status: '사망',
               deathCause: grandfatherDeathCause,
-              note: `샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
+              note: `가문의 기틀을 세운 증조부. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
             };
           }
           if (m.id === 'gerard' || m.relation === '부친') {
             return {
               ...m,
-              lifeYears: `724~${fatherDeathYear}`,
+              lifeYears: `745~${fatherDeathYear}`,
               status: '사망',
               deathCause: fatherDeathCause,
               note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 명예 ${fatherGlory} Glory.`
@@ -3333,6 +3343,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     } else {
       addLog(`[경험 판정]: 체크된 기술/열망이 없습니다.`);
     }
+    
     setExperienceApplied(true);
   };
 
@@ -3883,10 +3894,10 @@ export default function FamilyWinter({ character, setCharacter }) {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                             <div>
-                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조조부 (Godefroy 경)</h5>
+                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아'} 경)</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                 • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
-                                • 생몰년도: 700년 ~ {grandfatherDeathYear}년<br />
+                                • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
                                 • 사인: {grandfatherDeathCause}<br />
                                 • 누적 증오: 작센인 ({grandfatherHates.saxons}), 무어인 ({grandfatherHates.moors})
                               </span>
@@ -3895,7 +3906,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                 • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
-                                • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
+                                • 생몰년도: 745년 ~ {fatherDeathYear}년<br />
                                 • 사인: {fatherDeathCause}<br />
                                 • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
                               </span>
@@ -3917,7 +3928,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                           <h4 style={{ fontWeight: 'bold', fontSize: '1rem', color: 'var(--color-ink)' }}>가문의 역사를 한 해씩 직접 개척해 보세요</h4>
                           <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', margin: '6px 0 16px', lineHeight: 1.4 }}>
                             723년부터 766년까지 프랑크 왕국 역사적 대기사 원정 사건들을 실시간으로 읽으며,<br />
-                            조조부와 아버지가 쌓아 올린 전설적인 무공과 유산을 생생한 주사위 판정으로 체험할 수 있습니다.
+                            증조부와 아버지가 쌓아 올린 전설적인 무공과 유산을 생생한 주사위 판정으로 체험할 수 있습니다.
                           </p>
                           <button
                             type="button"
@@ -3936,10 +3947,10 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <div>
                                 <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>진행 인물</span>
                                 <h5 style={{ margin: '2px 0 0 0', fontWeight: 'bold', fontSize: '0.92rem', color: interactiveStage.startsWith('gf') ? 'var(--color-royal-blue)' : 'var(--color-crimson)' }}>
-                                  {interactiveStage.startsWith('gf') ? '👴 조조부 (Godefroy 경)' : '👨 부친 (Gerard 경)'}
+                                  {interactiveStage.startsWith('gf') ? `👴 증조부 (${character.family.ancestor || '고드프루아'} 경)` : '👨 부친 (Gerard 경)'}
                                 </h5>
                                 <div style={{ fontSize: '0.76rem', marginTop: '4px', color: 'var(--color-ink)' }}>
-                                  • 생몰: {interactiveStage.startsWith('gf') ? '700 ~ ?' : '724 ~ ?'}<br />
+                                  • 생몰: {interactiveStage.startsWith('gf') ? '702 ~ ?' : '745 ~ ?'}<br />
                                   • 현재 연도: <strong style={{ fontSize: '1.05rem', color: 'var(--color-gold-dark)' }}>{interactiveYear}년</strong>
                                 </div>
                               </div>
@@ -3966,7 +3977,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 🛡️ {interactiveYear}년 국경 원정 기록
                               </h4>
                               <p style={{ margin: 0, fontSize: '0.82rem', color: '#5a4933', lineHeight: '1.5' }}>
-                                {ANCESTOR_EVENTS[interactiveYear]}
+                                {getEventText(interactiveYear)}
                               </p>
                             </div>
                           )}
@@ -4073,7 +4084,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                               >
                                 {interactiveStage === 'gf_dead' ? '👨 부친 Gerard 경의 시대로 이동' : 
                                  interactiveStage === 'f_dead' ? '🏁 연대기 완료 및 유산 정산' :
-                                 interactiveYear === 744 ? '👴 조조부 은퇴 및 부친 상속식 진행' :
+                                 interactiveYear === 744 ? '👴 증조부 은퇴 및 부친 상속식 진행' :
                                  interactiveYear === 766 ? '🏁 부친 은퇴 및 연대기 매듭짓기' :
                                  `➡️ ${interactiveYear + 1}년으로 시간선 진행`}
                               </button>
@@ -4103,17 +4114,17 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   🎉 위대한 조상들의 연대기가 완전히 완성되었습니다!
                                 </h4>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginTop: '4px', lineHeight: 1.4 }}>
-                                  조부 고드프루아 경과 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
+                                  증조부 {character.family.ancestor || '고드프루아'} 경과 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
                                   쌓아올린 명예의 1/10과 불굴의 신조, 이교도에 대한 분노가 롤랑 경에게 오롯이 계승됩니다.
                                 </p>
                               </div>
 
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                                 <div>
-                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조조부 (Godefroy 경)</h5>
+                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아'} 경)</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                     • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
-                                    • 생몰년도: 700년 ~ {grandfatherDeathYear}년<br />
+                                    • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
                                     • 사인: {grandfatherDeathCause || '평화로운 임종'}<br />
                                     • 누적 증오: 작센인 ({grandfatherHates.saxons}), 무어인 ({grandfatherHates.moors})
                                   </span>
@@ -4122,7 +4133,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                     • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
-                                    • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
+                                    • 생몰년도: 745년 ~ {fatherDeathYear}년<br />
                                     • 사인: {fatherDeathCause || '평화로운 임종'}<br />
                                     • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
                                   </span>
