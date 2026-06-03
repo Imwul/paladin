@@ -3957,6 +3957,10 @@ export default function FamilyWinter({ character, setCharacter }) {
         }));
         addLog(`[자유 단련]: 능력치 [${selectedAttribute.toUpperCase()}] +1 영구 증가!`);
       } else if (selectedTrait) {
+        if ((character.traits[selectedTrait] || 0) >= 15) {
+          alert("성향은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
+          return;
+        }
         // opposite trait adjusts automatically
         const oppositeMap = {
           chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
@@ -3966,41 +3970,70 @@ export default function FamilyWinter({ character, setCharacter }) {
           valorous: "cowardly"
         };
         const opp = oppositeMap[selectedTrait];
-        setCharacter(prev => ({
-          ...prev,
-          traits: {
-            ...prev.traits,
-            [selectedTrait]: Math.min(20, (prev.traits[selectedTrait] || 0) + 1),
-            [opp]: Math.max(0, (prev.traits[opp] || 0) - 1)
-          }
-        }));
+        setCharacter(prev => {
+          const nextTraits = { ...prev.traits };
+          const newVal = Math.min(15, (prev.traits[selectedTrait] || 0) + 1);
+          nextTraits[selectedTrait] = newVal;
+          nextTraits[opp] = 20 - newVal;
+          return {
+            ...prev,
+            traits: nextTraits
+          };
+        });
         addLog(`[자유 단련]: 성향 [${selectedTrait}] +1 증가!`);
       } else if (selectedPassion) {
+        if ((character.passions[selectedPassion] || 0) >= 15) {
+          alert("열망은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
+          return;
+        }
         setCharacter(prev => ({
           ...prev,
-          passions: { ...prev.passions, [selectedPassion]: Math.min(20, (prev.passions[selectedPassion] || 0) + 1) }
+          passions: { ...prev.passions, [selectedPassion]: Math.min(15, (prev.passions[selectedPassion] || 0) + 1) }
         }));
         addLog(`[자유 단련]: 열망 [${selectedPassion}] +1 증가!`);
       } else if (selectedStanding) {
+        if ((character.standings[selectedStanding] || 0) >= 15) {
+          alert("사회적 명망은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
+          return;
+        }
         setCharacter(prev => ({
           ...prev,
-          standings: { ...prev.standings, [selectedStanding]: Math.min(20, (prev.standings[selectedStanding] || 0) + 1) }
+          standings: { ...prev.standings, [selectedStanding]: Math.min(15, (prev.standings[selectedStanding] || 0) + 1) }
         }));
         addLog(`[자유 단련]: 명망 [${selectedStanding}] +1 증가!`);
       }
     }
     else if (trainingOption === 'optionB') {
+      const keys = Object.values(selectedSkills).filter(k => k);
+      if (keys.length === 0) {
+        alert("단련할 기술을 최소 하나 이상 선택해 주세요!");
+        return;
+      }
+
+      const uniqueKeys = new Set(keys);
+      if (uniqueKeys.size !== keys.length) {
+        alert("동일한 기술을 중복해서 단련할 수 없습니다! 각각 다른 기술을 선택해 주십시오.");
+        return;
+      }
+
+      const activeFC = character.family?.characteristic;
+      for (const k of keys) {
+        const fcBonus = (activeFC?.applied && activeFC?.appliedBonus?.skills?.[k]) || 0;
+        const rawSkillVal = (character.skills[k] || 0) - fcBonus;
+        if (rawSkillVal <= 0) {
+          alert(`[${k}] 기술의 순수 수치가 0이거나 습득하지 않은 상태입니다. 겨울 정산(Option B)으로 0인 기술을 새로 단련할 수 없습니다.`);
+          return;
+        }
+        if (rawSkillVal >= 15) {
+          alert(`[${k}] 기술의 순수 수치가 이미 15 이상입니다. Option B는 15 미만인 기술만 단련할 수 있습니다.`);
+          return;
+        }
+      }
+
       setCharacter(prev => {
         const skills = { ...prev.skills };
-        const keys = Object.values(selectedSkills).filter(k => k);
-        const activeFC = prev.family?.characteristic;
-
         keys.forEach(k => {
-          const fcBonus = (activeFC?.applied && activeFC?.appliedBonus?.skills?.[k]) || 0;
-          const rawSkillVal = (skills[k] || 0) - fcBonus;
-          if (rawSkillVal < 15) {
-            skills[k] = (skills[k] || 0) + 1;
-          }
+          skills[k] = (skills[k] || 0) + 1;
         });
         return { ...prev, skills };
       });
@@ -4165,6 +4198,14 @@ export default function FamilyWinter({ character, setCharacter }) {
     setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
     setFamilyEventRoll(null); setExperienceLogs([]); setTrainingApplied(false);
     setCalculatedAnnualGlory(null); setGloryBonusPoints(0); setBonusSpent(0);
+    // reset training options
+    setTrainingOption('optionA');
+    setSelectedAttribute('');
+    setSelectedTrait('');
+    setSelectedPassion('');
+    setSelectedStanding('');
+    setSelectedHighSkill('');
+    setSelectedSkills({ adventure: '', courtly: '', combat: '', free: '' });
   };
 
   const resetWinter = () => {
@@ -4174,6 +4215,14 @@ export default function FamilyWinter({ character, setCharacter }) {
     setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
     setFamilyEventRoll(null); setExperienceLogs([]); setTrainingApplied(false);
     setCalculatedAnnualGlory(null); setGloryBonusPoints(0); setBonusSpent(0);
+    // reset training options
+    setTrainingOption('optionA');
+    setSelectedAttribute('');
+    setSelectedTrait('');
+    setSelectedPassion('');
+    setSelectedStanding('');
+    setSelectedHighSkill('');
+    setSelectedSkills({ adventure: '', courtly: '', combat: '', free: '' });
   };
 
   // Lists for selection
@@ -5650,7 +5699,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                             </tbody>
                           </table>
                           <p style={{ margin: '6px 0 0 0', fontStyle: 'italic', color: 'var(--color-grey)' }}>
-                            ※ 수치 한계: 일반적인 겨울 경험 성장은 최대 15점까지만 가능하며, 15점 도달 이후에는 Step 8의 상급기술 돌파(Option C) 또는 영예 보너스 등을 통해서만 16점 이상 돌파할 수 있습니다.
+                            ※ 수치 한계: 경험 판정(d20 결과가 현재 값 이상 또는 20)을 통한 성장은 룰북 규정에 따라 15점 제한이 적용되지 않으며, 자연 성장을 통해 최대 20점까지 자력으로 상승할 수 있습니다. (자유 단련 Option B의 15점 제한과 다름)
                           </p>
                         </div>
                       )}
