@@ -636,14 +636,16 @@ export default function SoloOracles({ character, setCharacter }) {
     const ko = passionRollResult.passionKo;
 
     setCharacter(prev => {
-      const updated = { ...prev };
+      const updatedPassions = { ...prev.passions };
+      const updatedPassionsChecked = { ...prev.passionsChecked };
+
       if (passionRollResult.state === 'inspiration') {
         if (successType === 'success') {
           if (passionRollResult.roll === 1 || passionRollResult.roll === passionRollResult.modifiedTarget) {
-            updated.passions[key] = Math.min(20, (updated.passions[key] || 10) + 1);
+            updatedPassions[key] = Math.min(20, (updatedPassions[key] || 10) + 1);
             alert(`[열망 상승 완료]: 전공 완수! ${ko} 수치가 +1 상승하였습니다!`);
           } else {
-            updated.passionsChecked[key] = true;
+            updatedPassionsChecked[key] = true;
             alert(`[경험 체크 완료]: 전공 완수! ${ko}에 겨울 성장용 경험 체크를 누적했습니다.`);
           }
         } else if (successType === 'fail') {
@@ -651,17 +653,22 @@ export default function SoloOracles({ character, setCharacter }) {
         }
       } else if (passionRollResult.state === 'disheartened') {
         if (successType === 'success') {
-          updated.passions[key] = Math.min(20, (updated.passions[key] || 10) + 1);
+          updatedPassions[key] = Math.min(20, (updatedPassions[key] || 10) + 1);
           alert(`[역경 극복]: 극적인 사투 끝에 낙담을 물리쳤습니다! ${ko} 수치가 +1 상승했습니다!`);
         } else {
-          updated.passions[key] = Math.max(1, (updated.passions[key] || 10) - 1);
+          updatedPassions[key] = Math.max(1, (updatedPassions[key] || 10) - 1);
           alert(`[우울증 봉착]: 깊은 슬픔(Melancholy) 속에 기사는 침잠합니다. ${ko} 수치가 -1 하락하는 참담한 상처를 받았습니다.`);
         }
       } else if (passionRollResult.state === 'madness') {
-        updated.passions[key] = Math.max(1, (updated.passions[key] || 10) - 1);
+        updatedPassions[key] = Math.max(1, (updatedPassions[key] || 10) - 1);
         alert(`[광기 적용]: 기사는 이성을 잃고 야만인처럼 울부짖으며 들판으로 사라집니다! ${ko} 수치가 -1 하락했습니다.`);
       }
-      return updated;
+
+      return {
+        ...prev,
+        passions: updatedPassions,
+        passionsChecked: updatedPassionsChecked
+      };
     });
     setPassionActionApplied(true);
   };
@@ -892,11 +899,13 @@ export default function SoloOracles({ character, setCharacter }) {
   const applyGloryToSheet = () => {
     if (gloryActionApplied) return;
     const addedGlory = getCalculatedGlory();
-    setCharacter(prev => {
-      const updated = { ...prev };
-      updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + addedGlory;
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      gear: {
+        ...prev.gear,
+        gloryTotal: (prev.gear?.gloryTotal || 1000) + addedGlory
+      }
+    }));
     setGloryActionApplied(true);
     alert(`[명예 획득 반영]: +${addedGlory} Glory가 성기사의 시트 명예 총량에 성공적으로 반영되었습니다!`);
   };
@@ -904,11 +913,13 @@ export default function SoloOracles({ character, setCharacter }) {
   const applyMarriageGloryToSheet = () => {
     if (marriageGloryActionApplied) return;
     const addedGlory = getCalculatedMarriageGlory();
-    setCharacter(prev => {
-      const updated = { ...prev };
-      updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + addedGlory;
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      gear: {
+        ...prev.gear,
+        gloryTotal: (prev.gear?.gloryTotal || 1000) + addedGlory
+      }
+    }));
     setMarriageGloryActionApplied(true);
     alert(`[결혼 명예 반영]: +${addedGlory} Glory가 성공적으로 기사 시트에 반영되었습니다!`);
   };
@@ -961,15 +972,17 @@ export default function SoloOracles({ character, setCharacter }) {
     }
 
     // Apply to sheet
-    setCharacter(prev => {
-      const updated = { ...prev };
-      updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - giftAmount);
-      
-      const currentVal = updated.standings[selectedStandingKey] || 10;
-      updated.standings[selectedStandingKey] = Math.min(25, currentVal + pointsEarned);
-      
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      gear: {
+        ...prev.gear,
+        cash: Math.max(0, (prev.gear?.cash || 0) - giftAmount)
+      },
+      standings: {
+        ...prev.standings,
+        [selectedStandingKey]: Math.min(25, (prev.standings?.[selectedStandingKey] || 10) + pointsEarned)
+      }
+    }));
 
     setGiftRollResult({
       pointsEarned,
@@ -1008,11 +1021,13 @@ export default function SoloOracles({ character, setCharacter }) {
           color = 'var(--color-crimson)';
           
           // Deduct standing on Fumble
-          setCharacter(prev => {
-            const updated = { ...prev };
-            updated.standings[selectedStandingKey] = Math.max(1, (updated.standings[selectedStandingKey] || 10) - 1);
-            return updated;
-          });
+          setCharacter(prev => ({
+            ...prev,
+            standings: {
+              ...prev.standings,
+              [selectedStandingKey]: Math.max(1, (prev.standings?.[selectedStandingKey] || 10) - 1)
+            }
+          }));
         } else if (finalRoll === 1 || finalRoll === baseVal) {
           outcome = '결정적 성공 (Critical Success) 🌟';
           desc = `감동적인 대환대! 국왕 혹은 집단이 눈물을 흘릴 정도의 숭고한 헌신을 느끼고 기사의 부탁을 최고의 권한으로 승인하며, 가문 및 추종 기사단 전체에 대한 총애를 하사합니다.`;
@@ -1296,12 +1311,13 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const applySkillCheckToSheet = () => {
     if (skillCheckApplied || !skillRollResult?.isSuccess) return;
-    setCharacter(prev => {
-      const updated = { ...prev };
-      if (!updated.skillsChecked) updated.skillsChecked = {};
-      updated.skillsChecked[selectedSkillKey] = true;
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      skillsChecked: {
+        ...prev.skillsChecked,
+        [selectedSkillKey]: true
+      }
+    }));
     setSkillCheckApplied(true);
     alert(`[스킬 경험치 반영]: ${skillRollResult.skillName}의 경험치 체크(✓)가 기사 시트에 성공적으로 동기화 마킹되었습니다!`);
   };
@@ -1367,20 +1383,22 @@ export default function SoloOracles({ character, setCharacter }) {
     if (improveApplied) return;
     
     setCharacter(prev => {
-      const updated = { ...prev };
+      const updatedSkillsChecked = prev.skillsChecked ? {
+        ...prev.skillsChecked,
+        [selectedImproveKey]: false
+      } : {};
       
-      // 경험치 체크 강제 지움
-      if (updated.skillsChecked) {
-        updated.skillsChecked[selectedImproveKey] = false;
-      }
-      
-      // 성공했을 경우 수치 +1 증가 (최대 20)
+      const updatedSkills = { ...prev.skills };
       if (improveRollResult?.isSuccess) {
-        const currentVal = updated.skills[selectedImproveKey] || 0;
-        updated.skills[selectedImproveKey] = Math.min(20, currentVal + 1);
+        const currentVal = prev.skills?.[selectedImproveKey] || 0;
+        updatedSkills[selectedImproveKey] = Math.min(20, currentVal + 1);
       }
       
-      return updated;
+      return {
+        ...prev,
+        skillsChecked: updatedSkillsChecked,
+        skills: updatedSkills
+      };
     });
 
     setImproveApplied(true);
@@ -1583,20 +1601,14 @@ export default function SoloOracles({ character, setCharacter }) {
   const applyBattleToSheet = () => {
     if (battleApplied) return;
 
-    setCharacter(prev => {
-      const updated = { ...prev };
-      
-      // GloryTotal 가중
-      if (!updated.gear) updated.gear = {};
-      const currentGlory = updated.gear.gloryTotal || 1000;
-      updated.gear.gloryTotal = currentGlory + battleGloryTotal;
-
-      // Cash(소지금) 가중
-      const currentCash = updated.gear.cash || 0;
-      updated.gear.cash = Math.max(0, currentCash + battleLootTotal);
-
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      gear: {
+        ...prev.gear,
+        gloryTotal: (prev.gear?.gloryTotal || 1000) + battleGloryTotal,
+        cash: Math.max(0, (prev.gear?.cash || 0) + battleLootTotal)
+      }
+    }));
 
     setBattleApplied(true);
     alert(`[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`);
@@ -1925,17 +1937,30 @@ export default function SoloOracles({ character, setCharacter }) {
     if (magicApplied) return;
 
     setCharacter(prev => {
-      const updated = { ...prev };
+      const updatedGear = {
+        ...prev.gear,
+        gloryTotal: (prev.gear?.gloryTotal || 1000) + magicGloryTotal
+      };
       
-      if (!updated.gear) updated.gear = {};
-      const currentGlory = updated.gear.gloryTotal || 1000;
-      updated.gear.gloryTotal = currentGlory + magicGloryTotal;
+      const updatedPassions = { ...prev.passions };
+      if (courtshipResult?.amorIncrease) {
+        const currentAmor = prev.passions?.amor || 0;
+        updatedPassions.amor = Math.min(20, currentAmor + courtshipResult.amorIncrease);
+      }
 
-      return updated;
+      return {
+        ...prev,
+        gear: updatedGear,
+        passions: updatedPassions
+      };
     });
 
     setMagicApplied(true);
-    alert(`[신앙과 기적 정산 완료]: 성스러운 위업 및 모험에서 거둔 영예가 공식 적용되었습니다.\n• 획득 명예: +${magicGloryTotal} Glory`);
+    let alertMsg = `[신앙과 기적 정산 완료]: 성스러운 위업 및 모험에서 거둔 영예가 공식 적용되었습니다.\n• 획득 명예: +${magicGloryTotal} Glory`;
+    if (courtshipResult?.amorIncrease) {
+      alertMsg += `\n• 연망(Amor) 상승: +${courtshipResult.amorIncrease}`;
+    }
+    alert(alertMsg);
   };
 
   const resetMagicSimulator = () => {
@@ -1962,12 +1987,13 @@ export default function SoloOracles({ character, setCharacter }) {
       return;
     }
 
-    setCharacter(prev => {
-      const updated = { ...prev };
-      if (!updated.gear) updated.gear = {};
-      updated.gear.cash = Math.max(0, currentCash - cost);
-      return updated;
-    });
+    setCharacter(prev => ({
+      ...prev,
+      gear: {
+        ...prev.gear,
+        cash: Math.max(0, (prev.gear?.cash || 0) - cost)
+      }
+    }));
 
     const logs = [
       {
@@ -1993,17 +2019,23 @@ export default function SoloOracles({ character, setCharacter }) {
     }
 
     setCharacter(prev => {
-      const updated = { ...prev };
-      if (!updated.gear) updated.gear = {};
-      updated.gear.cash = Math.max(0, currentCash - cost);
+      const updated = {
+        ...prev,
+        gear: {
+          ...prev.gear,
+          cash: Math.max(0, (prev.gear?.cash || 0) - cost)
+        }
+      };
       
       // Update inventory on sheet if matching category
       if (category === 'horse') {
-        if (!updated.horses) updated.horses = {};
-        updated.horses.warhorse = {
-          hp: itemData.hp,
-          armor: itemData.armor,
-          damage: itemData.damage
+        updated.horses = {
+          ...prev.horses,
+          warhorse: {
+            hp: itemData.hp,
+            armor: itemData.armor,
+            damage: itemData.damage
+          }
         };
       }
       
@@ -2067,13 +2099,13 @@ export default function SoloOracles({ character, setCharacter }) {
         desc = '전설적인 성 성골함의 모조 장식 테두리 조각 또는 황금 세공 뚜껑입니다! 룰북 p.209에 해당하는 최고의 위엄찬 보화로 주군에게 명예를 사거나 £12의 엄청난 소지금으로 즉시 정산할 수 있습니다!';
       }
 
-      setCharacter(prev => {
-        const updated = { ...prev };
-        if (!updated.gear) updated.gear = {};
-        const currentCash = updated.gear.cash || 0;
-        updated.gear.cash = currentCash + value;
-        return updated;
-      });
+      setCharacter(prev => ({
+        ...prev,
+        gear: {
+          ...prev.gear,
+          cash: (prev.gear?.cash || 0) + value
+        }
+      }));
 
       setAppraisedTreasure({ roll, name, value, desc });
       setIsAppraising(false);
@@ -3646,7 +3678,7 @@ export default function SoloOracles({ character, setCharacter }) {
               <div style={{ fontSize: '0.84rem', marginTop: '4px' }}>누적 명예 획득: <strong style={{ color: 'var(--color-success)' }}>+{magicGloryTotal} Glory</strong></div>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button className="btn-medieval btn-medieval-primary" onClick={applyMagicToSheet} disabled={magicApplied || magicGloryTotal === 0} style={{ fontSize: '0.82rem' }}>
+              <button className="btn-medieval btn-medieval-primary" onClick={applyMagicToSheet} disabled={magicApplied || (magicGloryTotal === 0 && !(courtshipResult?.amorIncrease > 0))} style={{ fontSize: '0.82rem' }}>
                 {magicApplied ? '✓ 시트 반영 완료' : '📈 영예 시트 데이터 반영'}
               </button>
               <button className="btn-medieval" onClick={resetMagicSimulator} style={{ fontSize: '0.78rem' }}>
