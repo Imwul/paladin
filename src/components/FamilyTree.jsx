@@ -78,7 +78,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [formNameEn, setFormNameEn] = useState('');
   const [formMemberClass, setFormMemberClass] = useState('기사 (Knight)');
   const [formRelation, setFormRelation] = useState('자녀');
-  const [formGeneration, setFormGeneration] = useState(3);
+  const [formGeneration, setFormGeneration] = useState(2);
   const [formStatus, setFormStatus] = useState('생존');
   const [formLifeYears, setFormLifeYears] = useState('');
   const [formNote, setFormNote] = useState('');
@@ -208,7 +208,7 @@ export default function FamilyTree({ character, setCharacter }) {
   }, [members]);
 
   // Open Modal to Add Member
-  const handleOpenAdd = (defaultParentId = '', defaultSpouseId = '', targetGen = 3) => {
+  const handleOpenAdd = (defaultParentId = '', defaultSpouseId = '', targetGen = 2) => {
     setModalMode('add');
     setFormNameKo('');
     setFormNameEn('');
@@ -401,12 +401,12 @@ export default function FamilyTree({ character, setCharacter }) {
   // Group Members by Generation
   const generations = [0, 1, 2, 3, 4, 5];
   const genLabels = [
-    "증조부 세대 (Great-Grandparents)",
     "조부모 세대 (Grandparents)",
     "부모 세대 (Parents)",
     "본인 및 형제 세대 (Knight's Gen)",
     "자녀 세대 (Children)",
-    "손자녀 세대 (Descendants)"
+    "손자녀 세대 (Descendants)",
+    "증손자녀 세대 (Great-Grandchildren)"
   ];
 
   // Helper to render spouse links side-by-side
