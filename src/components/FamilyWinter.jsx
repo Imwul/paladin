@@ -422,6 +422,89 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       if (chroniclePendingRoll) {
         const pending = { ...chroniclePendingRoll };
+
+        if (pending.type === 'gf_hate_roll') {
+          setChroniclePendingRoll(null);
+          let val = parseInt(chronicleManualD6);
+          if (isNaN(val) || val < 1 || (pending.hateType === 'd3' && val > 3) || (pending.hateType === 'd6' && val > 6)) {
+            val = Math.floor(Math.random() * (pending.hateType === 'd3' ? 3 : 6)) + 1;
+          }
+
+          let updatedHates = { ...grandfatherHates };
+          let logAdd = "";
+          let outcomeText = "";
+
+          if (pending.hateTarget === 'cruel') {
+            logAdd = `\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) ${val} 기질 획득!`;
+            outcomeText = `아비뇽 징벌 공방전 승리 및 복수 기질 획득 (+${pending.gloryGained} Glory)`;
+          } else {
+            const enemyKorean = pending.hateTarget === 'saxons' ? '작센인' : pending.hateTarget === 'moors' ? '무어인' : '덴마크 바이킹';
+            const enemyKey = pending.hateTarget;
+            updatedHates[enemyKey] = (updatedHates[enemyKey] || 0) + val;
+            setGrandfatherHates(updatedHates);
+
+            logAdd = `\n  └ [증오 획득] ${enemyKorean}에 대한 증오 +${val}`;
+            
+            if (pending.poitiersOutcome) {
+              if (pending.poitiersOutcome === 'hero') {
+                outcomeText = `영웅: 포아티에 돌격 전공 획득 (+500 Glory, 무어 증오 +${val})`;
+              } else if (pending.poitiersOutcome === 'survive') {
+                outcomeText = `승전: 투르-포아티에 승전 생존 (+400 Glory, 무어 증오 +${val})`;
+              } else {
+                outcomeText = `👑 불멸의 무공: 적장 압둘 라흐만 결투 처단 (+900 Glory, 무어 증오 +${val})`;
+              }
+            } else if (pending.customOutcome === 'danes_hate') {
+              outcomeText = `덴마크 성벽 사수 및 덴마크 증오 +${val} 획득 (+${pending.gloryGained} Glory)`;
+              logAdd = `\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노를 품었습니다! (Hate [Danes] +${val})`;
+            } else {
+              const enemyNameKo = pending.hateTarget === 'saxons' ? '작센' : pending.hateTarget === 'moors' ? '무어' : '덴마크';
+              outcomeText = `${enemyNameKo} 전투 생존 및 증오 +${val} 획득 (+${pending.gloryGained} Glory)`;
+            }
+          }
+
+          const finalLog = pending.logPrefix + logAdd;
+          setAncestorRollLog(prev => [...prev, finalLog]);
+          setCurrentYearRolled(true);
+          setCurrentYearResultText(outcomeText);
+          setChronicleManualD20('');
+          setChronicleManualD6('');
+          return;
+        }
+
+        if (pending.type === 'f_hate_roll') {
+          setChroniclePendingRoll(null);
+          let val = parseInt(chronicleManualD6);
+          if (isNaN(val) || val < 1 || (pending.hateType === 'd3' && val > 3) || (pending.hateType === 'd6' && val > 6)) {
+            val = Math.floor(Math.random() * (pending.hateType === 'd3' ? 3 : 6)) + 1;
+          }
+
+          let updatedHates = { ...fatherHates };
+          let logAdd = "";
+          let outcomeText = "";
+
+          const enemyKorean = pending.hateTarget === 'saxons' ? '작센인' : pending.hateTarget === 'moors' ? '무어인' : '덴마크 바이킹';
+          const enemyKey = pending.hateTarget;
+          updatedHates[enemyKey] = (updatedHates[enemyKey] || 0) + val;
+          setFatherHates(updatedHates);
+
+          if (pending.customOutcome === 'saxons_hate_d6') {
+            logAdd = `\n  └ [증오 획득] 작센인에 대한 극심한 증오 +${val}`;
+            outcomeText = `작센 격전 생존 및 극심한 증오 +${val} (+${pending.gloryGained} Glory)`;
+          } else {
+            logAdd = `\n  └ [증오 획득] ${enemyKorean}에 대한 증오 +${val}`;
+            const enemyNameKo = pending.hateTarget === 'saxons' ? '작센' : pending.hateTarget === 'moors' ? '무어' : '바이킹';
+            outcomeText = `${enemyNameKo} 전투 생존 및 증오 +${val} (+${pending.gloryGained} Glory)`;
+          }
+
+          const finalLog = pending.logPrefix + logAdd;
+          setAncestorRollLog(prev => [...prev, finalLog]);
+          setCurrentYearRolled(true);
+          setCurrentYearResultText(outcomeText);
+          setChronicleManualD20('');
+          setChronicleManualD6('');
+          return;
+        }
+
         setChroniclePendingRoll(null);
 
         let d20 = parseInt(chronicleManualD20);
@@ -492,27 +575,45 @@ export default function FamilyWinter({ character, setCharacter }) {
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
             setGrandfatherGlory(prev => prev + res.gloryGained);
-            if (pending.hateEnemy && pending.hateEnemy !== 'danes') {
-              const hVal = rollD3();
-              if (pending.hateEnemy === 'saxons') setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-              else if (pending.hateEnemy === 'moors') setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-              logMsg += `\n  └ [증오 획득] ${pending.hateEnemy === 'saxons' ? '작센인' : '무어인'}에 대한 증오 +${hVal}`;
-              yearOutcomeText = `${pending.hateEnemy === 'saxons' ? '작센' : '무어'} 전투 생존 및 증오 +${hVal} 획득 (+${res.gloryGained} Glory)`;
-            } else {
-              yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+            
+            let needHateRoll = false;
+            let hateType = "";
+            let hateTarget = "";
+            
+            if (pending.customOutcome === 'danes_hate') {
+              needHateRoll = true;
+              hateType = 'd6';
+              hateTarget = 'danes';
+            } else if (pending.customOutcome === 'cruel_trait') {
+              needHateRoll = true;
+              hateType = 'd6';
+              hateTarget = 'cruel';
+            } else if (pending.hateEnemy) {
+              needHateRoll = true;
+              hateType = 'd3';
+              hateTarget = pending.hateEnemy;
             }
 
-            if (pending.customOutcome === 'cruel_trait') {
-              logMsg += "\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) 1d6 기질 획득!";
-              yearOutcomeText = `아비뇽 징벌 공방전 승리 및 복수 기질 획득 (+${res.gloryGained} Glory)`;
-            } else if (pending.customOutcome === 'birth_gift') {
-              logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
-              yearOutcomeText = "셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+${res.gloryGained} Glory)";
-            } else if (pending.customOutcome === 'danes_hate') {
-              const dHVal = rollD6();
-              setGrandfatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + dHVal }));
-              logMsg += `\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노를 품었습니다! (Hate [Danes] +${dHVal})`;
-              yearOutcomeText = `덴마크 성벽 사수 및 덴마크 증오 +${dHVal} 획득 (+${res.gloryGained} Glory)`;
+            if (needHateRoll) {
+              setChroniclePendingRoll({
+                type: 'gf_hate_roll',
+                yr: pending.yr,
+                logPrefix: logMsg,
+                hateType,
+                hateTarget,
+                gloryGained: res.gloryGained,
+                customOutcome: pending.customOutcome
+              });
+              setChronicleManualD20('');
+              setChronicleManualD6('');
+              return;
+            } else {
+              if (pending.customOutcome === 'birth_gift') {
+                logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
+                yearOutcomeText = `셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+${res.gloryGained} Glory)`;
+              } else {
+                yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+              }
             }
           }
         }
@@ -542,21 +643,28 @@ export default function FamilyWinter({ character, setCharacter }) {
             sLog = `    └ [습격 수비전 주사위 ${d20}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
           }
 
-          const hVal = rollD3();
-          setGrandfatherGlory(prev => prev + sGlory);
           if (sDead) {
             setGfDead(true);
             setGrandfatherDeathYear(pending.yr);
             setGrandfatherDeathCause(sCause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${sCause}`;
+            logMsg += "\n" + sLog;
           } else {
-            if (pending.enemyName === "Saxons") setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            else setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            sLog += ` (이교도 증오 +${hVal} 획득)`;
-            yearOutcomeText = `평화로운 국경 방어 성공 (+${sGlory} Glory)`;
+            setGrandfatherGlory(prev => prev + sGlory);
+            const targetEnemy = pending.enemyName === "Saxons" ? "saxons" : "moors";
+            setChroniclePendingRoll({
+              type: 'gf_hate_roll',
+              yr: pending.yr,
+              logPrefix: logMsg + "\n" + sLog,
+              hateType: 'd3',
+              hateTarget: targetEnemy,
+              gloryGained: sGlory
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           }
-          logMsg += "\n" + sLog;
         }
         else if (pending.type === 'gf_poitiers') {
           if (d20 === 1) {
@@ -585,22 +693,46 @@ export default function FamilyWinter({ character, setCharacter }) {
             yearOutcomeText = "포로: 무어인 땅으로 압송 실종 (+400 Glory)";
           } else if (d20 === 13) {
             setGrandfatherGlory(prev => prev + 500);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `✨ 포아티에 주사위 ${d20} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `영웅: 포아티에 돌격 전공 획득 (+500 Glory, 무어 증오 +${hVal})`;
+            setChroniclePendingRoll({
+              type: 'gf_hate_roll',
+              yr: pending.yr,
+              logPrefix: logMsg + `✨ 포아티에 주사위 ${d20} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory)`,
+              hateType: 'd3',
+              hateTarget: 'moors',
+              gloryGained: 500,
+              poitiersOutcome: 'hero'
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           } else if (d20 <= 19) {
             setGrandfatherGlory(prev => prev + 400);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `🛡️ 포아티에 주사위 ${d20} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `승전: 투르-포아티에 승전 생존 (+400 Glory, 무어 증오 +${hVal})`;
+            setChroniclePendingRoll({
+              type: 'gf_hate_roll',
+              yr: pending.yr,
+              logPrefix: logMsg + `🛡️ 포아티에 주사위 ${d20} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory)`,
+              hateType: 'd3',
+              hateTarget: 'moors',
+              gloryGained: 400,
+              poitiersOutcome: 'survive'
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           } else {
             setGrandfatherGlory(prev => prev + 900);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `👑 포아티에 주사위 ${d20} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `👑 불멸의 무공: 적장 압둘 라흐만 결투 처단 (+900 Glory, 무어 증오 +${hVal})`;
+            setChroniclePendingRoll({
+              type: 'gf_hate_roll',
+              yr: pending.yr,
+              logPrefix: logMsg + `👑 포아티에 주사위 ${d20} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory)`,
+              hateType: 'd3',
+              hateTarget: 'moors',
+              gloryGained: 900,
+              poitiersOutcome: 'legend'
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           }
         }
         else if (pending.type === 'f_combat_survival') {
@@ -651,26 +783,42 @@ export default function FamilyWinter({ character, setCharacter }) {
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
             setFatherGlory(prev => prev + res.gloryGained);
-            if (pending.hateEnemy) {
-              const hVal = rollD3();
-              if (pending.hateEnemy === 'saxons') setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-              else if (pending.hateEnemy === 'moors') setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-              else if (pending.hateEnemy === 'danes') setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
-              logMsg += `\n  └ [증오 획득] ${pending.hateEnemy === 'saxons' ? '작센인' : pending.hateEnemy === 'moors' ? '무어인' : '덴마크 바이킹'}에 대한 증오 +${hVal}`;
-              yearOutcomeText = `${pending.hateEnemy === 'saxons' ? '작센' : pending.hateEnemy === 'moors' ? '무어' : '바이킹'} 전투 생존 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-            } else {
-              yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+            
+            let needHateRoll = false;
+            let hateType = "";
+            let hateTarget = "";
+            
+            if (pending.customOutcome === 'saxons_hate_d6') {
+              needHateRoll = true;
+              hateType = 'd6';
+              hateTarget = 'saxons';
+            } else if (pending.hateEnemy) {
+              needHateRoll = true;
+              hateType = 'd3';
+              hateTarget = pending.hateEnemy;
             }
 
-            if (pending.customOutcome === 'saxons_hate_d6') {
-              const hVal = rollD6();
-              setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-              logMsg += `\n  └ [증오 획득] 작센인에 대한 극심한 증오 +${hVal}`;
-              yearOutcomeText = `작센 격전 생존 및 극심한 증오 +${hVal} (+${res.gloryGained} Glory)`;
-            } else if (pending.customOutcome === 'viviens_baptism') {
-              setFatherGlory(prev => prev + 25);
-              logMsg += `\n  └ ⛪ 이교도 귀족 위비앙 부부의 역사적인 기독교 세례 성사에서 가문의 명예 하객 대열을 호위하셨습니다! (+25 Glory)`;
-              yearOutcomeText = `위비앙 세례식 가문 호위 및 대성당 참석 (+75 Glory)`;
+            if (needHateRoll) {
+              setChroniclePendingRoll({
+                type: 'f_hate_roll',
+                yr: pending.yr,
+                logPrefix: logMsg,
+                hateType,
+                hateTarget,
+                gloryGained: res.gloryGained,
+                customOutcome: pending.customOutcome
+              });
+              setChronicleManualD20('');
+              setChronicleManualD6('');
+              return;
+            } else {
+              if (pending.customOutcome === 'viviens_baptism') {
+                setFatherGlory(prev => prev + 25);
+                logMsg += `\n  └ ⛪ 이교도 귀족 위비앙 부부의 역사적인 기독교 세례 성사에서 가문의 명예 하객 대열을 호위하셨습니다! (+25 Glory)`;
+                yearOutcomeText = `위비앙 세례식 가문 호위 및 대성당 참석 (+75 Glory)`;
+              } else {
+                yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+              }
             }
           }
         }
@@ -700,22 +848,28 @@ export default function FamilyWinter({ character, setCharacter }) {
             sLog = `    └ [습격 수비전 주사위 ${d20}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
           }
 
-          const hVal = rollD3();
-          setFatherGlory(prev => prev + sGlory);
           if (sDead) {
             setFatherDead(true);
             setFatherDeathYear(pending.yr);
             setFatherDeathCause(sCause);
             setInteractiveStage('f_dead');
             yearOutcomeText = `사망: ${sCause}`;
+            logMsg += "\n" + sLog;
           } else {
-            if (pending.enemyName === "Saxons") setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            else if (pending.enemyName === "Moors") setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            else setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
-            sLog += ` (이교도 증오 +${hVal} 획득)`;
-            yearOutcomeText = `평화로운 국경 방어 성공 (+${sGlory} Glory)`;
+            setFatherGlory(prev => prev + sGlory);
+            const targetEnemy = pending.enemyName === "Saxons" ? "saxons" : pending.enemyName === "Moors" ? "moors" : "danes";
+            setChroniclePendingRoll({
+              type: 'f_hate_roll',
+              yr: pending.yr,
+              logPrefix: logMsg + "\n" + sLog,
+              hateType: 'd3',
+              hateTarget: targetEnemy,
+              gloryGained: sGlory
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           }
-          logMsg += "\n" + sLog;
         }
 
         setAncestorRollLog(prev => [...prev, logMsg]);
@@ -4136,33 +4290,50 @@ export default function FamilyWinter({ character, setCharacter }) {
                             ) : chroniclePendingRoll ? (
                               <div style={{ backgroundColor: 'rgba(185, 28, 28, 0.04)', border: '1px solid rgba(185, 28, 28, 0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                  <span style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>🛡️ 2차 생존/추가 판정 필요!</span>
+                                  <span style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>
+                                    {(chroniclePendingRoll.type === 'gf_hate_roll' || chroniclePendingRoll.type === 'f_hate_roll') 
+                                      ? '🔥 추가 판정: 증오/기질 수치 결정' 
+                                      : '🛡️ 2차 생존 판정 필요!'}
+                                  </span>
                                   <span style={{ fontSize: '0.78rem', lineHeight: 1.4, whiteSpace: 'pre-wrap', backgroundColor: 'rgba(0,0,0,0.02)', padding: '8px', borderRadius: '4px', borderLeft: '3px solid var(--color-crimson)' }}>
-                                    {chroniclePendingRoll.logPrefix.trim()}
+                                    {(chroniclePendingRoll.type === 'gf_hate_roll' || chroniclePendingRoll.type === 'f_hate_roll')
+                                      ? `${chroniclePendingRoll.logPrefix.trim()}\n\n👉 생존에 성공하셨습니다! ${
+                                          chroniclePendingRoll.hateTarget === 'cruel'
+                                            ? '무자비함(Cruel) 기질'
+                                            : chroniclePendingRoll.hateTarget === 'saxons'
+                                            ? '작센인 증오'
+                                            : chroniclePendingRoll.hateTarget === 'moors'
+                                            ? '무어인 증오'
+                                            : '덴마크 바이킹 증오'
+                                        } 수치를 결정하기 위해 ${chroniclePendingRoll.hateType} 주사위를 굴립니다.`
+                                      : chroniclePendingRoll.logPrefix.trim()}
                                   </span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 2차 주사위(d20):</span>
-                                      <input
-                                        type="text"
-                                        placeholder="예: 10"
-                                        value={chronicleManualD20}
-                                        onChange={e => setChronicleManualD20(e.target.value)}
-                                        style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                      />
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 추가 주사위(1d6/1d3):</span>
-                                      <input
-                                        type="text"
-                                        placeholder="예: 5"
-                                        value={chronicleManualD6}
-                                        onChange={e => setChronicleManualD6(e.target.value)}
-                                        style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                      />
-                                    </div>
+                                    {!(chroniclePendingRoll.type === 'gf_hate_roll' || chroniclePendingRoll.type === 'f_hate_roll') ? (
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 2차 주사위(d20):</span>
+                                        <input
+                                          type="text"
+                                          placeholder="예: 10"
+                                          value={chronicleManualD20}
+                                          onChange={e => setChronicleManualD20(e.target.value)}
+                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 추가 주사위({chroniclePendingRoll.hateType}):</span>
+                                        <input
+                                          type="text"
+                                          placeholder={`예: ${chroniclePendingRoll.hateType === 'd3' ? '2' : '5'}`}
+                                          value={chronicleManualD6}
+                                          onChange={e => setChronicleManualD6(e.target.value)}
+                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                   <button
                                     type="button"
@@ -4170,11 +4341,15 @@ export default function FamilyWinter({ character, setCharacter }) {
                                     style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px', borderColor: 'var(--color-crimson)', background: 'var(--color-crimson)' }}
                                     onClick={rollSingleYearInteractive}
                                   >
-                                    🛡️ {interactiveYear}년 생존 판정 굴리기
+                                    {(chroniclePendingRoll.type === 'gf_hate_roll' || chroniclePendingRoll.type === 'f_hate_roll')
+                                      ? '⚔️ 증오/기질 주사위 판정'
+                                      : `🛡️ ${interactiveYear}년 생존 판정 굴리기`}
                                   </button>
                                 </div>
                                 <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                                  * 1차 판정 결과({chroniclePendingRoll.firstRoll})에 따른 추가 생존 판정입니다. 입력하지 않으면 무작위(d20)로 결정됩니다.
+                                  {(chroniclePendingRoll.type === 'gf_hate_roll' || chroniclePendingRoll.type === 'f_hate_roll')
+                                    ? `* 추가 주사위 값을 입력하면 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(${chroniclePendingRoll.hateType})로 결정됩니다.`
+                                    : `* 1차 판정 결과(${chroniclePendingRoll.firstRoll})에 따른 추가 생존 판정입니다. 입력하지 않으면 무작위(d20)로 결정됩니다.`}
                                 </span>
                               </div>
                             ) : (
