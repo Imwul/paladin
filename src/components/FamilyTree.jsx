@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull } from 'lucide-react';
+import { maleNames, femaleNames } from '../data/names';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -98,6 +99,60 @@ export default function FamilyTree({ character, setCharacter }) {
 
   const treeContainerRef = useRef(null);
   const [lines, setLines] = useState([]);
+
+  const handleInheritCharacter = () => {
+    if (!editingMember) return;
+    const confirmInherit = window.confirm(`정말로 이 인물(${editingMember.name})로 대를 이어 플레이를 계속하시겠습니까?\n• 기사 시트의 실명, 나이(가계도 기반 자동 계산)가 동적 전환됩니다.\n• 가계도 내 기존 '본인'은 은퇴/사망 처리되고 이 인물이 새로운 '본인'이 됩니다.`);
+    if (!confirmInherit) return;
+
+    const birthYearStr = editingMember.lifeYears?.split('~')?.[0]?.trim() || '';
+    const birthYear = parseInt(birthYearStr) || 768;
+    const currentYear = character.personal?.campaignYear || 768;
+    const calculatedAge = Math.max(15, currentYear - birthYear);
+
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+
+      // 1. Find and update the old "본인"
+      const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
+      let oldSelfId = 'roland';
+      if (oldSelfIndex !== -1 && updated.family && updated.family.members) {
+        const oldSelf = updated.family.members[oldSelfIndex];
+        oldSelfId = oldSelf.id;
+        const isChildOfOldSelf = editingMember.parentId === oldSelf.id;
+        oldSelf.relation = isChildOfOldSelf ? '부친' : '친족';
+        oldSelf.status = '사망';
+        oldSelf.lifeYears = oldSelf.lifeYears.split('~')[0] + `~${currentYear}`;
+        oldSelf.note = `위대한 모험을 마치고 명예롭게 은퇴/전사한 선조 기사. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
+      }
+
+      // 2. Find and update the new "본인" in members array
+      if (updated.family && updated.family.members) {
+        updated.family.members = updated.family.members.map(m => {
+          if (m.id === editingMember.id) {
+            return {
+              ...m,
+              relation: '본인',
+              status: '생존',
+              note: `가문의 영광스러운 기사직을 새로이 계승한 플레이어 캐릭터.`
+            };
+          }
+          return m;
+        });
+      }
+
+      // 3. Update character sheet profile
+      updated.personal.name = editingMember.name;
+      updated.personal.age = calculatedAge;
+      updated.gear.gloryTotal = Math.floor((prev.gear?.gloryTotal || 1000) * 1.1);
+
+      return updated;
+    });
+
+    setIsModalOpen(false);
+    setEditingMember(null);
+    alert(`[가문 상속 완료]: 새로운 계승자 기사(${editingMember.name}, ${calculatedAge}세)로의 전환이 시트와 가계도에 공식 적용되었습니다!`);
+  };
 
   const members = (character.family?.members || []).map(m => {
     if (m.relation === '본인') {
@@ -843,6 +898,16 @@ export default function FamilyTree({ character, setCharacter }) {
             </div>
 
             <div className="ft-modal-footer">
+              {modalMode === 'edit' && editingMember?.status === '생존' && editingMember?.relation !== '본인' && (
+                <button 
+                  type="button" 
+                  className="btn-medieval" 
+                  style={{ backgroundColor: 'var(--color-crimson)', color: '#fff', borderColor: 'var(--color-crimson)', marginRight: 'auto' }}
+                  onClick={handleInheritCharacter}
+                >
+                  ⚔️ 이 캐릭터로 계승하기
+                </button>
+              )}
               <button type="button" className="btn-medieval" onClick={() => setIsModalOpen(false)}>
                 취소
               </button>

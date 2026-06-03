@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
 import { greatFamilies } from '../data/lore';
+import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
 
 const MALE_CHARACTERISTICS = {
@@ -3860,12 +3861,108 @@ export default function FamilyWinter({ character, setCharacter }) {
     if (familyApplied) return;
 
     setCharacter(prev => {
-      const updatedGear = { ...prev.gear };
+      const updated = JSON.parse(JSON.stringify(prev));
+      const currentYear = prev.personal?.campaignYear || 768;
+      const selfMember = updated.family?.members?.find(m => m.relation === '본인');
+      const playerGen = selfMember?.generation ?? 2;
+      const playerId = selfMember?.id ?? 'roland';
+
+      // 1. Marriage Cash, Glory, and Spouse Addition
       if (marriageResult) {
-        updatedGear.cash = (updatedGear.cash || 0) + marriageResult.dowry;
-        updatedGear.gloryThisGame = (updatedGear.gloryThisGame || 0) + marriageResult.glory;
+        updated.gear.cash = (updated.gear?.cash || 0) + marriageResult.dowry;
+        updated.gear.gloryThisGame = (updated.gear?.gloryThisGame || 0) + marriageResult.glory;
+
+        // Add Spouse to Family Tree automatically
+        const spouseId = 'spouse_' + Date.now();
+        const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Mathilde", ko: "마틸드" };
+        const spouseName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
+        const newSpouseMember = {
+          id: spouseId,
+          name: spouseName,
+          relation: '배우자',
+          generation: playerGen,
+          status: '생존',
+          lifeYears: `${currentYear}~`,
+          note: `기사와 정식 혼례를 올린 배우자. 신분: ${marriageResult.rank}. 지참금: £${marriageResult.dowry}.`,
+          spouseId: playerId
+        };
+
+        if (updated.family) {
+          if (!updated.family.members) updated.family.members = [];
+          
+          // Archive existing alive spouse if any
+          const existingSpouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.status === '생존');
+          if (existingSpouseIndex !== -1) {
+            updated.family.members[existingSpouseIndex].status = '사망';
+            updated.family.members[existingSpouseIndex].lifeYears = updated.family.members[existingSpouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          }
+          updated.family.members.push(newSpouseMember);
+        }
       }
-      return { ...prev, gear: updatedGear };
+
+      // 2. Childbirth Member Addition
+      if (childbirthResult && updated.family) {
+        if (!updated.family.members) updated.family.members = [];
+
+        const spawnChild = (isSon) => {
+          const childId = 'child_' + Math.random().toString(36).substr(2, 9);
+          let childName = '';
+          let childNote = '';
+          if (isSon) {
+            const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
+            childName = `${randMale.ko} 경 (Sir ${randMale.en})`;
+            childNote = `가문의 적통을 이어갈 아들.`;
+          } else {
+            const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Aude", ko: "오드" };
+            childName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
+            childNote = `가문의 사랑받는 귀족 영애 딸.`;
+          }
+          return {
+            id: childId,
+            name: childName,
+            relation: '자녀',
+            generation: playerGen + 1,
+            status: '생존',
+            lifeYears: `${currentYear}~`,
+            note: childNote,
+            parentId: playerId
+          };
+        };
+
+        if (childbirthResult.includes("건강한 아이 출생") || childbirthResult.includes("쌍둥이")) {
+          const isTwin = childbirthResult.includes("쌍둥이");
+          if (isTwin) {
+            const son1 = Math.random() < 0.5;
+            const son2 = Math.random() < 0.5;
+            updated.family.members.push(spawnChild(son1));
+            updated.family.members.push(spawnChild(son2));
+          } else {
+            const son = Math.random() < 0.5;
+            updated.family.members.push(spawnChild(son));
+          }
+        } else if (childbirthResult.includes("산모 서거, 아이 생존")) {
+          const son = Math.random() < 0.5;
+          updated.family.members.push(spawnChild(son));
+
+          // Archive spouse
+          const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+          if (spouseIndex !== -1) {
+            updated.family.members[spouseIndex].status = '사망';
+            updated.family.members[spouseIndex].deathCause = '출산 중 난산';
+            updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          }
+        } else if (childbirthResult.includes("산모와 아이 모두 출산 중 서거")) {
+          // Archive spouse
+          const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+          if (spouseIndex !== -1) {
+            updated.family.members[spouseIndex].status = '사망';
+            updated.family.members[spouseIndex].deathCause = '출산 중 사망';
+            updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          }
+        }
+      }
+
+      return updated;
     });
 
     let msg = `[가문 정산]: `;
