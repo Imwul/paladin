@@ -4280,17 +4280,77 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const endWinterPhase = () => {
-    setCharacter(prev => ({
-      ...prev,
-      personal: {
-        ...prev.personal,
-        age: (prev.personal.age || 0) + 1,
-        campaignYear: (prev.personal.campaignYear || 768) + 1
+    // Check if there are unspent Glory Bonus points
+    if (gloryBonusPoints > 0 && bonusSpent < gloryBonusPoints) {
+      const confirmEnd = window.confirm(`아직 사용하지 않은 돌파 보너스 점수가 [ ${gloryBonusPoints - bonusSpent} ]점 있습니다. 정산을 완료하면 이 보너스 점수는 사라집니다. 그래도 정산을 끝내시겠습니까?`);
+      if (!confirmEnd) return;
+    }
+
+    const currentYear = character.personal?.campaignYear || 768;
+
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+
+      // 1. Increment player's age and campaign year
+      updated.personal.age = (prev.personal?.age || 0) + 1;
+      updated.personal.campaignYear = currentYear + 1;
+
+      // 2. Increment Squire's age and replace if age >= 21
+      let squireStatusMsg = '';
+      if (updated.squire) {
+        const nextSquireAge = (prev.squire?.age || 14) + 1;
+        if (nextSquireAge >= 21) {
+          const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
+          updated.squire = {
+            name: `${randMale.ko} (Squire ${randMale.en})`,
+            age: 14,
+            siz: 10,
+            dex: 10,
+            str: 10,
+            con: 10,
+            firstAid: 8,
+            horsemanship: 9,
+            weapon: 8
+          };
+          squireStatusMsg = `• [종자 독립] 기존 종자가 21세가 되어 독립하고, 새 14세 종자 [${updated.squire.name}]를 영입했습니다.`;
+        } else {
+          updated.squire.age = nextSquireAge;
+          squireStatusMsg = `• [종자 성장] 종자 ${prev.squire?.name || '종자'}의 나이가 ${prev.squire?.age || 14}세 -> ${nextSquireAge}세로 성장했습니다.`;
+        }
       }
-    }));
+
+      // 3. Compile Winter Logs into Chronology Journal
+      const reverseLogs = [...logMessages].reverse();
+      const logsCombined = [...reverseLogs.map(line => `• ${line}`)];
+      if (squireStatusMsg) {
+        logsCombined.push(squireStatusMsg);
+      }
+      
+      const winterSummary = `[${currentYear}년 겨울 정산 일지]\n` + logsCombined.join('\n');
+      
+      if (!updated.journal) updated.journal = {};
+      const existingEntry = prev.journal?.[currentYear]?.text || '';
+      const combinedText = existingEntry
+        ? `${existingEntry}\n\n${winterSummary}`
+        : winterSummary;
+        
+      updated.journal[currentYear] = {
+        text: combinedText,
+        updatedAt: new Date().toISOString()
+      };
+
+      return updated;
+    });
+
+    // Check if squire was replaced to output a log
+    if (character.squire?.age >= 20) {
+      alert(`[종자 자립 및 영입]: 기존 종자가 21세가 되어 성인 기사로 독립했습니다! 새로운 14세 기망 종자가 가신단에 배치되었습니다.`);
+    }
+
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);
     setWinterStep(1);
     setActiveSubTab('family');
+    
     // reset states
     setAgingD20(null); setHarvestRoll(null); setSquireSurvivalRoll(null);
     setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
