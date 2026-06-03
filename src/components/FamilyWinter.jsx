@@ -4197,27 +4197,15 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 ) : (
                                   // 일반 연도: 주사위 입력 + 판정 버튼
                                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력(d20):</span>
-                                        <input
-                                          type="text"
-                                          placeholder="예: 15"
-                                          value={chronicleManualD20}
-                                          onChange={e => setChronicleManualD20(e.target.value)}
-                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                        />
-                                      </div>
-                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 추가 주사위(1d6/1d3):</span>
-                                        <input
-                                          type="text"
-                                          placeholder="예: 5"
-                                          value={chronicleManualD6}
-                                          onChange={e => setChronicleManualD6(e.target.value)}
-                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                        />
-                                      </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력(d20):</span>
+                                      <input
+                                        type="text"
+                                        placeholder="예: 15"
+                                        value={chronicleManualD20}
+                                        onChange={e => setChronicleManualD20(e.target.value)}
+                                        style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                      />
                                     </div>
                                     <button
                                       type="button"
