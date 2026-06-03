@@ -89,52 +89,53 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [chronicleHistory, setChronicleHistory] = useState([]);
 
   // 연도별 이벤트 매핑
+  // 연도별 이벤트 매핑
   const ANCESTOR_EVENTS = {
-    723: "작센(Saxony) 신성수 파괴 공격: 카롤루스 마르텔(Charles Martel)이 가이스마르(Geismar)와 프리츨라(Fritzlar) 인근의 작센 신성한 나무(Holy Trees)들을 파괴한 역사적 원정에 종군했습니다.",
-    724: "교황 성유물 기증: 교황이 카롤루스 마르텔(Charles Martel)에게 성 베드로의 쇠사슬 và 열쇠 성유물함을 기증하였습니다. 가문의 영광스러운 후계자이자 아버님이 되실 제라르 경(Gerard)이 탄생하셨습니다.",
-    725: "오툉 포위전: 무어인들이 님(Nîmes)과 카르카손(Carcassonne)을 함락시키고 론(Rhône) 강을 따라 오툉(Autun)까지 대약탈을 감행하여, 오툉 수비대로서 결사 항전했습니다. (오도(Eudes) 공작 매수 소문)",
-    726: "중대한 무훈의 공백기: 기사단이 전열을 정비하는 동안, 할아버님께서는 후방 참호를 강화하고 평화로운 겨울 보초 임무에 전념하셨습니다.",
-    727: "영지의 평온: 제국 국경에 마찰이 일어나지 않은 해로, 봉토의 곡식 수확을 관리하고 가문의 권세를 평화롭게 유지하였습니다.",
-    728: "작센 및 아키텐 대원정: 카롤루스 마르텔(Charles Martel)이 작센(Saxony)과 프리지아(Frisia)에서 원정을 벌이고, 독립을 선포하며 무어인(Moors)과 연맹을 맺은 아키텐(Aquitaine)의 오도(Eudes) 공작을 제압하기 위해 대원정에 나섰습니다.",
-    729: "작센 전투 및 바르벨 타워 공성: 가린(Garin)과 두온(Doon) 공작을 돕기 위해 작센인(Saxons)들의 거점인 바르벨(Varbel) 타워 근처에서 대전투를 펼쳤습니다.",
-    730: "무훈시 [고프레(Gaufrey)] & [오베리 드 부르고뉴(Auberi de Bourgogne)]: 바르벨(Varbel) 타워에서 플뢰르드핀(Fleurdelys) 공주의 지혜로 갇힌 프랑크(Franks) 기사들이 구출되고 거인 로바스트르(Robastre)가 글로리앙(Gloriant)을 결투로 참수했으며, 오베리(Auberi) 경이 아바르(Avars)족의 공습으로부터 바이에른(Bavaria) 영토를 완전히 사수하여 귀족적 안착에 성공했습니다.",
-    731: "오리돈 공성전: 카롤루스 마르텔(Charles Martel)을 도와 배반자 람베르트(Lambert)의 성인 오리돈(Oridon)을 포위 공성했습니다.",
-    732: "포아티에 전투(투르 전투): 이슬람 무어인(Moors)들의 대규모 침공군에 맞서 서유럽의 운명을 걸고 카롤루스 마르텔(Charles Martel)의 연합군에 합류하여 평원에서 격전을 벌였습니다.",
-    733: "무훈시 [도렐과 베통(Daurel and Beton)] & [역사]: 브라반트(Brabant) 공작 베비스(Boves)가 프랑크 왕국 국왕의 누이 에르멩가르드(Ermengard) 공주와 성대한 축복 속에 결혼했으나, 질투심에 타락한 기(Guy) 백작이 주군을 해칠 비열한 음모를 꾸몄습니다. [역사] 아키텐(Aquitaine)의 수호자 오도(Eudes) 공작이 서거하여 아들 후놀트(Hunald)가 작위를 상속받았습니다.",
-    734: "무훈시 [도렐과 베통(Daurel and Beton)] & [역사]: 주군 가문의 위대한 희망이자 기사도의 정수인 아기 베통(Beton) 경이 출생하였습니다. [역사] 프랑크의 진정한 권력자 카롤루스 마르텔(Charles Martel)이 그의 둘째 아들 피핀(Pepin)을 롬바르디아(Lombardy)의 파비아(Pavia) 왕실로 보내 수습 종자 훈련을 거치도록 조치했습니다.",
-    735: "루시옹 대결 및 보르도 공성전: 카롤루스 마르텔(Charles Martel)을 종군하여 보르도(Bordeaux) 공성에 나서거나, 루시옹(Roussillon)의 제라르(Gerard) 공작과의 대결전에 참전했습니다.",
-    736: "제라르 격퇴 및 아를 해방전: 무어인(Moors)들과 손을 잡은 반역세력을 토벌하고, 무어인의 치하에서 아를(Arles)을 완전히 탈환하기 위한 공성전에 참전했습니다.",
-    737: "아비뇽 공성전 및 학살극: 무어인(Moors)과 연맹을 맺은 서고트(Visigoth) 반역자들을 징벌하기 위해 아비뇽(Avignon)을 격파하고, 도시 함락 후 가차 없는 학살 및 처벌에 가담했습니다.",
-    738: "부르고뉴 전투 및 보르들레 습격전: 로렌(Lorraine) 가문을 도우며 부르고뉴(Burgundy)로 쳐들어온 무어 침공군을 격파하거나, 보르들레(Bordelais) 가문을 급습하는 가문 불화 전투에 나섰습니다.",
-    739: "셉티마니아 수복전: 남부에서 무어인(Moors)들을 축출하기 위한 셉티마니아(Septimania) 공성전에 가담해 큰 전리품을 획득하고 충성스러운 기사로 인정받았습니다.",
-    740: "로슈브룬 공성전: 대공 나이모(Naimon)의 사촌 파스루즈(Passeluse)를 구출하기 위해 덴마크(Denmark) 침공군에 맞서 로슈브룬(Rochebrune) 성을 방어 및 탈환했습니다.",
-    741: "카롤루스 마르텔의 서거 및 장례: 마르텔(Martel) 공의 서거를 기리고, 영지를 탈취하려는 그리포(Grifo) 왕자의 반란군을 생포하는 진압군에 가담했습니다.",
-    742: "두온 백작의 결혼식: 국왕 피핀(Pepin)의 누이 올리브(Olive) 공주와 두온(Doon) 백작의 화려한 쾰른(Cologne) 혼례식에 공식 하객으로 참석했습니다.",
-    743: "레겐스부르크 전투 및 삼면 원정: 바이에른(Bavaria)을 완전 병합하기 위한 레겐스부르크(Regensburg) 전투에 참전하거나, 아키텐(Aquitaine)/작센(Saxony)의 반란을 평정하기 위해 종군했습니다.",
-    744: "할아버님 은퇴 전 최후의 원정: 궁정의 간첩을 적발하고 최후의 작센(Saxony) 습격을 차단하며 기사로서의 영예로운 일생을 매듭지었습니다.",
+    723: "작센(Saxony) 신성수 파괴 원정: 데시데리우스(Desiderius) 교회의 보호자이자 궁재 카롤루스 마르텔(Charles Martel)의 명에 따라, 헤센(Hesse) 지방 가이스마르(Geismar)의 토르 신성한 떡갈나무(Donar Oak)를 벌채하고 작센인(Saxons)들의 프리츨라(Fritzlar) 요새 인근 이교도 신성림(Holy Trees)들을 파괴하는 원정에 종군하였습니다.",
+    724: "교황 그레고리오 2세(Gregory II)의 성유물 기증 및 제라르 경 탄생: 교황이 카롤루스 마르텔(Charles Martel)에게 성 베드로의 쇠사슬(Saint Peter's Chains)과 열쇠 성유물함(Shrine of Keys)을 기증하며 보호를 요청했습니다. 한편, 가문의 영광스러운 상속자이자 부친이 되실 제라르(Gerard) 경이 탄생하는 영광을 맞이했습니다.",
+    725: "오툉(Autun) 포위전 결사 항전: 셉티마니아(Septimania)를 장악한 무어인(Moors)들의 대군이 님(Nîmes)과 카르카손(Carcassonne)을 차례로 함락하고, 론(Rhône) 강 계곡을 따라 북상하여 부르고뉴의 심장부 오툉(Autun)까지 약탈과 파괴를 자행하자 오툉 성채 수비대원으로서 결사 항전했습니다. 아키텐의 오도(Eudes) 공작이 무어인들과 밀약을 맺었다는 매수 소문이 흉흉히 돌았습니다.",
+    726: "영지 방비와 평화기: 무어인들의 공세가 한 차례 꺾이고 기사단이 전열을 정비하는 동안, 겨울철 영지 순찰을 돌며 후방의 성벽과 참호를 보수하고 평온한 기사 의무를 완수했습니다.",
+    727: "국경의 평화와 풍작: 제국 국경과 영지에 아무런 마찰이 없었던 한 해로, 봉토의 곡식 수확을 직접 감독하고 가문의 권세와 영지민들의 치안을 평화롭게 유지하였습니다.",
+    728: "작센 정벌 및 아키텐 공작 제압 대원정: 카롤루스 마르텔(Charles Martel)이 북방 작센(Saxony)과 동프리지아(East Frisia)를 징벌하는 원정을 단행하고, 스페인의 이슬람 세력과 밀약을 맺어 프랑크 왕국으로부터 독립하려는 아키텐(Aquitaine)의 오도(Eudes) 공작을 무릎 꿇리기 위해 남북을 가르는 군사 작전에 참전했습니다.",
+    729: "작센 바르벨 타워(Varbel Tower) 공방전: 가린 드 몽글란(Garin de Monglane) 공작과 두온 드 메양스(Doon de Mayence) 공작을 구출하고 도우려 작센인(Saxons)들의 굳건한 거점 요새인 바르벨(Varbel) 타워 인근 전장으로 출정하여 치열한 정벌전을 벌였습니다.",
+    730: "무훈시 [고프레(Gaufrey)] 및 [오베리 드 부르고뉴(Auberi de Bourgogne)]의 대사건: 바르벨(Varbel) 타워에 갇혔던 프랑크 기사들이 플뢰르드핀(Fleurdepine) 공주의 지혜로 은밀한 지하 통로를 통해 탈출하고, 거인 로바스트르(Robastre)가 이교도 전사 글로리앙(Gloriant)을 처단했습니다. 또한 바이에른(Bavaria) 영토에서는 오베리(Auberi) 경이 아바르(Avars)족의 공습으로부터 영토를 완전 사수하였습니다.",
+    731: "오리돈(Oridon) 공성전: 궁재 카롤루스 마르텔(Charles Martel)의 영에 따라, 배반자 람베르트(Lambert) 백작이 굳건히 수비하던 오리돈(Oridon) 성을 겹겹이 에워싸고 공성하여 반역도당을 소탕했습니다.",
+    732: "역사적인 포아티에(Poitiers/투르) 전투: 안달루스(al-Andalus)의 아브드 알 라흐만(Abdul Rahman) 총독이 이끄는 사라센 무어인(Moors)들의 대규모 침공군에 맞서, 서유럽 기독교 세계의 운명을 걸고 카롤루스 마르텔(Charles Martel)과 아키텐의 오도(Eudes) 공작 연합군의 정예 기사로 평원에 집결하여 격전을 벌였습니다.",
+    733: "무훈시 [도렐과 베통(Daurel and Beton)] 및 아키텐 상속: 브라반트(Brabant)의 보브(Boves) 백작이 프랑크 국왕의 누이인 에르멩가르드(Ermengard) 공주와 혼인했으나 질투에 눈먼 기(Guy) 백작의 음모가 도사렸습니다. [역사] 아키텐(Aquitaine)의 오도(Eudes) 공작이 서거하고 후놀트(Hunald)가 아키텐 공위를 상속받았습니다.",
+    734: "기사도의 희망 베통(Beton) 탄생 및 종자 교육: [도렐과 베통]의 영웅 베통(Beton) 경이 탄생했습니다. [역사] 궁재 카롤루스 마르텔(Charles Martel)이 둘째 아들 단신왕 피핀(Pepin the Short)을 롬바르디아(Lombardy) 왕실 파비아(Pavia)로 보내 기사 훈련을 쌓게 했습니다.",
+    735: "보르도(Bordeaux) 공성전 및 루시옹의 제라르 대결: 카롤루스 마르텔(Charles Martel)과 함께 아키텐의 보르도(Bordeaux)와 블라이(Blaye)를 공성하여 후놀트(Hunald) 공작의 항복을 받아내고, 루시옹(Roussillon)의 제라르(Gerard) 공작 세력을 압박하는 전투에 투입되었습니다.",
+    736: "아를(Arles) 해방 포위 공성전: 이슬람 무어인(Moors) 세력과 손을 잡은 루시옹의 제라르(Gerard) 공작의 반역 세력을 격퇴하고, 사라센인들의 손에 떨어진 아를(Arles) 시를 구출해내기 위한 포위전 and 돌격전에 참전했습니다.",
+    737: "아비뇽(Avignon) 공성전 및 반역 징벌전: 무어인들과 결탁해 프랑크 왕국을 배신한 서고트(Visigoth) 귀족들을 처벌하기 위해 아비뇽(Avignon) 성벽을 공성 병기로 부수고 돌입하였으며, 성내의 모든 반역 이교도들을 학살하고 도시를 초토화시켰습니다.",
+    738: "부르고뉴(Burgundy) 무어 평정 및 보르들레(Bordelais) 습격전: 로렌(Lorraine) 가문을 지원하여 부르고뉴 지방 깊숙이 침입한 무어인 군세를 소탕하거나, 오랜 가문 복수의 화신인 보르들레(Bordelais) 세력의 거점을 소탕하는 야간 습격전에 나섰습니다.",
+    739: "셉티마니아(Septimania) 사라센 축출전: 단신왕 피핀(Pepin the Short) and 롬바르디아 왕 리우트프란트(Liutprand)의 동맹군에 종군하여, 무어인(Moors)들의 남부 요새들을 포위 공성하고 협력자들의 영지를 몰수하는 전투에서 큰 무공을 세워 전리품을 배분받았습니다.",
+    740: "로슈브룬(Rochebrune) 성곽 수호전과 덴마크 왕 정벌: 덴마크(Denmark)의 침략군에 맞서 나이모(Naimon) 대공의 사촌인 파스루즈(Passerose)가 농성하던 로슈브룬(Rochebrune) 성을 성공적으로 방어 및 탈환했습니다. 이후 할아버님(고드프루아 경)께서는 덴마크 본토까지 전격 돌입하여 덴마크 왕을 전사시키고 왕위를 찬탈한 영웅적 쾌거를 기록했습니다. 귀로에는 로바스트르(Robastre) 경이 이교도 거인 모리에(Morhier)를 결투 끝에 참수하며 거인들의 타워를 함락시켰습니다.",
+    741: "궁재 카롤루스 마르텔(Charles Martel) 서거 및 안덴 장례식: 30여 년간 왕국을 지배한 공의 안덴(Andenne) 대성당 장례식에 참석하여 슬픔을 나누고, 유산을 분할받은 두 아들 카를로만(Carloman)과 피핀(Pepin)에 반기를 든 그리포(Grifo) 왕자의 반란군을 격퇴해 기사를 생포했습니다.",
+    742: "쾰른 백작 두온 드 라 로슈(Doon de La Roche)의 성대한 왕실 혼례: 국왕 피핀(Pepin)의 아름다운 누이인 올리브(Olive) 공주와 충신 두온(Doon) 백작의 쾰른(Cologne) 대성당 결혼식에 공식 하객으로 참석하여 연회를 즐겼습니다.",
+    743: "레겐스부르크(Regensburg) 대결전 및 삼면 평정 원정: 바이에른(Bavaria)을 영구 병합하기 위해 도나우 강변의 레겐스부르크(Regensburg)에서 오딜로(Odilo) 공작 군대를 격파하고, 아키텐의 반란군 및 북방 작센(Saxony) 이교도 국경지대를 불태우는 징벌 원정에 나섰습니다.",
+    744: "조조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
 
-    745: "부친의 영광스러운 결혼: 가문 번영과 동맹의 기틀을 닦는 기사 가문의 결합을 성취하셨습니다.",
-    746: "롤랑 경(Sir Roland)의 탄생 및 셉티마니아 원정: 무어인(Moors)들의 셉티마니아(Septimania) 습격에 동참하거나, 알레마니아(Alemannia) 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.",
-    747: "카를로만 공의 순례 동행: 궁정의 번잡함을 떠나 카를로만(Carloman) 공을 모시고 롬바르디아(Lombardy)를 거쳐 로마(Rome)로 순례 여행을 다녀오거나, 신앙의 부름을 받았습니다.",
-    748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)] & [역사]: 베르니에(Bernier)와 베아트릭스(Beatrix)가 고난 끝에 죄를 씻기 위한 순례 도중 무어인(Moors) 기습을 받아 스페인(Spain) 지하 감옥에 갇혔습니다. [역사] 반역도당 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 패주했고, 피핀(Pepin) 왕의 중재로 타실로 3세(Tassilo III)가 공작으로 정식 등극했습니다.",
-    749: "바이에른 전역 및 그리포 왕자 탈출 사건: 반역자 그리포(Grifo) 왕자가 피핀(Pepin) 왕을 피해 탈출하자, 그의 바이에른(Bavaria) 지지 병력들을 격파하는 평정 작전에 참전했습니다.",
-    750: "작센 대전투: 작센 추장 저스타몽(Justamont)이 선포한 이교 대침공에 대항해, 피핀(Pepin) 국왕의 선봉으로 작센(Saxony) 벌판에서 치열한 혈투를 전개했습니다.",
-    751: "피핀 3세의 대관식 경비: 메로빙거(Merovingian) 최후의 국왕 힐데리히 3세(Childeric III)의 폐위식과 피핀 3세(Pepin III)의 새로운 프랑크 국왕 즉위식 대관 경비를 맡았습니다.",
-    752: "무훈시 [마이네(Mainet)] & [역사]: 사생아들의 독살 음모를 기지로 피해 툴레도(Toledo)로 망명한 젊은 샤를마뉴(마이네/Mainet)가 술탄 갈라프레(Galafre)의 휘하 용병으로 뛰며 거인 카이망(Caimant)과 브라이망(Braimant)을 영웅적으로 베고, 갈리엔나(Galienne) 공주의 숭고한 구애를 쟁취했습니다. [역사] 이교도들이 남방 국경을 무단 습격하였으며, 샤를마뉴의 친동생 카를로만 2세(Carloman II)가 출생했습니다.",
-    753: "비부르크 산 전투: 작센(Saxony) 이교도들의 반란에 맞서 피핀(Pepin) 왕과 함께 출정하여 대지진 속 비부르크(Wiburg) 산에서 격렬한 전투를 벌였습니다. (대주교 힐데가르(Hildegar) 전사)",
-    754: "나르본 공성전 및 알프스 행군: 교황의 동맹 요청에 응하여 반역 동맹군에 맞서 알프스(Alps)를 돌파하거나 사라센(Saracens) 세력을 격퇴하기 위해 나르본(Narbonne) 탈환전에 종군했습니다.",
-    755: "무훈시 [리옹 드 부르주(Lion de Bourges)] & [오르송 드 보베(Orson de Beauvais)]: 사자 젖을 먹고 자란 영웅 리옹(Lion)이 친부모를 찾아 위대한 모험을 돌파하고 이탈리아 몬테로세(Monterose) 성을 공성했으며, [오르송 드 보베(Orson de Beauvais)] 노래(Chanson)에서 충직한 밀로(Milo) 기사가 성지 예루살렘(Jerusalem)의 암흑 감옥에 갇힌 늙은 아버지 오르송(Orson) 백작을 극적으로 탈환해 사법적 정의를 지켰습니다.",
-    756: "파비아 포위 공성전: 교황령 수호를 방해하는 롬바르디아(Lombardy) 왕 아이스툴프(Aistulf)를 징벌하기 위해 파비아(Pavia) 성벽 아래에서 격전을 전개했습니다.",
-    757: "덴마크 정벌 원정: 쾰른(Cologne)의 백작 두온(Doon)과 피핀(Pepin) 왕의 공세에 동참하여 북방의 덴마크(Denmark)인들을 제압하고 국위를 떨쳤습니다.",
-    758: "작센 보복 정벌: 매년 300필의 군마 조공을 거부하고 거듭 반란을 일으키는 작센(Saxony) 영토로 침투해 강제 개종과 무자비한 토벌전을 벌였습니다.",
-    759: "무훈시 [로렌 사람들(Les Lorrains)] & [역사]: 영예로운 베고(Bego) 백작이 멧돼지 사냥 도중 가문의 오래된 원수인 프로몽(Fromont) 패거리에게 야만적으로 암살당하여 피비린내 나는 복수극이 재발했습니다. [역사] 피핀(Pepin) 국왕이 마침내 사라센 무어인(Moors)들을 완전히 몰아내어 남부 셉티마니아(Septimania) 영토를 완전히 탈환하였습니다.",
-    760: "리무쟁 공성전 및 쾰른 사절단: 아키텐(Aquitaine) 전역의 포문을 열기 위해 리무쟁(Limousin) 성을 공격하거나, 반역을 꾀하는 토밀(Tomile) 가문의 계획에 맞서 사절로 나섰습니다.",
-    761: "부르주 포위전 및 브르타뉴 습격: 아키텐(Aquitaine) 정벌 전역의 핵심 거점인 부르주(Bourges) 성을 성공적으로 공략하여 대승을 거두었습니다.",
-    762: "아키텐 약탈전 및 왕가의 화해: 아키텐(Aquitaine) 전초 기지를 견고하게 세우고, 어린 롤랑(Roland)이 왕궁 음식물 서리를 하던 당돌한 순간과 가문의 기쁨을 지켜보았습니다.",
-    763: "쾰른 라 로슈 성의 기적적인 방어: 토밀(Tomile)과 말랭그(Malingre)가 이끄는 대반란군의 겹겹이 쌓인 포위를 뚫고 성을 사수했습니다.",
-    764: "라 로슈 제2차 공성 및 툴루즈 함락: 오베리(Auberi) 주교와 함께 성을 격파하고 쾰른(Cologne)을 탈환하거나, 아키텐(Aquitaine)의 수도 툴루즈(Toulouse) 점령 작전에 합류했습니다.",
-    765: "오트페이유 공성과 작센 족장 브로히막스 격퇴: 쾰른(Cologne)의 평화를 깨려는 작센(Saxony) 군단을 맞아 족장 브로히막스(Brohimax)와의 대결에서 목숨을 건 수호전을 벌였습니다.",
-    766: "부친 은퇴 전 마지막 참전: 샤를마뉴(Charlemagne) 왕자 및 위비앙(Vivien)의 세력과 함께 몽펠리에(Montpellier)와 에그르몽(Aigremont) 포위 공성전에 참전하여 최후의 기사도 영광을 불살랐습니다."
+    745: "부친 제라르(Gerard) 경의 정식 혼례와 왕실 공인: 조부 고드프루아 경의 은퇴와 함께 기사 직위를 계승받고, 왕실과 가문의 번영을 다지기 위해 가문 간의 결합을 성취하여 영광의 기틀을 닦으셨습니다.",
+    746: "롤랑 경(Sir Roland) 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
+    747: "롬바르디아 및 로마(Rome) 순례 동행: 세속의 명예를 내려놓고 롬바르디아(Lombardy)를 거쳐 몬테카시노(Monte Cassino) 수도원으로 귀의하려는 카를로만(Carloman) 공을 호위하며 성지 로마에 당도하여 엄숙한 면죄 성사를 받았습니다.",
+    748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)]의 속죄 순례 및 그리포 반란: 베르니에(Bernier)와 베아트릭스(Beatrix) 부부가 속죄 순례 도중 무어인의 기습을 받아 포로로 감금되는 시련을 겪었습니다. [역사] 왕국의 반역자 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 탈출하였으며 타실로 3세(Tassilo III)가 바이에른 공작으로 취임했습니다.",
+    749: "바이에른(Bavaria) 그리포 추격전: 바이에른으로 패주하여 아키텐 공작 바이에르(Waifer) 및 롬바르디아 국왕 아이스툴프(Aistulf)와 연대하려는 역도 그리포(Grifo) 왕자의 잔당을 토벌하기 위해 험난한 군사 작전에 종군했습니다.",
+    750: "작센 대전투와 이교도 추장 저스타몽 격퇴: 뫼즈 강과 국경지대를 위협하며 작센의 이교 추장 저스타몽(Justamont)이 이끄는 이교도 군단에 맞서 피핀(Pepin) 국왕의 선봉장으로 대평원 벌판에서 뼈를 깎는 혈투를 벌여 이교도를 축출했습니다.",
+    751: "역사적인 피핀 3세(Pepin III) 대관식 경비: 메로빙거 왕조의 무기력한 마지막 국왕 힐데리히 3세(Childeric III)의 폐위식과 피핀 3세(Pepin the Short) 국왕의 대관식 경비를 성대히 담당했습니다.",
+    752: "무어 왕실 망명기 [마이네(Mainet)] 및 피핀 2세 공습: 독살 음모를 피해 톨레도(Toledo)로 피신한 젊은 샤를마뉴(마이네) 왕자가 갈라프레(Galafre)의 용병으로 뛰며 활약하고 갈리엔나(Galienne) 공주와의 숭고한 사랑을 얻었습니다. [역사] 남부 국경에 사라센 침공이 발생하고 샤를마뉴의 친동생 카를로만 2세(Carloman II)가 출생했습니다.",
+    753: "비부르크(Wiburg) 산 대결전과 그리포 최후: 작센(Saxony)인들의 이교도 반역군에 대항해 피핀(Pepin) 국왕과 함께 친정하여 험준한 비부르크(Wiburg) 산맥에서 격렬한 산악전을 전개했습니다. (이 전투에서 힐데가르(Hildegar) 대주교가 전사하고, 도주하던 반역자 그리포 왕자가 사로잡혀 감옥에서 사망함)",
+    754: "나르본(Narbonne) 탈환 공성전 및 알프스 돌파: 아이메리 드 나르본(Aymeri de Narbonne) 경을 도와 셉티마니아의 요충지 나르본(Narbonne) 시를 사라센인들의 억압으로부터 완전히 구출하기 위해 피비린내 나는 참호전과 성벽 격돌을 치렀습니다.",
+    755: "무훈시 [리옹 드 부르주(Lion de Bourges)] 및 [오르송 드 보베(Orson de Beauvais)] 노래: 리옹(Lion) 경이 잃어버린 부모를 찾아 이탈리아 몬테로세(Monterose) 성을 공성했으며, 늙은 백작 오르송(Orson)이 예루살렘의 감옥에서 충직한 아들 밀로(Milo)의 결사 구출 작전으로 마침내 사법적 정의를 지켰습니다.",
+    756: "롬바르디아 파비아(Pavia) 요새 대공성전: 교황령을 거듭 침범하는 롬바르디아 왕 아이스툴프(Aistulf)의 콧대를 꺾기 위해 파비아(Pavia) 성벽 아래에서 치열한 격전을 펼치며 롬바르디아의 항복을 받아내고 교황청 기증령(Donation of Pepin)의 토대를 닦았습니다.",
+    757: "덴마크(Denmark) 수륙 양면 징벌 원정: 쾰른 백작 두온(Doon)과 피핀(Pepin) 국왕의 친정에 종군하여 북방의 호전적인 덴마크 바이킹 함대들을 격파하고 덴마크 왕으로부터 왕자 오지에(Ogier the Dane)를 인질로 인도받았습니다.",
+    758: "작센(Saxony) 무자비한 보복 초토화 작전: 공약한 연 300필 군마 조공을 거부하고 무장 봉기한 작센 영토 깊숙이 침투하여 파괴와 거부 불허의 강제 기독교 개종을 동반한 대토벌전을 완수했습니다.",
+    759: "무훈시 [로렌 사람들(Les Lorrains)] 복수극 및 셉티마니아 완전 수복: 멧돼지 사냥 중 가문 원수에게 암살당한 베고(Bego) 백작의 복수극으로 프랑크 영내가 피로 물들었습니다. [역사] 피핀(Pepin) 국왕이 마침내 사라센 무어인(Moors)들을 한 명도 남김없이 몰아내어 남방 셉티마니아(Septimania)를 완전히 탈환했습니다.",
+    760: "아키텐(Aquitaine) 대원정 개막 및 리무쟁(Limousin) 공성: 아키텐 공작 와이페르(Waifer)의 독립 시도를 분쇄하기 위해 샤를마뉴 왕자 및 피핀 국왕의 선봉으로 아키텐 영내 리무쟁(Limousin) 성을 포위 공성하여 함락시켰습니다. 쾰른의 란드리(Landri) 경을 모시고 파리로 귀국하는 길을 보좌했습니다.",
+    761: "부르주(Bourges) 성채 포위 공략: 아키텐 정벌의 노른자위 거점인 부르주(Bourges)와 리모주(Limoges) 시를 완전히 장악하기 위해 기사단의 사다리 돌격을 감행해 적의 철옹성 방어벽을 깨부수고 승리했습니다.",
+    762: "아키텐(Aquitaine) 약탈 전초전 및 샤를마뉴 궁정: 아키텐의 잔당들을 압박하기 위해 국경지대 아르장통(Argenton)에 요새를 건설하고, 어린 롤랑(Roland)의 대담한 당돌함을 왕실 연회에서 기쁨으로 나눴습니다.",
+    763: "쾰른 라 로슈(La Roche) 성곽 결사 사수: 배반자 토밀(Tomile)과 말랭그(Malingre)가 이끄는 대반란군의 삼중 포위망 속에 갇혀, 본대 지원군이 도착하기 전까지 밤낮으로 성곽에서 저항하며 요새를 지켰습니다.",
+    764: "라 로슈(La Roche) 탈환 공성전 및 툴루즈 함락: 오베리(Auberi) 주교의 복수군에 참전해 라 로슈 성을 맹렬히 격파해 탈환하고 쾰른(Cologne)을 수복하였으며, 아키텐 와이페르 공작의 수도 툴루즈(Toulouse)를 최종 점령했습니다.",
+    765: "오트페이유(Hautefeuille) 포위 공성전 및 작센 족장 브로히막스 격파: 쾰른의 평화를 위협하는 작센 군대를 요격하기 위해 오트페이유 공성전에서 목숨을 건 격전을 벌였으며, 국왕 피핀을 납치하려는 작센의 악랄한 족장 브로히막스(Brohimax) 세력을 참수 토벌했습니다.",
+    766: "몽펠리에(Montpellier) 및 에그르몽(Aigremont) 최후 대공성전: 부친 제라르 경의 영광스러운 현역 마지막 해로, 후계자 샤를마뉴 왕자 및 위비앙(Vivien)의 프랑크 성전 연합군에 합류해 몽펠리에와 이교도의 요새 에그르몽 성벽을 격파하여 최후의 기사도 불꽃을 피워냈습니다."
   };
 
   const isGapYear = (yr, stage) => {
@@ -226,14 +227,15 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const rollSingleYearInteractive = () => {
-    if (currentYearRolled) return;
+    try {
+      if (currentYearRolled) return;
 
-    if (isGapYear(interactiveYear, interactiveStage)) {
-      handleGapYearInteractive();
-      return;
-    }
+      if (isGapYear(interactiveYear, interactiveStage)) {
+        handleGapYearInteractive();
+        return;
+      }
 
-    saveChronicleHistory();
+      saveChronicleHistory();
 
     let d20 = parseInt(chronicleManualD20);
     if (isNaN(d20) || d20 < 1 || d20 > 20) {
@@ -356,8 +358,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -373,8 +375,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause(res.cause);
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause(res.cause);
           setInteractiveStage('gf_dead');
           yearOutcomeText = `사망: ${res.cause}`;
         } else {
@@ -384,8 +386,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 725년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("질병사 (Illness)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 행군 도중 돌발적인 질병으로 급거 서거하셨습니다.`;
           yearOutcomeText = "사망: 질병사";
@@ -397,8 +399,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -414,8 +416,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause(res.cause);
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause(res.cause);
           setInteractiveStage('gf_dead');
           yearOutcomeText = `사망: ${res.cause}`;
         } else {
@@ -425,8 +427,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 728년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("사고 (Accident)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("사고 (Accident)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 불의의 마차 낙마 사고로 서거하셨습니다.`;
           yearOutcomeText = "사망: 낙마 사고";
@@ -438,8 +440,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -450,8 +452,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -465,8 +467,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 729년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("사냥 사고 (Hunting Accident)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("사냥 사고 (Hunting Accident)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 사냥 중 멧돼지의 기습을 받아 서거하셨습니다.`;
           yearOutcomeText = "사망: 멧돼지 습격 사고";
@@ -478,8 +480,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -493,8 +495,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -510,8 +512,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause(res.cause);
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause(res.cause);
           setInteractiveStage('gf_dead');
           yearOutcomeText = `사망: ${res.cause}`;
         } else {
@@ -521,8 +523,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 731년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("질병사 (Illness)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 군영 내 전염병으로 돌연 서거하셨습니다.`;
           yearOutcomeText = "사망: 군영 전염병";
@@ -534,8 +536,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -546,8 +548,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 732년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("낙사 (Accident)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("낙사 (Accident)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 전투 직전 말에서 떨어져 서거하셨습니다.`;
           yearOutcomeText = "사망: 낙마사";
@@ -558,24 +560,24 @@ export default function FamilyWinter({ character, setCharacter }) {
           const pRoll = rollD20();
           if (pRoll === 1) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause("Poitiers 전사 (Combat)");
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
             setInteractiveStage('gf_dead');
             setGrandfatherGlory(prev => prev + 1400);
             logMsg += `🗡️ 포아티에 주사위 ${pRoll} - 전설적인 전공을 기사단에 남기며 장렬히 전사하셨습니다! (+1400 Glory)`;
             yearOutcomeText = "전사: 포아티에 전투 장렬한 전사 (+1400 Glory)";
           } else if (pRoll <= 11) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause("Poitiers 전사 (Combat)");
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
             setInteractiveStage('gf_dead');
             setGrandfatherGlory(prev => prev + 400);
             logMsg += `🗡️ 포아티에 주사위 ${pRoll} - 전투 중 영예롭게 전사하셨습니다. (+400 Glory)`;
             yearOutcomeText = "전사: 포아티에 격전 중 전사 (+400 Glory)";
           } else if (pRoll === 12) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause("스페인 압송 포로 (Captured)");
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause("스페인 압송 포로 (Captured)");
             setInteractiveStage('gf_dead');
             setGrandfatherGlory(prev => prev + 400);
             logMsg += `🔗 포아티에 주사위 ${pRoll} - 포로로 잡혀 무어인의 땅(스페인)으로 압송되어 소식이 끊겼습니다. (+400 Glory)`;
@@ -606,8 +608,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause(res.cause);
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause(res.cause);
           setInteractiveStage('gf_dead');
           yearOutcomeText = `사망: ${res.cause}`;
         } else {
@@ -617,8 +619,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 735년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("사망 (Feud)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("사망 (Feud)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 가문 불화 결투 도중 서거하셨습니다.`;
           yearOutcomeText = "사망: 가문 불화 결투 사망";
@@ -630,8 +632,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -645,8 +647,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -657,8 +659,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 736년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("질병사 (Illness)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 진중의 무서운 열병으로 서거하셨습니다.`;
           yearOutcomeText = "사망: 진중 열병";
@@ -670,8 +672,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -682,8 +684,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -697,8 +699,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 737년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("사고 (Accident)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("사고 (Accident)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 성벽 수축 공사 도중 돌에 깔려 서거하셨습니다.`;
           yearOutcomeText = "사망: 돌 압사";
@@ -710,8 +712,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -722,8 +724,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -735,8 +737,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 738년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("사망 (Feud)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("사망 (Feud)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 라이벌 가문의 자객에게 급습받아 서거하셨습니다.`;
           yearOutcomeText = "사망: 자객 습격 사망";
@@ -748,8 +750,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -763,8 +765,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -775,8 +777,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 739년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("행방불명 (Disappeared)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("행방불명 (Disappeared)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 원정길의 수풀 속에서 실종되시어 돌아오지 못했습니다.`;
           yearOutcomeText = "실종: 셉티마니아 숲 속 행방불명";
@@ -792,8 +794,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -805,8 +807,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 740년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("덴마크 전사 (Combat)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("덴마크 전사 (Combat)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 덴마크 상륙 도중 전함 위에서 적의 도끼에 스러지셨습니다.`;
           yearOutcomeText = "전사: 바이킹 상륙 전함 백병전 사망";
@@ -818,8 +820,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -831,8 +833,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 741년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("질병사 (Illness)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 주군 카롤루스 마르텔의 부고를 듣고 상심 속에 병사하셨습니다.`;
           yearOutcomeText = "사망: 주군 서거 상심에 병사";
@@ -852,8 +854,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 742년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("노환 (Old Age)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("노환 (Old Age)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 주군들의 결혼 잔치 직후 노환으로 평화로이 서거하셨습니다.`;
           yearOutcomeText = "서거: 결혼식 하객 복귀 중 노환 영면";
@@ -869,8 +871,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `🏰 743년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
-          setGfDeathYear(yr);
-          setGfDeathCause("바이에른 전사 (Combat)");
+          setGrandfatherDeathYear(yr);
+          setGrandfatherDeathCause("바이에른 전사 (Combat)");
           setInteractiveStage('gf_dead');
           logMsg += `💀 알프스 고갯길에서 바이에른 보병의 기습을 받아 전사하셨습니다.`;
           yearOutcomeText = "전사: 바이에른 고지 기습 전사";
@@ -882,8 +884,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -894,8 +896,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -909,8 +911,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -927,8 +929,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += res.rollDescText;
           if (res.dead) {
             setGfDead(true);
-            setGfDeathYear(yr);
-            setGfDeathCause(res.cause);
+            setGrandfatherDeathYear(yr);
+            setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
@@ -1698,12 +1700,17 @@ export default function FamilyWinter({ character, setCharacter }) {
       setCurrentYearRolled(true);
       setCurrentYearResultText(yearOutcomeText);
     }
+    } catch (err) {
+      console.error(err);
+      alert("Error in rollSingleYearInteractive:\n" + err.stack);
+    }
   };
 
   const advanceChronicleYear = () => {
-    if (!currentYearRolled) return;
+    try {
+      if (!currentYearRolled) return;
 
-    saveChronicleHistory();
+      saveChronicleHistory();
 
     const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
@@ -1761,6 +1768,10 @@ export default function FamilyWinter({ character, setCharacter }) {
     }
     else if (interactiveStage === 'f_dead') {
       completeInteractiveChronicle(fatherGlory, fatherDeathYear, fatherDeathCause);
+    }
+    } catch (err) {
+      console.error(err);
+      alert("Error in advanceChronicleYear:\n" + err.stack);
     }
   };
 
