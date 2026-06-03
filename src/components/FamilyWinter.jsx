@@ -363,12 +363,12 @@ export default function FamilyWinter({ character, setCharacter }) {
     setGrandfatherGlory(2500);
     setGrandfatherDeathYear(null);
     setGrandfatherDeathCause('');
-    setGrandfatherHates({ saxons: 0, moors: 0, danes: 0 });
+    setGrandfatherHates({ saxons: 0, moors: 0, danes: 0, cruel: 0 });
 
     setFatherGlory(2500);
     setFatherDeathYear(null);
     setFatherDeathCause('');
-    setFatherHates({ saxons: 0, moors: 0, danes: 0 });
+    setFatherHates({ saxons: 0, moors: 0, danes: 0, cruel: 0 });
 
     setChronicleManualD20('');
     setChronicleManualD6('');
@@ -435,8 +435,10 @@ export default function FamilyWinter({ character, setCharacter }) {
           let outcomeText = "";
 
           if (pending.hateTarget === 'cruel') {
-            logAdd = `\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) ${val} 기질 획득!`;
+            logAdd = `\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) +${val} 기질 획득!`;
             outcomeText = `아비뇽 징벌 공방전 승리 및 복수 기질 획득 (+${pending.gloryGained} Glory)`;
+            updatedHates.cruel = (updatedHates.cruel || 0) + val;
+            setGrandfatherHates(updatedHates);
           } else {
             const enemyKorean = pending.hateTarget === 'saxons' ? '작센인' : pending.hateTarget === 'moors' ? '무어인' : '덴마크 바이킹';
             const enemyKey = pending.hateTarget;
@@ -482,18 +484,25 @@ export default function FamilyWinter({ character, setCharacter }) {
           let logAdd = "";
           let outcomeText = "";
 
-          const enemyKorean = pending.hateTarget === 'saxons' ? '작센인' : pending.hateTarget === 'moors' ? '무어인' : '덴마크 바이킹';
-          const enemyKey = pending.hateTarget;
-          updatedHates[enemyKey] = (updatedHates[enemyKey] || 0) + val;
-          setFatherHates(updatedHates);
-
-          if (pending.customOutcome === 'saxons_hate_d6') {
-            logAdd = `\n  └ [증오 획득] 작센인에 대한 극심한 증오 +${val}`;
-            outcomeText = `작센 격전 생존 및 극심한 증오 +${val} (+${pending.gloryGained} Glory)`;
+          if (pending.hateTarget === 'cruel') {
+            updatedHates.cruel = (updatedHates.cruel || 0) + val;
+            setFatherHates(updatedHates);
+            logAdd = `\n  └ [기질 획득] 알레마니아 반역자 숙청 대열에 합류하여 잔혹성(Cruel) +${val} 기질 획득!`;
+            outcomeText = `대숙청 참전 및 잔혹성 기질 +${val} 획득`;
           } else {
-            logAdd = `\n  └ [증오 획득] ${enemyKorean}에 대한 증오 +${val}`;
-            const enemyNameKo = pending.hateTarget === 'saxons' ? '작센' : pending.hateTarget === 'moors' ? '무어' : '바이킹';
-            outcomeText = `${enemyNameKo} 전투 생존 및 증오 +${val} (+${pending.gloryGained} Glory)`;
+            const enemyKorean = pending.hateTarget === 'saxons' ? '작센인' : pending.hateTarget === 'moors' ? '무어인' : '덴마크 바이킹';
+            const enemyKey = pending.hateTarget;
+            updatedHates[enemyKey] = (updatedHates[enemyKey] || 0) + val;
+            setFatherHates(updatedHates);
+
+            if (pending.customOutcome === 'saxons_hate_d6') {
+              logAdd = `\n  └ [증오 획득] 작센인에 대한 극심한 증오 +${val}`;
+              outcomeText = `작센 격전 생존 및 극심한 증오 +${val} (+${pending.gloryGained} Glory)`;
+            } else {
+              logAdd = `\n  └ [증오 획득] ${enemyKorean}에 대한 증오 +${val}`;
+              const enemyNameKo = pending.hateTarget === 'saxons' ? '작센' : pending.hateTarget === 'moors' ? '무어' : '바이킹';
+              outcomeText = `${enemyNameKo} 전투 생존 및 증오 +${val} (+${pending.gloryGained} Glory)`;
+            }
           }
 
           const finalLog = pending.logPrefix + logAdd;
@@ -1579,8 +1588,17 @@ export default function FamilyWinter({ character, setCharacter }) {
             setChronicleManualD20('');
             return;
           } else if (d20 <= 18) {
-            logMsg += `알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) 1d6 기질 획득!`;
-            yearOutcomeText = "알레마니아 피의 대숙청 및 잔혹성 기질 마킹";
+            setChroniclePendingRoll({
+              type: 'f_hate_roll',
+              yr,
+              logPrefix: `🏰 746년: [역사] ${event}\n  └ [주사위 ${d20}] - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다.\n`,
+              hateType: 'd6',
+              hateTarget: 'cruel',
+              gloryGained: 0
+            });
+            setChronicleManualD20('');
+            setChronicleManualD6('');
+            return;
           } else {
             setFatherGlory(prev => prev + 50);
             logMsg += `마침내 아들(당신)의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`;
@@ -2329,14 +2347,21 @@ export default function FamilyWinter({ character, setCharacter }) {
     let inhSaxons = grandfatherHates.saxons > 10 ? grandfatherHates.saxons : 0;
     let inhMoors = grandfatherHates.moors > 10 ? grandfatherHates.moors : 0;
     let inhDanes = grandfatherHates.danes > 10 ? grandfatherHates.danes : 0;
-    setFatherHates({ saxons: inhSaxons, moors: inhMoors, danes: inhDanes });
+    let inhCruel = grandfatherHates.cruel || 0;
+    setFatherHates({ saxons: inhSaxons, moors: inhMoors, danes: inhDanes, cruel: inhCruel });
 
-    setAncestorRollLog(prev => [
-      ...prev,
-      "",
-      "📜 [부친의 생애: 연대기 시작 745년]",
-      `🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
-    ]);
+    setAncestorRollLog(prev => {
+      const logs = [
+        ...prev,
+        "",
+        "📜 [부친의 생애: 연대기 시작 745년]",
+        `🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
+      ];
+      if (inhCruel > 0) {
+        logs.push(`  └ [기질 상속] 조부로부터 무자비함(Cruel) 기질 +${inhCruel}을 물려받았습니다.`);
+      }
+      return logs;
+    });
   };
 
   const completeInteractiveChronicle = (finalFGlory, finalFDeathYear, finalFDeathCause) => {
@@ -2352,6 +2377,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       fatherHates.saxons > 10 ? `  - 계승 증오: 작센인에 대한 증오 Passion [${fatherHates.saxons}]` : null,
       fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null,
       fatherHates.danes > 10 ? `  - 계승 증오: 덴마크인에 대한 증오 Passion [${fatherHates.danes}]` : null,
+      fatherHates.cruel && fatherHates.cruel > 0 ? `  - 계승 기질: 무자비함(Cruel) 기질 +${fatherHates.cruel} (캐릭터 시트 반영)` : null,
       fatherHonorModifier !== 0 ? `  - 계승 명예 보정치: Honor Passion [${fatherHonorModifier >= 0 ? '+' : ''}${fatherHonorModifier}]` : null
     ].filter(Boolean);
 
@@ -2369,6 +2395,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let gfHateSaxons = 0;
     let gfHateMoors = 0;
     let gfHateDanes = 0;
+    let gfCruel = 0;
     let gfDead = false;
     let gfDeathYr = 744;
     let gfCause = '노환';
@@ -2732,7 +2759,9 @@ export default function FamilyWinter({ character, setCharacter }) {
           runCombatSurvival(yr, event + " (제라르 전투)", true, -1, false, 100);
         } else {
           runCombatSurvival(yr, event + " (아비뇽 대참화)", true, 0, true, 50);
-          logs.push("  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) 1d6 기질 획득!");
+          const cVal = rollD6();
+          gfCruel += cVal;
+          logs.push(`  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) +${cVal} 기질 획득! (누적: ${gfCruel})`);
         }
       } else if (yr === 738) {
         const event = "부르고뉴 전투 및 보르들레 습격전: 로렌 가문을 도우며 부르고뉴로 쳐들어온 무어 침공군을 격파하거나, 보르들레 가문을 급습하는 가문 불화 전투에 나섰습니다.";
@@ -2873,20 +2902,25 @@ export default function FamilyWinter({ character, setCharacter }) {
     setGrandfatherGlory(gfGlory);
     setGrandfatherDeathYear(gfDeathYr);
     setGrandfatherDeathCause(gfCause);
-    setGrandfatherHates({ saxons: gfHateSaxons, moors: gfHateMoors });
+    setGrandfatherHates({ saxons: gfHateSaxons, moors: gfHateMoors, cruel: gfCruel });
 
     let inheritedSaxons = gfHateSaxons > 10 ? gfHateSaxons : 0;
     let inheritedMoors = gfHateMoors > 10 ? gfHateMoors : 0;
+    let inheritedCruel = gfCruel;
 
     // 👨 [부친의 연대기 (745~766)]
     logs.push("");
     logs.push("📜 [부친의 생애: 연대기 시작 745년]");
     let fGlory = 2500 + Math.floor(gfGlory / 10);
     logs.push(`🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${fGlory} Glory로 당당히 기사 서임을 받으셨습니다.`);
+    if (inheritedCruel > 0) {
+      logs.push(`  └ [기질 상속] 조부로부터 무자비함(Cruel) 기질 +${inheritedCruel}을 물려받았습니다.`);
+    }
 
     let fHateSaxons = inheritedSaxons;
     let fHateMoors = inheritedMoors;
     let fHateDanes = 0;
+    let fCruel = inheritedCruel;
     let fDead = false;
     let fDeathYr = 766;
     let fCause = '노환';
@@ -2930,7 +2964,9 @@ export default function FamilyWinter({ character, setCharacter }) {
             logs.push(`  └ [증오 획득] 무어인에 대한 증오 +${hVal} (누적: ${fHateMoors})`);
           }
         } else if (roll <= 18) {
-          logs.push(`🪓 746년: [역사] ${event} -> 주사위 ${roll} - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) 1d6 기질 획득!`);
+          const cVal = rollD6();
+          fCruel += cVal;
+          logs.push(`🪓 746년: [역사] ${event} -> 주사위 ${roll} - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) +${cVal} 기질 획득! (누적: ${fCruel})`);
         } else {
           fGlory += 50;
           logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 롤랑 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
@@ -3250,7 +3286,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setFatherGlory(fGlory);
     setFatherDeathYear(fDeathYr);
     setFatherDeathCause(fCause);
-    setFatherHates({ saxons: fHateSaxons, moors: fHateMoors });
+    setFatherHates({ saxons: fHateSaxons, moors: fHateMoors, cruel: fCruel });
 
     logs.push("");
     logs.push("🎉 [연대기 결과 요약]");
@@ -3282,6 +3318,14 @@ export default function FamilyWinter({ character, setCharacter }) {
         updated.passions.hateMoors = fatherHates.moors;
       }
 
+      // Inherit Cruel trait if father had any
+      if (fatherHates.cruel && fatherHates.cruel > 0) {
+        const currentCruel = updated.traits.cruel || 9;
+        const newCruel = Math.min(20, currentCruel + fatherHates.cruel);
+        updated.traits.cruel = newCruel;
+        updated.traits.merciful = 20 - newCruel;
+      }
+
       if (updated.family && updated.family.members) {
         updated.family.members = updated.family.members.map(m => {
           if (m.id === 'albert' || m.relation === '조부') {
@@ -3310,7 +3354,10 @@ export default function FamilyWinter({ character, setCharacter }) {
     });
 
     setAncestorApplied(true);
-    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!\n(계승 명예: +${Math.floor(fatherGlory / 10)} Glory)`);
+    const inheritedCruelMsg = fatherHates.cruel && fatherHates.cruel > 0 
+      ? `\n(계승 잔혹성 기질: +${fatherHates.cruel} Cruel)`
+      : '';
+    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!\n(계승 명예: +${Math.floor(fatherGlory / 10)} Glory)${inheritedCruelMsg}`);
   };
 
   const handleFamilyChange = (field, value) => {
