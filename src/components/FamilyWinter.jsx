@@ -74,6 +74,7 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [fatherDeathCause, setFatherDeathCause] = useState('작센 원정 중 용맹 전사');
   const [fatherHates, setFatherHates] = useState({ saxons: 0, moors: 0 });
   const [ancestorApplied, setAncestorApplied] = useState(false);
+  const [showRefTables, setShowRefTables] = useState(false);
 
   // --- 신설: 인터랙티브 연대기용 추가 상태 ---
   const [chronicleMode, setChronicleMode] = useState('interactive'); // 'interactive' | 'auto'
@@ -3386,6 +3387,132 @@ export default function FamilyWinter({ character, setCharacter }) {
 
               {isAncestorGenOpen && (
                 <div className="view-animate" style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)', border: '1px solid var(--color-gold-light)', borderRadius: '8px', padding: '16px', marginTop: '10px' }}>
+                  
+                  {/* 📖 룰북 판정표 레퍼런스 (Table 2-2 & Table 2-3) */}
+                  <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                    <div style={{ backgroundColor: 'rgba(201,168,76,0.1)', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefTables(!showRefTables)}>
+                      <strong style={{ fontSize: '0.82rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        📖 룰북 판정 레퍼런스 테이블 보기 (Table 2-2 & 2-3)
+                      </strong>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefTables ? '접기 ▲' : '펼치기 ▼'}</span>
+                    </div>
+                    {showRefTables && (
+                      <div style={{ padding: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.2)' }}>
+                        {/* Table 2-2: Combat Survival */}
+                        <div>
+                          <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                            Table 2-2: Combat Survival (전투 생존 판정)
+                          </h5>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '3px 2px' }}>d20 결과*</th>
+                                <th style={{ padding: '3px 2px' }}>판정 결과 (Combat Result)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>0 이하</td>
+                                <td style={{ padding: '3px 2px' }}>장렬한 전사 (+1,000 Glory)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>1</td>
+                                <td style={{ padding: '3px 2px' }}>전투 중 전사 (추가 명예 없음)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>2</td>
+                                <td style={{ padding: '3px 2px' }}>부상 은퇴 (수도원행, 1d20년 후 서거)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>3</td>
+                                <td style={{ padding: '3px 2px' }}>포로 압송 및 행방불명 (미귀환)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>4~5</td>
+                                <td style={{ padding: '3px 2px', color: 'var(--color-success)', fontWeight: 600 }}>생존 및 영웅적 업적 달성 (+100 Glory)</td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>6~20</td>
+                                <td style={{ padding: '3px 2px' }}>무사히 생존 완료</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--color-grey)', marginTop: '6px', lineHeight: 1.3 }}>
+                            * 역사적 대전투(Battle) 판정 시에는 <strong>주사위 값에 -1 보정</strong>을 적용합니다.<br />
+                            * 승전한 경우 획득하는 명예(Glory)가 2배로 계산됩니다.
+                          </div>
+                        </div>
+
+                        {/* Table 2-3: Miscellaneous Death Causes */}
+                        <div>
+                          <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                            Table 2-3: Miscellaneous Death Causes (기타 사망 원인)
+                          </h5>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '3px 2px' }}>d20 결과</th>
+                                <th style={{ padding: '3px 2px' }}>남성 (Male)</th>
+                                <th style={{ padding: '3px 2px' }}>여성 (Female)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>1~3</td>
+                                <td style={{ padding: '3px 2px' }}>전투 중 전사 (Battle)</td>
+                                <td style={{ padding: '3px 2px' }}>산고 중 사망 (Childbirth)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>4</td>
+                                <td style={{ padding: '3px 2px' }}>가문 불화 (Feud)</td>
+                                <td style={{ padding: '3px 2px' }}>가문 불화 (Feud)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>5</td>
+                                <td style={{ padding: '3px 2px' }}>적 습격 (Raid)</td>
+                                <td style={{ padding: '3px 2px' }}>적 습격 (Raid)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>6</td>
+                                <td style={{ padding: '3px 2px' }}>가문 불화 (Feud)</td>
+                                <td style={{ padding: '3px 2px' }}>사냥 사고 (Hunting)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>7~8</td>
+                                <td style={{ padding: '3px 2px' }}>적 습격 (Raid)</td>
+                                <td style={{ padding: '3px 2px' }}>사고사 (Accident)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>9~10</td>
+                                <td style={{ padding: '3px 2px' }}>사냥 사고 (Hunting)</td>
+                                <td style={{ padding: '3px 2px' }}>사고사 (Accident)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>11~13</td>
+                                <td style={{ padding: '3px 2px' }}>사고사 (Accident)</td>
+                                <td style={{ padding: '3px 2px' }}>사고사 (Accident)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>14</td>
+                                <td style={{ padding: '3px 2px' }}>실종 (Disappeared)</td>
+                                <td style={{ padding: '3px 2px' }}>실종 (Disappeared)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>15~18</td>
+                                <td style={{ padding: '3px 2px' }}>질병사 (Illness)</td>
+                                <td style={{ padding: '3px 2px' }}>질병사 (Illness)</td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>19~20</td>
+                                <td style={{ padding: '3px 2px' }}>노환 (Old age)</td>
+                                <td style={{ padding: '3px 2px' }}>노환 (Old age)</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                   
                   {/* Mode Selector */}
                   <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', borderBottom: '1px solid rgba(201, 168, 76, 0.2)', paddingBottom: '10px' }}>
