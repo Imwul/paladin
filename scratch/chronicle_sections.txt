@@ -1,0 +1,1900 @@
+1601: [Empty Page or Image Only]
+1602: ==================== BOOK PAGE 46 ====================
+1603: 45
+1604: Chapter Two: The Past
+1605: T
+1606: he information given in the chronology below contains a
+1607: history of the Franks, as well as a procedure to generate a
+1608: family history for your first character. It is, in itself, a way
+1609: to familiarize yourself with the Frankish past in general.
+1610: Historical events are in Bold.
+1611: Many summarized events are taken from the chansons
+1612: de geste . Chansons are identified in the entries below in Bold
+1613: Italics. T o allow for a fluid diachronic reading, if the entry is a
+1614: continuation from a previous year, it is listed as [←previous year].
+1615: If it is continued in a succeeding year, it is marked [→next year].
+1616: If the story is picked up in another Chanson, the listing will be
+1617: marked [←previous year, Name] or [→next year, Name] The end
+1618: of a story is marked with a n.
+1619: In between are the notes and tables which enable starting
+1620: players to roll up a short family history for their grandfather and
+1621: father.
+1622: Your Family History
+1623: Your Grandfather
+1624: T
+1625: he family history below starts in 723, the year before your
+1626: father was born. Y our grandfather was a wealthy warrior
+1627: in the service of Charles Martel, the Mayor of the Palace
+1628: of the weak King Thierry IV. Y our grandfather was a knight of
+1629: notable fame and starts his career at 2,500 Glory.
+1630: Many raids and battles generate a certain amount of Hate
+1631: against particular nations. If an ancestor dies in battle against a
+1632: certain enemy, his direct descendant gains an extra 1d6 of Hate
+1633: [Enemy]. At the end of his life your grandfather passes on his
+1634: Hates to his son, your father, if their value exceeds 10. Likewise,
+1635: your father passes on his Hates that exceed 10 to you.
+1636: Your Father
+1637: Y our father (born in 724) was also a notable knight, living
+1638: in the Ardennes and serving under King Pepin. His starting
+1639: Glory is 2,500 plus 1/10th of your grandfather’s total Glory.
+1640: Charles Martel
+1641: King Thierry IV (Theuderic) “reigned” from 721 to his death
+1642: in 737, and he was not succeeded by anyone until Chilperic III
+1643: (the last Merovingian king) in 743, who was deposed in 751,
+1644: when Pepin the Short was finally anointed King of the Franks.
+1645: All the while, the real power was in the hands of Charles
+1646: Martel, the Mayor of the Palace and Duke of the Franks. As
+1647: such, he was in command of the royal army.
+1648: Charles Martel was a tough and talented military com -
+1649: mander, who celebrated many victories against the Saxons,
+1650: Moors and other enemies. He is most famous for defeating
+1651: the Moors at the Battle of Poitiers (or Battle of T ours) in 732.
+1652: As the de facto ruler of the Franks, he laid out the basis for
+1653: the concept of knighthood, and forged a solid alliance with
+1654: the Pope.
+1655: Pepin the Short
+1656: Son of Charles Martel, he succeeded his father as Mayor of
+1657: the Palace, but later he deposed King Chilperic III and was
+1658: anointed King of the Franks in 751.
+1659: During his political and military career, he had many
+1660: problems with his brother Carloman and half-brother Grifo.
+1661: As a king, Pepin waged many offensive wars in which he
+1662: forced the submission of the southern duchies of Burgundy,
+1663: Aquitaine, Provence and Septimania.
+1664: King Pepin confirmed the pre-eminence of the Frankish
+1665: people in Western Europe. Inside his realm he promoted feu -
+1666: dalism, vassalage and the use of knights as heavy cavalry.
+1667: What exactly happened during Pepin’s marriage with
+1668: Bertrada Broadfoot and how their son Charlemagne was born
+1669: is known to only a few people, and this episode of history is
+1670: subject to the wildest rumors and speculations.
+1671: ==================== BOOK PAGE 47 ====================
+1672: Chapter Two: The Past
+1673: 46
+1674: Standard Ancestor Events Tables
+1675: The tables below are based on your Frankish character be -
+1676: ing born in 746 in the Ardennes, and entering the game at age 18
+1677: in 767, the beginning of a standard P aladin  campaign.
+1678: While tracing the path of your ancestors, you will need the
+1679: two standard tables below. For every year for which there is no
+1680: specific table, roll once on the Ordinary Y ear Events table below.
+1681: For every battle, siege or raid your ancestor participated in, you
+1682: should use the standard Combat Survival table unless indicated
+1683: otherwise.
+1684: t able  2–1: o rdiNary  y ear  e veNts
+1685: 1d20 Result Event
+1686: 1 Died of a random cause.
+1687: 2–17 Served garrison duty.
+1688: 18–19 Performed a memorable and glorious act. (50 Glory).
+1689: 20 Defended his homeland during a Saxon (or Frisian) raid.
+1690: Raid: For every raid, roll once on the Combat Survival ta -
+1691: ble below to determine the character’s destiny. If he survived, he
+1692: gains +1d3 Hate [Saxons/Frisians].
+1693: t able  2–2: c o Mbat  s urvival
+1694: 1d20 Result* Combat Result
+1695: 0 He died with great Glory (+1,000 Glory).
+1696: 1 He died without additional Glory.
+1697: 2 He was crippled and retired into a monastery, where
+1698: he died peacefully 1d20 years later.
+1699: 3 He was captured and taken to the attackers’ home -
+1700: land. He never returned.
+1701: 4–5 He survived and accomplished a heroic act
+1702: (+100 Glory).
+1703: 6–20 He survived.
+1704: * Rolls for battles are at –1.
+1705: Glory: The standard amounts of combat Glory gained are
+1706: 100 for a battle, 50 for a siege and 25 for a raid or skirmish. These
+1707: points are doubled if your ancestor fought on the victorious side.
+1708: t able  2–3: MiscellaNeous  d eatH  c auses
+1709: 1d20 Result Cause of Death
+1710: Male
+1711: 1–3 Battle
+1712: 4–6 Family feud
+1713: 7–8 Enemy raid
+1714: 9–10 Hunting accident
+1715: 11–13 Accident
+1716: 14 Disappeared
+1717: 15–18 Illness
+1718: 19–20 Old age
+1719: Phase –2: Feudal Anarchy
+1720: T
+1721: he years 700–722 are included as a background; there are
+1722: no consequences for your family.
+1723: a NNo  700
+1724: Doon de Mayence: Guy of Mayence, Lord of Montblois on
+1725: the Rhine, accidentally kills a hermit while hunting. As penance,
+1726: he takes the holy man’s place. When Guy fails to come home his
+1727: seneschal, Archibald, proposes to marry Marguerie, Guy’s “wid-
+1728: ow, ” but she refuses. Archibald then accuses her of adultery and
+1729: the murder of her husband. She is imprisoned together with Sir
+1730: Baldwin, who wanted to defend his lady’s honor.
+1731: Archibald orders a knight to go out into the forest and kill
+1732: Guy’s three sons. The man slays two out of three, but is himself
+1733: stabbed to death by young Doon. The young squire wanders
+1734: around the Ardennes Forest and finally finds his father, living
+1735: as a hermit. He tells his father what happened. When Guy takes
+1736: up his weapons to avenge the death of his sons, an angel strikes
+1737: him with blindness. Guy and Doon live in the forest for a few
+1738: years. [→705]
+1739: a NNo  701
+1740: Floris and Blancheflour: Felix, the pagan King of Asturias,
+1741: conducts a slave raid and captures a band of Christian pilgrims,
+1742: among whom is a beautiful, pregnant young widow. This wom-
+1743: an becomes the personal servant of the queen, who is also preg -
+1744: nant. Both women give birth on the same day: the pagan lady
+1745: has a boy, Floris, while the Christian lady has a girl, Blancheflour.
+1746: Both children are raised together at Felix’ court, where they
+1747: study diligently. [→717]
+1748: a NNo  705
+1749: Doon de Mayence: [←700] One day, Doon kills an insolent
+1750: knight carrying a letter from Archibald. He reads it and learns
+1751: about his mother’s distress. Doon rides back to Montblois to
+1752: defend her.
+1753: On his way he is welcomed at his uncle’s castle, where he
+1754: kills a robber knight in a joust. The knight’s sons want to avenge
+1755: their father and the next day they attack Doon in their own cas-
+1756: tle, but Doon escapes unharmed.
+1757: When Doon finally arrives at Montblois, he demands a
+1758: duel against Archibald to defend his mother’s honor. Archibald
+1759: names Droart as his champion. Doon defeats Droart in a single
+1760: combat, but the champion and his master Archibald flee to the
+1761: city of Mayence.
+1762: Doon pursues them but is taken prisoner. In prison, he
+1763: meets the loyal Sir Baldwin. W audry, the jail warden, takes
+1764: Doon’s side and frees the prisoners. T ogether the three men sur-
+1765: prise Archibald and his men and slay them all.
+1766: 1d20 Result Cause of Death
+1767: Female
+1768: 1–3 In childbirth
+1769: 4 Family feud
+1770: 5 Enemy raid
+1771: 6 Hunting accident
+1772: 7–10 Accident
+1773: 11 Disappeared
+1774: 12–16 Illness
+1775: 17–20 Old age
+1776: ==================== BOOK PAGE 48 ====================
+1777: 47
+1778: Count Guy becomes the abbot of the monastery founded
+1779: on the spot where he lived as a hermit, at Echternach. Doon be-
+1780: comes Count of Mayence, and Baldwin and W audry receive rich
+1781: fiefs. [→706]
+1782: a NNo  706
+1783: Doon de Mayence: [←705] Doon wins a royal tournament
+1784: but forgets to pay homage to the king, who insults him. With his
+1785: relatives, and in full battle outfit, the angry Doon presents him-
+1786: self at court and demands reparation. The king refuses to give
+1787: him the lands of V auclere, which are within Saxon territory. As
+1788: they prepare for a duel, an angel descends from heaven and or -
+1789: ders them to make peace. By mutual consent, the king pretends
+1790: to go to Rome with Doon and his men disguised as pilgrims.
+1791: In truth, they all head for V auclere. Assisted by the king,
+1792: Garin of Monglane, and the axe-wielding semi-giant Robastre,
+1793: Doon presents himself at the Saxon court. As it happens, the
+1794: Saxons are at war with the Danes because they refused to marry
+1795: princess Flandrine to Danemont, the Danish king. Doon pro -
+1796: poses to rid them of their enemy if the Saxons consent to giving
+1797: him V auclere and the hand of Flandrine, daughter of Helissent
+1798: of Flanders and Aubigan, the Saxon Lord of V auclere. At night,
+1799: Helissent brings her daughter to Doon’s tent and secretly mar -
+1800: ries her to the count.
+1801: The next day, the king, Doon and Garin attack the Danes,
+1802: but they are taken prisoner. Robastre follows them, and, dis -
+1803: guised as a minstrel, enters the Danes’ castle. He manages to
+1804: liberate the Frankish prisoners and together they massacre the
+1805: Danes. Doon, now Count of V auclere, orders the Saxon inhabi-
+1806: tants to be converted.
+1807: Flandrine gives Doon twelve sons, who all go to serve the
+1808: Merovingian king at court. None of them, however, accept fiefs
+1809: from their father, preferring to conquer their own in the lands of
+1810: the pagans. [→729, Gaufrey]
+1811: a NNo  709
+1812: Enfances Garin de Monglane: The queen falls in love with Sir
+1813: Garin. The jealous king forces Garin to play a game of chess, which
+1814: Garin must win to stay alive. Garin stops the game just before check-
+1815: mating his liege and asks for the fief of a rebellious vassal.
+1816: Soon afterward, Sir Garin falls in love with a woman
+1817: named Mabile, who is unhappily betrothed to Duke Huon of
+1818: Auvergne. Garin kills Huon, but Mabile is captured by Gaufroy
+1819: of Monglane. An enchanter and the loyal Robastre help Garin
+1820: capture Monglane and win Mabile back. At the bidding of an
+1821: angel, Garin gives his inherited land (Aquitaine) to his brother
+1822: Gerin, who marries Mabile. [→754, Aymeri de Narbonne]
+1823: a NNo  711
+1824: Spain: Saracens from Northern Africa invade the Visigothic
+1825: kingdom of the Iberian Peninsula.
+1826: Phase –1: Charles Martel
+1827: Customs
+1828: F
+1829: eudalism: Charles Martel introduces feudalism as a
+1830: system of land ownership in which small land holders
+1831: pledge fealty to an overlord in return for protection.
+1832: Locally, the great magnates rule by “Might Makes Right” and
+1833: don’t hesitate to seize their neighbor’s land by force if the oc -
+1834: casion presents itself.
+1835: Knighthood: If a man can equip himself with armor, weap-
+1836: ons, and a horse, he can ride with other heavy cavalry under the
+1837: command of Charles Martel or his officers. This is the beginning
+1838: of knighthood — those closest to the Mayor are recognized and
+1839: given honors.
+1840: Heraldry: Knights may use whatever design they wish on
+1841: their shields. Most “heraldry” just a plain color, or a simple de -
+1842: sign (crosses are favored) on the shield.
+1843: Wo m en :  They are the property of the family patriarchs,
+1844: who marry them at will to advance the interests of their House.
+1845: Fashion: Nobles wear the traditional Frankish linen shirt,
+1846: a knotted or pinned cloak, trousers, thick stockings and san -
+1847: dals. Elegance is expressed by superficial Roman influences like
+1848: brooches and sashes. Men have long hair, but shave and have nei-
+1849: ther mustache nor beard.
+1850: Warfare
+1851: Armor: Ring mail body armor and an open conical helmet
+1852: with a nasal protection (8 points) is the standard for knights.
+1853: Round shields (6 points) are made of leather-covered wood with
+1854: an iron boss in the center.
+1855: W eapons: Knights wield a spear and an iron sword, and
+1856: perhaps an axe, mace or hammer.
+1857: Horses: Chargers are rare and expensive. Poor knights
+1858: fight on rouncies or sometimes coursers. Horses are unarmored.
+1859: Castles: W ooden stockades, perhaps surrounded by a ditch,
+1860: are prevalent. A few cities have preserved their Roman walls, but
+1861: stone castles are unknown.
+1862: Levy T roops: Free men present themselves at their lord’s
+1863: army mostly as lightly armored cavalry, spearmen, or unarmored
+1864: archers.
+1865: a NNo  714
+1866: Frankland: Birth of Pepin the Short, son of Charles Martel.
+1867: a NNo  717
+1868: Floris and Blancheflour: [←701] King Felix is worried about
+1869: his son, Floris, who is obviously in love with the Christian slave
+1870: girl Blancheflour, so he decides to send his son to Andalusia. This
+1871: separation is painful for both Floris and Blancheflour. King Felix
+1872: intercepts his son’s love letters and becomes convinced that the
+1873: girl has bewitched his son, so he sells her to Saracen merchants.
+1874: She is taken to Babylon and is locked up in a tower serving in the
+1875: Phase –1: Charles Martel
+1876: ==================== BOOK PAGE 49 ====================
+1877: Chapter Two: The Past
+1878: 48
+1879: Sultan’s personal harem. When Floris arrives back at his father’s
+1880: court, Felix presents his son with Blancheflour’s fake tomb. In
+1881: total despair, Floris tries to kill himself. T aking pity, the queen
+1882: then reveals what really happened to Blancheflour and Floris
+1883: immediately sets out to find her. His mother gives him a ring
+1884: which protects him from harm, and his father gives him a price-
+1885: less golden cup to buy back his lover. [→718]
+1886: a NNo  718
+1887: Floris and Blancheflour: [←717] Merchants tell Floris that
+1888: Blancheflour has been sold to the Sultan, so he crosses the sea
+1889: and travels to Babylon. He gives the golden cup to the tower’s
+1890: gate keeper and invites him to play chess. Floris loses but keeps
+1891: raising the stakes, until he finally wins and forces the honor -
+1892: able guard to let him into the tower. Inside Floris finds his
+1893: Blancheflour but they are discovered by the Sultan, who wants
+1894: to put them to death. When Floris and Blancheflour tell him
+1895: their love story, the Sultan and his vassals are genuinely moved.
+1896: The Sultan sets them free, knights Floris for his valor and cele -
+1897: brates their marriage. [→719]
+1898: a NNo  719
+1899: Floris and Blancheflour: [←718] On their return in Asturias,
+1900: Floris and Blancheflour find that Floris’ parents have both died.
+1901: For the love of his wife, Floris has his people and himself baptized
+1902: and he is crowned the first Christian King of Asturias. [→720]
+1903: a NNo  720
+1904: Floris and Blancheflour: [←719] Birth of Princess Bertrada,
+1905: daughter of King Floris of Asturias and Queen Blancheflour.
+1906: [→735, Berthe aux grands pieds]
+1907: This tale is about the young king Floris
+1908: And the marvellous Blancheflour
+1909: Who was the mother of Bertrada Broadfoot.
+1910: Later Bertrada was married in Frankland
+1911: She gave birth to Charlemagne
+1912: Who ruled over all Franks.
+1913: — Floris and Blancheflour
+1914: Septimania: The Moors invade Septimania and capture
+1915: the rich city of Narbonne after a short siege.
+1916: a NNo  721
+1917: Frankland: The Merovingian King Chilperic II dies and is
+1918: succeeded by the adolescent Thierry IV.
+1919: a NNo  722
+1920: No noteworthy events.
+1921: a NNo  723
+1922: Saxony: Charles Martel destroys the Saxon holy trees near
+1923: Geismar and Fritzlar.
+1924: Y our grandfather’s career as a knight starts here.
+1925: g raNdfatHer  e veNts  t able  (723)
+1926: 1d20 Result Event
+1927: 1–10 Y our grandfather served garrison duty.
+1928: 11–20 He participated in the successful raiding campaign
+1929: against the Saxons. Roll on T able 2–2: Combat Survival.
+1930: If grandfather survived, he gains 1d3 Hate [Saxons].
+1931: a NNo  724
+1932: Frankland: The Pope sends Charles Martel a reliquary
+1933: with the keys and chains of Saint Peter.
+1934: Y our father is born.
+1935: a NNo  725
+1936: Septimania, Provence: The Moors renew their incursions
+1937: into Septimania and Provence. They capture the cities of Nîmes
+1938: and Carcassonne, and raid towns along the Saône and the Rhone all
+1939: the way up to Autun (Burgundy). Rumor has it that Duke Odo of
+1940: Aquitaine paid the Moors to raid Frankland instead of Aquitaine.
+1941: g raNdfatHer  e veNts  t able  (725)
+1942: 1d20 Result Event
+1943: 1 He died of a random cause.
+1944: 2–10 He served garrison duty.
+1945: 11–20 He participated in the unsuccessful defense of Autun.
+1946: Roll on T able 2–2: Combat Survival. If he survived
+1947: the siege, he gains 1d3 Hate [Moors].
+1948: a NNo  726
+1949: No noteworthy events.
+1950: a NNo  727
+1951: No noteworthy events.
+1952: a NNo  728
+1953: Saxony: Charles Martel campaigns in Saxony and Frisia.
+1954: Aquitaine: He also raids Aquitaine, where Duke Odo
+1955: claimed his independence and allied himself with a wali from
+1956: Spain, himself in revolt against Emir Abdul Rahman.
+1957: g raNdfatHer  e veNts  t able  (728)
+1958: 1d20 Result Event
+1959: 1 He died of a random cause.
+1960: 2–10 He served garrison duty.
+1961: 11–15 He fought the rebellious Duke Odo of Aquitaine.
+1962: Roll at –1 on T able 2–2: Combat Survival.
+1963: 16–20 He fought in Saxony or Frisia. Roll on T able 2–2:
+1964: Combat Survival . If grandfather survived, he gains
+1965: 1d3 Hate [Saxons].
+1966: a NNo  729
+1967: Gaufrey: [←706, Doon de Mayence] Garin of Monglane asks
+1968: his friend Doon for help in his war with Gloriant the Saxon.
+1969: Garin’s sons, Gerard, Milo, and Renier, have already been taken
+1970: prisoner. Doon and his sons leave for Monglane. When they ar-
+1971: rive, Garin conducts a sortie, but he is taken prisoner together with
+1972: ==================== BOOK PAGE 50 ====================
+1973: 49
+1974: his vassal Robastre. Godfrid and his brothers attack the Saxons in
+1975: the rear. Some Saxons flee to their ships, where they meet Doon
+1976: in battle. The Count of Mayence liberates the squires, but their
+1977: father Garin is taken away. All alone, Doon pursues the Saxons,
+1978: who easily capture him. Doon’s and Garin’s sons finally settle in
+1979: V auclere to make a plan to rescue their fathers.
+1980: T aken to the Barbel T ower, Doon and Garin receive unex-
+1981: pected help from the Saxon princess Fleurdepine. She is in love
+1982: with a Frankish knight called Berart of Mondidier, who happens
+1983: to be Doon’s nephew. Before leaving with Gloriant and his ally
+1984: Machabray (Fleurdepine’s father), the young princess orders the
+1985: construction of a secret tunnel between the prison and her tower.
+1986: Meanwhile, the Franks arrive at Grailmont Castle, held by the
+1987: Saxon Lord Guitant who is at war with his rival, Quinart. Robastre
+1988: pretends to be Grailmont’s dead lord (who is still out fighting for his
+1989: lord, Gloriant). Robastre is brought into the castle, which he cap-
+1990: tures at night. All pagan warriors are converted or killed. The lady
+1991: of the castle, Fauquette, is baptized and married to Grifo. Guitant
+1992: returns back home, refuses baptism and is slain by Godfrid.
+1993: Quinart lays siege to Grailmont. The Franks ride out to do
+1994: battle, kill Quinart and convert the remaining Saxons. Robastre
+1995: is wounded, but healed by one of Fauquette’s magic potions. T o
+1996: celebrate their victory, Garin marries Clarisse, and Gerard mar -
+1997: ries Avissa (aunts of Duke Naymo).
+1998: Godfrid leads the Franks to the south. Grifo leaves the
+1999: army, pretending to be ill, and travels to the Frankish court. He
+2000: obtains the title of count and the permission to build a castle
+2001: at T royes, which he names Hautefeuille. He tells lies about his
+2002: brothers, claiming their victories against the Saxons as his own.
+2003: Gloriant, Machabray and his daughter arrive at the Saxon
+2004: stronghold of Amandon, where they are welcomed by Lord
+2005: T urfanie. Fleurdepine is allowed to return to the Barbel T ower,
+2006: together with Gloriant’s nephew Malprin. Berart of Mondidier
+2007: and some other Frankish knights are sent into Saxony to help
+2008: Garin and Doon. They arrive at the Barbel T ower to do battle
+2009: with the Saxons, but they are defeated. In the Saxon prison, they
+2010: meet Doon and Garin. [→730]
+2011: g raNdfatHer  e veNts  t able  (729)
+2012: 1d20 Result Event
+2013: 1 He died of a random cause.
+2014: 2–10 He served garrison duty.
+2015: 11–15 He participated in the first (undecided) battle against
+2016: Gloriant of Saxony near the city of V auclere. Roll at
+2017: –1 on T able 2–2: Combat Survival . If grandfather
+2018: survived, he gains 1d3 Hate [Saxons].
+2019: 16–20 He fought at the battle of the Barbel T ower. Roll at
+2020: –1 on T able 2–2: Combat Survival . If grandfather
+2021: survived, he gains 1d6 Hate [Saxons].
+2022: a NNo  730
+2023: Gaufrey: [←729] At the Barbel T ower, Fleurdepine sets the
+2024: imprisoned Franks free. They kill Machabray, but Gloriant escapes
+2025: and assembles his troops to besiege the castle. Inside, Fleurdepine
+2026: is baptized and married to her Berart. Robastre arrives at the
+2027: Barbel T ower and kills Gloriant in battle. After the Saxons surren-
+2028: der he converts and marries Lady Mandagloire, Gloriant’s widow.
+2029: A few years later, Old Doon retires as a hermit. [→740]
+2030: Auberi de Bourgogne: Aubery (the nephew of Garin of
+2031: Lorraine and the great-uncle of Naymo of Bavaria) is persecuted
+2032: by his stepmother and evil uncles. Finally, he prevails over them,
+2033: saves Bavaria from an Avar attack, marries Guibourc, Duchess of
+2034: Bavaria, and avenges himself. [→731]
+2035: a NNo  731
+2036: Auberi de Bourgogne: [←730] Aubery unfairly suspects his
+2037: wife of infidelity, but later realizes her innocence. While he is pur-
+2038: suing a wild boar into an enemy’s land, he is cornered by attackers
+2039: until he is rescued by his nephew, Gaselin. Aubery betroths his
+2040: step-daughter Senehaut to Gaselin and pardons his enemies.
+2041: The powerful Sir Lambert of Oridon lusts after Senehaut
+2042: and plots to kidnap her. He locks Aubery in a tower with two
+2043: young maidens and later accuses him of raping them, hoping
+2044: to blackmail him. Fearing death, Aubery submits to Lambert’s
+2045: wishes and is forced to trick Senehaut into going to a monastery
+2046: where Lambert is waiting for her. Once he has kept his word,
+2047: Aubery promises to come and rescue his furious step-daughter.
+2048: Sir Lambert marries Senehaut against her will, but she de -
+2049: lays consummating the marriage and is rescued by Aubery and
+2050: Gaselin. Aubery receives troops from Charles Martel and besieges
+2051: Oridon, but the villain escapes the siege through an underground
+2052: tunnel and arranges for Charles to reconcile him with Aubery.
+2053: The Mayor of the Palace forces Aubery to forgive Lambert and
+2054: grants the traitor safe passage through Frankland. [→732]
+2055: g raNdfatHer  e veNts  t able  (731)
+2056: 1d20 Result Event
+2057: 1 He died of a random cause.
+2058: 2–15 He served garrison duty.
+2059: 16–20 He fought with Charles Martel at the siege of Oridon.
+2060: Roll on T able 2–2: Combat Survival.
+2061: a NNo  732
+2062: Auberi de Bourgogne: [←731] Aubery sets off for St. Denis
+2063: with Lambert and even changes clothes with him to protect his
+2064: former rival. They are ambushed by Gaselin, who attacks the
+2065: man he thinks is Lambert, but in doing so deals a fatal blow to
+2066: Aubery (who forgives him). Lambert escapes, making several at-
+2067: tempts on Gaselin’s life, and buys the goodwill of Charles Martel.
+2068: When Gaselin finally kills Lambert, Charles Martel accus -
+2069: es him of violating the royal safe-passage. Gaselin swears he was
+2070: unaware of it and wins a judicial combat to prove it. Finally he
+2071: receives a fief in Bavaria from Charles and marries Senehaut.
+2072: They have a son named Naymo, who later becomes a duke and
+2073: Charlemagne’s most respected councilor. Gaselin atones for his
+2074: accidental murder through charity.n
+2075: Doon de Nanteuil: Charles Martel demands Doon of
+2076: Nanteuil give him a golden cart wheel, which he refuses. Bertrand
+2077: Phase –1: Charles Martel
+2078: ==================== BOOK PAGE 51 ====================
+2079: Chapter Two: The Past
+2080: 50
+2081: of Bavaria is sent to Doon’s castle to negotiate, but things get out
+2082: of hand and Bertrand accidentally kills Doon’s cousin, Berart of
+2083: Mondidier. A violent feud is inevitable. Doon, aided by his brother
+2084: Gerard of Roussillon, is betrayed by his Saxon allies and is obliged
+2085: to seek refuge in Apulia, where he becomes a monk. [→734]
+2086: Frankland: A large Moorish army invades Provence and
+2087: Burgundy, where they sack the monastery of Luxueil. From
+2088: there, they head towards Neustria. In response, the combined
+2089: army of Charles Martel and Odo of Aquitaine (who called on
+2090: his former enemy for help) meet the Moors at the Battle of
+2091: Poitiers, where Emir Abdul Rahman is killed. Charles Martel
+2092: captures the Moorish baggage and obtains an immense booty,
+2093: part of which he redistributes among his loyal vassals.
+2094: g raNdfatHer  e veNts  t able  (732)
+2095: 1d20 Result Event
+2096: 1 He died of a random cause.
+2097: 2–5 He served garrison duty.
+2098: 6–20 He fought at the battle of Poitiers. Roll on the table be-
+2099: low. If he survives, he gains 1d3 Hate [Moors] and you
+2100: get an extra roll on T able 1–15: Frankish Birth Gifts.
+2101: b attle  of  Poitiers  e veNts  t able
+2102: 1d20 Result Event
+2103: 1 Y our grandfather died with great Glory. (1,400 Glory)
+2104: 2–11 He died. (400 Glory)
+2105: 12 He was captured and taken to Spain. He never returned.
+2106: 13 He survived and accomplished a heroic act. (500 Glory)
+2107: 14–19 He survived. (400 Glory)
+2108: 20 He survived and killed the leader of the Moorish
+2109: invasion, Emir Abdul Rahman, in personal combat.
+2110: (900 Glory)
+2111: a NNo  733
+2112: Daurel and Beton: Bevis of Hantone, Duke of Brabant, is
+2113: the companion of Count Guy, Lord of Castle Aspremont. When
+2114: Bevis marries Princess Ermengard, King Thierry IV’s sister, Guy
+2115: becomes jealous and plans to murder his companion. First he
+2116: tries to seduce Ermengard, but she rebuffs him. [→734]
+2117: Aquitaine: Duke Odo of Aquitaine dies and is succeeded
+2118: by his son, Hunold, who is still an adolescent.
+2119: ==================== BOOK PAGE 52 ====================
+2120: 51
+2121: a NNo  734
+2122: Daurel and Beton: [←733] On the same day that his vassal
+2123: Daurel has a son, Duke Bevis’ son is baptized Beton. [→735]
+2124: Doon de Nanteuil: [←732] After having spent two years as
+2125: a monk in Apulia, Doon of Nanteuil returns to Frankland and
+2126: accepts peace with Charles Martel. [→ 764, Aye d’ Avignon]
+2127: Lombardy: Charles Martel sends his son Pepin to Pavia,
+2128: where he serves a year as a squire at the court of the Lombard king.
+2129: a NNo  735
+2130: Aquitaine: Charles Martel conquers Bordeaux and Blaye.
+2131: Hunold of Aquitaine pledges fealty.
+2132: Berthe aux grands pieds: [←720, Floris and Blancheflour]
+2133: Y oung princess Bertrada, daughter of King Floris of Asturias and
+2134: Queen Blancheflour, is taken to Paris to be married to Charles
+2135: Martel’s second son, Pepin the Short. But Margiste, the lady-in-wait-
+2136: ing who takes care of the young princess, notices that Bertrada and
+2137: her own daughter Aliste resemble each other as if they were twins, so
+2138: she substitutes Aliste for Bertrada the day after the marriage.
+2139: Margiste orders Tibert, a forester, to take the real Bertrada out
+2140: to the woods and kill her, but the princess is saved by a sergeant called
+2141: Morant, who lets her escape into the Forest of Le Mans. There she
+2142: is taken in by the swineherd Simon and his wife Constance. [→736]
+2143: Huon d’ Auvergne: Huon II of Auvergne is falsely accused
+2144: of having seduced a Merovingian princess. As a punishment,
+2145: Charles Martel sends him to Hell to demand tribute in the name
+2146: of the Franks. In reality, the king just wants an opportunity to
+2147: seduce Huon’s wife. [→738]
+2148: Girart de Roussillon: T o thank Charles Martel for his aid
+2149: in defending Rome, the Emperor of Byzantium wishes to marry
+2150: his daughters Bertha and Elissent to Charles and his powerful
+2151: vassal Gerard of Roussillon, Duke of Burgundy. When the girls
+2152: arrive in Frankland, Charles prefers the younger and prettier
+2153: Elissent to Bertha, and arranges an exchange with Gerard. In
+2154: return, Gerard’s fief of Burgundy becomes a free allod. Princess
+2155: Elissent gives Gerard a ring as a token of her sincere affection.
+2156: Charles is jealous of Gerard’s independence and he finds a
+2157: pretext to attack him. He takes Roussillon by treason and defies
+2158: Gerard to do battle, but God, by a divine intervention, orders
+2159: the lords to make peace, which they do. [→736]
+2160: Daurel and Beton: [←734] One day, as Duke Bevis is hunting
+2161: a great boar in the Ardennes Forest, his companion Guy stabs him.
+2162: The dying duke forgives his jealous friend and tells him how to con-
+2163: ceal his crime, asking him in return to raise Beton as his son. When
+2164: the duke’s body is found, Ermengard accuses Guy but nobody be-
+2165: lieves her. Guy bribes Charles Martel and obtains Ermengard’s hand.
+2166: The suspicious Ermengard sends the baby Beton to Poitiers,
+2167: to be raised anonymously by a gentle woman named Aiceline.
+2168: When her new husband asks her where the boy is, Ermengard
+2169: refuses to tell him, even after he hits her in the face.
+2170: Beton is betrayed by a fisherman. Guy locks up Ermengard
+2171: and prepares to go and kill Beton. When Sir Daurel hears of Guy’s
+2172: plans, the loyal minstrel-vassal immediately rides to Poitiers and
+2173: substitutes his own son for Beton, exclaiming: “My son shall die;
+2174: my liege shall be saved!” Lord Guy arrives and smashes the baby’s
+2175: head against a pillar. Daurel buries his son’s body and takes little
+2176: Beton across the sea. His wife dies of grief. [→736]
+2177: g raNdfatHer  e veNts  t able  (735)
+2178: 1d20 Result Event
+2179: 1 He died of a random cause.
+2180: 2–5 He served garrison duty.
+2181: 6–12 He fought with Charles Martel against Gerard of
+2182: Roussillon at the interrupted battle, where he wit -
+2183: nessed the divine burning of two battle standards.
+2184: (50 Glory) Roll on T able 2–2: Combat Survival.
+2185: 13–15 He was a false witness against Huon d’ Auvergne at
+2186: his trial for adultery. Y ou lose one point of Just.
+2187: 16–20 He fought with Charles Martel at the successful siege
+2188: of Bordeaux. Roll on T able 2–2: Combat Survival.
+2189: a NNo  736
+2190: Berthe aux grands pieds : [←735] After nine months
+2191: Bertrada gives birth to a boy named Charlemagne. T ogether
+2192: they live in exile in the Forest of Le Mans for nine years. For fear
+2193: of her child’s life, Bertrada swears to keep her true identity a se-
+2194: cret and reveal it only if her honor is threatened. Meanwhile, the
+2195: false Queen Aliste gives Pepin two sons: Heudri and Rainfroi,
+2196: who grow up at court as princes. [→744]
+2197: Girart de Roussillon: [←735] T wo of Gerard’s cousins
+2198: avenge the killing of Gerard’s father, Doon, and his uncle on
+2199: Thierry of Scania and his sons when they return from exile.
+2200: In response, Charles Martel vainly tries to ambush Gerard. All
+2201: peace negotiations fail and a battle takes place in which Gerard
+2202: is defeated. A hermit warns Gerard that his soul is in danger, so
+2203: Gerard withdraws into the Ardennes Forest with his wife to live
+2204: in poverty. A divine vision cures him of his pride. [→737]
+2205: Daurel and Beton : [←735] Daurel and Beton arrive in
+2206: Babylon. Daurel enters the Sultan’s service and Beton is raised at
+2207: the Saracen court. [→752]
+2208: Lion de Bourges: When Herpin of Bourges is unjustly ac -
+2209: cused of treason at court, he kills Glariant (Ganelon’s uncle) and
+2210: is subsequently banished with his pregnant wife, Alice. [→737]
+2211: Aquitaine: Charles Martel successfully raids the lands of
+2212: the refractory Duke Hunold of Aquitaine.
+2213: Provence: Charles Martel continues his campaign in
+2214: Provence. He takes Arles, Avignon and Marseille from the
+2215: Moors, while the Burgundians try to negotiate peace with Emir
+2216: Abdul Melek, the successor of Abdul Rahman.
+2217: Phase –1: Charles Martel
+2218: ==================== BOOK PAGE 53 ====================
+2219: Chapter Two: The Past
+2220: 52
+2221: g raNdfatHer  e veNts  t able  (736)
+2222: 1d20 Result Event
+2223: 1 He died of a random cause.
+2224: 2–5 He served garrison duty.
+2225: 6–10 He fought a victorious battle against Gerard of
+2226: Roussillon. Roll at –1 on T able 2–2: Combat Survival.
+2227: 11–20 With Charles Martel, he liberates Arles from the
+2228: Moors after a long siege. Roll on T able 2–2: Combat
+2229: Survival. If he survived, he gains 1d3 Hate [Moors].
+2230: a NNo  737
+2231: Girart de Roussillon : [←736] Gerard and Bertha final -
+2232: ly return to Charles Martel’s court, where they are recognized
+2233: by Elissent’s ring, and they make honorable amends. But when
+2234: Gerard’s only son is killed, the feud starts again and this time
+2235: Gerard defeats Charles Martel in battle.
+2236: The Pope intervenes and Gerard humbly agrees to make
+2237: peace again. The duke leaves his lands to his nephew Fulco of
+2238: Morillon, founds many monasteries and retires as a monk.n
+2239: Lion de Bourges : [←736] Herpin of Bourges and his wife
+2240: go to Lombardy, where Alice gives birth to a son. In Herpin’s
+2241: absence, brigands abduct Alice and leave the baby, who is blessed
+2242: by faeries and nurtured by a lioness. He is later found by Baldwin
+2243: of Monclin, who baptizes the boy “Lion.” [→738]
+2244: Les Lorrains: Hervis of Lorraine has distinguished himself
+2245: at the side of Charles Martel in the battles with the Saracens. His
+2246: two sons, Garin and Bego, are raised at court, together with their
+2247: companions from Bordeaux: Fromont of Lens and William of
+2248: Monclin (Baldwin’s nephew). As Bego is made Duke of Gascony,
+2249: Fromont is promised the next great fief. [→738]
+2250: Septimania, Provence: The Visigoths make an alliance
+2251: with the Moors against Charles Martel. Still, with a little help
+2252: from his Lombard allies led by King Liutprand, the Frankish
+2253: Mayor of the Palace defeats the Moors and captures the rebel -
+2254: lious towns of Avignon, Beziers and Nîmes. He has the towns
+2255: burned and their hostile populations put to the sword. Duke
+2256: Mauronte of Septimania is hung.
+2257: g raNdfatHer  e veNts  t able  (737)
+2258: 1d20 Result Event
+2259: 1 He died of a random cause.
+2260: 2–5 He served garrison duty.
+2261: 6–10 He fought in the battle against Gerard of Roussillon.
+2262: Roll at –1 on T able 2–2: Combat Survival.
+2263: 11–20 He took part at the successful siege of Avignon and took
+2264: part in the subsequent massacre of the population. Roll
+2265: on T able 2–2: Combat Survival . If grandfather sur -
+2266: vived, he gained a 1d6 directed trait of Cruel [traitors].
+2267: a NNo  738
+2268: Huon d’ Auvergne: [←735] On his way to Hell, Huon cross-
+2269: es the lands of the Avars. From there he reaches Jerusalem and
+2270: the legendary land of Prester John. Huon does, eventually, brief-
+2271: ly visit Hell. [→742]
+2272: Les Lorrains : [←737] The Moors invade Burgundy and
+2273: King Thierry IV demands assistance. The Bordelais refuse,
+2274: but the Lorrains engage in battle and crush their enemy. As a
+2275: reward, the dying king offers his land and his young daughter
+2276: Blanchefleur’s hand to the valorous Garin. Charles Martel’s ap-
+2277: proval angers the jealous Fromont, who reminds Charles Martel
+2278: of his promise and claims Burgundy as his own. The two rival
+2279: clans (the Lorrainers and the Bordelais) start a bloody fight
+2280: at court, in which Fromont’s brother, Hardrad, is killed. A
+2281: long-lasting feud is born.
+2282: Fromont marries Helissent of Ponthieu, the sister of Count
+2283: Baldwin of Flanders. Fromont and Baldwin then attack Huon
+2284: of Cambrai, a Lorrainer, which rekindles the feud. A few bat -
+2285: tles take place in which Fromont’s brothers are killed, so the
+2286: Bordelais finally capitulate. A fragile peace is concluded. [→739]
+2287: Orson de Beauvais : Counts Orson and Hugo are made
+2288: companions to seal the peace in Burgundy. Orson marries
+2289: Aceline, the daughter of the exiled Duke Huon of Auvergne,
+2290: who gives him a son, Milo. Hugo is Milo’s godfather.
+2291: The problem is that Hugo is also in love with Aceline.
+2292: Therefore, he stages an angelic vision in which he tells Orson
+2293: to leave on a pilgrimage with his companion. Before they go,
+2294: Aceline gives her husband a golden ring. On the road, Hugo
+2295: steals the ring and sells his companion as a slave. [→740]
+2296: Lion de Bourges : [←737] Herpin retires as a monk near
+2297: Rome, while Alice escapes from captivity disguised as a man and
+2298: settles in T oledo as “Sir Ballian of Argonne.” She kills a giant to
+2299: save her lord, who then wishes to marry “him” to his daughter
+2300: Floirie. When she reveals her true identity to avoid marriage, the
+2301: wali himself desires her hand, so she flees into the city disguised
+2302: as a beggar. [→754]
+2303: Frankland: At Thierry IV’s death, the Frankish throne is
+2304: left vacant.
+2305: Rome: St. Boniface visits Rome, where he receives a papal
+2306: mission to convert the Saxons.
+2307: g raNdfatHer  e veNts  t able  (738)
+2308: 1d20 Result Event
+2309: 1 He died of a random cause.
+2310: 2–10 He served garrison duty.
+2311: 11–15 He fought with the Lorrainers in the battle of
+2312: Burgundy against the Moors. Roll at –1 on Ta b l e
+2313: 2–2: Combat Survival . If grandfather survived, he
+2314: gains 1d3 Hate [Moors].
+2315: 16–20 He participated in the raids of the Lorrainers against
+2316: the lands of the Bordelais. Roll on T able 2–2: Combat
+2317: Survival.
+2318: a NNo  739
+2319: Les Lorrains : [←738] When Blanchefleur comes of age,
+2320: Charles Martel forces some monks to declare that Garin and
+2321: Blanchefleur are related, and marries her himself, instead. The
+2322: Lorrainers are furious and a fight breaks out during the wed -
+2323: ding. Charles Martel orders a judicial combat, in which Bego of
+2324: ==================== BOOK PAGE 54 ====================
+2325: 53
+2326: Lorraine kills Isoré the Grey. The Lorrainers now join Charles
+2327: Martel’s clan, thanks to the double marriage of the widowed
+2328: Aelis of Cologne with Garin, and of his brother Bego with an -
+2329: other of Charles’ nieces. The Bordelais, however, ambush Bego
+2330: and almost kill him. The Lorrainers lay siege to Bordeaux, forc -
+2331: ing the Bordelais once more to surrender. [→759]
+2332: Rome: King Liutprand takes several papal towns. The
+2333: Pope calls on Charles Martel for aid, in vain.
+2334: Septimania: Pepin the Short and King Liutprand of the
+2335: Lombards drive the Moors out of several Septimanian towns.
+2336: All possessions of those who collaborated with the Moors are
+2337: confiscated and distributed among loyal Frankish warriors.
+2338: g raNdfatHer  e veNts  t able  (739)
+2339: 1d20 Result Event
+2340: 1 He died of a random cause.
+2341: 2–5 He served garrison duty.
+2342: 6–10 He fought in an unsuccessful siege against the Moors
+2343: in Provence.
+2344: 11–20 He fought in a successful siege against the Moors in
+2345: Septimania and was richly rewarded with spoils. Roll
+2346: on T able 2–2: Combat Survival. If he survived, you
+2347: gain an extra roll on T able 1–15: Frankish Birth Gifts.
+2348: a NNo  740
+2349: Gaufrey: [←730] Godfrid arrives at Rochebrune Castle,
+2350: where Duke Naymo’s cousin, Passerose, is besieged by the
+2351: Danish king, who wants to marry her. The Danes are routed.
+2352: Passerose marries Godfrid and conceives Ogier.
+2353: Godfrid pushes into Denmark and kills the king in battle,
+2354: seizing the Danish throne for himself.
+2355: On the way back home, the Franks pass through Gloriant’s
+2356: territory and lay siege to the Giant’s T ower, held by Lord
+2357: Morhier. One night, the Saxons attack the Frankish tents and
+2358: slaughter many knights. The tide turns when Robastre decapi -
+2359: tates Morhier. [→752]
+2360: Orson de Beauvais: [←738] When Hugo returns home, he
+2361: tells everybody how Sir Orson died in Jerusalem, and that be -
+2362: fore dying he asked his companion to marry his wife and take
+2363: care of his lands. He gives Charles Martel rich presents and ob -
+2364: tains permission to wed the “widowed” Aceline against her will.
+2365: However, Aceline uses herbs to prevent Hugo from sleeping
+2366: with her. [→749]
+2367: g raNdfatHer  e veNts  t able  (740)
+2368: 1d20 Result Event
+2369: 1 He died of a random cause.
+2370: 2–10 He served garrison duty.
+2371: 11–20 He participated at the successful siege of Rochebrune
+2372: Castle against the Danes. Roll on T able 2–2: Combat
+2373: Survival. If he survived, he gains 1d6 Hate [Danes].
+2374: a NNo  741
+2375: Frankland: Charles Martel dies. He is buried at the chapel
+2376: of Andenne in the Ardennes. The kingdom is split between his
+2377: sons Carloman (Austrasia and Thuringia) and Pepin (Neustria
+2378: and Burgundy). Their half-brother Grifo and several barons reb-
+2379: el. Grifo is captured and imprisoned in a monastery.
+2380: g raNdfatHer  e veNts  t able  (741)
+2381: 1d20 Result Event
+2382: 1 He died of a random cause.
+2383: 2–5 He served garrison duty.
+2384: 6–10 He took part in the skirmish during which Prince
+2385: Grifo was captured. (50 Glory)
+2386: 11–20 He participated in Charles Martel’s burial. (50 Glory)
+2387: Phase 0: King Pepin (742–767)
+2388: Customs
+2389: F
+2390: eudalism: During King Pepin’s phase it functions only
+2391: on a lower level. The king represents a formal central au-
+2392: thority. Locally, the great magnates still rule by “Might
+2393: Makes Right.”
+2394: T ruce of God: This set of rules, created by the Church to
+2395: limit the violence against the innocent and weak, is ignored by
+2396: most nobles. In theory there should be no acts of war during holy
+2397: days and Sundays, and church property should be protected.
+2398: Knighthood: As an extension of early feudalism, Pepin cre-
+2399: ates a separate caste of noble fighters. These knights follow the
+2400: Code of Honor: unswerving loyalty to one’s lord, the willingness
+2401: to face one’s enemies and deal out death on command.
+2402: Heraldry: Counts have an individual coat of arms and have
+2403: their own battle standard with symbolic insignias. The knights
+2404: in their retinues wear their colors, but they do not have an indi-
+2405: vidual coat of arms unless they belong to a very powerful family.
+2406: T ournaments: T ournaments are purely informal challenges
+2407: or training contests, occasionally organized at a lord’s court.
+2408: Wo m en :  They are the property of the family patriarchs,
+2409: who marry them at will to advance the interests of their House.
+2410: Chivalry: Despite King Pepin’s best efforts to civilize his
+2411: knights, the chivalric ideals are known in theory but remain
+2412: largely unapplied in practice. Minstrels and troubadours may
+2413: refer to chivalry in song, and knights treat their fellows-at-arms
+2414: with the respect due to a nobleman, but almost everybody agrees
+2415: it would be exaggerated to extend similar courtesy to the Saxons
+2416: or Moors or, for that matter, even to a Frankish enemy.
+2417: Romance: This novel set of ideas has slowly evolved
+2418: from the Asturian literature about King Floris and Queen
+2419: Blancheflour. For the moment it remains confined to the realm
+2420: of poetry.
+2421: Phase 0: King Pepin
+2422: ==================== BOOK PAGE 55 ====================
+2423: Chapter Two: The Past
+2424: 54
+2425: Fashion: Nobles wear the traditional Frankish linen shirt,
+2426: a knotted or pinned cloak, trousers, thick stockings and san -
+2427: dals. Elegance is expressed by superficial Roman influences like
+2428: brooches and sashes. Men have long hair, but shave and have nei-
+2429: ther mustache nor beard.
+2430: Warfare
+2431: Armor: Ring mail body armor and an open conical helmet
+2432: with a nasal protection (8 points) is the standard for knights.
+2433: Round shields (6 points) are made of leather-covered wood with
+2434: an iron boss in the center.
+2435: W eapons: Knights wield a spear and an iron sword, with an
+2436: axe, mace, or a hammer.
+2437: Horses: Chargers are rare and expensive. Poor knights
+2438: fight on rouncies, or sometimes coursers.
+2439: Horse armor is limited to simple trappers (4 points).
+2440: Castles: Motte-and-bailey castles are prevalent. A few cities
+2441: have preserved their Roman walls, but stone castles are almost
+2442: unknown. The most frequent defensive works are wooden for -
+2443: tresses and single stone towers.
+2444: Levy T roops: Free men present themselves at their lord’s
+2445: army mostly as lightly armored cavalry, spearmen, or unarmored
+2446: archers.
+2447: a NNo  742
+2448: Doon de La Roche : Pepin the Short offers the hand of his
+2449: sister, Olive, to the loyal Doon of La Roche. Doon becomes
+2450: Count of Cologne. Olive gives birth to a son, Landri. The cou -
+2451: ple settles in their new castle at the city of Cologne. [→744]
+2452: Huon d’ Auvergne: [←738] Duke Huon of Auvergne re -
+2453: turns to Frankland, but his crime remains unforgiven, as Charles
+2454: Martel has died.n
+2455: Rome: The Lombards and the Pope make peace.
+2456: g raNdfatHer  e veNts  t able  (742)
+2457: 1d20 Result Event
+2458: 1 He died of a random cause.
+2459: 2–10 He served garrison duty.
+2460: 11–20 He attended Doon of La Roche’s wedding with
+2461: Princess Olive. (25 Glory)
+2462: a NNo  743
+2463: Frankland: Carloman and Pepin have Childeric III
+2464: crowned as the new King of the Franks.
+2465: Bavaria: The Frankish Mayors campaign in Bavaria, where
+2466: they defeat Duke Odilo at Regensburg. Bavaria is officially an -
+2467: nexed to the Frankish crown.
+2468: Saxony, Aquitaine: Pepin then marches against the
+2469: Saxons, while Carloman fights the rebellious Duke Hunold in
+2470: Aquitaine.
+2471: g raNdfatHer  e veNts  t able  (743)
+2472: 1d20 Result Event
+2473: 1 He died of a random cause.
+2474: 2–5 He served garrison duty.
+2475: 6–10 He participated in the victorious battle of Regensburg.
+2476: Roll at –1 on T able 2–2: Combat Survival.
+2477: 11–15 He fought in the raids against the Saxons. Roll on
+2478: T able 2–2: Combat Survival. If he survived, he gains
+2479: 1d3 Hate [Saxons].
+2480: 16–20 He fought in the raids against the Aquitainians. Roll
+2481: on T able 2–2: Combat Survival.
+2482: a NNo  744
+2483: Doon de la Roche : [←742] The jealous Sir T omile puts
+2484: a young man in the countess’ bed while her husband is away.
+2485: When Doon comes back and discovers the scene, he kills the
+2486: naked knave and accuses his wife of adultery. Pepin the Short
+2487: comes to Cologne to judge his sister’s case himself. With Pepin’s
+2488: consent Doon repudiates Olive, who is sent to an isolated manor
+2489: with her son Landri. [→745]
+2490: Berthe aux grands pieds : [←736] Queen Blancheflour of
+2491: Asturias is worried about her daughter’s bad reputation, so she
+2492: decides to pay her daughter a visit. She travels to Paris and dis -
+2493: covers the heinous imposture! Margiste and her accomplice,
+2494: Tibert the huntsman, are forced to confess and are put to death.
+2495: The false queen, Aliste, retires to a convent, but the two princely
+2496: ==================== BOOK PAGE 56 ====================
+2497: 55
+2498: bastards are allowed to stay at court. The real Bertrada, whom
+2499: Blancheflour identifies by her large feet (hence the queen’s nick-
+2500: name “Broadfoot”), is restored as Pepin’s lawful wife.
+2501: However, like many other noblemen, Pepin seems to doubt
+2502: Bertrada’s story and regrets the absence of proof concerning
+2503: Charlemagne’s noble birth. The Pope convinces Pepin and
+2504: comes to St. Denis to celebrate his marriage with Bertrada.n
+2505: Saxony, Aquitaine: Pepin and Carloman march into
+2506: Saxony and kill many pagan warriors. Duke Hunold of Aquitaine
+2507: revolts while Pepin and Carloman are away.
+2508: g raNdfatHer  e veNts  t able  (744)
+2509: 1d20 Result Event
+2510: 1–10 He served garrison duty.
+2511: 11–14 He participated in a raid against the Saxons. Roll on
+2512: T able 2–2: Combat Survival. If he survived, he gained
+2513: 1d3 Hate [Saxons].
+2514: 15–18 He assisted at Bertrada’s return and Margiste’s execu-
+2515: tion. (25 Glory)
+2516: 19–20 He personally captured one of Duke Hunold’s spies
+2517: at Pepin’s court. (100 Glory)
+2518: Y our father is knighted and takes over the narrative.
+2519: If your grandfather is still alive after 744, he dies 1d20 years
+2520: later. Roll on T able 2–3: Miscellaneous Death Causes.
+2521: If your grandfather has any Hate passions over 10, he passes
+2522: them on to your father.
+2523: Y our father’s starting Glory is 2,500 plus 1/10th of your
+2524: grandfather’s total Glory.
+2525: a NNo  745
+2526: Doon de la Roche : [←744] Doon marries T omile’s daugh-
+2527: ter, Audegour. T ogether they have a son, Malingre. Whenever
+2528: Landri comes to visit his father, he is ill-treated by T omile’s rel-
+2529: atives. [→760]
+2530: Aquitaine: Duke Hunold is captured in battle and sent to a
+2531: monastery. His son W aifer becomes the new Duke of Aquitaine.
+2532: f atHer  e veNts  t able  (745)
+2533: 1d20 Result Event
+2534: 1–5 He married his concubine, your mother, after she told
+2535: him she was pregnant. (100 Glory)
+2536: 6–10 He was given the hand of your mother as a reward for
+2537: his loyal service. (200 Glory)
+2538: 11–20 He abducted your mother, the daughter of a rival lord,
+2539: and married her. (400 Glory)
+2540: a NNo  746
+2541: Maugis, Vivien de Montbranc : In her husband’s ab -
+2542: sence during a Saracen raid in Septimania, Lady Druwane of
+2543: Aigremont gives birth to Maugis and his twin brother, Vivien.
+2544: The two babies become separated: Maugis is found by Oriande,
+2545: a faerie who has him baptized and raises him at her court at
+2546: Castle Rocheflor, while Vivien is captured and taken away to
+2547: Montbranc in Moorish Spain, together with his aunt Y sane.
+2548: Y sane is married to the Moorish Prince Aquilant of Majorca, to
+2549: whom she bears a son, Brendan. Vivien is raised by Esclarmonde,
+2550: the wife of W ali Sorgalant of Monbranc. [→753]
+2551: Ami and Amile: T wo boys are born on the same day but in
+2552: different places: Ami is the son of the Count of Clermont, Amile is
+2553: the son of the Count of Bourges. When an angel tells their parents
+2554: how they will be united in an extraordinary friendship, they trav-
+2555: el to Rome where the Pope baptizes the two blessed children. As
+2556: birth-gifts they receive two identical goblets. The children grow up
+2557: separately, but come to resemble each other in every detail. [→761]
+2558: Raoul de Cambrai: At the death of T aillefer of Cambrai,
+2559: his wife and fief are given to Gibouin of Le Mans. When he is
+2560: knighted, T aillefer’s son, Raoul, claims the fief. The king refus-
+2561: es but promises to endow Raoul with the next vacant domain.
+2562: When Herbert of V ermandois dies, Raoul becomes the new count
+2563: of V ermandois, though his mother asked him to forfeit this fief.
+2564: Herbert had four young sons, who now declare war on Raoul.
+2565: When Raoul burns down the monastery of Origny in re -
+2566: taliation, all the nuns there die. Among them the mother of his
+2567: most loyal vassal, Bernier (Herbert of V ermandois’ grandson),
+2568: who demands a reparation from his lord. Raoul refuses and even
+2569: insults his vassal, so Bernier leaves court and joins his family, led
+2570: by Herbert’s son, Ybert of Ribemont. In the next battle, Bernier
+2571: kills Raoul. [→747]
+2572: Frankland: Boniface is appointed Archbishop of Mayence.
+2573: Carloman orders the execution of many rebellious Alemannian
+2574: noblemen.
+2575: Y ou are born!
+2576: f atHer  e veNts  t able  (746)
+2577: 1d20 Result Event
+2578: 1 He died of a random cause.
+2579: 2–10 He served garrison duty.
+2580: 11–15 He suffered during the Moorish raid in Septimania.
+2581: Roll at –1 on T able 2–2: Combat Survival. If he sur-
+2582: vives, he gains 1d3 Hate [Moors].
+2583: 16–18 He participated in the execution of rebellious
+2584: Alemannian nobles. Y ou gain a 1d6 directed trait of
+2585: Cruel [traitors].
+2586: 19–20 He attended your birth at home and undertook a pil-
+2587: grimage to the grave of a local saint. Y ou gain 1 point
+2588: of Love [God].
+2589: a NNo  747
+2590: Girart de Vienne : His endless wars with Synagon of
+2591: Alexandria have impoverished Lord Garin of Monglane. T o help
+2592: their father, his four sons capture a Saracen convoy and take a rich
+2593: booty. They give everything to their poor father and decide to
+2594: leave home in order to conquer lands and glory elsewhere. [→750]
+2595: Raoul de Cambrai : [←746] Guerri of Arras encourages
+2596: Raoul’s mother to avenge her son’s death and to continue the
+2597: feud against the V ermandois. After the sack of Paris (where
+2598: Gibuoin dies), King Pepin intervenes and peace is concluded.
+2599: T o reconcile the two families Bernier marries Guerri’s daughter,
+2600: Phase 0: King Pepin
+2601: ==================== BOOK PAGE 57 ====================
+2602: Chapter Two: The Past
+2603: 56
+2604: Beatrix, even though Pepin wanted to give her to another vassal,
+2605: Archibald of Ponthieu (Pinabel’s grandfather). [→748]
+2606: Rome: Carloman makes a pilgrimage to Rome, before
+2607: retiring to the monastery of Monte Cassino. He orders his
+2608: half-brother Grifo to be released from prison.
+2609: Father  e vents  t able  (747)
+2610: 1d20 Result Event
+2611: 1 He died of a random cause.
+2612: 2–10 He served garrison duty.
+2613: 11–18 After having accompanied Carloman on his way to
+2614: Lombardy, he visited Rome. (25 Glory)
+2615: 19–20 He met Boniface, the newly appointed Bishop of
+2616: Mayence, and was visited by an angel who told him to
+2617: do penance for his sins: he retired as a hermit into the
+2618: Ardennes Forest. Roll 1d20 for the number of years
+2619: he spent as a hermit before he finally died. Y ou gain 1
+2620: point in Love [God].
+2621: a nno  748
+2622: Raoul de Cambrai : [←747] T o atone for their family’s
+2623: sins, Bernier and Beatrix leave on a pilgrimage. On their way,
+2624: their son Julien is born. During a Moorish raid, Bernier and
+2625: his son are captured and taken to Spain. Beatrix returns home
+2626: and, in Bernier’s absence, she is finally given to Sir Archibald of
+2627: Ponthieu. Bernier and his son escape their Moorish prison and
+2628: return to Frankland. [→749]
+2629: Frankland: Grifo flees to Bavaria. Duke Odilo is slain in
+2630: battle and Grifo is captured by King Pepin, who reinstates him
+2631: as Duke of the Breton March.
+2632: Bavaria: The child T assilo III becomes Duke of Bavaria,
+2633: under the regency of Pepin’s sister Chiltrude.
+2634: a nno  749
+2635: Enfances Roland : Prince Charlemagne commits incest
+2636: with his cousin Bertha. She then falls in love with Milo, the roy-
+2637: al seneschal. When Princess Bertha finds out she is pregnant, she
+2638: and Sir Milo leave court. They wander around the country and
+2639: live as poor folk in the forest. [→750]
+2640: Raoul de Cambrai: [←748] Bernier takes back his wife,
+2641: with whom he has a second son, Henry. [→750]
+2642: Orson de Beauvais: [←740] When he learns about Hugo’s
+2643: plan to get rid of him, young Milo leaves home during the night
+2644: with his mentor Guynemant. Hugo pursues and attacks his step-
+2645: son, who wounds the count and flees. Back home, the furious
+2646: Hugo accuses his wife of treason and locks her up in a tower.
+2647: Milo and Guynemant arrive in Berri, where they are wel -
+2648: comed by Sir Baldric, who turns out to be Hugo’s relative. The
+2649: honorless Baldric imprisons his guests, but his gentle daugh -
+2650: ter sets them free and cuts the bell cord so that her father can -
+2651: not raise the alarm. Baldric goes after them and is killed by
+2652: Guynemant. [→755]
+2653: Lombardy: Aistulf is crowned as King of the Lombards.
+2654: Frankland, Bavaria, Lombardy: Grifo escapes from his
+2655: prison and flees to Saxony, from where he invades Bavaria. Pepin
+2656: marches to Bavaria, defeats his half-brother and restores Duke
+2657: T assilo to power. Grifo escapes again and flees to Duke W aifer of
+2658: Aquitaine, and later to King Aistulf of Lombardy.
+2659: Father  e vents  t able  (749)
+2660: 1d20 Result Event
+2661: 1 He died of a random cause.
+2662: 2–10 He served garrison duty.
+2663: 11–18 He participated in a battle in Bavaria. Roll at –1 on
+2664: T able 2–2: Combat Survival.
+2665: 19–20 He was in charge of Grifo, prisoner of Pepin the
+2666: Short, when he escaped. Y ou lose 1 point of Honor.
+2667: a nno  750
+2668: Raoul de Cambrai : [←749] Bernier wishes to complete
+2669: his pilgrimage, and this time he is accompanied by his father-
+2670: in-law, Guerri the Red. When they pass the burnt monastery of
+2671: Origny, Guerri slays Bernier in cold blood. The feud is revived
+2672: and Bernier’s sons lay siege to Arras. Guerri flees and is never
+2673: heard of again. [→766]
+2674: Enfances Roland: [←749] In exile, Princess Bertha gives
+2675: birth to a healthy son, who is baptized Roland by a holy hermit.
+2676: [→762]
+2677: Girart de Vienne: [←747] Oliver and Aude are born. [→769]
+2678: Chanson des Saisnes: A long time ago, Heloise, daughter of
+2679: Floovent and grand-daughter of Clovis, was married to the Saxon
+2680: chief, Brunamont. The Saxons use this union as a pretext to lay
+2681: claims on the Frankish throne. They declare war on the Franks,
+2682: but Pepin the Mayor kills the Saxon warchief, Justamont, in bat-
+2683: tle. This sets off a long-lasting feud between the Saxons and the
+2684: Franks (in Charlemagne’s time the Saxon leader is Justamont’s
+2685: son, Widukind). [→781]
+2686: Septimania, Provence: The Saracens leave all but some cit-
+2687: ies in Septimania, but remain the overlords of Provence.
+2688: Rome: Pepin sends Burchard, the Bishop of W ürzburg, and
+2689: Fulrad, his chaplain, on a mission to the Pope in Rome.
+2690: Father  e vents  t able  (750)
+2691: 1d20 Result Event
+2692: 1 He died of a random cause.
+2693: 2–10 He served garrison duty.
+2694: 11–20 He participated in a battle against the Saxons. Roll
+2695: on T able 2–2: Combat Survival. If father survives, he
+2696: gains 1d6 Hate [Saxons].
+2697: a nno  751
+2698: Frankland: Childeric III, the last Merovingian king, is de -
+2699: posed and sent to a monastery. Pepin and his wife Bertrada are
+2700: anointed king and queen by Archbishop Boniface of Metz, indi-
+2701: cating that the future kings of the Franks must be chosen from
+2702: their descendants. The sons of their union automatically become
+2703: ==================== BOOK PAGE 58 ====================
+2704: 57
+2705: the sacred kings of the Franks, but whether this includes Prince
+2706: Charlemagne is a matter of debate, since Pepin and Bertrada
+2707: were not officially married when the boy was born. Some nobles
+2708: are skeptical about Charlemagne’s royal birth, doubting if Pepin
+2709: is indeed his father.
+2710: Mainet: T o usurp the throne and to avenge their mother
+2711: Aliste, the bastard princes Heudri and Rainfroi (with the help
+2712: of some discontent nobles) plan to poison their half-brother,
+2713: Charlemagne. Luckily, Charlemagne’s friend, David, discov -
+2714: ers the wicked plot. Charlemagne and David decide to leave
+2715: Frankland, where they are no longer safe. Before leaving, David
+2716: takes the sword Joyeuse from the royal treasury and hands it
+2717: to Charlemagne. The next day, the two evil princes imprison
+2718: Milo of Aiglent (Aliste’s eldest son, their and Charlemagne’s
+2719: half-brother), who aided Charlemagne to escape.
+2720: Charlemagne and his friends meet an Asturian guide
+2721: named Macabrin who leads them to T oledo, where they are en-
+2722: gaged as mercenaries by Emir Galafre. T o avoid being recognized
+2723: as Pepin’s son, Charlemagne takes on the name of Mainet, for
+2724: he remembers how his father recently killed Galafre’s relative,
+2725: Justamont. David calls himself Esmeray. [→752]
+2726: Frankland, Aquitaine: Grifo rebels and, after a few skir -
+2727: mishes, flees to the court of Duke W aifer of Aquitaine.
+2728: Lombardy: The Lombards take the city of Ravenna from
+2729: the Byzantines.
+2730: f atHer  e veNts  t able  (751)
+2731: 1d20 Result Event
+2732: 1 He died of a random cause.
+2733: 2–10 He served garrison duty.
+2734: 11–15 He fought in a skirmish against the rebellious Prince
+2735: Grifo. Roll on T able 2–2: Combat Survival.
+2736: 16–20 As a palace guard, he personally assisted at Pepin and
+2737: Bertrada’s anointment. (50 Glory)
+2738: a NNo  752
+2739: Gaufrey: [←740] Queen Passerose dies and King Godfrid
+2740: of Denmark marries a haughty Danish princess. [→757]
+2741: Daurel and Beton: [←736] Beton has turned into the fin -
+2742: est of knights. The Sultan suspects him not to be Daurel’s child.
+2743: Daurel finally confesses Beton’s true lineage.
+2744: One day the Sultan is challenged by a rival Saracen. Beton
+2745: acts as his champion and defeats a giant, thereby gaining the
+2746: hand of Princess Erimene. [→753]
+2747: Mainet : [←751] The emir of Cordoba is at war with the
+2748: rebellious wali of Pamplona, Caimant. Morant of T urfier
+2749: leads Emir Galafre’s Syrian and Frankish mercenary troops.
+2750: Despite his inferior equipment, squire Mainet distinguish -
+2751: es himself and kills Caimant in battle. Back in T oledo, he
+2752: is praised by all for his valor. Galafre’s daughter, princess
+2753: Galienna, falls in love with Mainet, but he politely refuses
+2754: her advances. The emir knights Mainet and equips him, but
+2755: the Frank refuses the sword he’s given, because he already has
+2756: a better one ( Joyeuse).
+2757: Galienna refuses to marry Prince Braimant, to whom her
+2758: father had promised her. When Galafre breaks the engagement
+2759: in favor of Mainet, Braimant is furious and declares war on the
+2760: emir. Another battle is fought. Again Mainet kills Galafre’s ene-
+2761: my and takes an enormous booty. The Syrian mercenaries are so
+2762: impressed with Mainet’s valor and skill, that they demand to be
+2763: baptized by chaplain Solin. These new converts all join Mainet’s
+2764: mercenary company.
+2765: Galafre’s son, Marsile, is jealous and fears that Mainet will
+2766: take his place as the future emir of Spain. He plans to ambush
+2767: the Frank on his way back to Galafre’s court. Meanwhile, in the
+2768: marvelous tent looted from Braimant, Galienna finds a magic
+2769: mirror in which she sees Mainet’s life: how he was born in the
+2770: forest as Charlemagne, and how his half-brothers tried to poison
+2771: him. She also sees the ambush her jealous brother Marsile is pre-
+2772: paring. She warns the Franks, who ride out to help Mainet. They
+2773: arrive just in time to defeat Marsile. Since it has now become
+2774: impossible for them to return to T oledo, they decide to go back
+2775: home. [→753]
+2776: Septimania: The Saracens raid Septimania.
+2777: Frankland: Birth of Carloman II, brother of Charlemagne.
+2778: a NNo  753
+2779: Mainet: [←752] On their way back to Frankland,
+2780: Charlemagne and his companions hear that the Babylonian
+2781: Emir, Corsuble, who invaded Italy, now lays siege to the Pope in
+2782: Rome. The Frankish war-band successfully attacks the besieging
+2783: force, frees Rome and all Christian prisoners. Covered in glory,
+2784: Charlemagne returns to his father’s court, where he reveals the
+2785: plot of his evil half-brothers who forced him into exile. Heudri
+2786: and Rainfroi are hanged.n
+2787: Daurel and Beton : [←752] Daurel and Beton leave for
+2788: Frankland and enter Guy’s castle disguised as minstrels. Beton
+2789: sings the song of his own life, and when Guy realizes who is sing-
+2790: ing in front of him, they fight and Beton cuts off Guy’s right
+2791: arm. The fisherman who betrayed Beton as a baby is skinned
+2792: alive. Guy is executed. Erimene comes to Hantone, where she
+2793: is baptized and married to Beton. The loyal Daurel receives a
+2794: great fief.n
+2795: Maugis: [←746] At the faerie court of his sister Oriande,
+2796: Baldric teaches young Maugis the arts of magic (astrology, herb-
+2797: alism, and necromancy), and after a few years he even surpasses
+2798: his master. [→765, Quatre fils Aymon]
+2799: Saxony: King Pepin makes war on the Saxons. Archbishop
+2800: Hildegaire is killed at the battle of Mount Viburg.
+2801: Lombardy: Pepin’s men capture Prince Grifo in Lombardy
+2802: while fleeing to Byzantium. He later dies in prison.
+2803: Frankland: Prince Charlemagne becomes the Duke of the
+2804: Breton March.
+2805: Phase 0: King Pepin
+2806: ==================== BOOK PAGE 59 ====================
+2807: Chapter Two: The Past
+2808: 58
+2809: f atHer  e veNts  t able  (753)
+2810: 1d20 Result Event
+2811: 1 He died of a random cause.
+2812: 2–10 He served garrison duty.
+2813: 11–15 He fought at the battle of Mount Viburg. Roll at –1
+2814: on T able 2–2: Combat Survival . If he survives, he
+2815: gains 1d6 Hate [Saxons].
+2816: 16–20 He was part of the expedition that captured Grifo.
+2817: (50 Glory)
+2818: a NNo  754
+2819: Frankland, Lombardy: With the help of King Aistulf of
+2820: the Lombards, Carloman of Burgundy rebels against his broth -
+2821: er, Pepin, but is captured and imprisoned in the monastery of
+2822: Vienne. While raiding in Lombardy, King Pepin receives an ur-
+2823: gent demand for aid from the Pope.
+2824: Aymeri de Narbonne: [←709, Enfances Garin de Monglane]
+2825: After a long and bloody siege, Count Aymeri liberates the city of
+2826: Narbonne from Saracen oppression.
+2827: Aymeri sends a marriage proposal to princess Ermengard of
+2828: Pavia. His envoys intimidate her father with their excessive gen-
+2829: erosity. When Aymeri himself travels to Lombardy, the Saracens
+2830: take advantage of his absence to lay siege to Narbonne again, but
+2831: with Gerard of Roussillon’s help, Aymeri returns and once more
+2832: defeats the Saracens, and then marries Ermengard. [→775, Les
+2833: Narbonnais]
+2834: Lion de Bourges : [←738] Rome is besieged by Saracens,
+2835: who kill the abbot of Herpin’s monastery. Herpin takes up arms
+2836: and defeats the invaders. He is betrayed, however, by the jealous
+2837: Count Gaudiffer of Rome, who sells him to Moorish slave trad-
+2838: ers from T oledo.
+2839: Meanwhile, Baldwin generously raises Lion as a knight and
+2840: allows him to participate in a tournament at Monlusant in Sicily.
+2841: When Lion hears Baldwin is not his real father, he sets out to
+2842: find his real parents. Shortly after, he is ambushed by brigands
+2843: who kill a traveling companion. Lion gives the dead knight a
+2844: proper Christian burial.
+2845: On the road, Lion meets Ganor, his father’s former squire,
+2846: and decides to go to the Sicilian tournament. He teams up with
+2847: Raymond of V auvenice and wins the hand of Princess Florentine,
+2848: thanks to the assistance of a powerful and mysterious White
+2849: Knight (who is in fact the ghost of the dead knight he recently
+2850: buried). [→755]
+2851: Frankland: The Pope, grateful for King Pepin’s support,
+2852: travels to Paris where he once more anoints Pepin, this time
+2853: along with his two reconciled sons, Charlemagne and Carloman.
+2854: The Pope gives King Pepin the sacred standard Oriflamme and
+2855: declares the royal Frank, “Vir nobilis, filius regnatoris, patricius
+2856: Romanorum” (Noble Man, Son of kings, Patrician of Rome).
+2857: Frisia: Saint Boniface is slaughtered while trying to convert
+2858: the Frisians.
+2859: f atHer  e veNts  t able  (754)
+2860: 1d20 Result Event
+2861: 1 He died of a random cause.
+2862: 2–8 He served garrison duty.
+2863: 9–14 He fought against the allied forces of Carloman and
+2864: King Aistulf. Roll at –1 on T able 2–2: Combat Survival.
+2865: 15–18 He participated in the raids in Lombardy.
+2866: 19–20 He fought at the victorious siege of Narbonne. Roll
+2867: on T able 2–2: Combat Survival . If he survives, he
+2868: gains 1d3 Hate [Moors].
+2869: a NNo  755
+2870: Lion de Bourges : [←754] Florentine is abducted by Duke
+2871: Garnier of Calabria. Lion, Raymond of V auvenisse and Duke
+2872: Henry of Sicily pursue the evil duke and lay siege to his castle
+2873: of Monterose. When Lion learns that Florentine is held captive
+2874: in the city of Reggio, he goes in disguise to the duke’s palace.
+2875: He is recognized by the jealous lady Clarissa, who seduces him.
+2876: Later she gives birth to a bastard son Gerard (756) and marries
+2877: a knight named W alter of Monrochier. Florentine escapes her
+2878: prison without Lion’s help and arrives at a nunnery. [→757]
+2879: Orson de Beauvais: [←749] Guynemant and Milo travel to
+2880: Compostela and the city of Bile, where they are accepted at the
+2881: court of the wali, Basile. Milo kills Basile’s Saracen rival, Isoré
+2882: the Black, in battle. Basile’s daughter, Oriente, falls in love with
+2883: the young knight. Milo agrees to marry her, but first he wants
+2884: to avenge his father. T o his surprise, he finds his father in Isoré’s
+2885: prison. T o thank God, they go to Jerusalem together.
+2886: Meanwhile, in Frankland, Sir Hugo condemns his wife
+2887: to the stake, but a few loyal vassals, led by Count Doon of
+2888: Clermont, liberate Aceline.
+2889: Hugo appeals to Guy of V ermandois who agrees to help
+2890: him, but Guy is captured and taken into the city of Clermont,
+2891: besieged by Hugo and King Pepin. His ransom paid, Guy re -
+2892: turns to the besiegers and expresses his doubts about Hugo’s
+2893: story. [→759]
+2894: a NNo  756
+2895: Aquilon de Bavière : T o thwart a prophecy that his son,
+2896: Aquilon, will harm Christianity, Duke Naymo sends the six-
+2897: year-old boy to be raised at the court of the King of Jerusalem.
+2898: A storm diverts the ship, and the Emir of Cordoba finds the boy
+2899: and raises him under the name of Anibal. [→771]
+2900: Lombardy: The treacherous King Aistulf of the Lombards
+2901: makes war on the Pope again, and lays siege to Rome. Pepin launch-
+2902: es a second campaign against the Lombards, whom he defeats at the
+2903: siege of Pavia. King Aistulf dies after falling from his horse.
+2904: King Pepin presents the lands he won to the Pope (the
+2905: “Donation of Pepin”), these lands become the Papal States.
+2906: Emperor Constantine V of Byzantium sends rich gifts to en -
+2907: dorse the Byzantine claim to these Papal States, which King
+2908: Pepin refuses.
+2909: ==================== BOOK PAGE 60 ====================
+2910: 59
+2911: f atHer  e veNts  t able  (756)
+2912: 1d20 Result Event
+2913: 1 He died of a random cause.
+2914: 2–10 He served garrison duty.
+2915: 11–15 He fought at the siege of Pavia. Roll at –1 on Ta b l e
+2916: 2–2: Combat Survival.
+2917: 16–20 He served garrison duty in Rome. (25 Glory)
+2918: a NNo  757
+2919: Gaufrey, Enfances Ogier: [←752] King Pepin wages a glo -
+2920: rious war on the Danes. King Godfrid is obliged to hand over
+2921: his son, Ogier, as a hostage to the Franks. When Pepin the Short
+2922: demands Godfrid do homage for Denmark and claims a trib -
+2923: ute, the Danish queen convinces her husband to refuse. The
+2924: Frankish knights who acted as royal messengers are tonsured and
+2925: sent back to the Frankish court.
+2926: Prince Ogier is imprisoned in a castle of Count Huon of St.
+2927: Omer, where he is treated well. He even marries the castle war -
+2928: den’s daughter, Bellisinda, who gives him twins named Baldwin
+2929: and Dudo. [→767]
+2930: Lion de Bourges: [←755] At the siege of Monterose, Duke
+2931: Henry of Sicily is taken prisoner. Sir Lion launches an attack
+2932: and, with the help of the White Knight, liberates the Sicilian
+2933: king and kills the brother of the evil Duke Garnier. He finds
+2934: Florentine at the nunnery and takes her to Sicily, where Henry
+2935: allows their marriage. [→759]
+2936: Bavaria: T asillo III, the Duke of Bavaria, pays homage to
+2937: King Pepin.
+2938: Lombardy: Duke Desiderius of T uscany becomes King of
+2939: the Lombards.
+2940: Frankland: Tithes to the Church become obligatory.
+2941: f atHer  e veNts  t able  (757)
+2942: 1d20 Result Event
+2943: 1 He died of a random cause.
+2944: 2–10 He served garrison duty.
+2945: 11–18 He fought in the victorious battle against the Danes.
+2946: Roll on T able 2–2: Combat Survival. If he survives, he
+2947: gains 1d3 Hate [Danes].
+2948: 19–20 He was one of the tonsured messengers. He gained
+2949: 1d6 Hate [Danes]. Y ou lose 1 point of Honor.
+2950: a NNo  758
+2951: Saxony: Pepin launches a retaliatory raid into Saxony. The
+2952: Saxons suffer a severe defeat, and they agree to pay the Franks a
+2953: yearly tribute of 300 horses. The defeated population is either
+2954: slaughtered or baptized.
+2955: f atHer  e veNts  t able  (758)
+2956: 1d20 Result Event
+2957: 1 He died of a random cause.
+2958: 2–10 He served garrison duty.
+2959: 11–16 He participated in a raid into Saxony. Roll on Ta b l e
+2960: 2–2: Combat Survival . If he survives, he gains 1d3
+2961: Hate [Saxons].
+2962: 17–20 He fought a victorious battle in Saxony and put many
+2963: renegade Saxons to the sword. Roll at –1 on Ta b l e
+2964: 2–2: Combat Survival . If he survives, he gains 1d6
+2965: Hate [Saxons].
+2966: a NNo  759
+2967: Septimania: King Pepin chases the last Saracens from
+2968: Septimania with the help of the local Visigothic nobles and
+2969: Duke T assilo of Bavaria.
+2970: Orson de Beauvais : [←755] Orson and Milo return from
+2971: the Holy Land and present themselves at King Pepin’s court as
+2972: pilgrims. Hugo, who doesn’t recognize them, offers them silver
+2973: if they tell King Pepin the story of Orson’s death. Then Orson
+2974: reveals his identity and tells his king the truth. Hugo has to fight
+2975: Milo in a judicial duel.
+2976: On the morning of the duel, Hugo is unable to kiss the
+2977: church relics. He orders his knights to prepare an ambush in case
+2978: the trial should turn out to his disadvantage. Guynemant sus -
+2979: pects treason and prepares his own men for battle.
+2980: In the duel, Hugo feigns surrender, but then tries to stab his
+2981: opponent. In the end, Milo knocks his opponent down. Hugo
+2982: confesses his crimes and is hanged. King Pepin offers one of his
+2983: nieces to Milo, who refuses. Instead, he returns to the city of
+2984: Bile, where he marries the converted Oriente.n
+2985: Lion de Bourges : [←757] Florentine bears Lion twins
+2986: named Herpin and William. [→761]
+2987: Les Lorrains: [←739] Old Count Bego is hunting a for -
+2988: midable boar. He follows the animal into a forest belonging
+2989: to Fromont of Lens and is killed by huntsmen. The feud is re -
+2990: newed. The Lorrainers kill Fromont’s last brother, William of
+2991: Blancafort. King Pepin intervenes and imposes a peace treaty.
+2992: Garin is sent on a pilgrimage, but on his way he is ambushed
+2993: and killed in a chapel. Garin’s son, Gerbert, and Bego’s son,
+2994: Ernold, retaliate by killing Bishop Lancelin, one of their father’s
+2995: murderers. Supported by the king, the Lorrainers kill many
+2996: Bordelais, including old Fromont. Gerbert even has a drinking
+2997: cup made out of the dead count’s skull. [→760]
+2998: a NNo  760
+2999: Doon de la Roche: [←745] When Landri is knighted, Sir Asson
+3000: suggests Doon grant La Roche as a fief to his son, much to the an-
+3001: ger of T omile and Audegour, who vehemently protest. They start a
+3002: Phase 0: King Pepin
+3003: ==================== BOOK PAGE 61 ====================
+3004: Chapter Two: The Past
+3005: 60
+3006: fight in which young Landri wounds T omile. In the end both par-
+3007: ties make peace again, but the traitorous family already plans its ven-
+3008: geance on Landri. Their evil schemes are overheard by a nun, who
+3009: informs Lord Doon. T ogether with some loyal knights (Asson, mas-
+3010: ter Guynemant and a few others), Sir Landri travels to Paris. Before
+3011: leaving, he shows his mother a tree, of which a holy hermit has made
+3012: a prophecy: that it would die the same day as Landri. Unfortunately,
+3013: King Pepin refuses to admit Sir Landri to his court. [→761]
+3014: Les Lorrains : [←759] Like old Hervis, Fromont’s son
+3015: Fromondin retires to a hermitage to atone for his family’s sins.
+3016: He receives some guests from Lorraine, whom he attacks, but
+3017: is then slain himself. King Pepin and the Lorrainers now start a
+3018: full-scale war against Aquitaine and Gascony.n
+3019: Aquitaine: Prince Charlemagne accompanies his father
+3020: Pepin on a campaign against the Aquitainians, which lasts un -
+3021: til Pepin’s death in 768. Pepin uses his siege engines to capture
+3022: towns in Auvergne, Berry, and Limousin. The king has the sup-
+3023: port of Duke Milo of Septimania, Count Ansemond of Nîmes,
+3024: and Count Aymeri of Narbonne.
+3025: f atHer  e veNts  t able  (760)
+3026: 1d20 Result Event
+3027: 1 He died of a random cause.
+3028: 2–5 He served garrison duty.
+3029: 6–10 He fought at a successful siege in Limousin. Roll on
+3030: T able 2–2: Combat Survival.
+3031: 11–15 He participated in the raids against Aquitaine. Roll
+3032: on T able 2–2: Combat Survival.
+3033: 16–20 He accompanied Landri of La Roche to Paris. Y ou gain
+3034: one point of Honor. Do not roll on the Father Events
+3035: Ta b l e for the years 761 and 762: In 761, your father ac-
+3036: companies Landri of La Roche to Byzantium and is sent
+3037: back to Frankland as one of Princess Salmadrine’s mes-
+3038: sengers. In 762, he returns to Frankland. (200 Glory)
+3039: a NNo  761
+3040: Doon de la Roche : [←760] Y oung Sir Landri decides to go
+3041: to Byzantium, where Emperor Alexander enlists him and his
+3042: men. The Franks fight valiantly in the emperor’s service against
+3043: the Saracens and Persians. Princess Salmadrine falls madly in
+3044: love with Sir Landri. Her imperial father agrees to marry her
+3045: to the Frank, but only if Landri is proven to be of royal blood.
+3046: Therefore, he sends two trustworthy knights to Frankland.
+3047: Princess Salmadrine discretely threatens to castrate them should
+3048: they return with unpleasant news! [→762]
+3049: Ami and Amile: [←746] At the age of 15, Ami and Amile
+3050: leave their houses and independently set out to find each other.
+3051: After many adventures, they finally meet and swear one another
+3052: eternal loyalty. They become companions and serve King Pepin
+3053: at court. [→765]
+3054: Lion de Bourges: [←759] The Pope reconciles Duke Henry
+3055: and Lion with Garnier of Calabria. Gaudiffer of Rome pretends
+3056: to show Lion his father’s tomb, but pays some brigands to slay
+3057: his rival’s son. However, Lion is warned in a prophetic dream,
+3058: challenges Gaudiffer and kills him in a trial by combat. [→762]
+3059: Brittany: The Franks capture the city of V annes.
+3060: Aquitaine: King Pepin captures the towns of Bourges,
+3061: Clermont and Limoges.
+3062: f atHer  e veNts  t able  (761)
+3063: 1d20 Result Event
+3064: 1 He died of a random cause.
+3065: 2–10 He served garrison duty.
+3066: 11–17 He fought in the victorious siege of Bourges. Roll on
+3067: T able 2–2: Combat Survival.
+3068: 18–20 He participated in a raid in Brittany. Roll on Ta b l e
+3069: 2–2: Combat Survival.
+3070: a NNo  762
+3071: Enfances Roland: [←750] Count Milo works as a wood -
+3072: man and lives with Princess Bertha in a cave. One day, as the
+3073: royal court passes near, Roland steals food from the king’s table.
+3074: Duke Naymo is intrigued by the youth’s boldness and follows
+3075: him to the cave in the forest where his parents live. He recogniz-
+3076: es the exiled couple and reports back to the king. Pepin forgives
+3077: Milo and Bertha, who are finally allowed to marry. [→768]
+3078: Doon de la Roche : [←761] The Byzantine envoys arrive
+3079: at Cologne, where they meet Gonteaume and W alter, Doon’s
+3080: cousins, who assure them of Landri’s lineage. The treacherous
+3081: Sir Hardrad gets wind of the Byzantine mission. He informs
+3082: Malingre, who unsuccessfully tries to prevent the messen -
+3083: gers from leaving Frankland. Before the messengers return to
+3084: Constantinople, Lady Olive presents them her wedding ring,
+3085: which she would like them to give to her son. [→763]
+3086: Byzantium: The Byzantine Emperor welcomes Frankish
+3087: royal envoys and papal emissaries in Constantinople. Among
+3088: other things, they discuss the case of Landri.
+3089: Lion de Bourges: [←761] Lion leaves his new home in search
+3090: of his lost parents. Ignoring the recent peace treaty, Garnier of
+3091: Calabria attacks Sicily. Duke Henry of Sicily is killed in battle and
+3092: one of Lion’s sons is abducted. The baby is left under an olive tree,
+3093: where he is found by a herdsman who baptizes the child Oliver.
+3094: Lion travels around the Holy Land but can’t find his father.
+3095: On the island of Rhodes he defeats a giant. With the help of the
+3096: White Knight, he is victorious against the Saracens. [→764]
+3097: Aquitaine: King Pepin builds a medium fortress at
+3098: Argenton to secure his Aquitainian conquests.
+3099: f atHer  e veNts  t able  (762)
+3100: 1d20 Result Event
+3101: 1 He died of a random cause.
+3102: 2–10 He served garrison duty.
+3103: 11–15 He participated in a raid on Aquitaine. Roll on Ta b l e
+3104: 2–2: Combat Survival.
+3105: 16–20 He witnessed young Roland’s boldness and attended
+3106: Milo and Bertha’s wedding at court. (50 Glory)
+3107: ==================== BOOK PAGE 62 ====================
+3108: 61
+3109: a NNo  763
+3110: Doon de la Roche: [←762] Emperor Alexander consents to
+3111: give his daughter’s hand to Landri.
+3112: Meanwhile, T omile and Malingre chase Olive from
+3113: Cologne, and the lady flees to her uncle Aubery, the missionary
+3114: Bishop-elect of Avarland. Then the traitors force Doon out of
+3115: Cologne.
+3116: Count Doon travels to Paris to inform Pepin, but the king
+3117: refuses to help his vassal, and even insults him for his miscon -
+3118: duct towards Princess Olive.
+3119: Doon retires to La Roche castle, where he is besieged by
+3120: T omile and Malingre. King Pepin arrives with his troops and
+3121: routs the besieging army. He then takes La Roche and banishes
+3122: Doon and his nephew Geoffrey. [→764]
+3123: Frankland: The Bavarians, led by Duke T asillo III, leave
+3124: Pepin’s army without permission. The king is furious.
+3125: f atHer  e veNts  t able  (763 )
+3126: 1d20 Result Event
+3127: 1 He died of a random cause.
+3128: 2–5 He served garrison duty.
+3129: 6–20 He defended the castle of La Roche against the two
+3130: successive besieging armies. Roll at –1 on T able 2–2:
+3131: Combat Survival.
+3132: a NNo  764
+3133: Doon de la Roche : [←763] Doon and Geoffrey arrive in
+3134: Avarland, where they enter the service of Khagan Dorame. In a
+3135: battle between the Byzantines and the Avars, Landri unknowing-
+3136: ly fights his father, who is taken prisoner together with Geoffrey
+3137: and thrown in a dark dungeon. Guynemant advises Landri to re-
+3138: turn to Frankland. Salmadrine is upset, but promises her lover to
+3139: release all the prisoners, as he asks her. When Doon is liberated,
+3140: he makes himself known. After a joyous reunion, Landri returns
+3141: to Frankland with his father.
+3142: Meanwhile, Bishop Aubery leads an army to the Ardennes
+3143: and reconquers La Roche. He captures Audegour, while
+3144: Malingre flees to Mayence and sues for peace. [→765]
+3145: Aye d’ Avignon: [←734, Doon de Nanteuil ] Garnier of
+3146: Nanteuil, who was raised at the royal court, wants to marry Aye
+3147: of Avignon, whose father, Anthony, was killed in a battle with
+3148: the Moors. However, her father had already promised Aye to
+3149: young Berenger, son of Ganelon and Garnier’s page. T o avoid a
+3150: feud, Aye enters a nunnery. [→779]
+3151: Lion de Bourges : [←762] A giant named Orible attacks
+3152: T oledo for the love of Princess Florie. The imprisoned Herpin
+3153: proposes his aid to the wali and, with the miraculous help of
+3154: three saints, he captures Orible in his sleep. The thankful wali
+3155: appoints Herpin as his new steward. The lovely Florie wishes
+3156: to marry him, but when Alice visits her husband, she wisely re -
+3157: nounces. [→766]
+3158: Aquitaine, Septimania: King Pepin captures T oulouse.
+3159: Many Aquitainian towns surrender to the king.
+3160: f atHer  e veNts  t able  (764 )
+3161: 1d20 Result Event
+3162: 1 He died of a random cause.
+3163: 2–10 He served garrison duty.
+3164: 11–15 He fought at Bishop Aubery’s side at the second siege
+3165: of La Roche. Roll on T able 2–2: Combat Survival.
+3166: 16–20 He participated in the raids on Aquitaine. Roll on
+3167: T able 2–2: Combat Survival.
+3168: a NNo  765
+3169: Ami et Amile : [←761] Ami and Amile’s happiness awak -
+3170: ens the jealousy of Sir Hardrad, who conspires against them.
+3171: However, his efforts are vain and to keep the peace with the king
+3172: he is even obliged to give his own niece, Lubias, in marriage to
+3173: Ami. But the union of Ami and Lubias turns out to be a disaster,
+3174: as she does everything to destroy Ami and Amile’s friendship.
+3175: Meanwhile, Princess Bellisant falls deeply in love with
+3176: Amile. She easily seduces him, but when Hardrad finds out
+3177: about their liaison, he betrays them to the king. Amile must
+3178: defend his and Bellisant’s honor in a judicial duel. He is in a
+3179: tricky situation: knowing himself to be guilty he doesn’t wish
+3180: to fight (that would be lying to God), and having no friends
+3181: at court he cannot find guarantors for his cause. In the end,
+3182: the queen herself and two of her children (Bellisant and Bevis)
+3183: offer to be his guarantors. The other problem is solved by let -
+3184: ting Ami fight in his stead. No one notices, since they resemble
+3185: each other like twins.
+3186: Amile goes to Blaye and pretends to be Lubias’ husband. He
+3187: avoids adultery by pretending to be ill. Ami wins his fight in Paris,
+3188: establishing Amile and Bellisant’s innocence. Things get even
+3189: more complicated when the king wants the false Amile to marry
+3190: his daughter Bellisant. An angel warns Ami that he will contract
+3191: leprosy should he marry the princess. But for his friend’s sake, Ami
+3192: accepts the proposal, takes Bellisant to Blaye and changes place
+3193: with Amile again, so that the true Amile may wed Bellisant.
+3194: A short time later, the prophecy comes true: Ami contracts
+3195: leprosy. His young son, Gerard, comes to his aid, but Lubias
+3196: publicly chases her husband from their castle. The disfigured
+3197: Ami decides to seek the help of his godfather, the Pope, and is
+3198: accompanied on his journey by two serfs. On his way, his friend
+3199: Amile recognizes him by his goblet. [→770]
+3200: Quatre fils Aymon : [←753, Maugis] Vivien seduces
+3201: Esclarmonde and is chased from his home. T ogether with the
+3202: pagan princess he flees to the court of Sorgalant’s rival, Antenor.
+3203: Antenor is in love with the faerie queen Oriande, so he lays siege
+3204: to her Castle Rocheflor. In Sorgalant’s fight against Maugis,
+3205: Maugis wins the magic sword, Froberge. [→766]
+3206: Doon de la Roche: [←764] Disguised as pilgrims, Doon and
+3207: Geoffrey travel around the Ardennes forest, where they meet
+3208: Doon’s vassal, Bernard, who informs them of the situation in La
+3209: Roche. They go to the castle to meet Olive, pretending at first
+3210: to be Malingre’s knights. Only when Olive shows she is still loyal
+3211: to Doon do they reveal their identity. Olive refuses to share her
+3212: husband’s bed as long as T omile is alive.
+3213: Phase 0: King Pepin
+3214: ==================== BOOK PAGE 63 ====================
+3215: Chapter Two: The Past
+3216: 62
+3217: Doon and Geoffrey meet Landri and continue their road
+3218: to Mayence (held by Malingre), laying siege to the city. During
+3219: a skirmish, Landri kills Helie and takes his brother Hardrad
+3220: prisoner. Doon hangs the traitor. Malingre is captured during a
+3221: sortie. Doon lets the population leave the city in safety. Finally,
+3222: T omile surrenders. Olive personally hangs him. Audegour is
+3223: burnt at the stake, and her son Malingre is mutilated and sent
+3224: to a monastery.
+3225: Back at Cologne, Doon weds Olive a second time. Landri
+3226: accuses King Pepin of having betrayed his own sister, so the king
+3227: angrily leaves the ceremony.
+3228: Landri kills the treacherous Sir Grifo at the siege of
+3229: Hautefeuille. He then receives a message from Byzantium, re -
+3230: minding him of his promise to marry Princess Salmadrine. Just
+3231: as he is about to leave, another messenger arrives telling Landri
+3232: that King Pepin has been taken captive by Brohimax, a Saxon
+3233: king. Landri pursues the Saxons, kills Brohimax and frees Pepin,
+3234: who reconciles with his nephew. King Pepin then accompanies
+3235: Landri to Constantinople for the marriage with Salmadrine.n
+3236: f atHer  e veNts  t able  (765 )
+3237: 1d20 Result Event
+3238: 1 He died of a random cause.
+3239: 2–10 He served garrison duty.
+3240: 11–15 He fought at the siege of Hautefeuille. Roll on Ta b l e
+3241: 2–2: Combat Survival.
+3242: 16–20 He participated in the battle against the Saxon war -
+3243: lord Brohimax. Roll at –1 on T able 2–2: Combat
+3244: Survival. If he survives, he gains 1d6 Hate [Saxons].
+3245: a NNo  766
+3246: Raoul de Cambrai : [←750] Julien becomes Lord of Saint
+3247: Giles, and his brother Henry inherits Ribemont. [→767]
+3248: Lion de Bourges: [←764] Lion returns from the Holy Land
+3249: and travels to Spain in search of his parents. [→769]
+3250: Quatre fils Aymon: [←765] When Maugis accompanies his
+3251: master, Baldric, to Palermo, he is recognized by a Saracen, im -
+3252: prisoned, and then rescued by Baldric.
+3253: Back in T oledo, Maugis participates in the war with the
+3254: Caliph of Persia, who is killed by Prince Baligant. Maugis him -
+3255: self slays a Saracen giant. Lady Y sane meets Maugis, recogniz -
+3256: es her nephew, and informs him of his dramatic birth and true
+3257: lineage.
+3258: Maugis seduces Marsile’s wife, but their love is discovered.
+3259: He kills Sorgalant of Monbranc and flees.
+3260: On his way to Frankland, Maugis arrives at Montpellier,
+3261: where his relative, Ernold, is being besieged by Prince
+3262: Charlemagne. With Maugis’ help, they capture Ogier, but
+3263: Maugis himself is taken prisoner by Charlemagne. Fortunately,
+3264: Maugis’ cousin, Brendan, comes to his aid and in the end the
+3265: Christians make peace and unite.
+3266: Meanwhile, Vivien besieges Bevis at Aigremont. Maugis
+3267: comes to his father’s help and fights a magic duel with the enchant-
+3268: er Noirin, whom he kills and catapults into the Moorish camp. In
+3269: the battle between the Franks and the Moors, Prince Charlemagne
+3270: converts the pagan Prince Murgalant. Vivien captures his father
+3271: Bevis, but is then defeated by his brother Maugis. An angel reveals
+3272: Vivien’s true identity, so he and his wife Esclarmonde agree to be
+3273: baptized (Esclarmonde becomes Avissa). [→767]
+3274: Frankland, Aquitaine: T welve Aquitainian counts come
+3275: to the Frankish court to pay King Pepin homage.
+3276: Byzantium: Emperor Constantine V sends a return embas-
+3277: sy to Frankland, led by two eunuchs, to discuss the Iconoclast
+3278: Controversy and to inquire for the possibility of a marriage be -
+3279: tween his son Leo and Pepin’s daughter Gisela.
+3280: f atHer  e veNts  t able  (766 )
+3281: 1d20 Result Event
+3282: 1 He died of a random cause.
+3283: 2–10 He served garrison duty.
+3284: 11–15 He fought in the army of Prince Charlemagne at
+3285: the siege of Montpellier. Roll on T able 2–2: Combat
+3286: Survival.
+3287: 16–20 He participated in the siege of Aigremont against
+3288: the pagans led by Vivien. Roll on T able 2–2: Combat
+3289: Survival. If he survived, he was a witness at the bap -
+3290: tism of Vivien and Esclarmonde. (25 Glory)
+3291: a NNo  767
+3292: Raoul de Cambrai : [←766] Birth of Elie, son of Julien of
+3293: Saint-Gilles. [→785, Elie de Saint Giles]
+3294: Quatre fils Aymon : [←766] Vivien goes back to
+3295: Montbranc, where he is attacked by vengeful Saracens. Vivien
+3296: sends a messenger to his relatives. Girart of Roussillon, Aymon
+3297: of Dordon, Doon of Nanteuil and Maugis raise their armies, but
+3298: Charlemagne refuses his aid. This so angers the barons they re -
+3299: nounce their fiefs! Pepin’s cousin Lothair claims their lands and
+3300: attacks them, but Maugis chases him away using a magic spell.
+3301: At Montbranc, Vivien is taken prisoner by the Moors. In the
+3302: subsequent battle of Montbranc he is liberated, but Brandoine,
+3303: Otho and Hernaut of Montpellier are killed. Vivien founds a
+3304: monastery in their memory. Maugis returns to Rocheflor. [→768]
+3305: Enfances Ogier: [←757] See The Adventure of the Humble
+3306: Squires, page 400 [→771, Chevalerie Ogier]
+3307: Y ou take over the narrative.
+3308: If your father is still alive after 767, he dies 1d20 years later.
+3309: Roll on T able 2–3: Miscellaneous Death Causes.
+3310: If your father has any Hate passions over 10, he passes them
+3311: on to you.
+3312: Y ou may add 1/10th your Father’s Glory to your own when
+3313: you are knighted.
+3314: ==================== BOOK PAGE 64 ====================
+3315: [Empty Page or Image Only]
+3316: ==================== BOOK PAGE 65 ====================
+3317: [Empty Page or Image Only]
+3318: ==================== BOOK PAGE 66 ====================
+3319: 65
+3320: Chapter Three: Personality:
+3321: Traits and Passions
+3322: C
+3323: harlemagne’s epics are stories of personality and action
+3324: on a grand scale. Everyone whose name is remembered
+3325: is known for both great deeds and great feelings. No
+3326: great character is a mere two-dimensional cutout whose history
+3327: consists solely of high scores and lists of events. Everyone feels
+3328: strongly about something.
+3329: Personality in P aladin  is depicted through traits and pas -
+3330: sions. They provide guidelines for playing characters who may
+3331: be quite different from the player.
+3332: Why Do We Need
+3333: Personality Values?
+3334: T
+3335: raits and passions are used to quantify character behav -
+3336: ior. They are used to make the player’s roleplaying task
+3337: easier by providing guidelines for how the character acts,
+3338: has acted, and is likely to continue to act. Numerical values are
+3339: assigned to each trait and passion, and rolls are made using the
+3340: values to determine behavior.
+3341: Consistency
+3342: In cases of distinctive behavior, your character may have to
+3343: struggle to maintain his behavior, especially in the face of con -
+3344: flicting desires. The chaste knight is able to maintain his chastity,
+3345: the drunkard remains a drunkard, and the courageous will be
+3346: courageous — sometimes even against his better judgment.
+3347: Even after a long hiatus from play, you’ll be able to remem-
+3348: ber how a given character acts just by glancing at his traits and
+3349: passions.
+3350: Entertainment Value
+3351: The interplay of character personalities provides a great
+3352: deal of the fun in P aladin . With traits and passions, each char-
+3353: acter’s personality is very different. A character may chivalrous
+3354: like Roland, wise like Oliver, or a sinister knight with a treach -
+3355: erous side, like Ganelon. Each character has a well-defined and
+3356: colorful basis for roleplaying and for action within the game.
+3357: T raits and passions are entertaining because they can lead
+3358: to amusing results. In addition, some successful trait or passion
+3359: rolls result in the character becoming inspired, with temporary
+3360: benefits to die rolls. Fumbled passion rolls might even result in
+3361: madness.
+3362: Glory
+3363: Any dramatic pattern of behavior gains Glory. Characters
+3364: with interesting personalities generally gain more Glory than
+3365: those without. However, behavior in accord with society’s ideals
+3366: gains more Glory than idiosyncrasies.
+3367: Authenticity
+3368: P aladin  deals with what is indisputably the greatest of all
+3369: medieval stories—the epic story of Charlemagne and his pala -
+3370: dins. The game takes place in a world of knights and ladies, in an
+3371: age of feudalism and chivalry, where democracy is seditious and
+3372: unequal authoritarianism the norm.
+3373: Players control the actions of characters that may be, quite
+3374: understandably, unlike themselves, yet they are expected to act
+3375: appropriately to their station. Acts such as incidental murder,
+3376: stealing horses, participating in ambushes, or unmerciful behav-
+3377: ior are not necessarily villainous; for death, slaughter, and misery
+3378: are normal parts of a knight’s life.
+3379: How, then, can you know what is appropriate and correct?
+3380: T raits and passions are the primary indicators that you use to de-
+3381: termine “correctness” in the P aladin  setting. If your character
+3382: gains the “proper” traits and passions, then he is doing just exact-
+3383: ly those things that constitute correct behavior in Carolingian
+3384: society.
+3385: If you wish to run a character who defies Carolingian tra -
+3386: ditions, you can and may, but your character will probably lose
+3387: out in various passion values for acting outside the norms of
+3388: society. The Gamemaster must decide whether a loss is war -
+3389: ranted and how much the loss should be, based on the specific
+3390: circumstances.
+3391: ==================== BOOK PAGE 67 ====================
+3392: Chapter Three: Personality: Traits and Passions
+3393: 66
+3394: Using Traits and Passions
+3395: T
+3396: raits and passions are important to game play, being the
+3397: primary component of a character’s reputation, along
+3398: with standings and Glory — the general indicator of
+3399: success in the game. T raits and passions measure such things as
+3400: Honor or Honesty, while Glory measures raw prestige and pow-
+3401: er and standings determine how others react towards you. The
+3402: two systems are inextricably linked, though, for traits and pas -
+3403: sions may gain you standings and Glory.
+3404: Heroic Traits or Passions
+3405: The threshold value for gaining Glory and reputation from
+3406: a trait or passion is 16. If your knight has a V alorous personality
+3407: trait of 15 he is brave, but not particularly noted for courage.
+3408: Nor is a priest with a T emperate of 14 particularly frugal, or a
+3409: passionate Love of 11 worth great notice. But a knight whose
+3410: V alorous is 16 is considered heroic, and he whose Love [God] is
+3411: 18 is nearly a saint, while a lover with an Amor of 20 is famous
+3412: throughout the realm for the depth of his passion.
+3413: Trait and Passion Rolls
+3414: During play, character behavior is often challenged by
+3415: the Gamemaster. T emptations are paraded forth, moral crises
+3416: heaped up, and critical judgments and actions must be made.
+3417: Since traits and passions define the character’s personality,
+3418: they must be consulted whenever the Gamemaster determines
+3419: that a critical decision is at hand. In crises, individuals act ac -
+3420: cording to character, not deliberate choice. Custom and train -
+3421: ing triumph over intellect. Players may not want their charac -
+3422: ters to do something dictated by a die roll, but free choice is
+3423: not always possible.
+3424: Ordinary Traits and Passions
+3425: T raits and passions with values of 15 or less do not have to
+3426: be rolled against if the player wishes to use his personal will to
+3427: determine an action, although rolling is obviously the most im -
+3428: partial way to determine action.
+3429: Characters who consistently act a certain way will eventual-
+3430: ly have traits or passions valued at 16 or higher, due to the rules
+3431: below, at which time they’ll have to make the required rolls.
+3432: Notable Traits and Passions
+3433: T raits and passions greater than 15 are noted by society and
+3434: gain Glory, and such traits or passions must be tested with a die
+3435: roll when character behavior is challenged in a crisis. Basically, if
+3436: you get Glory for a trait or passion, rolls based on the value must
+3437: be made when required by the Gamemaster.
+3438: This does not mean that trait rolls must be used whenever
+3439: the character makes any decision in the game. Even characters
+3440: with famous characteristics are allowed free choice of behavior
+3441: except when the plot demands otherwise. The Gamemaster
+3442: should request trait rolls only when a trait is tested in an
+3443: important situation. In general, trait rolls simulate situations in
+3444: which a crisis forces the character to act unconsciously.
+3445: Modifiers
+3446: T rait or passion values may be modified based on the situ-
+3447: ation in order to keep the game realistic. Players are responsible
+3448: for reminding the Gamemaster when a situation might call for a
+3449: trait or passion modifier. The Gamemaster determines whether
+3450: such modifiers are valid.
+3451: Changes in Value
+3452: V alues for personality scores rise and fall during the game.
+3453: Experience checks for traits and passions are assigned by the
+3454: Gamemaster in a slightly different fashion from checks for
+3455: skills. Players who are reluctant to roll should not be forced to.
+3456: However, if they consistently have their characters act against
+3457: their established personalities, the Gamemaster should have
+3458: them check the trait or passion they actually exhibited, in order
+3459: to simulate the possibility of a change in the character’s psychol-
+3460: ogy and reputation.
+3461: For example, the player of a knight with a Generous value
+3462: of 13 loots and pillages his foes at every turn and constantly talks
+3463: about the amount of money (or lack thereof ) his character has.
+3464: This attitude and behavior is not in keeping with the Generous
+3465: trait, so the Gamemaster is perfectly within his rights to tell the
+3466: character to check his Selfish trait the next time he expresses the
+3467: desire to loot an enemy.
+3468: Passions are particularly vulnerable to reduction. When a
+3469: character acts against a passion, no check is assigned; instead the
+3470: Gamemaster simply instructs the player to reduce the value of
+3471: the passion by one point immediately. Any failed passion roll
+3472: causes the character to lose a point.
+3473: Acting consistently, according to the role of your charac -
+3474: ter, will prevent compulsory checks and reductions from being
+3475: necessary.
+3476: The traits and passions system should not to be used to turn
+3477: the Player-knights into puppets. Most of the time characters just
+3478: do whatever the player wishes them to do, collecting checks
+3479: along the way. However, if your character has a reputation, it’s
+3480: only fair that he maintains it or loses it. The system ensures that
+3481: this occurs.
+3482: Evil or Undesirable Behavior
+3483: It is not in the spirit of the game for Player-knights to
+3484: become evil knights. However, minor character flaws such as
+3485: Cruelty or Laziness can be very amusing in moderation, and
+3486: give the Gamemaster more opportunities to create interesting
+3487: situations.
+3488: With one or two undesirable traits or inferior passion val -
+3489: ues, characters can have weaknesses other than those revealed
+3490: only in mortal combat, giving the Gamemaster the possibility of
+3491: creating non-lethal challenges for characters. Given the dangers
+3492: involved in combat, this is a useful opportunity.
+3493: ==================== BOOK PAGE 68 ====================
+3494: 67
+3495: Traits
+3496: T
+3497: raits are dualistic personality factors. A trait and its oppo-
+3498: site both exist in every individual. They define a person’s
+3499: feelings and tendencies.
+3500: P aladin  has twelve pairs of personality traits which are im-

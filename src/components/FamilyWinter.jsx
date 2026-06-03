@@ -121,7 +121,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     743: "레겐스부르크(Regensburg) 대결전 및 삼면 평정 원정: 바이에른(Bavaria)을 영구 병합하기 위해 도나우 강변의 레겐스부르크(Regensburg)에서 오딜로(Odilo) 공작 군대를 격파하고, 아키텐의 반란군 및 북방 작센(Saxony) 이교도 국경지대를 불태우는 징벌 원정에 나섰습니다.",
     744: "증조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
 
-    745: "부친 제라르(Gerard) 경의 정식 혼례와 왕실 공인: 증조부 고드프루아 경의 은퇴와 함께 기사 직위를 계승받고, 왕실과 가문의 번영을 다지기 위해 가문 간의 결합을 성취하여 영광의 기틀을 닦으셨습니다.",
+    745: "돈 드 라 로슈(Doon de la Roche)의 결혼 & 아키텐 공국 와이페르 승계: 돈 경이 토밀의 딸 오드구르와 결혼하여 아들 말랭그를 낳았고, 아키텐의 후놀트 공작이 포로로 잡혀 수도원으로 보내지며 아들 와이페르가 공작위에 즉위했습니다. 이와 동시에 부친 제라르(Gerard) 경이 증조부 고드프루아 경으로부터 기사직을 승계하며 혼례를 성취하셨습니다.",
     746: "롤랑 경 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
     747: "롬바르디아 및 로마(Rome) 순례 동행: 세속의 명예를 내려놓고 롬바르디아(Lombardy)를 거쳐 몬테카시노(Monte Cassino) 수도원으로 귀의하려는 카를로만(Carloman) 공을 호위하며 성지 로마에 당도하여 엄숙한 면죄 성사를 받았습니다.",
     748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)]의 속죄 순례 및 그리포 반란: 베르니에(Bernier)와 베아트릭스(Beatrix) 부부가 속죄 순례 도중 무어인의 기습을 받아 포로로 감금되는 시련을 겪었습니다. [역사] 왕국의 반역자 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 탈출하였으며 타실로 3세(Tassilo III)가 바이에른 공작으로 취임했습니다.",
@@ -145,14 +145,23 @@ export default function FamilyWinter({ character, setCharacter }) {
     766: "몽펠리에(Montpellier) 및 에그르몽(Aigremont) 최후 대공성전: 부친 제라르 경의 영광스러운 현역 마지막 해로, 후계자 샤를마뉴 왕자 및 위비앙(Vivien)의 프랑크 성전 연합군에 합류해 몽펠리에와 이교도의 요새 에그르몽 성벽을 격파하여 최후의 기사도 불꽃을 피워냈습니다."
   };
 
+  const cleanAncestorName = (fullName) => {
+    if (!fullName) return '고드프루아';
+    const regex = /([^(]+)/;
+    const match = fullName.match(regex);
+    let koPart = match ? match[1].trim() : fullName;
+    return koPart.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
+  };
+
   const getEventText = (yr) => {
     if (!ANCESTOR_EVENTS[yr]) return "";
-    const ancestorName = character.family.ancestor || '고드프루아';
+    const ancestorFullName = character.family.ancestor || '고드프루아 경';
+    const rawAncestorName = cleanAncestorName(ancestorFullName);
     return ANCESTOR_EVENTS[yr]
       .replace(/조조부/g, '증조부')
       .replace(/할아버님/g, '증조부님')
       .replace(/조부 고드프루아/g, '증조부 고드프루아')
-      .replace(/고드프루아/g, ancestorName);
+      .replace(/고드프루아/g, rawAncestorName);
   };
 
   const isGapYear = (yr, stage) => {
@@ -321,7 +330,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             yearOutcomeText = `사망: ${res.cause}`;
           } else {
             setGrandfatherGlory(prev => prev + res.gloryGained);
-            if (pending.hateEnemy) {
+            if (pending.hateEnemy && pending.hateEnemy !== 'danes') {
               const hVal = rollD3();
               if (pending.hateEnemy === 'saxons') setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
               else if (pending.hateEnemy === 'moors') setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
@@ -338,8 +347,10 @@ export default function FamilyWinter({ character, setCharacter }) {
               logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
               yearOutcomeText = "셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+${res.gloryGained} Glory)";
             } else if (pending.customOutcome === 'danes_hate') {
-              logMsg += "\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노(Hate Danes 1d6)를 품었습니다!";
-              yearOutcomeText = "덴마크 성벽 사수 및 덴마크 증오 획득 (+${res.gloryGained} Glory)";
+              const dHVal = rollD6();
+              setGrandfatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + dHVal }));
+              logMsg += `\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노를 품었습니다! (Hate [Danes] +${dHVal})`;
+              yearOutcomeText = `덴마크 성벽 사수 및 덴마크 증오 +${dHVal} 획득 (+${res.gloryGained} Glory)`;
             }
           }
         } 
@@ -567,7 +578,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     if (interactiveStage === 'gf_running') {
       const runGfCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
+        const rollVal = rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -1054,9 +1065,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg = `🏰 739년: [역사] ${event}\n  └ 후방 수비 의무를 원활하게 수행했습니다.`;
           yearOutcomeText = "후방 지원 완수";
         } else if (d20 <= 10) {
-          setGrandfatherGlory(prev => prev + 50);
-          logMsg = `🏰 739년: [역사] ${event}\n  └ 🛡️ 실패로 끝난 아를 포위전에서 힘겹게 목숨을 건졌습니다. (+50 Glory)`;
-          yearOutcomeText = "아를 패전 극적 퇴각 성공 (+50 Glory)";
+          logMsg = `🏰 739년: [역사] ${event}\n  └ 🛡️ 실패로 끝난 프로방스 아를 포위전에 참전했으나 전투 없이 퇴각했습니다.`;
+          yearOutcomeText = "아를 실패 포위전 무사 퇴각 (생존, 판정 없음)";
         } else {
           setChroniclePendingRoll({
             type: 'gf_combat_survival',
@@ -1221,7 +1231,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     } 
     else if (interactiveStage === 'f_running') {
       const runFCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
+        const rollVal = rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -1283,16 +1293,16 @@ export default function FamilyWinter({ character, setCharacter }) {
         logMsg = `👰 745년: [가문] ${event}\n  └ [주사위 ${d20}] - 부친께서 `;
         if (d20 <= 5) {
           setFatherGlory(prev => prev + 100);
-          logMsg += `현명한 조언을 해주는 양가 가문의 아가씨를 맞아 혼인하셨습니다. (+100 Glory)`;
-          yearOutcomeText = "가문 현인과의 혼사 성취 (+100 Glory)";
+          logMsg += `자신의 첩이자 임신 상태인 어머니(어머니께서 임신 소식을 전함)와 혼인하셨습니다. (+100 Glory)`;
+          yearOutcomeText = "임신 소식을 전한 어머니와 혼사 성취 (+100 Glory)";
         } else if (d20 <= 10) {
           setFatherGlory(prev => prev + 200);
-          logMsg += `가문에 헌신적인 공로를 세워, 아르덴 영주로부터 직접 귀부인의 손을 약속받으셨습니다! (+200 Glory)`;
-          yearOutcomeText = "영주 추천 귀부인과의 혼사 성취 (+200 Glory)";
+          logMsg += `주군에 대한 충성스러운 복무의 보상으로 어머니의 손을 건네받아 혼인하셨습니다. (+200 Glory)`;
+          yearOutcomeText = "충성 복무의 보상으로 어머니와 혼사 성취 (+200 Glory)";
         } else {
           setFatherGlory(prev => prev + 400);
-          logMsg += `적대 가문 영주의 어여쁜 여식을 극적인 기사 결투 끝에 쟁취하여 가문을 일으켰습니다! (+400 Glory)`;
-          yearOutcomeText = "결투 결사 끝 적대 가문 영주 여식과 로맨틱 혼사 (+400 Glory)";
+          logMsg += `라이벌 영주의 딸인 어머니를 납치하여 혼인하셨습니다. (+400 Glory)`;
+          yearOutcomeText = "라이벌 영주의 딸인 어머니를 납치하여 혼사 성취 (+400 Glory)";
         }
       } else if (yr === 746) {
         logMsg = `🏰 746년: [가문] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1753,9 +1763,10 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           setFatherGlory(prev => prev + 200);
           setFSkipYearsUntil(763);
-          logMsg += `✈️ 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, 명예 수치 대폭 상승)`;
-          yearOutcomeText = "비잔티움 제국 외교 대사절 특사 발탁 (761~762 스킵) (+200 Glory)";
+          logMsg += `✈️ 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, Honor +1 획득 — 캐릭터 시트에 직접 기록해주세요)`;
+          yearOutcomeText = "비잔티움 제국 외교 대사절 특사 발탁 (761~762 스킵) (+200 Glory, Honor +1)";
         }
+
       } else if (yr === 761) {
         logMsg = `🏰 761년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
@@ -1995,7 +2006,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       if (nextYr > 744) {
         const deathYr = 744 + rollD20();
         const cause = "평화로운 영면 (Old Age)";
-        const finalMsg = `👴 ${deathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'} 경)께서 평화롭게 침상에서 영면에 드셨습니다.`;
+        const finalMsg = `👴 ${deathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'})께서 평화롭게 침상에서 영면에 드셨습니다.`;
         
         setGfDead(true);
         setGrandfatherDeathYear(deathYr);
@@ -2070,7 +2081,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       ...prev,
       "",
       "📜 [부친의 생애: 연대기 시작 745년]",
-      `🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
+      `🎁 745년: 부친(724년생)께서 성인식을 마치고 증조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
     ]);
   };
 
@@ -2080,7 +2091,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const summaryLogs = [
       "",
       "🎉 [연대기 결과 요약]",
-      `• 조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 700~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
+      `• 증조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
       `• 부친 최종 명예: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
       `• 조상으로부터 플레이어 캐릭터(롤랑 경)에게 계승될 유산:`,
       `  - 계승 명예: +${Math.floor(finalFGlory / 10)} Glory (부친 명예의 1/10)`,
@@ -2295,7 +2306,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           }
         }
       } else if (yr === 726) {
-        const event = "중대한 무훈의 공백기: 기사단이 전열을 정비하는 동안, 할아버님께서는 후방 참호를 강화하고 평화로운 겨울 보초 임무에 전념하셨습니다.";
+        const event = "중대한 무훈의 공백기: 기사단이 전열을 정비하는 동안, 증조부님께서는 후방 참호를 강화하고 평화로운 겨울 보초 임무에 전념하셨습니다.";
         logs.push(`🏰 726년: [역사] ${event}\n  └ 📖 평온한 공백기: 룰북 규칙에 따라 주사위 판정 없이 안전하게 한 해를 보냈습니다.`);
       } else if (yr === 727) {
         const event = "영지의 평온: 제국 국경에 마찰이 일어나지 않은 해로, 봉토의 곡식 수확을 관리하고 가문의 권세를 평화롭게 유지하였습니다.";
@@ -2600,7 +2611,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     if (!gfDead) {
       gfDeathYr = 744 + rollD20();
       gfCause = "평화로운 영면 (Old Age)";
-      logs.push(`👴 ${gfDeathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'} 경)께서 평화롭게 침상에서 영면에 드셨습니다.`);
+      logs.push(`👴 ${gfDeathYr}년: 은퇴한 증조부님(시조 ${character.family.ancestor || '고드프루아'})께서 평화롭게 침상에서 영면에 드셨습니다.`);
     }
 
     setGrandfatherGlory(gfGlory);
@@ -2615,7 +2626,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     logs.push("");
     logs.push("📜 [부친의 생애: 연대기 시작 745년]");
     let fGlory = 2500 + Math.floor(gfGlory / 10);
-    logs.push(`🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${fGlory} Glory로 당당히 기사 서임을 받으셨습니다.`);
+    logs.push(`🎁 745년: 부친(724년생)께서 성인식을 마치고 증조부의 위대한 유산 1/10을 물려받아 ${fGlory} Glory로 당당히 기사 서임을 받으셨습니다.`);
     
     let fHateSaxons = inheritedSaxons;
     let fHateMoors = inheritedMoors;
@@ -2633,17 +2644,17 @@ export default function FamilyWinter({ character, setCharacter }) {
       }
 
       if (yr === 745) {
-        const event = "부친의 영광스러운 결혼: 가문 번영과 동맹의 기틀을 닦는 기사 가문의 결합을 성취하셨습니다.";
+        const event = "돈 드 라 로슈의 결혼 & 아키텐 와이페르 공작 승계 및 부친 기사직 승계";
         const roll = rollD20();
         if (roll <= 5) {
           fGlory += 100;
-          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 부친께서 현명한 조언을 해주는 양가 가문의 아가씨를 맞아 혼인하셨습니다. (+100 Glory)`);
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 부친께서 자신의 첩이자 임신 상태인 어머니(어머니께서 임신 소식을 전함)와 혼인하셨습니다. (+100 Glory)`);
         } else if (roll <= 10) {
           fGlory += 200;
-          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 가문에 헌신적인 공로를 세워, 아르덴 영주로부터 직접 귀부인의 손을 약속받으셨습니다! (+200 Glory)`);
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 주군에 대한 충성스러운 복무의 보상으로 어머니의 손을 건네받아 혼인하셨습니다. (+200 Glory)`);
         } else {
           fGlory += 400;
-          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 적대 가문 영주의 어여쁜 여식을 극적인 기사 결투 끝에 쟁취하여 가문을 일으켰습니다! (+400 Glory)`);
+          logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 라이벌 영주의 딸인 어머니를 납치하여 혼인하셨습니다. (+400 Glory)`);
         }
       } else if (yr === 746) {
         const event = "롤랑 경의 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
@@ -2987,7 +2998,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     logs.push("");
     logs.push("🎉 [연대기 결과 요약]");
-    logs.push(`• 조부 최종 명예: ${gfGlory} Glory (생존기간: 700~${gfDeathYr}, 사인: ${gfCause})`);
+    logs.push(`• 증조부 최종 명예: ${gfGlory} Glory (생존기간: 702~${gfDeathYr}, 사인: ${gfCause})`);
     logs.push(`• 부친 최종 명예: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
     logs.push(`• 조상으로부터 플레이어 캐릭터(롤랑 경)에게 계승될 유산:`);
     logs.push(`  - 계승 명예: +${Math.floor(fGlory / 10)} Glory (부친 명예의 1/10)`);
@@ -3029,7 +3040,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (m.id === 'gerard' || m.relation === '부친') {
             return {
               ...m,
-              lifeYears: `745~${fatherDeathYear}`,
+              lifeYears: `724~${fatherDeathYear}`,
               status: '사망',
               deathCause: fatherDeathCause,
               note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 명예 ${fatherGlory} Glory.`
@@ -3047,7 +3058,24 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const handleFamilyChange = (field, value) => {
-    setCharacter(prev => ({ ...prev, family: { ...prev.family, [field]: value } }));
+    setCharacter(prev => {
+      const updated = {
+        ...prev,
+        family: {
+          ...prev.family,
+          [field]: value
+        }
+      };
+      if (field === 'ancestor' && updated.family && updated.family.members) {
+        updated.family.members = updated.family.members.map(m => {
+          if (m.id === 'godefroy' || m.relation === '증조부') {
+            return { ...m, name: value };
+          }
+          return m;
+        });
+      }
+      return updated;
+    });
   };
 
   const addLog = (msg) => {
@@ -3861,9 +3889,9 @@ export default function FamilyWinter({ character, setCharacter }) {
                   {chronicleMode === 'auto' ? (
                     <div>
                       <p style={{ fontSize: '0.78rem', color: 'var(--color-grey)', margin: '0 0 12px 0', lineHeight: 1.45 }}>
-                        룰북 규칙서 25~30쪽 및 45~49쪽 고증 규칙에 따라, 조부(723년~)와 부친(748년~)의 전공 및 사망 원인을 대진표식으로 시뮬레이션합니다.<br />
-                        • 조부는 2,500 Glory에서 출발해 매년의 모험과 삭센/무어 원정 참전 주사위를 굴립니다.<br />
-                        • 부친은 2,500 Glory + 조부의 최종 영광의 1/10을 상속받아 평생의 업적을 쌓습니다.<br />
+                        룰북 규칙서 25~30쪽 및 45~49쪽 고증 규칙에 따라, 증조부(723년~744년)와 부친(745년~766년)의 전공 및 사망 원인을 대진표식으로 시뮬레이션합니다.<br />
+                        • 증조부는 2,500 Glory에서 출발해 매년의 모험과 삭센/무어 원정 참전 주사위를 굴립니다.<br />
+                        • 부친은 2,500 Glory + 증조부의 최종 영광의 1/10을 상속받아 평생의 업적을 쌓습니다.<br />
                         • 생성된 영광과 증오 속성은 1/10의 비율로 캐릭터 시트에 정식으로 계승 반영됩니다.
                       </p>
 
@@ -3894,7 +3922,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                             <div>
-                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아'} 경)</h5>
+                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아 경 (Sir Godefroy)'})</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                 • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
                                 • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
@@ -3906,7 +3934,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                 • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
-                                • 생몰년도: 745년 ~ {fatherDeathYear}년<br />
+                                • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
                                 • 사인: {fatherDeathCause}<br />
                                 • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
                               </span>
@@ -3947,10 +3975,10 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <div>
                                 <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>진행 인물</span>
                                 <h5 style={{ margin: '2px 0 0 0', fontWeight: 'bold', fontSize: '0.92rem', color: interactiveStage.startsWith('gf') ? 'var(--color-royal-blue)' : 'var(--color-crimson)' }}>
-                                  {interactiveStage.startsWith('gf') ? `👴 증조부 (${character.family.ancestor || '고드프루아'} 경)` : '👨 부친 (Gerard 경)'}
+                                  {interactiveStage.startsWith('gf') ? `👴 증조부 (${character.family.ancestor || '고드프루아 경 (Sir Godefroy)'})` : '👨 부친 (Gerard 경)'}
                                 </h5>
                                 <div style={{ fontSize: '0.76rem', marginTop: '4px', color: 'var(--color-ink)' }}>
-                                  • 생몰: {interactiveStage.startsWith('gf') ? '702 ~ ?' : '745 ~ ?'}<br />
+                                  • 생몰: {interactiveStage.startsWith('gf') ? '702 ~ ?' : '724 ~ ?'}<br />
                                   • 현재 연도: <strong style={{ fontSize: '1.05rem', color: 'var(--color-gold-dark)' }}>{interactiveYear}년</strong>
                                 </div>
                               </div>
@@ -4114,14 +4142,14 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   🎉 위대한 조상들의 연대기가 완전히 완성되었습니다!
                                 </h4>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginTop: '4px', lineHeight: 1.4 }}>
-                                  증조부 {character.family.ancestor || '고드프루아'} 경과 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
+                                  증조부 {character.family.ancestor || '고드프루아 경 (Sir Godefroy)'}와 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
                                   쌓아올린 명예의 1/10과 불굴의 신조, 이교도에 대한 분노가 롤랑 경에게 오롯이 계승됩니다.
                                 </p>
                               </div>
 
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                                 <div>
-                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아'} 경)</h5>
+                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 증조부 ({character.family.ancestor || '고드프루아 경 (Sir Godefroy)'})</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                     • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
                                     • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
@@ -4133,7 +4161,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                     • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
-                                    • 생몰년도: 745년 ~ {fatherDeathYear}년<br />
+                                    • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
                                     • 사인: {fatherDeathCause || '평화로운 임종'}<br />
                                     • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
                                   </span>
