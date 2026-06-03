@@ -3409,14 +3409,50 @@ export default function FamilyWinter({ character, setCharacter }) {
                   <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
                     <div style={{ backgroundColor: 'rgba(201,168,76,0.1)', padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefTables(!showRefTables)}>
                       <strong style={{ fontSize: '0.82rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        📖 룰북 판정 레퍼런스 테이블 보기 (Table 2-2 & 2-3)
+                        📖 룰북 판정 레퍼런스 테이블 보기 (Table 2-1, 2-2, 2-3)
                       </strong>
                       <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefTables ? '접기 ▲' : '펼치기 ▼'}</span>
                     </div>
                     {showRefTables && (
                       <div style={{ padding: '12px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.2)' }}>
-                        {/* Table 2-2: Combat Survival */}
+                        {/* Left Column: Table 2-1 & Table 2-2 */}
                         <div>
+                          {/* Table 2-1: Ordinary Year Events */}
+                          <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                            Table 2-1: Ordinary Year Events (평시 연도 사건)
+                          </h5>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', marginBottom: '14px' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '3px 2px' }}>d20 결과</th>
+                                <th style={{ padding: '3px 2px' }}>연간 사건 (Event)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>1</td>
+                                <td style={{ padding: '3px 2px' }}>무작위 원인으로 사망 (Table 2-3 참조)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>2~17</td>
+                                <td style={{ padding: '3px 2px' }}>성채 경비 임무 수행 (Served garrison duty)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>18~19</td>
+                                <td style={{ padding: '3px 2px' }}>명예롭고 기념비적인 업적 달성 (+50 Glory)</td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>20</td>
+                                <td style={{ padding: '3px 2px' }}>작센/프리지아 습격 시 국경 방어전 (Defended homeland during raid)<br />
+                                  <span style={{ fontSize: '0.68rem', color: 'var(--color-grey)' }}>
+                                    * Combat Survival(Table 2-2) 판정 진행. 생존 시 작센/프리지아 증오 +1d3 획득
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                          {/* Table 2-2: Combat Survival */}
                           <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-crimson)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
                             Table 2-2: Combat Survival (전투 생존 판정)
                           </h5>
