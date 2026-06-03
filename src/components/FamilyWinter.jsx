@@ -2729,17 +2729,21 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       if (updated.family && updated.family.members) {
         updated.family.members = updated.family.members.map(m => {
-          if (m.id === 'godefroy') {
+          if (m.id === 'albert' || m.relation === '조부') {
             return {
               ...m,
               lifeYears: `700~${grandfatherDeathYear}`,
-              note: `아르덴 가문의 위대한 기틀을 세운 초대 시조. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
+              status: '사망',
+              deathCause: grandfatherDeathCause,
+              note: `샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
             };
           }
-          if (m.id === 'gerard') {
+          if (m.id === 'gerard' || m.relation === '부친') {
             return {
               ...m,
               lifeYears: `724~${fatherDeathYear}`,
+              status: '사망',
+              deathCause: fatherDeathCause,
               note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 명예 ${fatherGlory} Glory.`
             };
           }
