@@ -522,11 +522,11 @@ export default function FamilyTree({ character, setCharacter }) {
         {member.lifeYears && (
           <div className="ft-years">
             {member.lifeYears}
-            {isDeceased && member.deathCause && (
-              <span className="ft-death-cause" style={{ fontSize: '0.68rem', color: 'var(--color-crimson)', marginLeft: '3px', fontStyle: 'italic', fontWeight: 600 }}>
-                ({member.deathCause})
-              </span>
-            )}
+          </div>
+        )}
+        {isDeceased && member.deathCause && (
+          <div className="ft-death-cause">
+            ({member.deathCause})
           </div>
         )}
 

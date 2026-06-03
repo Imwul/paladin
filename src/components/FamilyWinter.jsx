@@ -87,7 +87,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     initialChronicleState.grandfatherDeathCause !== undefined ? initialChronicleState.grandfatherDeathCause : '노환'
   );
   const [grandfatherHates, setGrandfatherHates] = useState(
-    initialChronicleState.grandfatherHates !== undefined ? initialChronicleState.grandfatherHates : { saxons: 0, moors: 0 }
+    initialChronicleState.grandfatherHates !== undefined ? initialChronicleState.grandfatherHates : { saxons: 0, moors: 0, danes: 0 }
   );
 
   const [fatherGlory, setFatherGlory] = useState(
@@ -100,7 +100,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     initialChronicleState.fatherDeathCause !== undefined ? initialChronicleState.fatherDeathCause : '작센 원정 중 용맹 전사'
   );
   const [fatherHates, setFatherHates] = useState(
-    initialChronicleState.fatherHates !== undefined ? initialChronicleState.fatherHates : { saxons: 0, moors: 0 }
+    initialChronicleState.fatherHates !== undefined ? initialChronicleState.fatherHates : { saxons: 0, moors: 0, danes: 0 }
   );
   const [ancestorApplied, setAncestorApplied] = useState(
     initialChronicleState.ancestorApplied !== undefined ? initialChronicleState.ancestorApplied : false
@@ -148,6 +148,14 @@ export default function FamilyWinter({ character, setCharacter }) {
     initialChronicleState.chroniclePendingRoll !== undefined ? initialChronicleState.chroniclePendingRoll : null
   );
 
+  // --- 신설: 주사위 1d6/1d3 수동 입력 및 명예 보정치 상태 ---
+  const [chronicleManualD6, setChronicleManualD6] = useState(
+    initialChronicleState.chronicleManualD6 !== undefined ? initialChronicleState.chronicleManualD6 : ''
+  );
+  const [fatherHonorModifier, setFatherHonorModifier] = useState(
+    initialChronicleState.fatherHonorModifier !== undefined ? initialChronicleState.fatherHonorModifier : 0
+  );
+
   // --- 연대기 상태 로컬스토리지 동기화 ---
   useEffect(() => {
     const stateToSave = {
@@ -171,7 +179,9 @@ export default function FamilyWinter({ character, setCharacter }) {
       currentYearResultText,
       fSkipYearsUntil,
       chronicleHistory,
-      chroniclePendingRoll
+      chroniclePendingRoll,
+      chronicleManualD6,
+      fatherHonorModifier
     };
     try {
       localStorage.setItem('paladin_chronicle_state', JSON.stringify(stateToSave));
@@ -199,7 +209,9 @@ export default function FamilyWinter({ character, setCharacter }) {
     currentYearResultText,
     fSkipYearsUntil,
     chronicleHistory,
-    chroniclePendingRoll
+    chroniclePendingRoll,
+    chronicleManualD6,
+    fatherHonorModifier
   ]);
 
   // 연도별 이벤트 매핑
@@ -351,14 +363,16 @@ export default function FamilyWinter({ character, setCharacter }) {
     setGrandfatherGlory(2500);
     setGrandfatherDeathYear(null);
     setGrandfatherDeathCause('');
-    setGrandfatherHates({ saxons: 0, moors: 0 });
+    setGrandfatherHates({ saxons: 0, moors: 0, danes: 0 });
 
     setFatherGlory(2500);
     setFatherDeathYear(null);
     setFatherDeathCause('');
-    setFatherHates({ saxons: 0, moors: 0 });
+    setFatherHates({ saxons: 0, moors: 0, danes: 0 });
 
     setChronicleManualD20('');
+    setChronicleManualD6('');
+    setFatherHonorModifier(0);
     setCurrentYearRolled(false);
     setCurrentYearResultText('');
     setFSkipYearsUntil(0);
@@ -416,8 +430,16 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
 
         const rollD20 = () => Math.floor(Math.random() * 20) + 1;
-        const rollD6 = () => Math.floor(Math.random() * 6) + 1;
-        const rollD3 = () => Math.floor(Math.random() * 3) + 1;
+        const rollD6 = () => {
+          const val = parseInt(chronicleManualD6);
+          if (!isNaN(val) && val >= 1 && val <= 6) return val;
+          return Math.floor(Math.random() * 6) + 1;
+        };
+        const rollD3 = () => {
+          const val = parseInt(chronicleManualD6);
+          if (!isNaN(val) && val >= 1 && val <= 3) return val;
+          return Math.floor(Math.random() * 3) + 1;
+        };
 
         let logMsg = pending.logPrefix;
         let yearOutcomeText = "";
@@ -700,6 +722,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         setCurrentYearRolled(true);
         setCurrentYearResultText(yearOutcomeText);
         setChronicleManualD20('');
+        setChronicleManualD6('');
         return;
       }
 
@@ -709,8 +732,16 @@ export default function FamilyWinter({ character, setCharacter }) {
       }
 
       const rollD20 = () => Math.floor(Math.random() * 20) + 1;
-      const rollD6 = () => Math.floor(Math.random() * 6) + 1;
-      const rollD3 = () => Math.floor(Math.random() * 3) + 1;
+      const rollD6 = () => {
+        const val = parseInt(chronicleManualD6);
+        if (!isNaN(val) && val >= 1 && val <= 6) return val;
+        return Math.floor(Math.random() * 6) + 1;
+      };
+      const rollD3 = () => {
+        const val = parseInt(chronicleManualD6);
+        if (!isNaN(val) && val >= 1 && val <= 3) return val;
+        return Math.floor(Math.random() * 3) + 1;
+      };
 
       let logMsg = "";
       let yearOutcomeText = "";
@@ -1289,6 +1320,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setAncestorRollLog(prev => [...prev, logMsg]);
         setCurrentYearRolled(true);
         setCurrentYearResultText(yearOutcomeText);
+        setChronicleManualD20('');
+        setChronicleManualD6('');
       }
       else if (interactiveStage === 'f_running') {
         const runFCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
@@ -1474,8 +1507,9 @@ export default function FamilyWinter({ character, setCharacter }) {
             setChronicleManualD20('');
             return;
           } else {
-            logMsg += `⚠️ 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor 수치 하락)`;
-            yearOutcomeText = "경비 누수로 인한 명예 징계 실추";
+            setFatherHonorModifier(prev => prev - 1);
+            logMsg += `⚠️ 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor -1)`;
+            yearOutcomeText = "경비 누수로 인한 명예 징계 실추 (Honor -1)";
           }
         } else if (yr === 750) {
           logMsg = `🏰 750년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1715,8 +1749,9 @@ export default function FamilyWinter({ character, setCharacter }) {
             return;
           } else {
             setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + 6 }));
-            logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor 대폭 삭감, 덴마크인 증오 대폭 상승)`;
-            yearOutcomeText = "오욕: 바이킹 포로 수모 및 덴마크 증오 +6 획득";
+            setFatherHonorModifier(prev => prev - 5);
+            logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor -5, 덴마크인 증오 대폭 상승)`;
+            yearOutcomeText = "오욕: 바이킹 포로 수모 및 덴마크 증오 +6, Honor -5 획득";
           }
         } else if (yr === 758) {
           logMsg = `🏰 758년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1824,7 +1859,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           } else {
             setFatherGlory(prev => prev + 200);
             setFSkipYearsUntil(763);
-            logMsg += `✈️ 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, Honor +1 획득 — 캐릭터 시트에 직접 기록해주세요)`;
+            setFatherHonorModifier(prev => prev + 1);
+            logMsg += `✈️ 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 콘스탄티노플에서 외교 원정을 수행합니다. (+200 Glory, Honor +1 획득 (가문 유산 자동 반영))`;
             yearOutcomeText = "비잔티움 제국 외교 대사절 특사 발탁 (761~762 스킵) (+200 Glory, Honor +1)";
           }
 
@@ -2047,6 +2083,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         setAncestorRollLog(prev => [...prev, logMsg]);
         setCurrentYearRolled(true);
         setCurrentYearResultText(yearOutcomeText);
+        setChronicleManualD20('');
+        setChronicleManualD6('');
       }
     } catch (err) {
       console.error(err);
@@ -2136,13 +2174,14 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     let inhSaxons = grandfatherHates.saxons > 10 ? grandfatherHates.saxons : 0;
     let inhMoors = grandfatherHates.moors > 10 ? grandfatherHates.moors : 0;
-    setFatherHates({ saxons: inhSaxons, moors: inhMoors });
+    let inhDanes = grandfatherHates.danes > 10 ? grandfatherHates.danes : 0;
+    setFatherHates({ saxons: inhSaxons, moors: inhMoors, danes: inhDanes });
 
     setAncestorRollLog(prev => [
       ...prev,
       "",
       "📜 [부친의 생애: 연대기 시작 745년]",
-      `🎁 745년: 부친(724년생)께서 성인식을 마치고 증조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
+      `🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${startGlory} Glory로 당당히 기사 서임을 받으셨습니다.`
     ]);
   };
 
@@ -2152,12 +2191,14 @@ export default function FamilyWinter({ character, setCharacter }) {
     const summaryLogs = [
       "",
       "🎉 [연대기 결과 요약]",
-      `• 증조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
+      `• 조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
       `• 부친 최종 명예: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
       `• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`,
       `  - 계승 명예: +${Math.floor(finalFGlory / 10)} Glory (부친 명예의 1/10)`,
       fatherHates.saxons > 10 ? `  - 계승 증오: 작센인에 대한 증오 Passion [${fatherHates.saxons}]` : null,
-      fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null
+      fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null,
+      fatherHates.danes > 10 ? `  - 계승 증오: 덴마크인에 대한 증오 Passion [${fatherHates.danes}]` : null,
+      fatherHonorModifier !== 0 ? `  - 계승 명예 보정치: Honor Passion [${fatherHonorModifier >= 0 ? '+' : ''}${fatherHonorModifier}]` : null
     ].filter(Boolean);
 
     setAncestorRollLog(prev => [...prev, ...summaryLogs]);
@@ -4101,15 +4142,27 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   </span>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 2차 주사위 입력:</span>
-                                    <input
-                                      type="text"
-                                      placeholder="예: 10 (생존)"
-                                      value={chronicleManualD20}
-                                      onChange={e => setChronicleManualD20(e.target.value)}
-                                      style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                    />
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 2차 주사위(d20):</span>
+                                      <input
+                                        type="text"
+                                        placeholder="예: 10"
+                                        value={chronicleManualD20}
+                                        onChange={e => setChronicleManualD20(e.target.value)}
+                                        style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                      />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 추가 주사위(1d6/1d3):</span>
+                                      <input
+                                        type="text"
+                                        placeholder="예: 5"
+                                        value={chronicleManualD6}
+                                        onChange={e => setChronicleManualD6(e.target.value)}
+                                        style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                      />
+                                    </div>
                                   </div>
                                   <button
                                     type="button"
@@ -4144,15 +4197,27 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 ) : (
                                   // 일반 연도: 주사위 입력 + 판정 버튼
                                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                      <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력:</span>
-                                      <input
-                                        type="text"
-                                        placeholder="예: 15"
-                                        value={chronicleManualD20}
-                                        onChange={e => setChronicleManualD20(e.target.value)}
-                                        style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
-                                      />
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력(d20):</span>
+                                        <input
+                                          type="text"
+                                          placeholder="예: 15"
+                                          value={chronicleManualD20}
+                                          onChange={e => setChronicleManualD20(e.target.value)}
+                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                        />
+                                      </div>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 추가 주사위(1d6/1d3):</span>
+                                        <input
+                                          type="text"
+                                          placeholder="예: 5"
+                                          value={chronicleManualD6}
+                                          onChange={e => setChronicleManualD6(e.target.value)}
+                                          style={{ width: '80px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                        />
+                                      </div>
                                     </div>
                                     <button
                                       type="button"

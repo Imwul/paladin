@@ -1910,6 +1910,18 @@ input[type="number"] {
   width: 100%;
 }
 
+.ft-death-cause {
+  font-size: 0.68rem;
+  color: var(--color-crimson) !important;
+  font-style: italic;
+  font-weight: 600;
+  margin-top: 2px;
+  text-align: center;
+  word-break: keep-all;
+  display: block;
+  width: 100%;
+}
+
 
 /* Card Hover overlay controls */
 .ft-card-overlay {
