@@ -75,6 +75,12 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [fatherHates, setFatherHates] = useState({ saxons: 0, moors: 0 });
   const [ancestorApplied, setAncestorApplied] = useState(false);
   const [showRefTables, setShowRefTables] = useState(false);
+  const [showRefAging, setShowRefAging] = useState(false);
+  const [showRefHarvest, setShowRefHarvest] = useState(false);
+  const [showRefSurvival, setShowRefSurvival] = useState(false);
+  const [showRefPersonal, setShowRefPersonal] = useState(false);
+  const [showRefFamily, setShowRefFamily] = useState(false);
+  const [showRefExperience, setShowRefExperience] = useState(false);
 
   // --- 신설: 인터랙티브 연대기용 추가 상태 ---
   const [chronicleMode, setChronicleMode] = useState('interactive'); // 'interactive' | 'auto'
@@ -3898,6 +3904,60 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 2 */}
                 {winterStep === 2 && (
                   <div>
+                    {/* 📖 룰북 노화 판정 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefAging(!showRefAging)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 노화 판정 레퍼런스 테이블 보기
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefAging ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefAging && (
+                        <div style={{ padding: '10px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff' }}>
+                          <p style={{ margin: '0 0 6px 0', color: 'var(--color-ink-light)' }}>
+                            * 기사의 나이가 <strong>30세 이상</strong>일 때 매 겨울마다 d20을 굴려 노화 여부를 판정합니다. (30세 미만은 무조건 생략)
+                          </p>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '4px' }}>d20 결과</th>
+                                <th style={{ padding: '4px' }}>감소 판정 주사위 횟수 (1d6)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>1</td>
+                                <td style={{ padding: '4px' }}><strong>5회</strong> 굴림</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>2 ~ 3</td>
+                                <td style={{ padding: '4px' }}><strong>4회</strong> 굴림</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>4 ~ 6</td>
+                                <td style={{ padding: '4px' }}><strong>3회</strong> 굴림</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>7 ~ 10</td>
+                                <td style={{ padding: '4px' }}><strong>2회</strong> 굴림</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>11 ~ 15</td>
+                                <td style={{ padding: '4px' }}><strong>1회</strong> 굴림</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>16 ~ 20</td>
+                                <td style={{ padding: '4px' }}><strong>0회</strong> (스탯 하락 없음)</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <p style={{ margin: '6px 0 0 0', fontStyle: 'italic', color: 'var(--color-grey)', lineHeight: '1.3' }}>
+                            ※ 감소 판정 1d6 결과에 따라 해당 능력치 영구 -1 하락:<br />
+                            1 = SIZ, 2 = DEX, 3 = STR, 4 = CON, 5 = APP, 6 = 하락 없음 (피해 무효)
+                          </p>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '12px' }}>기사의 나이가 <strong>30세 이상</strong>이면 세월의 흐름에 따른 노화 판정 주사위를 굴립니다.</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                       <div style={{ padding: '10px 14px', border: '1px solid var(--color-crimson)', background: 'rgba(153,34,34,0.03)' }}>
@@ -3943,6 +4003,53 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 3 */}
                 {winterStep === 3 && (
                   <div>
+                    {/* 📖 룰북 영지 수확 및 경제 판정 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefHarvest(!showRefHarvest)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 영지 수확 및 경제 판정 레퍼런스 테이블 보기
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefHarvest ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefHarvest && (
+                        <div style={{ padding: '10px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff' }}>
+                          <p style={{ margin: '0 0 6px 0', color: 'var(--color-ink-light)' }}>
+                            * 기사의 영지 관리(Stewardship) 기술 수치를 기준으로 d20을 굴려 세입 배율을 결정합니다.
+                          </p>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '4px' }}>Stewardship 판정 결과</th>
+                                <th style={{ padding: '4px' }}>세입 배율</th>
+                                <th style={{ padding: '4px' }}>획득 세입 (£)</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>대성공 (Critical) <span style={{fontWeight:'normal', fontSize:'0.7rem', color:'var(--color-grey)'}}>(d20 결과가 1 또는 Stewardship 수치와 동일)</span></td>
+                                <td style={{ padding: '4px' }}><strong>x1.5</strong></td>
+                                <td style={{ padding: '4px' }}>£9</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>성공 (Success) <span style={{fontWeight:'normal', fontSize:'0.7rem', color:'var(--color-grey)'}}>(d20 결과가 Stewardship 수치 미만)</span></td>
+                                <td style={{ padding: '4px' }}><strong>x1.0</strong></td>
+                                <td style={{ padding: '4px' }}>£6 (기본 수입)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>실패 (Failure) <span style={{fontWeight:'normal', fontSize:'0.7rem', color:'var(--color-grey)'}}>(d20 결과가 Stewardship 수치 초과)</span></td>
+                                <td style={{ padding: '4px' }}><strong>x0.75</strong></td>
+                                <td style={{ padding: '4px' }}>£4 (반올림)</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>대실패 (Fumble) <span style={{fontWeight:'normal', fontSize:'0.7rem', color:'var(--color-grey)'}}>(d20 결과가 20)</span></td>
+                                <td style={{ padding: '4px' }}><strong>x0.5</strong></td>
+                                <td style={{ padding: '4px' }}>£3</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '12px' }}>영지 관리(Stewardship) 판정을 통해 올해 대농장의 풍흉작과 세입 배율을 결정합니다.</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
                       <div style={{ padding: '10px 14px', border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.02)' }}>
@@ -3979,6 +4086,44 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 4 */}
                 {winterStep === 4 && (
                   <div>
+                    {/* 📖 룰북 동료 및 군마 생존 판정 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefSurvival(!showRefSurvival)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 동료 및 군마 생존 판정 레퍼런스 테이블 보기
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefSurvival ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefSurvival && (
+                        <div style={{ padding: '10px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff' }}>
+                          <p style={{ margin: '0 0 6px 0', color: 'var(--color-ink-light)' }}>
+                            * 동종 기사의 종자(Squire)와 군마(Warhorse)가 겨울을 건강히 넘겼는지 d20 생존 주사위를 굴립니다.
+                          </p>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '4px' }}>d20 결과</th>
+                                <th style={{ padding: '4px' }}>상태 및 게임 효과</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>1</td>
+                                <td style={{ padding: '4px' }}><strong>사망 위험 (Die / Lost)</strong> - 사망하거나 가출/실종됩니다. 새로운 동료/말을 구해야 합니다.</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold' }}>2</td>
+                                <td style={{ padding: '4px' }}><strong>질병 (Illness / Injured)</strong> - 심한 병치레나 골절상을 겪어, 다음 해 생존 판정에 <strong>-5 보정</strong>을 적용받습니다.</td>
+                              </tr>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>3 ~ 20</td>
+                                <td style={{ padding: '4px' }}><strong>건강함 (Healthy)</strong> - 이상 없이 겨울을 보내고 다음 해 기사를 보조합니다.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '12px' }}>소중한 충복 종자(Squire) 및 아끼는 돌격 전투마(Charger)의 생존을 체크합니다.</p>
                     
                     {!survivalApplied ? (
@@ -4017,6 +4162,45 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 5 */}
                 {winterStep === 5 && (
                   <div>
+                    {/* 📖 룰북 개인 돌발 사건 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefPersonal(!showRefPersonal)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 개인 돌발 사건 (Table 10-9) 레퍼런스 전체 보기
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefPersonal ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefPersonal && (
+                        <div style={{ padding: '10px', fontSize: '0.72rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff', maxHeight: '300px', overflowY: 'auto' }}>
+                          <p style={{ margin: '0 0 8px 0', color: 'var(--color-ink-light)' }}>
+                            * 겨울철 기사 한 명 한 명에게 닥쳐오는 성향, 열망 또는 지위 시험 이벤트 테이블입니다. (d20 굴림)
+                          </p>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', backgroundColor: '#f9f9f9', fontWeight: 'bold' }}>
+                                <th style={{ padding: '4px', width: '40px' }}>d20</th>
+                                <th style={{ padding: '4px', width: '120px' }}>성향/지위 시험</th>
+                                <th style={{ padding: '4px' }}>성공/실패 효과 요약</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {Object.entries(personalEventTable).map(([d, ev]) => (
+                                <tr key={d} style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '4px', fontWeight: 'bold', textAlign: 'center' }}>{d}</td>
+                                  <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>{ev.name}</td>
+                                  <td style={{ padding: '4px', lineHeight: '1.25' }}>
+                                    <span style={{color:'green'}}><strong>대성공:</strong> {ev.crit}</span><br />
+                                    <span style={{color:'#666'}}><strong>성공:</strong> {ev.succ}</span><br />
+                                    <span style={{color:'var(--color-crimson)'}}><strong>실패:</strong> {ev.fail}</span><br />
+                                    <span style={{color:'red'}}><strong>대실패:</strong> {ev.fumb}</span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '12px' }}>룰북 <strong>Table 10-9</strong>에 수록된 기사들의 겨울철 20가지 성향 연동 돌발 사건을 판정합니다.</p>
                     
                     {!personalEventApplied ? (
@@ -4059,6 +4243,167 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 6 */}
                 {winterStep === 6 && (
                   <div>
+                    {/* 📖 룰북 가문 정산 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefFamily(!showRefFamily)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 가문 정산 (결혼, 출산, 가문 사건) 판정 테이블 보기
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefFamily ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefFamily && (
+                        <div style={{ padding: '12px', fontSize: '0.72rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff', display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '350px', overflowY: 'auto' }}>
+                          {/* Marriage Table */}
+                          <div>
+                            <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                              1. Marriage Table (결혼 주사위 판정표)
+                            </h5>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                              <thead>
+                                <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                  <th style={{ padding: '3px 2px' }}>d20 결과</th>
+                                  <th style={{ padding: '3px 2px' }}>배우자 신분</th>
+                                  <th style={{ padding: '3px 2px' }}>지참금 (£)</th>
+                                  <th style={{ padding: '3px 2px' }}>결혼 영예</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>1 ~ 5</td>
+                                  <td style={{ padding: '3px 2px' }}>부유한 평민 상인의 딸</td>
+                                  <td style={{ padding: '3px 2px' }}>9d3 (£9 ~ 27)</td>
+                                  <td style={{ padding: '3px 2px' }}>0 Glory</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>6 ~ 8</td>
+                                  <td style={{ padding: '3px 2px' }}>수습 종자의 딸</td>
+                                  <td style={{ padding: '3px 2px' }}>£3</td>
+                                  <td style={{ padding: '3px 2px' }}>10 Glory</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>9 ~ 10</td>
+                                  <td style={{ padding: '3px 2px' }}>가신 기사의 딸</td>
+                                  <td style={{ padding: '3px 2px' }}>1d6 (£1 ~ 6)</td>
+                                  <td style={{ padding: '3px 2px' }}>50 Glory</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>11</td>
+                                  <td style={{ padding: '3px 2px' }}>부유한 봉신기사의 맏딸</td>
+                                  <td style={{ padding: '3px 2px' }}>1d3+6 (£7 ~ 9)</td>
+                                  <td style={{ padding: '3px 2px' }}>100 Glory</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>12 ~ 20</td>
+                                  <td style={{ padding: '3px 2px' }}>일반 봉신기사의 딸</td>
+                                  <td style={{ padding: '3px 2px' }}>1d6 (£1 ~ 6)</td>
+                                  <td style={{ padding: '3px 2px' }}>100 Glory</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>21 ~ 25</td>
+                                  <td style={{ padding: '3px 2px' }}>봉신기사 가문 여상속인 (Heir)</td>
+                                  <td style={{ padding: '3px 2px' }}>£15 (장원 상속)</td>
+                                  <td style={{ padding: '3px 2px' }}>100 Glory</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>26 이상</td>
+                                  <td style={{ padding: '3px 2px' }}>남작 가문의 막내딸</td>
+                                  <td style={{ padding: '3px 2px' }}>£20</td>
+                                  <td style={{ padding: '3px 2px' }}>250 Glory</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          {/* Childbirth Table */}
+                          <div style={{ marginTop: '10px' }}>
+                            <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                              2. Childbirth Table (출산 주사위 판정표)
+                            </h5>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                              <thead>
+                                <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                  <th style={{ padding: '3px 2px' }}>d20 결과</th>
+                                  <th style={{ padding: '3px 2px' }}>출산 결과 및 상태</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>1 ~ 10</td>
+                                  <td style={{ padding: '3px 2px' }}>아무 일 없음 (임신하지 않았거나 출산 지연)</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'red' }}>11</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>비극:</strong> 산모(배우자)와 신생아 모두 출산 중 사망</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>12</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>비극:</strong> 산모 사망, 아이는 생존 (성별 1d6: 홀수=아들, 짝수=딸)</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>13 ~ 19</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>경사:</strong> 건강한 아이 출생 (성별 1d6: 홀수=아들, 짝수=딸)</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>20</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>경사:</strong> 쌍둥이 탄생! (각 성별 1d6)</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          {/* Family Event Table */}
+                          <div style={{ marginTop: '10px' }}>
+                            <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '1px solid #ddd', paddingBottom: '3px' }}>
+                              3. Family Event Table (가문 무작위 사건표)
+                            </h5>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                              <thead>
+                                <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                  <th style={{ padding: '3px 2px', width: '60px' }}>d20 결과</th>
+                                  <th style={{ padding: '3px 2px' }}>사건 명칭 및 게임 효과</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'red' }}>1</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>가문의 비극:</strong> 친족 한 명이 마상시합 또는 혈투 끝에 급서</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>2</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>가문의 영광:</strong> 친족이 주군 구출 후 사망. (가문 전원 +10 Glory)</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>3</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>위대한 위업:</strong> 친족이 멧돼지 습격에서 주군 구출. (가문 전원 +5 Glory)</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>4</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>납치 사건:</strong> 친족이 강제 결혼 또는 몸값을 노린 도적단에 납치됨</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>5</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>실종 사건:</strong> 가문 일원 중 한 명이 사냥 또는 전쟁 중 행방불명됨</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>8</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>뜻밖의 하사품:</strong> 선조의 고대 성물 발견 및 상속</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>10</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>경사스런 혼사:</strong> 영예로운 가문 동맹 및 명문가 결혼. (가문 명예 +1)</td>
+                                </tr>
+                                <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'green' }}>19</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>벼락 영전:</strong> 친족이 황실 궁정 백작이나 순찰사 임명. (가문 전원 +10 Glory)</td>
+                                </tr>
+                                <tr>
+                                  <td style={{ padding: '3px 2px', fontWeight: 'bold', color: 'var(--color-grey)' }}>기타 결과</td>
+                                  <td style={{ padding: '3px 2px' }}><strong>가문 평온:</strong> 특별한 일 없이 무난하게 영지에서 생활함</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '10px' }}>기사의 대를 잇기 위한 <strong>결혼(Courtesy), 출산(Childbirth), 가문사건(Table 10-12)</strong>을 정산합니다.</p>
                     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
                       <button className="btn-medieval" onClick={rollMarriage}><Dices size={12} /> 무작위 결혼 굴림 (Table 10-10)</button>
@@ -4095,6 +4440,43 @@ export default function FamilyWinter({ character, setCharacter }) {
                 {/* STEP 7 */}
                 {winterStep === 7 && (
                   <div>
+                    {/* 📖 룰북 경험 성장 레퍼런스 */}
+                    <div style={{ marginBottom: '16px', border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', backgroundColor: 'rgba(255,255,255,0.7)', overflow: 'hidden' }}>
+                      <div style={{ backgroundColor: 'rgba(201,168,76,0.06)', padding: '6px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none' }} onClick={() => setShowRefExperience(!showRefExperience)}>
+                        <strong style={{ fontSize: '0.8rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          📖 룰북 경험 성장 (Experience Check) 레퍼런스 규칙
+                        </strong>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>{showRefExperience ? '접기 ▲' : '펼치기 ▼'}</span>
+                      </div>
+                      {showRefExperience && (
+                        <div style={{ padding: '10px', fontSize: '0.74rem', borderTop: '1px solid rgba(201,168,76,0.15)', backgroundColor: '#fff' }}>
+                          <p style={{ margin: '0 0 6px 0', color: 'var(--color-ink-light)', lineHeight: '1.3' }}>
+                            * 세션 시나리오 도중 체크(☐)된 모든 스펙트럼(기술, 성향, 열망)에 대해 각각 d20을 굴려 성장을 시도합니다.
+                          </p>
+                          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                              <tr style={{ borderBottom: '1px solid #ccc', fontWeight: 'bold' }}>
+                                <th style={{ padding: '4px' }}>d20 굴림 결과</th>
+                                <th style={{ padding: '4px' }}>성공 판정 기준 및 결과</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr style={{ borderBottom: '1px dashed #eee' }}>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>현재 수치 이상 <span style={{fontWeight:'normal'}}>또는</span> 20</td>
+                                <td style={{ padding: '4px' }}><strong>성장 성공:</strong> 해당 능력치가 <strong>+1점 상승</strong>하며, 체크가 해제됩니다.</td>
+                              </tr>
+                              <tr>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-grey)' }}>현재 수치 미만 <span style={{fontWeight:'normal'}}>(20 미만)</span></td>
+                                <td style={{ padding: '4px' }}><strong>성장 실패:</strong> 능력치 상승은 없으며, 체크만 해제됩니다.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <p style={{ margin: '6px 0 0 0', fontStyle: 'italic', color: 'var(--color-grey)' }}>
+                            ※ 수치 한계: 일반적인 겨울 경험 성장은 최대 15점까지만 가능하며, 15점 도달 이후에는 Step 8의 상급기술 돌파(Option C) 또는 영예 보너스 등을 통해서만 16점 이상 돌파할 수 있습니다.
+                          </p>
+                        </div>
+                      )}
+                    </div>
                     <p style={{ marginBottom: '12px' }}>여름 모험 중에 체크(☐)된 기사의 기술, 성향, 열망들을 한 해 수련 성과로 d20 성장 판정합니다.</p>
                     <p style={{ fontSize: '0.85rem', color: 'var(--color-grey)', marginBottom: '12px' }}>룰북 규정: d20 굴림 결과가 <strong>현재 값 이상 또는 20</strong>이 나오면 +1점 상승하고 시트 체크가 해제됩니다.</p>
                     
