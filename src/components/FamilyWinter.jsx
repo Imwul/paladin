@@ -4353,22 +4353,22 @@ export default function FamilyWinter({ character, setCharacter }) {
                     </span>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
-                      <span>💘 연인 열망 보너스 (Amor > 15):</span>
+                      <span>💘 연인 열망 보너스 (Amor &gt; 15):</span>
                       <span>+{amorBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({amorVal}점)</span></span>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
-                      <span>🏅 명예 열망 보너스 (Honor > 15):</span>
+                      <span>🏅 명예 열망 보너스 (Honor &gt; 15):</span>
                       <span>+{honorBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({honorVal}점)</span></span>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
-                      <span>👑 주군 충성 보너스 (Loyalty > 15):</span>
+                      <span>👑 주군 충성 보너스 (Loyalty &gt; 15):</span>
                       <span>+{liegeBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loyaltyLiege}점)</span></span>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
-                      <span>⛪ 신앙 열망 보너스 (Love God > 15):</span>
+                      <span>⛪ 신앙 열망 보너스 (Love God &gt; 15):</span>
                       <span>+{godBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loveGodVal}점)</span></span>
                     </div>
 

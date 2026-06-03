@@ -2,17 +2,69 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull } from 'lucide-react';
 
-const splitName = (fullName) => {
+const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
   const regex = /([^(]+)\s*(?:\(([^)]+)\))?/;
   const match = fullName.match(regex);
+  let koPart = fullName;
+  let enPart = '';
+  
   if (match) {
-    return {
-      ko: match[1].trim(),
-      en: match[2] ? match[2].trim() : ''
-    };
+    koPart = match[1].trim();
+    enPart = match[2] ? match[2].trim() : '';
   }
-  return { ko: fullName, en: '' };
+
+  // Remove common titles to get raw name
+  const cleanKo = koPart.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
+  const cleanEn = enPart.replace(/^(Sir|Baron|Count|Earl|Duke|Lord|Lady)\s+/i, '').trim();
+
+  return { ko: cleanKo, en: cleanEn };
+};
+
+const getTitleByNameAndClass = (koName, enName, statusClass) => {
+  if (!koName) return '';
+  const cleanKo = koName.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
+  const cleanEn = enName ? enName.replace(/^(Sir|Baron|Count|Earl|Duke|Lord|Lady)\s+/i, '').trim() : '';
+
+  const cls = (statusClass || '').toLowerCase();
+  
+  let koTitle = '';
+  let enPrefix = '';
+
+  if (cls.includes('공작') || cls.includes('duke')) {
+    koTitle = ' 공작';
+    enPrefix = 'Duke ';
+  } else if (cls.includes('백작') || cls.includes('count') || cls.includes('earl')) {
+    koTitle = ' 백작';
+    enPrefix = 'Count ';
+  } else if (cls.includes('남작') || cls.includes('baron')) {
+    koTitle = ' 남작';
+    enPrefix = 'Baron ';
+  } else if (cls.includes('영주') || cls.includes('lord') || cls.includes('officer') || cls.includes('지방관')) {
+    koTitle = ' 영주';
+    enPrefix = 'Lord ';
+  } else if (cls.includes('부인') || cls.includes('lady')) {
+    koTitle = ' 부인';
+    enPrefix = 'Lady ';
+  } else if (cls.includes('종자') || cls.includes('squire')) {
+    koTitle = '';
+    enPrefix = '';
+  } else if (cls.includes('기사') || cls.includes('knight') || cls.includes('vassal') || cls.includes('bachelor') || cls.includes('mercenary') || cls.includes('banneret')) {
+    koTitle = ' 경';
+    enPrefix = 'Sir ';
+  } else {
+    // Default fallback to "경" / "Sir" for general knights/nobles
+    koTitle = '';
+    enPrefix = '';
+  }
+
+  const finalKo = `${cleanKo}${koTitle}`;
+  const finalEn = cleanEn ? ` (${enPrefix}${cleanEn})` : '';
+  return `${finalKo}${finalEn}`;
+};
+
+const splitName = (fullName) => {
+  return parseName(fullName);
 };
 
 export default function FamilyTree({ character, setCharacter }) {
@@ -22,6 +74,9 @@ export default function FamilyTree({ character, setCharacter }) {
   
   // Modal Form States
   const [formName, setFormName] = useState('');
+  const [formNameKo, setFormNameKo] = useState('');
+  const [formNameEn, setFormNameEn] = useState('');
+  const [formMemberClass, setFormMemberClass] = useState('기사 (Knight)');
   const [formRelation, setFormRelation] = useState('자녀');
   const [formGeneration, setFormGeneration] = useState(3);
   const [formStatus, setFormStatus] = useState('생존');
@@ -156,6 +211,9 @@ export default function FamilyTree({ character, setCharacter }) {
   // Open Modal to Add Member
   const handleOpenAdd = (defaultParentId = '', defaultSpouseId = '', targetGen = 3) => {
     setModalMode('add');
+    setFormNameKo('');
+    setFormNameEn('');
+    setFormMemberClass('기사 (Knight)');
     setFormName('');
     setFormRelation('자녀');
     setFormGeneration(targetGen);
@@ -172,6 +230,10 @@ export default function FamilyTree({ character, setCharacter }) {
   const handleOpenEdit = (member) => {
     setEditingMember(member);
     setModalMode('edit');
+    const parsed = parseName(member.name);
+    setFormNameKo(parsed.ko);
+    setFormNameEn(parsed.en);
+    setFormMemberClass(member.memberClass || (member.name.includes('경') ? '기사 (Knight)' : member.name.includes('부인') ? '부인 (Lady)' : member.name.includes('공작') ? '공작 (Duke)' : member.name.includes('백작') ? '백작 (Count)' : member.name.includes('남작') ? '남작 (Baron)' : member.name.includes('영주') ? '영주 (Lord)' : '종자 (Squire)'));
     setFormName(member.name);
     setFormRelation(member.relation);
     setFormGeneration(member.generation);
@@ -187,23 +249,25 @@ export default function FamilyTree({ character, setCharacter }) {
   // Save Modal Form Data
   const handleSave = (e) => {
     e.preventDefault();
-    if (!formName.trim()) {
-      alert("이름을 입력해 주세요!");
+    if (!formNameKo.trim()) {
+      alert("한국어 이름을 입력해 주세요!");
       return;
     }
 
+    const combinedName = getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass);
     let updatedMembers = [...members];
 
     if (modalMode === 'add') {
       const newId = 'm-' + Date.now();
       const newMember = {
         id: newId,
-        name: formName,
+        name: combinedName,
         relation: formRelation,
         generation: Number(formGeneration),
         status: formStatus,
         lifeYears: formLifeYears,
         note: formNote,
+        memberClass: formMemberClass,
         deathCause: formStatus === '사망' ? formDeathCause : undefined,
         parentId: formParentId || undefined,
         spouseId: formSpouseId || undefined
@@ -228,12 +292,13 @@ export default function FamilyTree({ character, setCharacter }) {
         if (m.id === editingMember.id) {
           return {
             ...m,
-            name: formName,
+            name: combinedName,
             relation: formRelation,
             generation: Number(formGeneration),
             status: formStatus,
             lifeYears: formLifeYears,
             note: formNote,
+            memberClass: formMemberClass,
             deathCause: formStatus === '사망' ? formDeathCause : undefined,
             parentId: formParentId || undefined,
             spouseId: formSpouseId || undefined
@@ -575,16 +640,53 @@ export default function FamilyTree({ character, setCharacter }) {
             </div>
             
             <div className="ft-modal-body">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="ft-form-group">
+                  <label className="ft-label">한국어 이름:</label>
+                  <input 
+                    type="text" 
+                    className="ft-input" 
+                    value={formNameKo} 
+                    onChange={e => setFormNameKo(e.target.value)}
+                    placeholder="예: 기욤"
+                    required
+                  />
+                </div>
+                <div className="ft-form-group">
+                  <label className="ft-label">영어 이름 (선택):</label>
+                  <input 
+                    type="text" 
+                    className="ft-input" 
+                    value={formNameEn} 
+                    onChange={e => setFormNameEn(e.target.value)}
+                    placeholder="예: Guillaume"
+                  />
+                </div>
+              </div>
+
               <div className="ft-form-group">
-                <label className="ft-label">이름 (칭호 포함):</label>
-                <input 
-                  type="text" 
-                  className="ft-input" 
-                  value={formName} 
-                  onChange={e => setFormName(e.target.value)}
-                  placeholder="예: 기욤 경 (Sir Guillaume)"
-                  required
-                />
+                <label className="ft-label">가문원 신분/칭호 규칙:</label>
+                <select 
+                  className="ft-input"
+                  value={formMemberClass}
+                  onChange={e => setFormMemberClass(e.target.value)}
+                >
+                  <option value="종자 (Squire)">종자 (Squire) - 칭호 없음</option>
+                  <option value="기사 (Knight)">기사 (Knight) - 경 / Sir</option>
+                  <option value="영주 (Lord)">영주/지방관 기사 (Lord) - 영주 / Lord</option>
+                  <option value="남작 (Baron)">남작 (Baron) - 남작 / Baron</option>
+                  <option value="백작 (Count)">백작 (Count) - 백작 / Count</option>
+                  <option value="공작 (Duke)">공작 (Duke) - 공작 / Duke</option>
+                  <option value="부인 (Lady)">부인 (Lady) - 부인 / Lady</option>
+                  <option value="기타 (Custom)">기타 (직접 지정 안함) - 기본값 출력</option>
+                </select>
+              </div>
+
+              <div className="ft-form-group" style={{ backgroundColor: 'rgba(201,168,76,0.05)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(201,168,76,0.15)', marginBottom: '12px' }}>
+                <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', display: 'block' }}>계산된 최종 이름 (가계도 표시):</span>
+                <strong style={{ color: 'var(--color-gold-dark)', fontSize: '0.88rem' }}>
+                  {getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass) || '(이름을 입력하세요)'}
+                </strong>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

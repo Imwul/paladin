@@ -359,13 +359,74 @@ const getFatherIndexFromRoll = (roll) => {
   return 3; // 16-20: Mercenary Knight
 };
 
+const parseName = (fullName) => {
+  if (!fullName) return { ko: '', en: '' };
+  const regex = /([^(]+)\s*(?:\(([^)]+)\))?/;
+  const match = fullName.match(regex);
+  let koPart = fullName;
+  let enPart = '';
+  
+  if (match) {
+    koPart = match[1].trim();
+    enPart = match[2] ? match[2].trim() : '';
+  }
+
+  // Remove common titles
+  const cleanKo = koPart.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
+  const cleanEn = enPart.replace(/^(Sir|Baron|Count|Earl|Duke|Lord|Lady)\s+/i, '').trim();
+
+  return { ko: cleanKo, en: cleanEn };
+};
+
+const getTitleByNameAndClass = (koName, enName, statusClass) => {
+  if (!koName) return '';
+  const cleanKo = koName.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
+  const cleanEn = enName ? enName.replace(/^(Sir|Baron|Count|Earl|Duke|Lord|Lady)\s+/i, '').trim() : '';
+
+  const cls = (statusClass || '').toLowerCase();
+  
+  let koTitle = '';
+  let enPrefix = '';
+
+  if (cls.includes('공작') || cls.includes('duke')) {
+    koTitle = ' 공작';
+    enPrefix = 'Duke ';
+  } else if (cls.includes('백작') || cls.includes('count') || cls.includes('earl')) {
+    koTitle = ' 백작';
+    enPrefix = 'Count ';
+  } else if (cls.includes('남작') || cls.includes('baron')) {
+    koTitle = ' 남작';
+    enPrefix = 'Baron ';
+  } else if (cls.includes('영주') || cls.includes('lord') || cls.includes('officer') || cls.includes('지방관')) {
+    koTitle = ' 영주';
+    enPrefix = 'Lord ';
+  } else if (cls.includes('부인') || cls.includes('lady')) {
+    koTitle = ' 부인';
+    enPrefix = 'Lady ';
+  } else if (cls.includes('종자') || cls.includes('squire')) {
+    koTitle = '';
+    enPrefix = '';
+  } else if (cls.includes('기사') || cls.includes('knight') || cls.includes('vassal') || cls.includes('bachelor') || cls.includes('mercenary') || cls.includes('banneret')) {
+    koTitle = ' 경';
+    enPrefix = 'Sir ';
+  } else {
+    koTitle = '';
+    enPrefix = '';
+  }
+
+  const finalKo = `${cleanKo}${koTitle}`;
+  const finalEn = cleanEn ? ` (${enPrefix}${cleanEn})` : '';
+  return `${finalKo}${finalEn}`;
+};
+
 export default function CharacterSheet({ character, setCharacter }) {
   const [isGenOpen, setIsGenOpen] = useState(false);
   const [genActiveTab, setGenActiveTab] = useState('preset'); // 'preset' or 'custom'
   const [selectedPreset, setSelectedPreset] = useState(0);
 
   // Custom Roll State
-  const [customName, setCustomName] = useState('지벤 경 (Sir Ghiben)');
+  const [customNameKo, setCustomNameKo] = useState('지벤');
+  const [customNameEn, setCustomNameEn] = useState('Ghiben');
   const [customSiz, setCustomSiz] = useState(14);
   const [customDex, setCustomDex] = useState(12);
   const [customStr, setCustomStr] = useState(13);
@@ -479,10 +540,11 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   const handleApplyCustom = () => {
     const newChar = JSON.parse(JSON.stringify(character || {}));
+    const finalCustomName = getTitleByNameAndClass(customNameKo, customNameEn, "종자 (Squire)");
     
     newChar.personal = {
       ...newChar.personal,
-      name: customName,
+      name: finalCustomName,
       age: 18,
       sonNumber: "첫째",
       blessing: customBlessing || "가문의 축복",
@@ -490,7 +552,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       home: "바스토뉴 (Bastogne)",
       culture: "프랑크 (Frankish)",
       lineage: "아르덴 (Ardennes)",
-      liegeLord: "티에리 공작 (Duke Thierry)",
+      liegeLord: "티ಎ리 공작 (Duke Thierry)",
       fathersClass: fathersClasses[customFatherIndex].name,
       personalClass: "종자 (Squire)",
       features: ["외마디 흉터", "다부진 근육", "예리한 시선"]
@@ -599,7 +661,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
     setCharacter(newChar);
     setIsGenOpen(false);
-    alert(`커스텀 기사 [${customName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(적용된 수호 성인: ${saint.name}, 가문 특성: ${characteristic.name}${appliedGifts.length > 0 ? `, 탄생 선물: ${appliedGifts.join(', ')}` : ''})`);
+    alert(`커스텀 기사 [${finalCustomName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(적용된 수호 성인: ${saint.name}, 가문 특성: ${characteristic.name}${appliedGifts.length > 0 ? `, 탄생 선물: ${appliedGifts.join(', ')}` : ''})`);
   };
 
   const handleInputChange = (category, field, value) => {
@@ -813,15 +875,31 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div>
               <div className="cs-roll-grid">
                 <div className="cs-roll-col">
-                  <div className="ft-form-group">
-                    <label className="ft-label">기사 이름:</label>
-                    <input 
-                      type="text" 
-                      className="ft-input" 
-                      value={customName} 
-                      onChange={e => setCustomName(e.target.value)}
-                      placeholder="예: 롤랑 경 (Sir Roland)"
-                    />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div className="ft-form-group">
+                      <label className="ft-label">기사 한국어 이름:</label>
+                      <input 
+                        type="text" 
+                        className="ft-input" 
+                        value={customNameKo} 
+                        onChange={e => setCustomNameKo(e.target.value)}
+                        placeholder="예: 지벤"
+                      />
+                    </div>
+                    <div className="ft-form-group">
+                      <label className="ft-label">기사 영어 이름 (선택):</label>
+                      <input 
+                        type="text" 
+                        className="ft-input" 
+                        value={customNameEn} 
+                        onChange={e => setCustomNameEn(e.target.value)}
+                        placeholder="예: Ghiben"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ft-form-group" style={{ backgroundColor: 'rgba(201,168,76,0.05)', padding: '6px 10px', borderRadius: '4px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.78rem', color: 'var(--color-grey)', marginBottom: '12px' }}>
+                    생성 기사 이름 예시 (종자 신분): <strong>{getTitleByNameAndClass(customNameKo, customNameEn, "종자 (Squire)")}</strong>
                   </div>
 
                   <div className="ft-form-group">
@@ -1058,14 +1136,65 @@ export default function CharacterSheet({ character, setCharacter }) {
         <div className="sheet-ribbon"><h3>기사 인적 사항</h3></div>
         <div className="cs-section-inner">
           <div className="cs-field-grid">
-            {personalFields.map(f => (
-              <div className="cs-field" key={f.key}>
-                <span className="cs-field-label">{f.label}:</span>
-                <input type={f.type || 'text'}
-                  value={f.type === 'number' ? (character?.personal?.[f.key] || 0) : (character?.personal?.[f.key] || '')}
-                  onChange={e => handleInputChange('personal', f.key, f.type === 'number' ? (parseInt(e.target.value) || 0) : e.target.value)} />
-              </div>
-            ))}
+            {personalFields.map(f => {
+              if (f.key === 'name') {
+                const { ko, en } = parseName(character?.personal?.name);
+                return (
+                  <React.Fragment key={f.key}>
+                    <div className="cs-field">
+                      <span className="cs-field-label">한국어 이름:</span>
+                      <input 
+                        type="text" 
+                        value={ko} 
+                        onChange={e => {
+                          const newKo = e.target.value;
+                          const newName = getTitleByNameAndClass(newKo, en, character?.personal?.personalClass);
+                          handleInputChange('personal', 'name', newName);
+                        }} 
+                        placeholder="예: 롤랑"
+                      />
+                    </div>
+                    <div className="cs-field">
+                      <span className="cs-field-label">영어 이름 (선택):</span>
+                      <input 
+                        type="text" 
+                        value={en} 
+                        onChange={e => {
+                          const newEn = e.target.value;
+                          const newName = getTitleByNameAndClass(ko, newEn, character?.personal?.personalClass);
+                          handleInputChange('personal', 'name', newName);
+                        }} 
+                        placeholder="예: Roland"
+                      />
+                    </div>
+                    <div className="cs-field cs-field-full" style={{ gridColumn: 'span 2', backgroundColor: 'rgba(201,168,76,0.04)', padding: '6px 12px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', border: '1px solid rgba(201,168,76,0.15)', marginTop: '4px' }}>
+                      <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>계산된 최종 이름 (칭호 자동 부여):</span>
+                      <strong style={{ color: 'var(--color-royal-blue)', fontSize: '0.88rem' }}>{character?.personal?.name || '-'}</strong>
+                    </div>
+                  </React.Fragment>
+                );
+              }
+
+              return (
+                <div className="cs-field" key={f.key}>
+                  <span className="cs-field-label">{f.label}:</span>
+                  <input type={f.type || 'text'}
+                    value={f.type === 'number' ? (character?.personal?.[f.key] || 0) : (character?.personal?.[f.key] || '')}
+                    onChange={e => {
+                      const val = e.target.value;
+                      handleInputChange('personal', f.key, f.type === 'number' ? (parseInt(val) || 0) : val);
+                      
+                      // If editing current status (personalClass), recalculate name titles!
+                      if (f.key === 'personalClass') {
+                        const { ko, en } = parseName(character?.personal?.name);
+                        const newName = getTitleByNameAndClass(ko, en, val);
+                        handleInputChange('personal', 'name', newName);
+                      }
+                    }} 
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
