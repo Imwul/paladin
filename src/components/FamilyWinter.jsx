@@ -4598,7 +4598,8 @@ export default function FamilyWinter({ character, setCharacter }) {
 
             </div>
           </section>
-        })()}
+        );
+      })()}
 
     </div>
   );
