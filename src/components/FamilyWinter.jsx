@@ -3993,8 +3993,12 @@ export default function FamilyWinter({ character, setCharacter }) {
       setCharacter(prev => {
         const skills = { ...prev.skills };
         const keys = Object.values(selectedSkills).filter(k => k);
+        const activeFC = prev.family?.characteristic;
+
         keys.forEach(k => {
-          if (skills[k] < 15) {
+          const fcBonus = (activeFC?.applied && activeFC?.appliedBonus?.skills?.[k]) || 0;
+          const rawSkillVal = (skills[k] || 0) - fcBonus;
+          if (rawSkillVal < 15) {
             skills[k] = (skills[k] || 0) + 1;
           }
         });
