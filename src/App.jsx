@@ -16,6 +16,7 @@ const initialCharacterState = {
   personal: {
     name: "롤랑 경 (Sir Roland)",
     age: 18,
+    campaignYear: 768,
     sonNumber: "첫째",
     blessing: "성스러운 아우라 (Holy Aura)",
     homeland: "아르덴 (Ardennes)",

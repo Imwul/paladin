@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProperNoun from './ProperNoun';
 import { chronologyData } from '../data/chronology';
 import { BookOpen, Edit3, Trash2, Save, Calendar } from 'lucide-react';
 
 export default function ChronologyJournal({ character, setCharacter }) {
-  const [selectedYear, setSelectedYear] = useState(768);
+  const [selectedYear, setSelectedYear] = useState(() => character.personal.campaignYear || 768);
   const [journalInput, setJournalInput] = useState('');
+
+  useEffect(() => {
+    const yr = character.personal.campaignYear || 768;
+    setSelectedYear(yr);
+    const existing = character.journal[yr];
+    setJournalInput(existing ? existing.text : '');
+  }, [character.personal.campaignYear]);
 
   const currentHistory = chronologyData.find(item => item.year === selectedYear) || {
     year: selectedYear, title: "Era of Peace", summary: "No major conflicts recorded.", details: "The kingdom enjoys relative calm.", events: []
@@ -36,6 +43,13 @@ export default function ChronologyJournal({ character, setCharacter }) {
     setSelectedYear(year);
     const existing = character.journal[year];
     setJournalInput(existing ? existing.text : '');
+    setCharacter(prev => ({
+      ...prev,
+      personal: {
+        ...prev.personal,
+        campaignYear: year
+      }
+    }));
   };
 
   return (

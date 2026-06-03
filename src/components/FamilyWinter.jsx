@@ -4187,7 +4187,8 @@ export default function FamilyWinter({ character, setCharacter }) {
       ...prev,
       personal: {
         ...prev.personal,
-        age: (prev.personal.age || 0) + 1
+        age: (prev.personal.age || 0) + 1,
+        campaignYear: (prev.personal.campaignYear || 768) + 1
       }
     }));
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);

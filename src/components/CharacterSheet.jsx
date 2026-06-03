@@ -303,6 +303,7 @@ const weaponSkills = [
 const personalFields = [
   { key: 'name', label: '이름', cat: 'personal' },
   { key: 'age', label: '나이', cat: 'personal', type: 'number' },
+  { key: 'campaignYear', label: '현재 연도', cat: 'personal', type: 'number' },
   { key: 'sonNumber', label: '자녀 서열', cat: 'personal' },
   { key: 'blessing', label: '성스러운 축복', cat: 'personal' },
   { key: 'homeland', label: '고향/출신지', cat: 'personal' },
@@ -539,7 +540,8 @@ export default function CharacterSheet({ character, setCharacter }) {
         ...prev,
         personal: {
           ...prev.personal,
-          ...preset.stats.personal
+          ...preset.stats.personal,
+          campaignYear: 768
         },
         attributes: {
           ...prev.attributes,
@@ -579,6 +581,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       ...newChar.personal,
       name: finalCustomName,
       age: 18,
+      campaignYear: 768,
       sonNumber: "첫째",
       blessing: customBlessing || "가문의 축복",
       homeland: "아르덴 (Ardennes)",
