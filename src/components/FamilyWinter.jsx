@@ -4108,15 +4108,20 @@ export default function FamilyWinter({ character, setCharacter }) {
     }
 
     setCharacter(prev => {
-      const updated = { ...prev };
+      const nextSkills = { ...prev.skills };
+      const nextAttributes = { ...prev.attributes };
+      const nextPassions = { ...prev.passions };
+      const nextStandings = { ...prev.standings };
+      const nextTraits = { ...prev.traits };
+
       if (statType === 'attribute') {
-        updated.attributes[key] = (updated.attributes[key] || 0) + 1;
+        nextAttributes[key] = Math.min(20, (prev.attributes[key] || 0) + 1);
       } else if (statType === 'skill') {
-        updated.skills[key] = (updated.skills[key] || 0) + 1;
+        nextSkills[key] = Math.min(20, (prev.skills[key] || 0) + 1);
       } else if (statType === 'passion') {
-        updated.passions[key] = (updated.passions[key] || 0) + 1;
+        nextPassions[key] = Math.min(20, (prev.passions[key] || 0) + 1);
       } else if (statType === 'standing') {
-        updated.standings[key] = (updated.standings[key] || 0) + 1;
+        nextStandings[key] = Math.min(20, (prev.standings[key] || 0) + 1);
       } else if (statType === 'trait') {
         const oppositeMap = {
           chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
@@ -4126,10 +4131,18 @@ export default function FamilyWinter({ character, setCharacter }) {
           valorous: "cowardly"
         };
         const opp = oppositeMap[key];
-        updated.traits[key] = Math.min(20, (updated.traits[key] || 0) + 1);
-        updated.traits[opp] = Math.max(0, (updated.traits[opp] || 0) - 1);
+        nextTraits[key] = Math.min(20, (prev.traits[key] || 0) + 1);
+        nextTraits[opp] = Math.max(0, (prev.traits[opp] || 0) - 1);
       }
-      return updated;
+
+      return {
+        ...prev,
+        skills: nextSkills,
+        attributes: nextAttributes,
+        passions: nextPassions,
+        standings: nextStandings,
+        traits: nextTraits
+      };
     });
 
     addLog(`[영예 돌파 보너스 사용]: ${key} +1 영구 증가!`);
