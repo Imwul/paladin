@@ -2370,10 +2370,10 @@ export default function FamilyWinter({ character, setCharacter }) {
     const summaryLogs = [
       "",
       "🎉 [연대기 결과 요약]",
-      `• 조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
-      `• 부친 최종 명예: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
+      `• 조부 최종 영광: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, Odin/영면: ${grandfatherDeathCause || '평화로운 영면'})`,
+      `• 부친 최종 영광: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
       `• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`,
-      `  - 계승 명예: +${Math.floor(finalFGlory / 10)} Glory (부친 명예의 1/10)`,
+      `  - 계승 영광: +${Math.floor(finalFGlory / 10)} Glory (부친 영광의 1/10)`,
       fatherHates.saxons > 10 ? `  - 계승 증오: 작센인에 대한 증오 Passion [${fatherHates.saxons}]` : null,
       fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null,
       fatherHates.danes > 10 ? `  - 계승 증오: 덴마크인에 대한 증오 Passion [${fatherHates.danes}]` : null,
@@ -2921,6 +2921,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let fHateMoors = inheritedMoors;
     let fHateDanes = 0;
     let fCruel = inheritedCruel;
+    let fHonorMod = 0;
     let fDead = false;
     let fDeathYr = 766;
     let fCause = '노환';
@@ -3006,7 +3007,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else if (roll <= 18) {
           runCombatSurvival(yr, event + " (바이에른 기습 공세)", false, -1, true, 100);
         } else {
-          logs.push(`⚠️ 749년: [역사] ${event} -> 주사위 ${roll} - 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor 수치 하락)`);
+          fHonorMod -= 1;
+          logs.push(`⚠️ 749년: [역사] ${event} -> 주사위 ${roll} - 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor -1)`);
         }
       } else if (yr === 750) {
         const event = "작센 대전투: 작센 추장 저스타몽이 선포한 이교 대침공에 대항해, 피핀 국왕의 선봉으로 작센 벌판에서 치열한 혈투를 전개했습니다.";
@@ -3127,7 +3129,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           }
         } else {
           fHateDanes += 6;
-          logs.push(`⚠️ 757년: [역사] ${event} -> 주사위 ${roll} - 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor 대폭 삭감, 덴마크인 증오 대폭 상승)`);
+          fHonorMod -= 5;
+          logs.push(`⚠️ 757년: [역사] ${event} -> 주사위 ${roll} - 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor -5, 덴마크인 증오 대폭 상승)`);
         }
       } else if (yr === 758) {
         const event = "작센 보복 정벌: 매년 300필의 군마 조공을 거부하고 거듭 반란을 일으키는 작센 영토로 침투해 강제 개종과 무자비한 토벌전을 벌였습니다.";
@@ -3174,7 +3177,8 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           fGlory += 200;
           skipYearsUntil = 763;
-          logs.push(`✈️ ${yr}년: [역사] ${event} -> 주사위 ${roll} - 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, 명예 수치 대폭 상승)`);
+          fHonorMod += 1;
+          logs.push(`✈️ ${yr}년: [역사] ${event} -> 주사위 ${roll} - 쾰른의 백장 란드리 경의 신뢰를 받아 비잔티움 대원정단의 참모로 전격 합류했습니다! 761~762년 동안 로마를 거쳐 콘스탄티노플에서 장대한 외교 원정을 수행합니다. (+200 Glory, Honor +1)`);
         }
       } else if (yr === 761) {
         const event = "부르주 포위전 및 브르타뉴 습격: 아키텐 정벌 전역의 핵심 거점인 부르주(Bourges) 성을 성공적으로 공략하여 대승을 거두었습니다.";
@@ -3287,15 +3291,19 @@ export default function FamilyWinter({ character, setCharacter }) {
     setFatherDeathYear(fDeathYr);
     setFatherDeathCause(fCause);
     setFatherHates({ saxons: fHateSaxons, moors: fHateMoors, cruel: fCruel });
+    setFatherHonorModifier(fHonorMod);
 
     logs.push("");
     logs.push("🎉 [연대기 결과 요약]");
-    logs.push(`• 조부 최종 명예: ${gfGlory} Glory (생존기간: 702~${gfDeathYr}, 사인: ${gfCause})`);
-    logs.push(`• 부친 최종 명예: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
+    logs.push(`• 조부 최종 영광: ${gfGlory} Glory (생존기간: 702~${gfDeathYr}, 사인: ${gfCause})`);
+    logs.push(`• 부친 최종 영광: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
     logs.push(`• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`);
-    logs.push(`  - 계승 명예: +${Math.floor(fGlory / 10)} Glory (부친 명예의 1/10)`);
+    logs.push(`  - 계승 영광: +${Math.floor(fGlory / 10)} Glory (부친 영광의 1/10)`);
     if (fHateSaxons > 10) logs.push(`  - 계승 증오: 작센인에 대한 증오 Passion [${fHateSaxons}]`);
     if (fHateMoors > 10) logs.push(`  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fHateMoors}]`);
+    if (fHateDanes > 10) logs.push(`  - 계승 증오: 덴마크인에 대한 증오 Passion [${fHateDanes}]`);
+    if (fCruel > 0) logs.push(`  - 계승 기질: 무자비함(Cruel) 기질 +${fCruel} (캐릭터 시트 반영)`);
+    if (fHonorMod !== 0) logs.push(`  - 계승 명예 보정치: Honor Passion [${fHonorMod >= 0 ? '+' : ''}${fHonorMod}]`);
 
     setAncestorRollLog(logs);
     setAncestorApplied(false);
@@ -3326,6 +3334,12 @@ export default function FamilyWinter({ character, setCharacter }) {
         updated.traits.merciful = 20 - newCruel;
       }
 
+      // Inherit Honor modifier if father had any
+      if (fatherHonorModifier !== 0) {
+        updated.family.honor = (updated.family.honor || 16) + fatherHonorModifier;
+        updated.passions.honor = (updated.passions.honor || 16) + fatherHonorModifier;
+      }
+
       if (updated.family && updated.family.members) {
         updated.family.members = updated.family.members.map(m => {
           if (m.id === 'albert' || m.relation === '조부') {
@@ -3334,7 +3348,7 @@ export default function FamilyWinter({ character, setCharacter }) {
               lifeYears: `702~${grandfatherDeathYear}`,
               status: '사망',
               deathCause: grandfatherDeathCause,
-              note: `가문의 기틀을 세운 조부. ${grandfatherDeathCause}로 서거. 최종 명예 ${grandfatherGlory} Glory.`
+              note: `가문의 기틀을 세운 조부. ${grandfatherDeathCause}로 서거. 최종 영광 ${grandfatherGlory} Glory.`
             };
           }
           if (m.id === 'gerard' || m.relation === '부친') {
@@ -3343,7 +3357,7 @@ export default function FamilyWinter({ character, setCharacter }) {
               lifeYears: `724~${fatherDeathYear}`,
               status: '사망',
               deathCause: fatherDeathCause,
-              note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 명예 ${fatherGlory} Glory.`
+              note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 영광 ${fatherGlory} Glory.`
             };
           }
           return m;
@@ -3354,10 +3368,14 @@ export default function FamilyWinter({ character, setCharacter }) {
     });
 
     setAncestorApplied(true);
+    const inheritedGloryMsg = `\n(계승 영광: +${Math.floor(fatherGlory / 10)} Glory)`;
+    const inheritedHonorMsg = fatherHonorModifier !== 0 
+      ? `\n(계승 명예 보정: ${fatherHonorModifier >= 0 ? '+' : ''}${fatherHonorModifier} Honor)`
+      : '';
     const inheritedCruelMsg = fatherHates.cruel && fatherHates.cruel > 0 
       ? `\n(계승 잔혹성 기질: +${fatherHates.cruel} Cruel)`
       : '';
-    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!\n(계승 명예: +${Math.floor(fatherGlory / 10)} Glory)${inheritedCruelMsg}`);
+    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!${inheritedGloryMsg}${inheritedHonorMsg}${inheritedCruelMsg}`);
   };
 
   const handleFamilyChange = (field, value) => {
@@ -4227,7 +4245,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                             <div>
                               <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family.ancestor || '알베르 경 (Sir Albert)'})</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
-                                • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
+                                • 최종 영광: <strong>{grandfatherGlory} Glory</strong><br />
                                 • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
                                 • 사인: {grandfatherDeathCause}<br />
                                 • 누적 증오: 작센인 ({grandfatherHates.saxons}), 무어인 ({grandfatherHates.moors})
@@ -4236,7 +4254,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                             <div>
                               <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
-                                • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
+                                • 최종 영광: <strong>{fatherGlory} Glory</strong><br />
                                 • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
                                 • 사인: {fatherDeathCause}<br />
                                 • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
@@ -4514,7 +4532,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 </h4>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginTop: '4px', lineHeight: 1.4 }}>
                                   조부 {character.family.ancestor || '알베르 경 (Sir Albert)'}와 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
-                                  쌓아올린 명예의 1/10과 불굴의 신조, 이교도에 대한 분노가 당신에게 오롯이 계승됩니다.
+                                  쌓아올린 영광(Glory)의 1/10과 불굴의 신조, 이교도에 대한 분노가 당신에게 오롯이 계승됩니다.
                                 </p>
                               </div>
 
@@ -4522,7 +4540,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 <div>
                                   <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family.ancestor || '알베르 경 (Sir Albert)'})</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
-                                    • 최종 명예: <strong>{grandfatherGlory} Glory</strong><br />
+                                    • 최종 영광: <strong>{grandfatherGlory} Glory</strong><br />
                                     • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
                                     • 사인: {grandfatherDeathCause || '평화로운 임종'}<br />
                                     • 누적 증오: 작센인 ({grandfatherHates.saxons}), 무어인 ({grandfatherHates.moors})
@@ -4531,7 +4549,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 <div>
                                   <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-crimson)', fontSize: '0.86rem' }}>👨 부친 (Gerard 경)</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
-                                    • 최종 명예: <strong>{fatherGlory} Glory</strong><br />
+                                    • 최종 영광: <strong>{fatherGlory} Glory</strong><br />
                                     • 생몰년도: 724년 ~ {fatherDeathYear}년<br />
                                     • 사인: {fatherDeathCause || '평화로운 임종'}<br />
                                     • 누적 증오: 작센인 ({fatherHates.saxons}), 무어인 ({fatherHates.moors})
