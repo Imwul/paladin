@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
 import { greatFamilies } from '../data/lore';
 import FamilyTree from './FamilyTree';
@@ -62,18 +62,49 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [trainingApplied, setTrainingApplied] = useState(false);
 
   // 📜 조상 연대기 발전기 (Page 45-49) States
-  const [isAncestorGenOpen, setIsAncestorGenOpen] = useState(false);
-  const [ancestorRollLog, setAncestorRollLog] = useState([]);
-  const [grandfatherGlory, setGrandfatherGlory] = useState(2500);
-  const [grandfatherDeathYear, setGrandfatherDeathYear] = useState(747);
-  const [grandfatherDeathCause, setGrandfatherDeathCause] = useState('노환');
-  const [grandfatherHates, setGrandfatherHates] = useState({ saxons: 0, moors: 0 });
+  const initialChronicleState = (() => {
+    try {
+      const saved = localStorage.getItem('paladin_chronicle_state');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  })();
 
-  const [fatherGlory, setFatherGlory] = useState(2500);
-  const [fatherDeathYear, setFatherDeathYear] = useState(766);
-  const [fatherDeathCause, setFatherDeathCause] = useState('작센 원정 중 용맹 전사');
-  const [fatherHates, setFatherHates] = useState({ saxons: 0, moors: 0 });
-  const [ancestorApplied, setAncestorApplied] = useState(false);
+  const [isAncestorGenOpen, setIsAncestorGenOpen] = useState(
+    initialChronicleState.isAncestorGenOpen !== undefined ? initialChronicleState.isAncestorGenOpen : false
+  );
+  const [ancestorRollLog, setAncestorRollLog] = useState(
+    initialChronicleState.ancestorRollLog !== undefined ? initialChronicleState.ancestorRollLog : []
+  );
+  const [grandfatherGlory, setGrandfatherGlory] = useState(
+    initialChronicleState.grandfatherGlory !== undefined ? initialChronicleState.grandfatherGlory : 2500
+  );
+  const [grandfatherDeathYear, setGrandfatherDeathYear] = useState(
+    initialChronicleState.grandfatherDeathYear !== undefined ? initialChronicleState.grandfatherDeathYear : 747
+  );
+  const [grandfatherDeathCause, setGrandfatherDeathCause] = useState(
+    initialChronicleState.grandfatherDeathCause !== undefined ? initialChronicleState.grandfatherDeathCause : '노환'
+  );
+  const [grandfatherHates, setGrandfatherHates] = useState(
+    initialChronicleState.grandfatherHates !== undefined ? initialChronicleState.grandfatherHates : { saxons: 0, moors: 0 }
+  );
+
+  const [fatherGlory, setFatherGlory] = useState(
+    initialChronicleState.fatherGlory !== undefined ? initialChronicleState.fatherGlory : 2500
+  );
+  const [fatherDeathYear, setFatherDeathYear] = useState(
+    initialChronicleState.fatherDeathYear !== undefined ? initialChronicleState.fatherDeathYear : 766
+  );
+  const [fatherDeathCause, setFatherDeathCause] = useState(
+    initialChronicleState.fatherDeathCause !== undefined ? initialChronicleState.fatherDeathCause : '작센 원정 중 용맹 전사'
+  );
+  const [fatherHates, setFatherHates] = useState(
+    initialChronicleState.fatherHates !== undefined ? initialChronicleState.fatherHates : { saxons: 0, moors: 0 }
+  );
+  const [ancestorApplied, setAncestorApplied] = useState(
+    initialChronicleState.ancestorApplied !== undefined ? initialChronicleState.ancestorApplied : false
+  );
   const [showRefTables, setShowRefTables] = useState(false);
   const [showRefAging, setShowRefAging] = useState(false);
   const [showRefHarvest, setShowRefHarvest] = useState(false);
@@ -83,17 +114,93 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [showRefExperience, setShowRefExperience] = useState(false);
 
   // --- 신설: 인터랙티브 연대기용 추가 상태 ---
-  const [chronicleMode, setChronicleMode] = useState('interactive'); // 'interactive' | 'auto'
-  const [interactiveYear, setInteractiveYear] = useState(723);
-  const [interactiveStage, setInteractiveStage] = useState('idle'); // 'idle' | 'gf_running' | 'gf_dead' | 'f_running' | 'f_dead' | 'completed'
-  const [chronicleManualD20, setChronicleManualD20] = useState('');
-  const [currentYearRolled, setCurrentYearRolled] = useState(false);
-  const [currentYearResultText, setCurrentYearResultText] = useState('');
-  const [fSkipYearsUntil, setFSkipYearsUntil] = useState(0);
-  const [gfDead, setGfDead] = useState(false);
-  const [fatherDead, setFatherDead] = useState(false);
-  const [chronicleHistory, setChronicleHistory] = useState([]);
-  const [chroniclePendingRoll, setChroniclePendingRoll] = useState(null);
+  const [chronicleMode, setChronicleMode] = useState(
+    initialChronicleState.chronicleMode !== undefined ? initialChronicleState.chronicleMode : 'interactive'
+  );
+  const [interactiveYear, setInteractiveYear] = useState(
+    initialChronicleState.interactiveYear !== undefined ? initialChronicleState.interactiveYear : 723
+  );
+  const [interactiveStage, setInteractiveStage] = useState(
+    initialChronicleState.interactiveStage !== undefined ? initialChronicleState.interactiveStage : 'idle'
+  );
+  const [chronicleManualD20, setChronicleManualD20] = useState(
+    initialChronicleState.chronicleManualD20 !== undefined ? initialChronicleState.chronicleManualD20 : ''
+  );
+  const [currentYearRolled, setCurrentYearRolled] = useState(
+    initialChronicleState.currentYearRolled !== undefined ? initialChronicleState.currentYearRolled : false
+  );
+  const [currentYearResultText, setCurrentYearResultText] = useState(
+    initialChronicleState.currentYearResultText !== undefined ? initialChronicleState.currentYearResultText : ''
+  );
+  const [fSkipYearsUntil, setFSkipYearsUntil] = useState(
+    initialChronicleState.fSkipYearsUntil !== undefined ? initialChronicleState.fSkipYearsUntil : 0
+  );
+  const [gfDead, setGfDead] = useState(
+    initialChronicleState.gfDead !== undefined ? initialChronicleState.gfDead : false
+  );
+  const [fatherDead, setFatherDead] = useState(
+    initialChronicleState.fatherDead !== undefined ? initialChronicleState.fatherDead : false
+  );
+  const [chronicleHistory, setChronicleHistory] = useState(
+    initialChronicleState.chronicleHistory !== undefined ? initialChronicleState.chronicleHistory : []
+  );
+  const [chroniclePendingRoll, setChroniclePendingRoll] = useState(
+    initialChronicleState.chroniclePendingRoll !== undefined ? initialChronicleState.chroniclePendingRoll : null
+  );
+
+  // --- 연대기 상태 로컬스토리지 동기화 ---
+  useEffect(() => {
+    const stateToSave = {
+      isAncestorGenOpen,
+      chronicleMode,
+      interactiveYear,
+      interactiveStage,
+      ancestorRollLog,
+      grandfatherGlory,
+      grandfatherDeathYear,
+      grandfatherDeathCause,
+      grandfatherHates,
+      gfDead,
+      fatherGlory,
+      fatherDeathYear,
+      fatherDeathCause,
+      fatherHates,
+      fatherDead,
+      ancestorApplied,
+      currentYearRolled,
+      currentYearResultText,
+      fSkipYearsUntil,
+      chronicleHistory,
+      chroniclePendingRoll
+    };
+    try {
+      localStorage.setItem('paladin_chronicle_state', JSON.stringify(stateToSave));
+    } catch (e) {
+      console.error("Failed to save chronicle state to localStorage", e);
+    }
+  }, [
+    isAncestorGenOpen,
+    chronicleMode,
+    interactiveYear,
+    interactiveStage,
+    ancestorRollLog,
+    grandfatherGlory,
+    grandfatherDeathYear,
+    grandfatherDeathCause,
+    grandfatherHates,
+    gfDead,
+    fatherGlory,
+    fatherDeathYear,
+    fatherDeathCause,
+    fatherHates,
+    fatherDead,
+    ancestorApplied,
+    currentYearRolled,
+    currentYearResultText,
+    fSkipYearsUntil,
+    chronicleHistory,
+    chroniclePendingRoll
+  ]);
 
   // 연도별 이벤트 매핑
   // 연도별 이벤트 매핑
@@ -122,7 +229,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     744: "증조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
 
     745: "돈 드 라 로슈(Doon de la Roche)의 결혼 & 아키텐 공국 와이페르 승계: 돈 경이 토밀의 딸 오드구르와 결혼하여 아들 말랭그를 낳았고, 아키텐의 후놀트 공작이 포로로 잡혀 수도원으로 보내지며 아들 와이페르가 공작위에 즉위했습니다. 이와 동시에 부친 제라르(Gerard) 경이 증조부 고드프루아 경으로부터 기사직을 승계하며 혼례를 성취하셨습니다.",
-    746: "롤랑 경 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
+    746: "당신(플레이어 캐릭터)의 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 기사가 될 당신(플레이어)이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
     747: "롬바르디아 및 로마(Rome) 순례 동행: 세속의 명예를 내려놓고 롬바르디아(Lombardy)를 거쳐 몬테카시노(Monte Cassino) 수도원으로 귀의하려는 카를로만(Carloman) 공을 호위하며 성지 로마에 당도하여 엄숙한 면죄 성사를 받았습니다.",
     748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)]의 속죄 순례 및 그리포 반란: 베르니에(Bernier)와 베아트릭스(Beatrix) 부부가 속죄 순례 도중 무어인의 기습을 받아 포로로 감금되는 시련을 겪었습니다. [역사] 왕국의 반역자 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 탈출하였으며 타실로 3세(Tassilo III)가 바이에른 공작으로 취임했습니다.",
     749: "바이에른(Bavaria) 그리포 추격전: 바이에른으로 패주하여 아키텐 공작 바이에르(Waifer) 및 롬바르디아 국왕 아이스툴프(Aistulf)와 연대하려는 역도 그리포(Grifo) 왕자의 잔당을 토벌하기 위해 험난한 군사 작전에 종군했습니다.",
@@ -138,7 +245,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     759: "무훈시 [로렌 사람들(Les Lorrains)] 복수극 및 셉티마니아 완전 수복: 멧돼지 사냥 중 가문 원수에게 암살당한 베고(Bego) 백작의 복수극으로 프랑크 영내가 피로 물들었습니다. [역사] 피핀(Pepin) 국왕이 마침내 사라센 무어인(Moors)들을 한 명도 남김없이 몰아내어 남방 셉티마니아(Septimania)를 완전히 탈환했습니다.",
     760: "아키텐(Aquitaine) 대원정 개막 및 리무쟁(Limousin) 공성: 아키텐 공작 와이페르(Waifer)의 독립 시도를 분쇄하기 위해 샤를마뉴 왕자 및 피핀 국왕의 선봉으로 아키텐 영내 리무쟁(Limousin) 성을 포위 공성하여 함락시켰습니다. 쾰른의 란드리(Landri) 경을 모시고 파리로 귀국하는 길을 보좌했습니다.",
     761: "부르주(Bourges) 성채 포위 공략: 아키텐 정벌의 노른자위 거점인 부르주(Bourges)와 리모주(Limoges) 시를 완전히 장악하기 위해 기사단의 사다리 돌격을 감행해 적의 철옹성 방어벽을 깨부수고 승리했습니다.",
-    762: "아키텐(Aquitaine) 약탈 전초전 및 샤를마뉴 궁정: 아키텐의 잔당들을 압박하기 위해 국경지대 아르장통(Argenton)에 요새를 건설하고, 어린 롤랑의 대담한 당돌함을 왕실 연회에서 기쁨으로 나눴습니다.",
+    762: "아키텐(Aquitaine) 약탈 전초전 및 샤를마뉴 궁정: 아키텐의 잔당들을 압박하기 위해 국경지대 아르장통(Argenton)에 요새를 건설하고, 어린 롤랑(밀로의 아들)의 대담한 당돌함을 왕실 연회에서 기쁨으로 나눴습니다.",
     763: "쾰른 라 로슈(La Roche) 성곽 결사 사수: 배반자 토밀(Tomile)과 말랭그(Malingre)가 이끄는 대반란군의 삼중 포위망 속에 갇혀, 본대 지원군이 도착하기 전까지 밤낮으로 성곽에서 저항하며 요새를 지켰습니다.",
     764: "라 로슈(La Roche) 탈환 공성전 및 툴루즈 함락: 오베리(Auberi) 주교의 복수군에 참전해 라 로슈 성을 맹렬히 격파해 탈환하고 쾰른(Cologne)을 수복하였으며, 아키텐 와이페르 공작의 수도 툴루즈(Toulouse)를 최종 점령했습니다.",
     765: "오트페이유(Hautefeuille) 포위 공성전 및 작센 족장 브로히막스 격파: 쾰른의 평화를 위협하는 작센 군대를 요격하기 위해 오트페이유 공성전에서 목숨을 건 격전을 벌였으며, 국왕 피핀을 납치하려는 작센의 악랄한 족장 브로히막스(Brohimax) 세력을 참수 토벌했습니다.",
@@ -236,6 +343,9 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const startInteractiveChronicle = () => {
+    try {
+      localStorage.removeItem('paladin_chronicle_state');
+    } catch (e) {}
     setInteractiveStage('gf_running');
     setInteractiveYear(723);
     setGrandfatherGlory(2500);
@@ -258,6 +368,31 @@ export default function FamilyWinter({ character, setCharacter }) {
     setGfDead(false);
     setFatherDead(false);
     setChroniclePendingRoll(null);
+  };
+
+  const rollAndAdvanceAutoPassYear = () => {
+    saveChronicleHistory();
+    const yr = interactiveYear;
+    const event = getEventText(yr);
+    let logMsg = "";
+    
+    if (yr === 724) {
+      logMsg = `🏰 724년: [역사] ${event}\n  └ 🍼 올해는 가문의 큰 경사 — 훗날 기사가 될 부친 제라르(Gerard)께서 탄생하셨습니다! 증조부님은 영지를 지키며 이 기쁜 소식을 맞이하셨습니다.`;
+    } else if (yr === 726 || yr === 727) {
+      logMsg = `🏰 ${yr}년: [역사] ${event}\n  └ 📖 주목할 만한 사건 없음(No noteworthy events). 증조부님은 영지를 평온히 지키셨습니다.`;
+    } else if (yr === 730) {
+      logMsg = `🏰 730년: [역사] ${event}\n  └ 📖 역사적 평온기: 무훈시 [고프레]와 [오베리 드 부르고뉴]의 대사건이 있던 해입니다. 증조부님은 영지를 굳건히 수호하셨습니다.`;
+    } else if (yr === 733 || yr === 734) {
+      logMsg = `🏰 ${yr}년: [역사] ${event}\n  └ 📖 역사적 평온기: 무훈시 [도렐과 베통] 등의 사건이 있던 평화로운 시기입니다. 증조부님은 영지 치안을 다졌습니다.`;
+    }
+
+    setAncestorRollLog(prev => [...prev, logMsg]);
+
+    const nextYr = yr + 1;
+    setInteractiveYear(nextYr);
+    setCurrentYearRolled(false);
+    setCurrentYearResultText('');
+    setChronicleManualD20('');
   };
 
   const rollSingleYearInteractive = () => {
@@ -1237,11 +1372,11 @@ export default function FamilyWinter({ character, setCharacter }) {
             setFatherDeathYear(yr);
             setFatherDeathCause("전역사 (Illness)");
             setInteractiveStage('f_dead');
-            logMsg += `💀 무서운 군영 내 돌림병에 걸려 롤랑 경의 탄생 소식만을 듣고 서거하셨습니다.`;
-            yearOutcomeText = "사망: 군영 열병사 (롤랑 경 출생)";
+            logMsg += `💀 무서운 군영 내 돌림병에 걸려 아들(당신)의 탄생 소식만을 듣고 서거하셨습니다.`;
+            yearOutcomeText = "사망: 군영 열병사 (아들 탄생)";
           } else if (d20 <= 10) {
-            logMsg += `기쁜 롤랑 경의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`;
-            yearOutcomeText = "롤랑 경 출생 축하연 (전선 유지)";
+            logMsg += `기쁜 아들(당신)의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`;
+            yearOutcomeText = "아들 탄생 축하연 (전선 유지)";
           } else if (d20 <= 15) {
             setChroniclePendingRoll({
               type: 'f_combat_survival',
@@ -1261,7 +1396,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             yearOutcomeText = "알레마니아 피의 대숙청 및 잔혹성 기질 마킹";
           } else {
             setFatherGlory(prev => prev + 50);
-            logMsg += `마침내 롤랑 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`;
+            logMsg += `마침내 아들(당신)의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`;
             yearOutcomeText = "아들의 세례식 친히 참석 및 영적인 다짐 (+50 Glory)";
           }
         } else if (yr === 747) {
@@ -1759,8 +1894,8 @@ export default function FamilyWinter({ character, setCharacter }) {
             return;
           } else {
             setFatherGlory(prev => prev + 50);
-            logMsg += `👑 왕궁 기사단 훈련 중 어린 아들 롤랑이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`;
-            yearOutcomeText = "👑 가문 화해 및 롤랑의 어전 대담한 데뷔 축하 (+50 Glory)";
+            logMsg += `👑 왕궁 기사단 훈련 중 어린 롤랑(밀로의 아들)이 왕의 식탁에서 대담하게 고기를 훔쳐 왕을 감탄시키고, 밀로 백작 부부가 왕의 용서를 받아 화해하는 역사적 현장에 배석했습니다. (+50 Glory)`;
+            yearOutcomeText = "👑 밀로 부부 화해 및 롤랑의 어전 대담한 해프닝 배석 (+50 Glory)";
           }
         } else if (yr === 763) {
           logMsg = `🏰 763년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1874,7 +2009,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             setFatherDeathYear(yr);
             setFatherDeathCause("최후의 전사 (Combat)");
             setInteractiveStage('f_dead');
-            logMsg += `💀 아들 롤랑의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`;
+            logMsg += `💀 아들(당신)의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`;
             yearOutcomeText = "장렬한 전사: 아들 기사식을 앞두고 에그르몽 결전 전사";
           } else if (d20 <= 10) {
             logMsg += `황실 가드 임무를 다했습니다.`;
@@ -2019,7 +2154,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       "🎉 [연대기 결과 요약]",
       `• 증조부 최종 명예: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, 사인: ${grandfatherDeathCause || '평화로운 영면'})`,
       `• 부친 최종 명예: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
-      `• 조상으로부터 플레이어 캐릭터(롤랑 경)에게 계승될 유산:`,
+      `• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`,
       `  - 계승 명예: +${Math.floor(finalFGlory / 10)} Glory (부친 명예의 1/10)`,
       fatherHates.saxons > 10 ? `  - 계승 증오: 작센인에 대한 증오 Passion [${fatherHates.saxons}]` : null,
       fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null
@@ -2926,7 +3061,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     logs.push("🎉 [연대기 결과 요약]");
     logs.push(`• 증조부 최종 명예: ${gfGlory} Glory (생존기간: 702~${gfDeathYr}, 사인: ${gfCause})`);
     logs.push(`• 부친 최종 명예: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
-    logs.push(`• 조상으로부터 플레이어 캐릭터(롤랑 경)에게 계승될 유산:`);
+    logs.push(`• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`);
     logs.push(`  - 계승 명예: +${Math.floor(fGlory / 10)} Glory (부친 명예의 1/10)`);
     if (fHateSaxons > 10) logs.push(`  - 계승 증오: 작센인에 대한 증오 Passion [${fHateSaxons}]`);
     if (fHateMoors > 10) logs.push(`  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fHateMoors}]`);
@@ -4001,7 +4136,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                       type="button"
                                       className="btn-medieval btn-medieval-primary"
                                       style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px', background: 'var(--color-success)', borderColor: 'var(--color-success)' }}
-                                      onClick={rollSingleYearInteractive}
+                                      onClick={rollAndAdvanceAutoPassYear}
                                     >
                                       ✅ {interactiveYear}년 자동 통과
                                     </button>
@@ -4090,7 +4225,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 </h4>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginTop: '4px', lineHeight: 1.4 }}>
                                   증조부 {character.family.ancestor || '고드프루아 경 (Sir Godefroy)'}와 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
-                                  쌓아올린 명예의 1/10과 불굴의 신조, 이교도에 대한 분노가 롤랑 경에게 오롯이 계승됩니다.
+                                  쌓아올린 명예의 1/10과 불굴의 신조, 이교도에 대한 분노가 당신에게 오롯이 계승됩니다.
                                 </p>
                               </div>
 
