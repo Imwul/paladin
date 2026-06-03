@@ -243,10 +243,12 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       saveChronicleHistory();
 
-    let d20 = parseInt(chronicleManualD20);
-    if (isNaN(d20) || d20 < 1 || d20 > 20) {
+    const manualInputs = chronicleManualD20.split(/[\s,]+/).map(x => parseInt(x)).filter(x => !isNaN(x) && x >= 1 && x <= 20);
+    let d20 = manualInputs[0];
+    if (d20 === undefined) {
       d20 = Math.floor(Math.random() * 20) + 1;
     }
+    const secondManualD20 = manualInputs[1];
 
     const rollD20 = () => Math.floor(Math.random() * 20) + 1;
     const rollD6 = () => Math.floor(Math.random() * 6) + 1;
@@ -258,7 +260,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     if (interactiveStage === 'gf_running') {
       const runGfCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = chronicleManualD20 ? d20 : rollD20();
+        const rollVal = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -311,7 +313,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
           
-          const survivalRoll = chronicleManualD20 ? d20 : rollD20();
+          const survivalRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
           let sDead = false;
           let sGlory = 25;
           let sCause = "";
@@ -563,7 +565,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `기사단 후방 보급을 호위했습니다.`;
           yearOutcomeText = "보급 호위 완료 (전투 불참)";
         } else {
-          const pRoll = rollD20();
+          const pRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
           if (pRoll === 1) {
             setGfDead(true);
             setGrandfatherDeathYear(yr);
@@ -962,7 +964,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     } 
     else if (interactiveStage === 'f_running') {
       const runFCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
-        const rollVal = chronicleManualD20 ? d20 : rollD20();
+        const rollVal = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
         const modifiedRoll = rollVal + battleModifier;
         let dead = false;
         let gloryGained = standardGlory * (isVictor ? 2 : 1);
@@ -1015,7 +1017,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
           
-          const survivalRoll = chronicleManualD20 ? d20 : rollD20();
+          const survivalRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
           let sDead = false;
           let sGlory = 25;
           let sCause = "";
@@ -3736,14 +3738,13 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid rgba(179,143,67,0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력 (1~20):</span>
+                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력:</span>
                                     <input
-                                      type="number"
-                                      min={1} max={20}
-                                      placeholder="비워두면 랜덤"
+                                      type="text"
+                                      placeholder="예: 15 또는 15, 8"
                                       value={chronicleManualD20}
                                       onChange={e => setChronicleManualD20(e.target.value)}
-                                      style={{ width: '100px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                      style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
                                     />
                                   </div>
                                   <button
@@ -3756,7 +3757,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   </button>
                                 </div>
                                 <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
+                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다. (2회 판정이 필요한 경우 '15, 8' 형태로 입력 가능)
                                 </span>
                               </div>
                             )
