@@ -93,6 +93,7 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [gfDead, setGfDead] = useState(false);
   const [fatherDead, setFatherDead] = useState(false);
   const [chronicleHistory, setChronicleHistory] = useState([]);
+  const [chroniclePendingRoll, setChroniclePendingRoll] = useState(null);
 
   // 연도별 이벤트 매핑
   // 연도별 이벤트 매핑
@@ -121,7 +122,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     744: "조조부 고드프루아 경의 최후 원정과 은퇴: 왕실에 잠입한 아키텐 공작 후놀트(Hunald)의 간첩들을 적발해 참수하고, 왕국 국경을 침범한 작센인(Saxons)들을 토벌하여 영예로운 무공 훈장을 수여받으며 평생의 기사 현역을 매듭지었습니다.",
 
     745: "부친 제라르(Gerard) 경의 정식 혼례와 왕실 공인: 조부 고드프루아 경의 은퇴와 함께 기사 직위를 계승받고, 왕실과 가문의 번영을 다지기 위해 가문 간의 결합을 성취하여 영광의 기틀을 닦으셨습니다.",
-    746: "롤랑 경(Sir Roland) 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
+    746: "롤랑 경 탄생 및 알레마니아 피의 의무: 가문의 미래이자 위대한 성기사가 될 롤랑 경이 탄생했습니다. [역사] 궁재 카를로만(Carloman)의 명에 따라 알레마니아(Alemannia) 반란 귀족들을 처단하는 냉혹한 작전에 종군하여 반역자들을 엄벌했습니다.",
     747: "롬바르디아 및 로마(Rome) 순례 동행: 세속의 명예를 내려놓고 롬바르디아(Lombardy)를 거쳐 몬테카시노(Monte Cassino) 수도원으로 귀의하려는 카를로만(Carloman) 공을 호위하며 성지 로마에 당도하여 엄숙한 면죄 성사를 받았습니다.",
     748: "무훈시 [라울 드 캉브레(Raoul de Cambrai)]의 속죄 순례 및 그리포 반란: 베르니에(Bernier)와 베아트릭스(Beatrix) 부부가 속죄 순례 도중 무어인의 기습을 받아 포로로 감금되는 시련을 겪었습니다. [역사] 왕국의 반역자 그리포(Grifo) 왕자가 바이에른(Bavaria)으로 탈출하였으며 타실로 3세(Tassilo III)가 바이에른 공작으로 취임했습니다.",
     749: "바이에른(Bavaria) 그리포 추격전: 바이에른으로 패주하여 아키텐 공작 바이에르(Waifer) 및 롬바르디아 국왕 아이스툴프(Aistulf)와 연대하려는 역도 그리포(Grifo) 왕자의 잔당을 토벌하기 위해 험난한 군사 작전에 종군했습니다.",
@@ -137,7 +138,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     759: "무훈시 [로렌 사람들(Les Lorrains)] 복수극 및 셉티마니아 완전 수복: 멧돼지 사냥 중 가문 원수에게 암살당한 베고(Bego) 백작의 복수극으로 프랑크 영내가 피로 물들었습니다. [역사] 피핀(Pepin) 국왕이 마침내 사라센 무어인(Moors)들을 한 명도 남김없이 몰아내어 남방 셉티마니아(Septimania)를 완전히 탈환했습니다.",
     760: "아키텐(Aquitaine) 대원정 개막 및 리무쟁(Limousin) 공성: 아키텐 공작 와이페르(Waifer)의 독립 시도를 분쇄하기 위해 샤를마뉴 왕자 및 피핀 국왕의 선봉으로 아키텐 영내 리무쟁(Limousin) 성을 포위 공성하여 함락시켰습니다. 쾰른의 란드리(Landri) 경을 모시고 파리로 귀국하는 길을 보좌했습니다.",
     761: "부르주(Bourges) 성채 포위 공략: 아키텐 정벌의 노른자위 거점인 부르주(Bourges)와 리모주(Limoges) 시를 완전히 장악하기 위해 기사단의 사다리 돌격을 감행해 적의 철옹성 방어벽을 깨부수고 승리했습니다.",
-    762: "아키텐(Aquitaine) 약탈 전초전 및 샤를마뉴 궁정: 아키텐의 잔당들을 압박하기 위해 국경지대 아르장통(Argenton)에 요새를 건설하고, 어린 롤랑(Roland)의 대담한 당돌함을 왕실 연회에서 기쁨으로 나눴습니다.",
+    762: "아키텐(Aquitaine) 약탈 전초전 및 샤를마뉴 궁정: 아키텐의 잔당들을 압박하기 위해 국경지대 아르장통(Argenton)에 요새를 건설하고, 어린 롤랑의 대담한 당돌함을 왕실 연회에서 기쁨으로 나눴습니다.",
     763: "쾰른 라 로슈(La Roche) 성곽 결사 사수: 배반자 토밀(Tomile)과 말랭그(Malingre)가 이끄는 대반란군의 삼중 포위망 속에 갇혀, 본대 지원군이 도착하기 전까지 밤낮으로 성곽에서 저항하며 요새를 지켰습니다.",
     764: "라 로슈(La Roche) 탈환 공성전 및 툴루즈 함락: 오베리(Auberi) 주교의 복수군에 참전해 라 로슈 성을 맹렬히 격파해 탈환하고 쾰른(Cologne)을 수복하였으며, 아키텐 와이페르 공작의 수도 툴루즈(Toulouse)를 최종 점령했습니다.",
     765: "오트페이유(Hautefeuille) 포위 공성전 및 작센 족장 브로히막스 격파: 쾰른의 평화를 위협하는 작센 군대를 요격하기 위해 오트페이유 공성전에서 목숨을 건 격전을 벌였으며, 국왕 피핀을 납치하려는 작센의 악랄한 족장 브로히막스(Brohimax) 세력을 참수 토벌했습니다.",
@@ -171,7 +172,8 @@ export default function FamilyWinter({ character, setCharacter }) {
       currentYearRolled,
       currentYearResultText,
       fSkipYearsUntil,
-      chronicleManualD20
+      chronicleManualD20,
+      chroniclePendingRoll
     };
     setChronicleHistory(prev => [...prev, snapshot]);
   };
@@ -197,6 +199,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setCurrentYearResultText(prev.currentYearResultText);
     setFSkipYearsUntil(prev.fSkipYearsUntil);
     setChronicleManualD20(prev.chronicleManualD20);
+    setChroniclePendingRoll(prev.chroniclePendingRoll);
   };
 
   const handleGapYearInteractive = () => {
@@ -230,6 +233,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setChronicleHistory([]);
     setGfDead(false);
     setFatherDead(false);
+    setChroniclePendingRoll(null);
   };
 
   const rollSingleYearInteractive = () => {
@@ -243,14 +247,307 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       saveChronicleHistory();
 
-    const manualInputs = chronicleManualD20.split(/[\s,]+/).map(x => parseInt(x)).filter(x => !isNaN(x) && x >= 1 && x <= 20);
-    let d20 = manualInputs[0];
-    if (d20 === undefined) {
-      d20 = Math.floor(Math.random() * 20) + 1;
-    }
-    const secondManualD20 = manualInputs[1];
+      if (chroniclePendingRoll) {
+        const pending = { ...chroniclePendingRoll };
+        setChroniclePendingRoll(null);
 
-    const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+        let d20 = parseInt(chronicleManualD20);
+        if (isNaN(d20) || d20 < 1 || d20 > 20) {
+          d20 = Math.floor(Math.random() * 20) + 1;
+        }
+
+        const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+        const rollD6 = () => Math.floor(Math.random() * 6) + 1;
+        const rollD3 = () => Math.floor(Math.random() * 3) + 1;
+
+        let logMsg = pending.logPrefix;
+        let yearOutcomeText = "";
+
+        if (pending.type === 'gf_combat_survival') {
+          const runGfCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
+            const rollVal = d20;
+            const modifiedRoll = rollVal + battleModifier;
+            let dead = false;
+            let gloryGained = standardGlory * (isVictor ? 2 : 1);
+            let cause = "";
+            let rollDescText = "";
+
+            if (modifiedRoll <= 0) {
+              dead = true;
+              gloryGained += 1000;
+              cause = "전투 중 장렬한 전사 (Combat)";
+              rollDescText = `🗡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 전공을 치하받으며 장렬히 전사하셨습니다! (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 1) {
+              dead = true;
+              cause = "전투 중 전사 (Combat)";
+              rollDescText = `🗡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 전투 중 아쉽게 전사하셨습니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 2) {
+              dead = true;
+              const retiredYears = rollD20();
+              cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+              rollDescText = `🏥 주사위 ${rollVal}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 3) {
+              dead = true;
+              cause = "포로 압송 및 실종 (Captured)";
+              rollDescText = `🔗 주사위 ${rollVal}(보정 ${modifiedRoll}) - 포로로 잡혀 적국으로 압송되었으며 영영 돌아오지 못했습니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll <= 5) {
+              gloryGained += 100;
+              rollDescText = `✨ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 기적적으로 생존하고 전장에 큰 기여를 한 영웅적 전공을 세웠습니다! (+${gloryGained} Glory)`;
+            } else {
+              rollDescText = `🛡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 치열한 전투 속에서 무사히 살아남으셨습니다. (+${gloryGained} Glory)`;
+            }
+
+            return { dead, gloryGained, cause, rollDescText };
+          };
+
+          const res = runGfCombatSurvival(pending.eventName, pending.battleModifier, pending.isVictor, pending.standardGlory);
+          logMsg += res.rollDescText;
+
+          if (res.dead) {
+            setGfDead(true);
+            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathCause(res.cause);
+            setInteractiveStage('gf_dead');
+            yearOutcomeText = `사망: ${res.cause}`;
+          } else {
+            setGrandfatherGlory(prev => prev + res.gloryGained);
+            if (pending.hateEnemy) {
+              const hVal = rollD3();
+              if (pending.hateEnemy === 'saxons') setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
+              else if (pending.hateEnemy === 'moors') setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+              logMsg += `\n  └ [증오 획득] ${pending.hateEnemy === 'saxons' ? '작센인' : '무어인'}에 대한 증오 +${hVal}`;
+              yearOutcomeText = `${pending.hateEnemy === 'saxons' ? '작센' : '무어'} 전투 생존 및 증오 +${hVal} 획득 (+${res.gloryGained} Glory)`;
+            } else {
+              yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+            }
+
+            if (pending.customOutcome === 'cruel_trait') {
+              logMsg += "\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) 1d6 기질 획득!";
+              yearOutcomeText = `아비뇽 징벌 공방전 승리 및 복수 기질 획득 (+${res.gloryGained} Glory)`;
+            } else if (pending.customOutcome === 'birth_gift') {
+              logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
+              yearOutcomeText = "셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+${res.gloryGained} Glory)";
+            } else if (pending.customOutcome === 'danes_hate') {
+              logMsg += "\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노(Hate Danes 1d6)를 품었습니다!";
+              yearOutcomeText = "덴마크 성벽 사수 및 덴마크 증오 획득 (+${res.gloryGained} Glory)";
+            }
+          }
+        } 
+        else if (pending.type === 'gf_raid_survival') {
+          let sDead = false;
+          let sGlory = 25;
+          let sCause = "";
+          let sLog = "";
+
+          if (d20 === 1) {
+            sDead = true;
+            sCause = `${pending.enemyName} 습격 방어 중 전사`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 안타깝게도 밀려오는 적들을 막아서다 격전 중 장렬히 전사하셨습니다.`;
+          } else if (d20 === 2) {
+            sDead = true;
+            const retiredYears = rollD20();
+            sCause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 불구가 되는 중상을 입어 은퇴 후 수도원에 귀의합니다. ${retiredYears}년 뒤 조용히 영면에 드십니다.`;
+          } else if (d20 === 3) {
+            sDead = true;
+            sCause = `포로 압송 및 실종`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 적들의 포로가 되어 머나먼 이교의 땅으로 납치되었으며 끝내 돌아오지 못했습니다.`;
+          } else if (d20 <= 5) {
+            sGlory += 100;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 기적적으로 습격의 대장을 척살하는 위대한 영웅적 무훈을 세우며 살아남았습니다! (+${sGlory} Glory)`;
+          } else {
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
+          }
+
+          const hVal = rollD3();
+          setGrandfatherGlory(prev => prev + sGlory);
+          if (sDead) {
+            setGfDead(true);
+            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathCause(sCause);
+            setInteractiveStage('gf_dead');
+            yearOutcomeText = `사망: ${sCause}`;
+          } else {
+            if (pending.enemyName === "Saxons") setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
+            else setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+            sLog += ` (이교도 증오 +${hVal} 획득)`;
+            yearOutcomeText = `평화로운 국경 방어 성공 (+${sGlory} Glory)`;
+          }
+          logMsg += "\n" + sLog;
+        }
+        else if (pending.type === 'gf_poitiers') {
+          if (d20 === 1) {
+            setGfDead(true);
+            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
+            setInteractiveStage('gf_dead');
+            setGrandfatherGlory(prev => prev + 1400);
+            logMsg += `🗡️ 포아티에 주사위 ${d20} - 전설적인 전공을 기사단에 남기며 장렬히 전사하셨습니다! (+1400 Glory)`;
+            yearOutcomeText = "전사: 포아티에 전투 장렬한 전사 (+1400 Glory)";
+          } else if (d20 <= 11) {
+            setGfDead(true);
+            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
+            setInteractiveStage('gf_dead');
+            setGrandfatherGlory(prev => prev + 400);
+            logMsg += `🗡️ 포아티에 주사위 ${d20} - 전투 중 영예롭게 전사하셨습니다. (+400 Glory)`;
+            yearOutcomeText = "전사: 포아티에 격전 중 전사 (+400 Glory)";
+          } else if (d20 === 12) {
+            setGfDead(true);
+            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathCause("스페인 압송 포로 (Captured)");
+            setInteractiveStage('gf_dead');
+            setGrandfatherGlory(prev => prev + 400);
+            logMsg += `🔗 포아티에 주사위 ${d20} - 포로로 잡혀 무어인의 땅(스페인)으로 압송되어 소식이 끊겼습니다. (+400 Glory)`;
+            yearOutcomeText = "포로: 무어인 땅으로 압송 실종 (+400 Glory)";
+          } else if (d20 === 13) {
+            setGrandfatherGlory(prev => prev + 500);
+            const hVal = rollD3();
+            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+            logMsg += `✨ 포아티에 주사위 ${d20} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal})`;
+            yearOutcomeText = `영웅: 포아티에 돌격 전공 획득 (+500 Glory, 무어 증오 +${hVal})`;
+          } else if (d20 <= 19) {
+            setGrandfatherGlory(prev => prev + 400);
+            const hVal = rollD3();
+            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+            logMsg += `🛡️ 포아티에 주사위 ${d20} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal})`;
+            yearOutcomeText = `승전: 투르-포아티에 승전 생존 (+400 Glory, 무어 증오 +${hVal})`;
+          } else {
+            setGrandfatherGlory(prev => prev + 900);
+            const hVal = rollD3();
+            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+            logMsg += `👑 포아티에 주사위 ${d20} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal})`;
+            yearOutcomeText = `👑 불멸의 무공: 적장 압둘 라흐만 결투 처단 (+900 Glory, 무어 증오 +${hVal})`;
+          }
+        }
+        else if (pending.type === 'f_combat_survival') {
+          const runFCombatSurvival = (eventName, battleModifier = 0, isVictor = true, standardGlory = 100) => {
+            const rollVal = d20;
+            const modifiedRoll = rollVal + battleModifier;
+            let dead = false;
+            let gloryGained = standardGlory * (isVictor ? 2 : 1);
+            let cause = "";
+            let rollDescText = "";
+
+            if (modifiedRoll <= 0) {
+              dead = true;
+              gloryGained += 1000;
+              cause = "전투 중 장렬한 전사 (Combat)";
+              rollDescText = `🗡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 전공을 치하받으며 장렬히 전사하셨습니다! (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 1) {
+              dead = true;
+              cause = "전투 중 전사 (Combat)";
+              rollDescText = `🗡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 전투 중 아쉽게 전사하셨습니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 2) {
+              dead = true;
+              const retiredYears = rollD20();
+              cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+              rollDescText = `🏥 주사위 ${rollVal}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll === 3) {
+              dead = true;
+              cause = "포로 압송 및 실종 (Captured)";
+              rollDescText = `🔗 주사위 ${rollVal}(보정 ${modifiedRoll}) - 포로로 잡혀 적국으로 압송되었으며 영영 돌아오지 못했습니다. (+${gloryGained} Glory)`;
+            } else if (modifiedRoll <= 5) {
+              gloryGained += 100;
+              rollDescText = `✨ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 기적적으로 생존하고 전장에 큰 기여를 한 영웅적 전공을 세웠습니다! (+${gloryGained} Glory)`;
+            } else {
+              rollDescText = `🛡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 치열한 전투 속에서 무사히 살아남으셨습니다. (+${gloryGained} Glory)`;
+            }
+
+            return { dead, gloryGained, cause, rollDescText };
+          };
+
+          const res = runFCombatSurvival(pending.eventName, pending.battleModifier, pending.isVictor, pending.standardGlory);
+          logMsg += res.rollDescText;
+
+          if (res.dead) {
+            setFatherDead(true);
+            setFatherDeathYear(pending.yr);
+            setFatherDeathCause(res.cause);
+            setInteractiveStage('f_dead');
+            yearOutcomeText = `사망: ${res.cause}`;
+          } else {
+            setFatherGlory(prev => prev + res.gloryGained);
+            if (pending.hateEnemy) {
+              const hVal = rollD3();
+              if (pending.hateEnemy === 'saxons') setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
+              else if (pending.hateEnemy === 'moors') setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+              else if (pending.hateEnemy === 'danes') setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
+              logMsg += `\n  └ [증오 획득] ${pending.hateEnemy === 'saxons' ? '작센인' : pending.hateEnemy === 'moors' ? '무어인' : '덴마크 바이킹'}에 대한 증오 +${hVal}`;
+              yearOutcomeText = `${pending.hateEnemy === 'saxons' ? '작센' : pending.hateEnemy === 'moors' ? '무어' : '바이킹'} 전투 생존 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
+            } else {
+              yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
+            }
+
+            if (pending.customOutcome === 'saxons_hate_d6') {
+              const hVal = rollD6();
+              setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
+              logMsg += `\n  └ [증오 획득] 작센인에 대한 극심한 증오 +${hVal}`;
+              yearOutcomeText = `작센 격전 생존 및 극심한 증오 +${hVal} (+${res.gloryGained} Glory)`;
+            } else if (pending.customOutcome === 'viviens_baptism') {
+              setFatherGlory(prev => prev + 25);
+              logMsg += `\n  └ ⛪ 이교도 귀족 위비앙 부부의 역사적인 기독교 세례 성사에서 가문의 명예 하객 대열을 호위하셨습니다! (+25 Glory)`;
+              yearOutcomeText = `위비앙 세례식 가문 호위 및 대성당 참석 (+75 Glory)`;
+            }
+          }
+        }
+        else if (pending.type === 'f_raid_survival') {
+          let sDead = false;
+          let sGlory = 25;
+          let sCause = "";
+          let sLog = "";
+
+          if (d20 === 1) {
+            sDead = true;
+            sCause = `${pending.enemyName} 습격 방어 중 전사`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 안타깝게도 밀려오는 적들을 막아서다 격전 중 장렬히 전사하셨습니다.`;
+          } else if (d20 === 2) {
+            sDead = true;
+            const retiredYears = rollD20();
+            sCause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 불구가 되는 중상을 입어 은퇴 후 수도원에 귀의합니다. ${retiredYears}년 뒤 조용히 영면에 드십니다.`;
+          } else if (d20 === 3) {
+            sDead = true;
+            sCause = `포로 압송 및 실종`;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 적들의 포로가 되어 머나먼 이교의 땅으로 납치되었으며 끝내 돌아오지 못했습니다.`;
+          } else if (d20 <= 5) {
+            sGlory += 100;
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 기적적으로 습격의 대장을 척살하는 위대한 영웅적 무훈을 세우며 살아남았습니다! (+${sGlory} Glory)`;
+          } else {
+            sLog = `    └ [습격 수비전 주사위 ${d20}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
+          }
+
+          const hVal = rollD3();
+          setFatherGlory(prev => prev + sGlory);
+          if (sDead) {
+            setFatherDead(true);
+            setFatherDeathYear(pending.yr);
+            setFatherDeathCause(sCause);
+            setInteractiveStage('f_dead');
+            yearOutcomeText = `사망: ${sCause}`;
+          } else {
+            if (pending.enemyName === "Saxons") setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
+            else if (pending.enemyName === "Moors") setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
+            else setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
+            sLog += ` (이교도 증오 +${hVal} 획득)`;
+            yearOutcomeText = `평화로운 국경 방어 성공 (+${sGlory} Glory)`;
+          }
+          logMsg += "\n" + sLog;
+        }
+
+        setAncestorRollLog(prev => [...prev, logMsg]);
+        setCurrentYearRolled(true);
+        setCurrentYearResultText(yearOutcomeText);
+        setChronicleManualD20('');
+        return;
+      }
+
+      let d20 = parseInt(chronicleManualD20);
+      if (isNaN(d20) || d20 < 1 || d20 > 20) {
+        d20 = Math.floor(Math.random() * 20) + 1;
+      }
+
+      const rollD20 = () => Math.floor(Math.random() * 20) + 1;
     const rollD6 = () => Math.floor(Math.random() * 6) + 1;
     const rollD3 = () => Math.floor(Math.random() * 3) + 1;
 
@@ -311,45 +608,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           gloryGained = 50;
           rollDescText = `✨ [주사위 ${d20}] - 봉토를 훌륭히 순찰하고 주군의 신임을 받아 기념비적이고 명예로운 무훈을 올렸습니다! (+50 Glory)`;
         } else {
-          rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
-          
-          const survivalRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
-          let sDead = false;
-          let sGlory = 25;
-          let sCause = "";
-          let sLog = "";
-
-          if (survivalRoll === 1) {
-            sDead = true;
-            sCause = `${enemyName} 습격 방어 중 전사`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 안타깝게도 밀려오는 적들을 막아서다 격전 중 장렬히 전사하셨습니다.`;
-          } else if (survivalRoll === 2) {
-            sDead = true;
-            const retiredYears = rollD20();
-            sCause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 불구가 되는 중상을 입어 은퇴 후 수도원에 귀의합니다. ${retiredYears}년 뒤 조용히 영면에 드십니다.`;
-          } else if (survivalRoll === 3) {
-            sDead = true;
-            sCause = `포로 압송 및 실종`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 적들의 포로가 되어 머나먼 이교의 땅으로 납치되었으며 끝내 돌아오지 못했습니다.`;
-          } else if (survivalRoll <= 5) {
-            sGlory += 100;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 기적적으로 습격의 대장을 척살하는 위대한 영웅적 무훈을 세우며 살아남았습니다! (+${sGlory} Glory)`;
-          } else {
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
-          }
-
-          const hVal = rollD3();
-          gloryGained += sGlory;
-          if (sDead) {
-            dead = true;
-            cause = sCause;
-          } else {
-            if (enemyName === "Saxons") setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            else setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            sLog += ` (이교도 증오 +${hVal} 획득)`;
-          }
-          rollDescText += `\n` + sLog;
+          return { isRaidPending: true };
         }
 
         return { dead, gloryGained, cause, rollDescText };
@@ -357,28 +616,36 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       const event = ANCESTOR_EVENTS[yr];
       if (yr === 723) {
-        logMsg = `🏰 723년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 <= 10) {
-          logMsg += `후방 수비대(Garrison) 의무를 안전하게 수행했습니다.`;
+          logMsg = `🏰 723년: [역사] ${event}\n  └ [주사위 ${d20}] - 후방 수비대(Garrison) 의무를 안전하게 수행했습니다.`;
           yearOutcomeText = "후방 수비대 의무 완수 (무사 생존)";
         } else {
-          const res = runGfCombatSurvival(event, 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `작센 전투 생존 및 작센 증오 +${hVal} 획득 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 723,
+            firstRoll: d20,
+            logPrefix: `🏰 723년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 작센 습격전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 724) {
         const res = runGfOrdinaryYear(event, "Saxons");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'gf_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 ${yr}년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 작센 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Saxons'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 724년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -391,35 +658,43 @@ export default function FamilyWinter({ character, setCharacter }) {
           yearOutcomeText = `평화로운 국경 방어 성공 (+${res.gloryGained} Glory)`;
         }
       } else if (yr === 725) {
-        logMsg = `🏰 725년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 행군 도중 돌발적인 질병으로 급거 서거하셨습니다.`;
+          logMsg = `🏰 725년: [역사] ${event}\n  └ 💀 행군 도중 돌발적인 질병으로 급거 서거하셨습니다.`;
           yearOutcomeText = "사망: 질병사";
         } else if (d20 <= 10) {
-          logMsg += `후방 성채 경계 근무를 수행했습니다.`;
+          logMsg = `🏰 725년: [역사] ${event}\n  └ 후방 성채 경계 근무를 수행했습니다.`;
           yearOutcomeText = "후방 성채 수비 완료";
         } else {
-          const res = runGfCombatSurvival(event, 0, false, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `\n  └ [증오 획득] 무어인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `오툉 포위 공방전 결사 생존, 무어 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 725,
+            firstRoll: d20,
+            logPrefix: `🏰 725년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 오툉 포위 공방전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: false,
+            standardGlory: 50,
+            hateEnemy: 'moors'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 726 || yr === 727) {
         const res = runGfOrdinaryYear(event, "Saxons");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'gf_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 ${yr}년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 작센 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Saxons'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 ${yr}년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -432,90 +707,94 @@ export default function FamilyWinter({ character, setCharacter }) {
           yearOutcomeText = `봉토 관리 및 순찰 완료 (+${res.gloryGained} Glory)`;
         }
       } else if (yr === 728) {
-        logMsg = `🏰 728년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("사고 (Accident)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 불의의 마차 낙마 사고로 서거하셨습니다.`;
+          logMsg = `🏰 728년: [역사] ${event}\n  └ 💀 불의의 마차 낙마 사고로 서거하셨습니다.`;
           yearOutcomeText = "사망: 낙마 사고";
         } else if (d20 <= 10) {
-          logMsg += `후방 영지 보급 호위를 전담했습니다.`;
+          logMsg = `🏰 728년: [역사] ${event}\n  └ 후방 영지 보급 호위를 전담했습니다.`;
           yearOutcomeText = "보급 호위 의무 완수";
         } else if (d20 <= 15) {
-          const res = runGfCombatSurvival(event + " (오도 공작 응징전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `아키텐 결전 참전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 728,
+            firstRoll: d20,
+            logPrefix: `🏰 728년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 아키텐 결전(오도 공작 응징전)에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (북방 작센전)", 0, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `북방 작센 대공세 대승리 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 728,
+            firstRoll: d20,
+            logPrefix: `🏰 728년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 북방 작센 대공세에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 729) {
-        logMsg = `🏰 729년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("사냥 사고 (Hunting Accident)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 사냥 중 멧돼지의 기습을 받아 서거하셨습니다.`;
+          logMsg = `🏰 729년: [역사] ${event}\n  └ 💀 사냥 중 멧돼지의 기습을 받아 서거하셨습니다.`;
           yearOutcomeText = "사망: 멧돼지 습격 사고";
         } else if (d20 <= 10) {
-          logMsg += `성벽 경계 및 보초 근무를 수행했습니다.`;
+          logMsg = `🏰 729년: [역사] ${event}\n  └ 성벽 경계 및 보초 근무를 수행했습니다.`;
           yearOutcomeText = "성벽 경계 근무 완수";
         } else if (d20 <= 15) {
-          const res = runGfCombatSurvival(event + " (Vauclere 전투)", -1, false, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `Vauclere 격전 극적 생존 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 729,
+            firstRoll: d20,
+            logPrefix: `🏰 729년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - Vauclere 전투에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: false,
+            standardGlory: 100,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (Barbel Tower 공방전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `바르벨 타워 공성전 영웅적 생존 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 729,
+            firstRoll: d20,
+            logPrefix: `🏰 729년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - Barbel Tower 공방전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 730) {
         const res = runGfOrdinaryYear(event, "Saxons");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'gf_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 ${yr}년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 작센 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Saxons'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 730년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -528,90 +807,64 @@ export default function FamilyWinter({ character, setCharacter }) {
           yearOutcomeText = `국경 평화 경호 및 역사 무훈 사수 (+${res.gloryGained} Glory)`;
         }
       } else if (yr === 731) {
-        logMsg = `🏰 731년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 군영 내 전염병으로 돌연 서거하셨습니다.`;
+          logMsg = `🏰 731년: [역사] ${event}\n  └ 💀 군영 내 전염병으로 돌연 서거하셨습니다.`;
           yearOutcomeText = "사망: 군영 전염병";
         } else if (d20 <= 15) {
-          logMsg += `후방 수비대 임무를 마쳤습니다.`;
+          logMsg = `🏰 731년: [역사] ${event}\n  └ 후방 수비대 임무를 마쳤습니다.`;
           yearOutcomeText = "수비대 복무 완료";
         } else {
-          const res = runGfCombatSurvival(event, 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `오리돈 포위 공성전 돌파 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 731,
+            firstRoll: d20,
+            logPrefix: `🏰 731년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 오리돈 포위 공성전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 732) {
-        logMsg = `🏰 732년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("낙사 (Accident)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 전투 직전 말에서 떨어져 서거하셨습니다.`;
+          logMsg = `🏰 732년: [역사] ${event}\n  └ 💀 전투 직전 말에서 떨어져 서거하셨습니다.`;
           yearOutcomeText = "사망: 낙마사";
         } else if (d20 <= 5) {
-          logMsg += `기사단 후방 보급을 호위했습니다.`;
+          logMsg = `🏰 732년: [역사] ${event}\n  └ 기사단 후방 보급을 호위했습니다.`;
           yearOutcomeText = "보급 호위 완료 (전투 불참)";
         } else {
-          const pRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
-          if (pRoll === 1) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
-            setInteractiveStage('gf_dead');
-            setGrandfatherGlory(prev => prev + 1400);
-            logMsg += `🗡️ 포아티에 주사위 ${pRoll} - 전설적인 전공을 기사단에 남기며 장렬히 전사하셨습니다! (+1400 Glory)`;
-            yearOutcomeText = "전사: 포아티에 전투 장렬한 전사 (+1400 Glory)";
-          } else if (pRoll <= 11) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause("Poitiers 전사 (Combat)");
-            setInteractiveStage('gf_dead');
-            setGrandfatherGlory(prev => prev + 400);
-            logMsg += `🗡️ 포아티에 주사위 ${pRoll} - 전투 중 영예롭게 전사하셨습니다. (+400 Glory)`;
-            yearOutcomeText = "전사: 포아티에 격전 중 전사 (+400 Glory)";
-          } else if (pRoll === 12) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause("스페인 압송 포로 (Captured)");
-            setInteractiveStage('gf_dead');
-            setGrandfatherGlory(prev => prev + 400);
-            logMsg += `🔗 포아티에 주사위 ${pRoll} - 포로로 잡혀 무어인의 땅(스페인)으로 압송되어 소식이 끊겼습니다. (+400 Glory)`;
-            yearOutcomeText = "포로: 무어인 땅으로 압송 실종 (+400 Glory)";
-          } else if (pRoll === 13) {
-            setGrandfatherGlory(prev => prev + 500);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `✨ 포아티에 주사위 ${pRoll} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `영웅: 포아티에 돌격 전공 획득 (+500 Glory, 무어 증오 +${hVal})`;
-          } else if (pRoll <= 19) {
-            setGrandfatherGlory(prev => prev + 400);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `🛡️ 포아티에 주사위 ${pRoll} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `승전: 투르-포아티에 승전 생존 (+400 Glory, 무어 증오 +${hVal})`;
-          } else {
-            setGrandfatherGlory(prev => prev + 900);
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `👑 포아티에 주사위 ${pRoll} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal})`;
-            yearOutcomeText = `👑 불멸의 무공: 적장 압둘 라흐만 결투 처단 (+900 Glory, 무어 증오 +${hVal})`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_poitiers',
+            yr: 732,
+            firstRoll: d20,
+            logPrefix: `🏰 732년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 투르-포아티에 역사적 대전투에 참전합니다. 생존 판정이 필요합니다.\n`
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 733 || yr === 734) {
         const res = runGfOrdinaryYear(event, "Moors");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'gf_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 ${yr}년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 무어 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Moors'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 ${yr}년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setGrandfatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -624,218 +877,216 @@ export default function FamilyWinter({ character, setCharacter }) {
           yearOutcomeText = `제국 왕실 후계 및 종자 영입 지원 완료 (+${res.gloryGained} Glory)`;
         }
       } else if (yr === 735) {
-        logMsg = `🏰 735년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("사망 (Feud)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 가문 불화 결투 도중 서거하셨습니다.`;
+          logMsg = `🏰 735년: [역사] ${event}\n  └ 💀 가문 불화 결투 도중 서거하셨습니다.`;
           yearOutcomeText = "사망: 가문 불화 결투 사망";
         } else if (d20 <= 5) {
-          logMsg += `쾰른 경비 의무를 마쳤습니다.`;
+          logMsg = `🏰 735년: [역사] ${event}\n  └ 쾰른 경비 의무를 마쳤습니다.`;
           yearOutcomeText = "쾰른 성벽 경비";
         } else if (d20 <= 12) {
-          const res = runGfCombatSurvival(event + " (루시옹 대결)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `제라르 공작 결투전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 735,
+            firstRoll: d20,
+            logPrefix: `🏰 735년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 루시옹 대결전(제라르 공작 결투전)에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 15) {
-          logMsg += `⚖️ 위옹 경의 아모르 스캔들 재판에서 위증을 강요받아 정직함이 무너집니다. (Just 수치 하락)`;
+          logMsg = `🏰 735년: [역사] ${event}\n  └ ⚖️ 위옹 경의 아모르 스캔들 재판에서 위증을 강요받아 정직함이 무너집니다. (Just 수치 하락)`;
           yearOutcomeText = "사법 재판 명예 실추 (Just 타격)";
         } else {
-          const res = runGfCombatSurvival(event + " (보르도 공성)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `보르도 대공성 참전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 735,
+            firstRoll: d20,
+            logPrefix: `🏰 735년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 보르도 공성전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 736) {
-        logMsg = `🏰 736년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("질병사 (Illness)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 진중의 무서운 열병으로 서거하셨습니다.`;
+          logMsg = `🏰 736년: [역사] ${event}\n  └ 💀 진중의 무서운 열병으로 서거하셨습니다.`;
           yearOutcomeText = "사망: 진중 열병";
         } else if (d20 <= 5) {
-          logMsg += `기사단 초소 근무를 섰습니다.`;
+          logMsg = `🏰 736년: [역사] ${event}\n  └ 기사단 초소 근무를 섰습니다.`;
           yearOutcomeText = "초소 근무 복무";
         } else if (d20 <= 10) {
-          const res = runGfCombatSurvival(event + " (제라르 전투)", -1, false, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `제라르군 매복 전투 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 736,
+            firstRoll: d20,
+            logPrefix: `🏰 736년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 제라르군 매복 전투에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: false,
+            standardGlory: 100,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (아를 해방전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `\n  └ [증오 획득] 무어인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `아를 수복전 대활약 및 무어 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 736,
+            firstRoll: d20,
+            logPrefix: `🏰 736년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 아를 해방전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: 'moors'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 737) {
-        logMsg = `🏰 737년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("사고 (Accident)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 성벽 수축 공사 도중 돌에 깔려 서거하셨습니다.`;
+          logMsg = `🏰 737년: [역사] ${event}\n  └ 💀 성벽 수축 공사 도중 돌에 깔려 서거하셨습니다.`;
           yearOutcomeText = "사망: 돌 압사";
         } else if (d20 <= 5) {
-          logMsg += `영지 가드 근무를 섰습니다.`;
+          logMsg = `🏰 737년: [역사] ${event}\n  └ 영지 가드 근무를 섰습니다.`;
           yearOutcomeText = "영지 가드 순찰";
         } else if (d20 <= 10) {
-          const res = runGfCombatSurvival(event + " (제라르 전투)", -1, false, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `제라르 반란 잔당전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 737,
+            firstRoll: d20,
+            logPrefix: `🏰 737년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 제라르 반란 잔당전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: false,
+            standardGlory: 100,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (아비뇽 대참화)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            logMsg += "\n  └ [기질 획득] 배신자들에 대한 복수심으로 가득 차 무자비함(Cruel) 1d6 기질 획득!";
-            yearOutcomeText = `아비뇽 징벌 공방전 승리 및 복수 기질 획득 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 737,
+            firstRoll: d20,
+            logPrefix: `🏰 737년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 아비뇽 대참화(징벌 공방전)에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: null,
+            customOutcome: 'cruel_trait'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 738) {
-        logMsg = `🏰 738년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("사망 (Feud)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 라이벌 가문의 자객에게 급습받아 서거하셨습니다.`;
+          logMsg = `🏰 738년: [역사] ${event}\n  └ 💀 라이벌 가문의 자객에게 급습받아 서거하셨습니다.`;
           yearOutcomeText = "사망: 자객 습격 사망";
         } else if (d20 <= 10) {
-          logMsg += `쾰른 성 수비대에 소집되었습니다.`;
+          logMsg = `🏰 738년: [역사] ${event}\n  └ 쾰른 성 수비대에 소집되었습니다.`;
           yearOutcomeText = "쾰른 성벽 경계근무";
         } else if (d20 <= 15) {
-          const res = runGfCombatSurvival(event + " (부르고뉴 무어인전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `\n  └ [증오 획득] 무어인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `부르고뉴 대사라센 격퇴전 성공 및 무어 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 738,
+            firstRoll: d20,
+            logPrefix: `🏰 738년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 부르고뉴 무어인전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: 'moors'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (보르들레 습격전)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `가문 결사 보르들레 보복 습격 성공 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 738,
+            firstRoll: d20,
+            logPrefix: `🏰 738년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 보르들레 보복 습격전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 739) {
-        logMsg = `🏰 739년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("행방불명 (Disappeared)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 원정길의 수풀 속에서 실종되시어 돌아오지 못했습니다.`;
+          logMsg = `🏰 739년: [역사] ${event}\n  └ 💀 원정길의 수풀 속에서 실종되시어 돌아오지 못했습니다.`;
           yearOutcomeText = "실종: 셉티마니아 숲 속 행방불명";
         } else if (d20 <= 5) {
-          logMsg += `후방 수비 의무를 원활하게 수행했습니다.`;
+          logMsg = `🏰 739년: [역사] ${event}\n  └ 후방 수비 의무를 원활하게 수행했습니다.`;
           yearOutcomeText = "후방 지원 완수";
         } else if (d20 <= 10) {
           setGrandfatherGlory(prev => prev + 50);
-          logMsg += `🛡️ 실패로 끝난 아를 포위전에서 힘겹게 목숨을 건졌습니다. (+50 Glory)`;
+          logMsg = `🏰 739년: [역사] ${event}\n  └ 🛡️ 실패로 끝난 아를 포위전에서 힘겹게 목숨을 건졌습니다. (+50 Glory)`;
           yearOutcomeText = "아를 패전 극적 퇴각 성공 (+50 Glory)";
         } else {
-          const res = runGfCombatSurvival(event + " (셉티마니아 대공성)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
-            yearOutcomeText = "셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+50 Glory)";
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 739,
+            firstRoll: d20,
+            logPrefix: `🏰 739년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 셉티마니아 대공성전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: null,
+            customOutcome: 'birth_gift'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 740) {
-        logMsg = `🏰 740년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("덴마크 전사 (Combat)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 덴마크 상륙 도중 전함 위에서 적의 도끼에 스러지셨습니다.`;
+          logMsg = `🏰 740년: [역사] ${event}\n  └ 💀 덴마크 상륙 도중 전함 위에서 적의 도끼에 스러지셨습니다.`;
           yearOutcomeText = "전사: 바이킹 상륙 전함 백병전 사망";
         } else if (d20 <= 10) {
-          logMsg += `후방 성벽을 지켰습니다.`;
+          logMsg = `🏰 740년: [역사] ${event}\n  └ 후방 성벽을 지켰습니다.`;
           yearOutcomeText = "로슈브룬 후방 방어";
         } else {
-          const res = runGfCombatSurvival(event, 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            logMsg += "\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노(Hate Danes 1d6)를 품었습니다!";
-            yearOutcomeText = "덴마크 성벽 사수 및 덴마크 증오 획득 (+50 Glory)";
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 740,
+            firstRoll: d20,
+            logPrefix: `🏰 740년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 덴마크인 습격 방어전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: 'danes',
+            customOutcome: 'danes_hate'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 741) {
         logMsg = `🏰 741년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -876,84 +1127,80 @@ export default function FamilyWinter({ character, setCharacter }) {
           yearOutcomeText = "국왕 연회 공식 하객 참석 (+25 Glory)";
         }
       } else if (yr === 743) {
-        logMsg = `🏰 743년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 === 1) {
           setGfDead(true);
           setGrandfatherDeathYear(yr);
           setGrandfatherDeathCause("바이에른 전사 (Combat)");
           setInteractiveStage('gf_dead');
-          logMsg += `💀 알프스 고갯길에서 바이에른 보병의 기습을 받아 전사하셨습니다.`;
+          logMsg = `🏰 743년: [역사] ${event}\n  └ 💀 알프스 고갯길에서 바이에른 보병의 기습을 받아 전사하셨습니다.`;
           yearOutcomeText = "전사: 바이에른 고지 기습 전사";
         } else if (d20 <= 5) {
-          logMsg += `가문 영지를 수호했습니다.`;
+          logMsg = `🏰 743년: [역사] ${event}\n  └ 가문 영지를 수호했습니다.`;
           yearOutcomeText = "아르덴 영지 수호";
         } else if (d20 <= 10) {
-          const res = runGfCombatSurvival(event + " (레겐스부르크 결전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `레겐스부르크 공성 성공 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 743,
+            firstRoll: d20,
+            logPrefix: `🏰 743년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 레겐스부르크 결전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 15) {
-          const res = runGfCombatSurvival(event + " (작센 정벌)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `작센 습격 평정 성공 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 743,
+            firstRoll: d20,
+            logPrefix: `🏰 743년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 작센 정벌전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runGfCombatSurvival(event + " (아키텐 진압)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `아키텐 게릴라 소탕 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 743,
+            firstRoll: d20,
+            logPrefix: `🏰 743년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 아키텐 진압전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: null
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 744) {
-        logMsg = `🏰 744년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
         if (d20 <= 10) {
-          logMsg += `노장이 되어 고향 영지를 지켰습니다.`;
+          logMsg = `🏰 744년: [역사] ${event}\n  └ 노장이 되어 고향 영지를 지켰습니다.`;
           yearOutcomeText = "노장 은퇴 준비 보초";
         } else if (d20 <= 14) {
-          const res = runGfCombatSurvival(event + " (작센 최후 전투)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setGfDead(true);
-            setGrandfatherDeathYear(yr);
-            setGrandfatherDeathCause(res.cause);
-            setInteractiveStage('gf_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setGrandfatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `최후 작센 국경 정벌 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'gf_combat_survival',
+            yr: 744,
+            firstRoll: d20,
+            logPrefix: `🏰 744년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 작센 최후 전투에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 18) {
           setGrandfatherGlory(prev => prev + 25);
-          logMsg += `👑 파리 대성당에서 섭정 베르트라다 왕비의 성대하고 역사적인 복귀식 대열에 합류했습니다. (+25 Glory)`;
+          logMsg = `🏰 744년: [역사] ${event}\n  └ 👑 파리 대성당에서 섭정 베르트라다 왕비의 성대하고 역사적인 복귀식 대열에 합류했습니다. (+25 Glory)`;
           yearOutcomeText = "왕비 친위 대열 합류 무훈 (+25 Glory)";
         } else {
           setGrandfatherGlory(prev => prev + 100);
-          logMsg += `🔍 피핀 국왕의 어전에서 아키텐 위노 공작이 심어놓은 흉악한 세작을 기지로 생포해 상을 받았습니다! (+100 Glory)`;
+          logMsg = `🏰 744년: [역사] ${event}\n  └ 🔍 피핀 국왕의 어전에서 아키텐 위노 공작이 심어놓은 흉악한 세작을 기지로 생포해 상을 받았습니다! (+100 Glory)`;
           yearOutcomeText = "왕실 스파이 생포 훈장 획득 (+100 Glory)";
         }
       }
@@ -1015,46 +1262,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           gloryGained = 50;
           rollDescText = `✨ [주사위 ${d20}] - 봉토를 훌륭히 순찰하고 주군의 신임을 받아 기념비적이고 명예로운 무훈을 올렸습니다! (+50 Glory)`;
         } else {
-          rollDescText = `🔥 [주사위 ${d20}] - 국경을 넘나드는 ${enemyName === "Saxons" ? "작센" : enemyName === "Moors" ? "무어" : "덴마크"} 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다!`;
-          
-          const survivalRoll = (secondManualD20 !== undefined) ? secondManualD20 : rollD20();
-          let sDead = false;
-          let sGlory = 25;
-          let sCause = "";
-          let sLog = "";
-
-          if (survivalRoll === 1) {
-            sDead = true;
-            sCause = `${enemyName} 습격 방어 중 전사`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 안타깝게도 밀려오는 적들을 막아서다 격전 중 장렬히 전사하셨습니다.`;
-          } else if (survivalRoll === 2) {
-            sDead = true;
-            const retiredYears = rollD20();
-            sCause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 불구가 되는 중상을 입어 은퇴 후 수도원에 귀의합니다. ${retiredYears}년 뒤 조용히 영면에 드십니다.`;
-          } else if (survivalRoll === 3) {
-            sDead = true;
-            sCause = `포로 압송 및 실종`;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 적들의 포로가 되어 머나먼 이교의 땅으로 납치되었으며 끝내 돌아오지 못했습니다.`;
-          } else if (survivalRoll <= 5) {
-            sGlory += 100;
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 기적적으로 습격의 대장을 척살하는 위대한 영웅적 무훈을 세우며 살아남았습니다! (+${sGlory} Glory)`;
-          } else {
-            sLog = `    └ [습격 수비전 주사위 ${survivalRoll}] - 무사히 습격을 격퇴하고 칼날 끝에서 살아남았습니다. (+${sGlory} Glory)`;
-          }
-
-          const hVal = rollD3();
-          gloryGained += sGlory;
-          if (sDead) {
-            dead = true;
-            cause = sCause;
-          } else {
-            if (enemyName === "Saxons") setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            else if (enemyName === "Moors") setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            else setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
-            sLog += ` (이교도 증오 +${hVal} 획득)`;
-          }
-          rollDescText += `\n` + sLog;
+          return { isRaidPending: true };
         }
 
         return { dead, gloryGained, cause, rollDescText };
@@ -1083,32 +1291,31 @@ export default function FamilyWinter({ character, setCharacter }) {
           setFatherDeathYear(yr);
           setFatherDeathCause("전역사 (Illness)");
           setInteractiveStage('f_dead');
-          logMsg += `💀 무서운 군영 내 돌림병에 걸려 Roland 경의 탄생 소식만을 듣고 서거하셨습니다.`;
+          logMsg += `💀 무서운 군영 내 돌림병에 걸려 롤랑 경의 탄생 소식만을 듣고 서거하셨습니다.`;
           yearOutcomeText = "사망: 군영 열병사 (롤랑 경 출생)";
         } else if (d20 <= 10) {
           logMsg += `기쁜 롤랑 경의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`;
           yearOutcomeText = "롤랑 경 출생 축하연 (전선 유지)";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (셉티마니아 무어인 방어전)", -1, false, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `\n  └ [증오 획득] 무어인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `셉티마니아 사라센 격퇴 성공, 무어 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 746년: [가문] ${event}\n  └ [1차 주사위 ${d20}] - 셉티마니아 무어인 방어전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (셉티마니아 무어인 방어전)",
+            battleModifier: -1,
+            isVictor: false,
+            standardGlory: 25,
+            hateEnemy: 'moors'
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 18) {
           logMsg += `알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) 1d6 기질 획득!`;
           yearOutcomeText = "알레마니아 피의 대숙청 및 잔혹성 기질 마킹";
         } else {
           setFatherGlory(prev => prev + 50);
-          logMsg += `마침내 Roland 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`;
+          logMsg += `마침내 롤랑 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`;
           yearOutcomeText = "아들의 세례식 친히 참석 및 영적인 다짐 (+50 Glory)";
         }
       } else if (yr === 747) {
@@ -1138,6 +1345,17 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 748) {
         const res = runFOrdinaryYear(event, "Moors");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'f_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 748년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 무어 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Moors'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 748년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setFatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -1162,17 +1380,18 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `기사단 행군 대열의 중심을 지켰습니다.`;
           yearOutcomeText = "기사단 행군 복무";
         } else if (d20 <= 18) {
-          const res = runFCombatSurvival(event + " (바이에른 기습 공세)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `바이에른 격퇴 대공세 성공 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 749년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 바이에른 기습 공세에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (바이에른 기습 공세)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           logMsg += `⚠️ 포로 그리포 왕자의 참모진 경비를 전담했으나, 한밤중 감시망이 뚫려 왕자가 도주하는 명예 훼손을 겪었습니다. (Honor 수치 하락)`;
           yearOutcomeText = "경비 누수로 인한 명예 징계 실추";
@@ -1190,20 +1409,19 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `영지 수비 근무를 섰습니다.`;
           yearOutcomeText = "수비대 근무";
         } else {
-          const res = runFCombatSurvival(event, 0, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD6();
-            setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 격렬한 증오 +${hVal}`;
-            yearOutcomeText = `작센 대전투 격전 생존 및 극심한 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 750년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 작센 대전투에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event,
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 100,
+            customOutcome: 'saxons_hate_d6'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 751) {
         logMsg = `🏰 751년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1218,17 +1436,18 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `즉위식장 외부 바리케이드를 경비했습니다.`;
           yearOutcomeText = "즉위식장 외곽 수비";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (반역 세작 처단)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `어전 습격 자객 처단 성공 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 751년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 궁정 반역 세작 처단전에 나섭니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (반역 세작 처단)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherGlory(prev => prev + 50);
           logMsg += `👑 성스러운 피핀 3세의 대관 미사에서 왕의 최측근 근위대로 기립하며 큰 명예를 획득했습니다! (+50 Glory)`;
@@ -1236,6 +1455,17 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       } else if (yr === 752) {
         const res = runFOrdinaryYear(event, "Moors");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'f_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 752년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 무어 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Moors'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 752년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setFatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -1260,20 +1490,19 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `쾰른 군영을 수호했습니다.`;
           yearOutcomeText = "쾰른 수비대";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (비부르크 참사)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD6();
-            setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 극심한 원한 +${hVal}`;
-            yearOutcomeText = `비부르크 참패 지옥 생존 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 753년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 비부르크 대참패 전장에 낙오되어 고립되었습니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (비부르크 참사)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            customOutcome: 'saxons_hate_d6'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherGlory(prev => prev + 50);
           logMsg += `🗡️ 국경을 이탈해 암약을 시도하던 반역자 그리포를 검거하는 기사 특별 부대를 이끌어 활약했습니다! (+50 Glory)`;
@@ -1292,39 +1521,50 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `교황 전령을 접견하는 경호 임무를 수행했습니다.`;
           yearOutcomeText = "교황 특사 가드 임무";
         } else if (d20 <= 14) {
-          const res = runFCombatSurvival(event + " (알프스 원정 전투)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `알프스 설산 포위 돌파 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 754년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 알프스 설산 포위망 돌파전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (알프스 원정 전투)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 18) {
           setFatherGlory(prev => prev + 25);
           logMsg += `🇮🇹 롬바르디아 영지 약탈 공방전에서 적들의 식량 창고를 털어 군에 공헌했습니다. (+25 Glory)`;
           yearOutcomeText = "롬바르디아 적 기지 창고 파괴 공적 (+25 Glory)";
         } else {
-          const res = runFCombatSurvival(event + " (나르본 탈환 대작전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setFatherHates(prev => ({ ...prev, moors: prev.moors + hVal }));
-            logMsg += `\n  └ [증오 획득] 무어인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `나르본 수복 대작전 생존 및 사라센 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 754년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 나르본 탈환 대작전 선봉에 섭니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (나르본 탈환 대작전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            hateEnemy: 'moors'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 755) {
         const res = runFOrdinaryYear(event, "Moors");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'f_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 755년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 무어 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Moors'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 755년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setFatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -1349,17 +1589,18 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `이탈리아 고지 점령대를 경계했습니다.`;
           yearOutcomeText = "파비아 외곽 고지 경비";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (파비아 성문 공략)", -1, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `파비아 성벽 돌격전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 756년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 파비아 성문 기습 돌격대에 자원합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (파비아 성문 공략)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherGlory(prev => prev + 25);
           logMsg += `⛪ 승리 후 로마 바티칸 성당의 정예 황실 가드로 배정되어 교황령 수호의 증인이 되었습니다. (+25 Glory)`;
@@ -1378,20 +1619,19 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `초소 순찰을 돌며 조용히 보냈습니다.`;
           yearOutcomeText = "초소 근무 복무";
         } else if (d20 <= 18) {
-          const res = runFCombatSurvival(event + " (바이킹 결전)", 0, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + hVal }));
-            logMsg += `  └ [증오 획득] 덴마크 바이킹에 대한 원한 +${hVal}`;
-            yearOutcomeText = `바이킹 대전투 결사 방어 성공 및 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 757년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 습격해 온 북방 바이킹과의 격전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (바이킹 결전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 100,
+            hateEnemy: 'danes'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + 6 }));
           logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor 대폭 삭감, 덴마크인 증오 대폭 상승)`;
@@ -1410,38 +1650,47 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `국경 참호를 보수했습니다.`;
           yearOutcomeText = "참호 수축 근무";
         } else if (d20 <= 16) {
-          const res = runFCombatSurvival(event + " (작센 강제정벌 레이드)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD3();
-            setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 증오 +${hVal}`;
-            yearOutcomeText = `작센 정벌 레이드 무사 생존 및 작센 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 758년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 작센 강제정벌 레이드 종군을 결정합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (작센 강제정벌 레이드)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25,
+            hateEnemy: 'saxons'
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runFCombatSurvival(event + " (작센 대학살 징벌전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD6();
-            setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센인에 대한 뼈에 사무친 복수심 +${hVal}`;
-            yearOutcomeText = `작센 징벌의 대참화 승전 및 작센 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 758년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 피비린내 나는 작센 대학살 징벌전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (작센 대학살 징벌전)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            customOutcome: 'saxons_hate_d6'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 759) {
         const res = runFOrdinaryYear(event, "Saxons");
+        if (res.isRaidPending) {
+          setChroniclePendingRoll({
+            type: 'f_raid_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 759년: [역사] ${event}\n  └ 🔥 [1차 주사위 ${d20}] - 국경을 넘나드는 작센 이교도 습격단에 맞서 치열한 영지 방어전을 벌였습니다! 생존 판정이 필요합니다.`,
+            enemyName: 'Saxons'
+          });
+          setChronicleManualD20('');
+          return;
+        }
         logMsg = `🏰 759년: [역사] ${event}\n  └ ${res.rollDescText}`;
         setFatherGlory(prev => prev + res.gloryGained);
         if (res.dead) {
@@ -1466,29 +1715,31 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `후방 포병대를 경호했습니다.`;
           yearOutcomeText = "후방 포병 경호";
         } else if (d20 <= 10) {
-          const res = runFCombatSurvival(event + " (리무쟁 공성 돌파)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `리무쟁 공성망 돌파 성공 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 760년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 리무쟁 요새 공성망 돌파전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (리무쟁 공성 돌파)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (아키텐 수림 게릴라전)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `아키텐 게릴라 소탕 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 760년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 아키텐 수림 게릴라 소탕전에 종군합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (아키텐 수림 게릴라전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherGlory(prev => prev + 200);
           setFSkipYearsUntil(763);
@@ -1508,29 +1759,31 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `기사단 예비 진지를 보수했습니다.`;
           yearOutcomeText = "예비 진지 복무";
         } else if (d20 <= 17) {
-          const res = runFCombatSurvival(event + " (부르주 격파전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `부르주 요새 대격파 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 761년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 부르주 요새 대격파 격전에 뛰어듭니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (부르주 격파전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runFCombatSurvival(event + " (브르타뉴 소탕)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `브르타뉴 반도 소탕 완료 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 761년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 브르타뉴 소탕전에 지원합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (브르타뉴 소탕)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 762) {
         logMsg = `🏰 762년: [가문] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1545,20 +1798,21 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `아르헨돈 요새 수비를 섰습니다.`;
           yearOutcomeText = "아르헨돈 요새 지킴이";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (아키텐 산악 약탈전)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `아키텐 산지 약탈 돌파 성공 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 762년: [가문] ${event}\n  └ [1차 주사위 ${d20}] - 아키텐 산지 약탈 돌파 작전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (아키텐 산악 약탈전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25
+          });
+          setChronicleManualD20('');
+          return;
         } else {
           setFatherGlory(prev => prev + 50);
-          logMsg += `👑 왕궁 기사단 훈련 중 어린 아들 롤랑(Roland)이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`;
+          logMsg += `👑 왕궁 기사단 훈련 중 어린 아들 롤랑이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`;
           yearOutcomeText = "👑 가문 화해 및 롤랑의 어전 대담한 데뷔 축하 (+50 Glory)";
         }
       } else if (yr === 763) {
@@ -1574,17 +1828,18 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `화살 통을 날 나르며 공성에 저항했습니다.`;
           yearOutcomeText = "화살 보급 의무 복무";
         } else {
-          const res = runFCombatSurvival(event + " (성루 총사수 결전)", -1, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `라 로슈 요새 총사수 사방 결전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 763년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 성루 총사수 결사방어전에 나섭니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (성루 총사수 결전)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 764) {
         logMsg = `🏰 764년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1599,29 +1854,31 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `보급선 방어를 담당했습니다.`;
           yearOutcomeText = "보급 마차 지킴이";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (오베리 백작의 라 로슈 탈환전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `라 로슈 최종 수복 공성전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 764년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 오베리 백작의 라 로슈 탈환 공성전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (오베리 백작의 라 로슈 탈환전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runFCombatSurvival(event + " (툴루즈 대공격)", 0, true, 25);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `툴루즈 수도 함락전 승전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 764년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 툴루즈 대공격의 돌격대에 자원합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (툴루즈 대공격)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 25
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 765) {
         logMsg = `🏰 765년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1636,32 +1893,32 @@ export default function FamilyWinter({ character, setCharacter }) {
           logMsg += `수비 진영을 정리했습니다.`;
           yearOutcomeText = "진영 후방 정돈";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (오트페이유 포위전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `오트페이유 격사전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 765년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 오트페이유 포위 돌파전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (오트페이유 포위전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runFCombatSurvival(event + " (브로히막스 결전)", -1, true, 100);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            const hVal = rollD6();
-            setFatherHates(prev => ({ ...prev, saxons: prev.saxons + hVal }));
-            logMsg += `\n  └ [증오 획득] 작센 군단에 대한 증오 +${hVal}`;
-            yearOutcomeText = `추장 브로히막스 1대1 대결 완승 및 작센 증오 +${hVal} (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 765년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 추장 브로히막스와의 역사적인 브로히막스 결전에 나섭니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (브로히막스 결전)",
+            battleModifier: -1,
+            isVictor: true,
+            standardGlory: 100,
+            customOutcome: 'saxons_hate_d6'
+          });
+          setChronicleManualD20('');
+          return;
         }
       } else if (yr === 766) {
         logMsg = `🏰 766년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -1670,37 +1927,38 @@ export default function FamilyWinter({ character, setCharacter }) {
           setFatherDeathYear(yr);
           setFatherDeathCause("최후의 전사 (Combat)");
           setInteractiveStage('f_dead');
-          logMsg += `💀 아들 Roland의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`;
+          logMsg += `💀 아들 롤랑의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`;
           yearOutcomeText = "장렬한 전사: 아들 기사식을 앞두고 에그르몽 결전 전사";
         } else if (d20 <= 10) {
           logMsg += `황실 가드 임무를 다했습니다.`;
           yearOutcomeText = "황실 특수 가드 수행";
         } else if (d20 <= 15) {
-          const res = runFCombatSurvival(event + " (몽펠리에 공성전)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            yearOutcomeText = `몽펠리에 포위전 승전 생존 (+${res.gloryGained} Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 766년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 몽펠리에 포위 공성전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (몽펠리에 공성전)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50
+          });
+          setChronicleManualD20('');
+          return;
         } else {
-          const res = runFCombatSurvival(event + " (에그르몽 대승)", 0, true, 50);
-          logMsg += res.rollDescText;
-          if (res.dead) {
-            setFatherDead(true);
-            setFatherDeathYear(yr);
-            setFatherDeathCause(res.cause);
-            setInteractiveStage('f_dead');
-            yearOutcomeText = `사망: ${res.cause}`;
-          } else {
-            setFatherGlory(prev => prev + 25);
-            logMsg += `\n  └ ⛪ 이교도 귀족 위비앙 부부의 역사적인 기독교 세례 성사에서 가문의 명예 하객 대열을 호위하셨습니다! (+25 Glory)`;
-            yearOutcomeText = `위비앙 세례식 가문 호위 및 대성당 참석 (+75 Glory)`;
-          }
+          setChroniclePendingRoll({
+            type: 'f_combat_survival',
+            yr,
+            firstRoll: d20,
+            logPrefix: `🏰 766년: [역사] ${event}\n  └ [1차 주사위 ${d20}] - 에그르몽 대 격전에 참전합니다. 생존을 위해 전투 생존 판정이 필요합니다.\n`,
+            eventName: event + " (에그르몽 대승)",
+            battleModifier: 0,
+            isVictor: true,
+            standardGlory: 50,
+            customOutcome: 'viviens_baptism'
+          });
+          setChronicleManualD20('');
+          return;
         }
       }
 
@@ -2378,13 +2636,13 @@ export default function FamilyWinter({ character, setCharacter }) {
           logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 적대 가문 영주의 어여쁜 여식을 극적인 기사 결투 끝에 쟁취하여 가문을 일으켰습니다! (+400 Glory)`);
         }
       } else if (yr === 746) {
-        const event = "Roland 경의 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
+        const event = "롤랑 경의 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
         const roll = rollD20();
         if (roll === 1) {
           fDead = true;
           fDeathYr = yr;
           fCause = "전역사 (Illness)";
-          logs.push(`💀 746년: [역사] ${event} -> 주사위 ${roll} - 무서운 군영 내 돌림병에 걸려 Roland 경의 탄생 소식만을 듣고 서거하셨습니다.`);
+          logs.push(`💀 746년: [역사] ${event} -> 주사위 ${roll} - 무서운 군영 내 돌림병에 걸려 롤랑 경의 탄생 소식만을 듣고 서거하셨습니다.`);
         } else if (roll <= 10) {
           logs.push(`🏰 746년: [가문] ${event} -> 주사위 ${roll} - 기쁜 롤랑 경의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`);
         } else if (roll <= 15) {
@@ -2398,7 +2656,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           logs.push(`🪓 746년: [역사] ${event} -> 주사위 ${roll} - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) 1d6 기질 획득!`);
         } else {
           fGlory += 50;
-          logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 Roland 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
+          logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 롤랑 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
         }
       } else if (yr === 747) {
         const event = "카를로만 공의 순례 동행: 궁정의 번잡함을 떠나 카를로만 공을 모시고 롬바르디아를 거쳐 로마로 순례 여행을 다녀오거나, 신앙의 부름을 받았습니다.";
@@ -2621,7 +2879,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           runCombatSurvival(yr, event + " (브르타뉴 소탕)", false, 0, true, 25);
         }
       } else if (yr === 762) {
-        const event = "아키텐 약탈전 및 왕가의 화해: 아키텐 전초 기지를 견고하게 세우고, 어린 Roland가 왕궁 음식물 서리를 하던 당돌한 순간과 가문의 기쁨을 지켜보았습니다.";
+        const event = "아키텐 약탈전 및 왕가의 화해: 아키텐 전초 기지를 견고하게 세우고, 어린 롤랑이 왕궁 음식물 서리를 하던 당돌한 순간과 가문의 기쁨을 지켜보았습니다.";
         const roll = rollD20();
         if (roll === 1) {
           fDead = true;
@@ -2634,7 +2892,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           runCombatSurvival(yr, event + " (아키텐 산악 약탈전)", false, 0, true, 25);
         } else {
           fGlory += 50;
-          logs.push(`👑 762년: [가문] ${event} -> 주사위 ${roll} - 왕궁 기사단 훈련 중 어린 아들 롤랑(Roland)이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`);
+          logs.push(`👑 762년: [가문] ${event} -> 주사위 ${roll} - 왕궁 기사단 훈련 중 어린 아들 롤랑이 왕의 식탁에서 대담하게 고기를 훔쳐 아버지를 감탄시키고 밀로 백작 가문이 화해하는 역사적 현장을 배석했습니다. (+50 Glory)`);
         }
       } else if (yr === 763) {
         const event = "쾰른 라 로슈 성의 기적적인 방어: 토밀과 말랭그가 이끄는 대반란군의 겹겹이 쌓인 포위를 뚫고 성을 사수했습니다.";
@@ -2691,7 +2949,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           fDead = true;
           fDeathYr = yr;
           fCause = "최후의 전사 (Combat)";
-          logs.push(`💀 766년: [역사] ${event} -> 주사위 ${roll} - 아들 Roland의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`);
+          logs.push(`💀 766년: [역사] ${event} -> 주사위 ${roll} - 아들 롤랑의 성인식을 몇 달 앞두고 가문의 무훈을 빛내며 성벽 아래에서 전사하셨습니다.`);
         } else if (roll <= 10) {
           logs.push(`🏰 766년: [역사] ${event} -> 주사위 ${roll} - 황실 가드 임무를 다했습니다.`);
         } else if (roll <= 15) {
@@ -3734,6 +3992,38 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   </button>
                                 </div>
                               </div>
+                            ) : chroniclePendingRoll ? (
+                              <div style={{ backgroundColor: 'rgba(185, 28, 28, 0.04)', border: '1px solid rgba(185, 28, 28, 0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                  <span style={{ fontWeight: 'bold', color: 'var(--color-crimson)' }}>🛡️ 2차 생존/추가 판정 필요!</span>
+                                  <span style={{ fontSize: '0.78rem', lineHeight: 1.4, whiteSpace: 'pre-wrap', backgroundColor: 'rgba(0,0,0,0.02)', padding: '8px', borderRadius: '4px', borderLeft: '3px solid var(--color-crimson)' }}>
+                                    {chroniclePendingRoll.logPrefix.trim()}
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 2차 주사위 입력:</span>
+                                    <input
+                                      type="text"
+                                      placeholder="예: 10 (생존)"
+                                      value={chronicleManualD20}
+                                      onChange={e => setChronicleManualD20(e.target.value)}
+                                      style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className="btn-medieval btn-medieval-primary"
+                                    style={{ fontSize: '0.86rem', padding: '8px 18px', display: 'flex', alignItems: 'center', gap: '6px', borderColor: 'var(--color-crimson)', background: 'var(--color-crimson)' }}
+                                    onClick={rollSingleYearInteractive}
+                                  >
+                                    🛡️ {interactiveYear}년 생존 판정 굴리기
+                                  </button>
+                                </div>
+                                <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
+                                  * 1차 판정 결과({chroniclePendingRoll.firstRoll})에 따른 추가 생존 판정입니다. 입력하지 않으면 무작위(d20)로 결정됩니다.
+                                </span>
+                              </div>
                             ) : (
                               <div style={{ backgroundColor: 'rgba(179,143,67,0.04)', border: '1px solid rgba(179,143,67,0.2)', padding: '14px', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px', flexWrap: 'wrap' }}>
@@ -3741,7 +4031,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                     <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>🎲 주사위 수동 입력:</span>
                                     <input
                                       type="text"
-                                      placeholder="예: 15 또는 15, 8"
+                                      placeholder="예: 15"
                                       value={chronicleManualD20}
                                       onChange={e => setChronicleManualD20(e.target.value)}
                                       style={{ width: '130px', padding: '6px', fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
@@ -3757,7 +4047,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   </button>
                                 </div>
                                 <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다. (2회 판정이 필요한 경우 '15, 8' 형태로 입력 가능)
+                                  * 수동 값을 입력하면 주사위 결과가 해당 눈으로 강제 적용되며, 입력하지 않으면 무작위(d20)로 결정됩니다.
                                 </span>
                               </div>
                             )
