@@ -65,9 +65,10 @@ export function getFirebaseServices() {
 
     const saveToCloud = async (userId, data) => {
       if (!db) return;
+      const sanitizedData = JSON.parse(JSON.stringify(data));
       const userDocRef = doc(db, 'saves', userId);
       await setDoc(userDocRef, {
-        characterData: data,
+        characterData: sanitizedData,
         updatedAt: new Date().toISOString()
       }, { merge: true });
     };
