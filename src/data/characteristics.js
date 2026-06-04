@@ -44,6 +44,32 @@ export const FEMALE_CHARACTERISTICS = {
   20: { desc: "Player’s choice (가문 숙원 자유 선택)", bonus: { choice: true } }
 };
 
+export const SKILL_TRANSLATIONS = {
+  app: "매력 (APP)",
+  awareness: "경계",
+  chirurgery: "의술",
+  faerieLore: "요정 전설",
+  firstAid: "응급처치",
+  folkLore: "민간 전설",
+  horsemanship: "마술",
+  hunting: "수렵",
+  industry: "근면",
+  recognize: "신분 식별",
+  religion: "종교 지식",
+  stewardship: "영지 관리",
+  swimming: "수영",
+  courtesy: "예의",
+  dancing: "무용",
+  eloquence: "웅변",
+  falconry: "매사냥",
+  gaming: "유희",
+  heraldry: "문장학",
+  intrigue: "음모",
+  playInstruments: "악기 연주",
+  singing: "가창",
+  battle: "전투"
+};
+
 export const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue, choiceAttribute, characterSkills = {}) => {
   if (!roll) return null;
   const table = gender === 'female' ? FEMALE_CHARACTERISTICS : MALE_CHARACTERISTICS;
@@ -54,25 +80,27 @@ export const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue,
     if (gender === 'female') {
       if (choiceAttribute === 'app') {
         return {
-          desc: entry.desc + " (능력치 APP +5 선택)",
-          bonusText: "능력치 APP +5",
+          desc: entry.desc + " (능력치 매력 (APP) +5 선택)",
+          bonusText: "능력치 매력 (APP) +5",
           effect: { attributes: { app: 5 } }
         };
       } else {
         const skillName = choiceSkill || 'industry';
+        const skillKo = SKILL_TRANSLATIONS[skillName] || skillName;
         const val = choiceValue || 10;
         return {
-          desc: entry.desc + ` (스킬 ${skillName} +${val} 선택)`,
-          bonusText: `스킬 ${skillName} +${val}`,
+          desc: entry.desc + ` (스킬 ${skillKo} +${val} 선택)`,
+          bonusText: `스킬 [${skillKo}] +${val}`,
           effect: { skills: { [skillName]: val } }
         };
       }
     } else {
       const skillName = choiceSkill || 'awareness';
+      const skillKo = SKILL_TRANSLATIONS[skillName] || skillName;
       const val = choiceValue || 10;
       return {
-        desc: entry.desc + ` (스킬 ${skillName} +${val} 선택)`,
-        bonusText: `스킬 ${skillName} +${val}`,
+        desc: entry.desc + ` (스킬 ${skillKo} +${val} 선택)`,
+        bonusText: `스킬 [${skillKo}] +${val}`,
         effect: { skills: { [skillName]: val } }
       };
     }
@@ -84,15 +112,18 @@ export const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue,
   const b = entry.bonus;
   if (b.skill) {
     effect.skills[b.skill] = b.value;
-    bonusText += `스킬 [${b.skill}] +${b.value}`;
+    const skillKo = SKILL_TRANSLATIONS[b.skill] || b.skill;
+    bonusText += `스킬 [${skillKo}] +${b.value}`;
   }
   if (b.skill2) {
     effect.skills[b.skill2] = b.value2;
-    bonusText += `, 스킬 [${b.skill2}] +${b.value2}`;
+    const skillKo = SKILL_TRANSLATIONS[b.skill2] || b.skill2;
+    bonusText += `, 스킬 [${skillKo}] +${b.value2}`;
   }
   if (b.attribute) {
     effect.attributes[b.attribute] = b.value;
-    bonusText += `능력치 [${b.attribute.toUpperCase()}] +${b.value}`;
+    const attrKo = SKILL_TRANSLATIONS[b.attribute] || b.attribute.toUpperCase();
+    bonusText += `능력치 [${attrKo}] +${b.value}`;
   }
 
   return {

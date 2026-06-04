@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull, Dices, Check, Shield } from 'lucide-react';
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
-import { getCharacteristicDetails } from '../data/characteristics';
+import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -43,6 +43,59 @@ const getGender = (member) => {
     return 'female';
   }
   return 'male';
+};
+
+const resolveMemberCharacteristic = (member, allMembers, globalFamilyChar) => {
+  if (member.familyCharacteristic) {
+    return member.familyCharacteristic;
+  }
+
+  const memberGender = member.gender || getGender(member);
+
+  if (!member.parentId) {
+    if (memberGender === 'male' && globalFamilyChar) {
+      return globalFamilyChar;
+    }
+    return null;
+  }
+
+  const parent = allMembers.find(m => m.id === member.parentId);
+  if (!parent) {
+    if (memberGender === 'male' && globalFamilyChar) {
+      return globalFamilyChar;
+    }
+    return null;
+  }
+
+  if (memberGender === 'female') {
+    let mother = null;
+    if (parent.gender === 'female') {
+      mother = parent;
+    } else {
+      mother = allMembers.find(m => m.id === parent.spouseId || m.spouseId === parent.id);
+    }
+
+    if (mother) {
+      return resolveMemberCharacteristic(mother, allMembers, globalFamilyChar);
+    }
+  } else {
+    let father = null;
+    if (parent.gender === 'male') {
+      father = parent;
+    } else {
+      father = allMembers.find(m => m.id === parent.spouseId || m.spouseId === parent.id);
+    }
+
+    if (father) {
+      return resolveMemberCharacteristic(father, allMembers, globalFamilyChar);
+    }
+    
+    if (globalFamilyChar) {
+      return globalFamilyChar;
+    }
+  }
+
+  return null;
 };
 
 const medievalDeathCauses = [
@@ -1469,21 +1522,27 @@ export default function FamilyTree({ character, setCharacter }) {
           )}
         </div>
 
-        {member.familyCharacteristic && (
-          <div className="ft-char-badge" style={{ 
-            fontSize: '0.68rem', 
-            color: memberGender === 'female' ? '#b83b5e' : '#2b5876',
-            marginTop: '4px', 
-            paddingTop: '3px',
-            borderTop: '1px dashed rgba(0,0,0,0.08)',
-            width: '100%',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            lineHeight: '1.2'
-          }} title={member.familyCharacteristic.bonusText}>
-            ⭐ {member.familyCharacteristic.desc}
-          </div>
-        )}
+        {(() => {
+          const resolvedChar = resolveMemberCharacteristic(member, members, character.family?.characteristic);
+          if (!resolvedChar) return null;
+          const isInherited = !member.familyCharacteristic;
+          return (
+            <div className="ft-char-badge" style={{ 
+              fontSize: '0.68rem', 
+              color: memberGender === 'female' ? '#b83b5e' : '#2b5876',
+              marginTop: '4px', 
+              paddingTop: '3px',
+              borderTop: '1px dashed rgba(0,0,0,0.08)',
+              width: '100%',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              lineHeight: '1.2',
+              opacity: isInherited ? 0.85 : 1
+            }} title={resolvedChar.bonusText + (isInherited ? ' (상속됨)' : '')}>
+              ⭐ {resolvedChar.desc}
+            </div>
+          );
+        })()}
 
 
 
@@ -1930,7 +1989,7 @@ export default function FamilyTree({ character, setCharacter }) {
                                       <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
                                         <option value="">-- 스킬 선택 --</option>
                                         {Object.keys(character.skills || {}).map(s => (
-                                          <option key={s} value={s}>{s}</option>
+                                          <option key={s} value={s}>{SKILL_TRANSLATIONS[s] || s}</option>
                                         ))}
                                       </select>
                                       <select value={fcChoiceValue} onChange={e => setFcChoiceValue(parseInt(e.target.value))} style={{ padding: '2px', fontSize: '0.72rem' }}>
@@ -1945,7 +2004,7 @@ export default function FamilyTree({ character, setCharacter }) {
                                   <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
                                     <option value="">-- 스킬 선택 --</option>
                                     {Object.keys(character.skills || {}).map(s => (
-                                      <option key={s} value={s}>{s}</option>
+                                      <option key={s} value={s}>{SKILL_TRANSLATIONS[s] || s}</option>
                                     ))}
                                   </select>
                                   <select value={fcChoiceValue} onChange={e => setFcChoiceValue(parseInt(e.target.value))} style={{ padding: '2px', fontSize: '0.72rem' }}>
