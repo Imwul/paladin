@@ -5251,6 +5251,8 @@ export default function FamilyTree({ character, setCharacter }) {
             <RefreshCw size={13} /> 계보도 초기화
           </button>
         </div>
+      </div>
+
       {/* 가문 역사 및 대서사 관리 판넬 (Collapsible Panels) */}
       <div className="ft-panels-stack" style={{ margin: '12px 0 16px 0', display: 'flex', flexDirection: 'column', gap: '8px' }}>
         
@@ -6076,12 +6078,9 @@ export default function FamilyTree({ character, setCharacter }) {
 
             </div>
           </section>
-        );
             </div>
           )}
         </div>
-
-      </div>
 
       </div>
 
