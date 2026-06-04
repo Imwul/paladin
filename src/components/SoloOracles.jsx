@@ -285,7 +285,7 @@ export default function SoloOracles({ character, setCharacter }) {
     loveFamily: '가족 사랑 (Love [Family])',
     hospitality: '손님 대접 (Hospitality)',
     honor: '기사의 명예 (Honor)',
-    hateSarasens: '사라센인 증오 (Hate [Sarasens])',
+    hateSaracens: '사라센인 증오 (Hate [Saracens])',
     loveGod: '신에 대한 사랑 (Love [God])',
     hateSaxons: '작센인 증오 (Hate [Saxons])',
     hateMoors: '무어인 증오 (Hate [Moors])'

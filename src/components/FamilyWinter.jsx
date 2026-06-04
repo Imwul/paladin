@@ -3,6 +3,7 @@ import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Comp
 import { greatFamilies } from '../data/lore';
 import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
+import { birthGiftsTable } from './CharacterSheet';
 
 const MALE_CHARACTERISTICS = {
   1: { desc: "Keen of eye and ear (예리한 오감)", bonus: { skill: "awareness", value: 5 } },
@@ -23,7 +24,7 @@ const MALE_CHARACTERISTICS = {
   16: { desc: "Surprisingly deductive (예리한 직관과 수색)", bonus: { skill: "intrigue", value: 10 } },
   17: { desc: "Gifted musicians (선천적인 악기 연주)", bonus: { skill: "playInstruments", value: 10 } },
   18: { desc: "Excellent voice (천상의 노랫소리)", bonus: { skill: "singing", value: 10 } },
-  19: { desc: "Master tacticians (전술과 공성 지휘)", bonus: { skill: "battle", value: 5, skill2: "siege", value2: 5 } },
+  19: { desc: "Master tacticians (전술 또는 공성, 택1)", bonus: { skill: "battle", value: 5 } }, // 룰북: Battle OR Siege 택1
   20: { desc: "Player’s choice (기사단 가문 자유 선택)", bonus: { choice: true } }
 };
 
@@ -394,6 +395,9 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [fatherHonorModifier, setFatherHonorModifier] = useState(
     initialChronicleState.fatherHonorModifier !== undefined ? initialChronicleState.fatherHonorModifier : 0
   );
+  const [chronicleBirthGifts, setChronicleBirthGifts] = useState(
+    initialChronicleState.chronicleBirthGifts !== undefined ? initialChronicleState.chronicleBirthGifts : 0
+  );
 
   // --- 연대기 상태 로컬스토리지 동기화 ---
   useEffect(() => {
@@ -420,7 +424,8 @@ export default function FamilyWinter({ character, setCharacter }) {
       chronicleHistory,
       chroniclePendingRoll,
       chronicleManualD6,
-      fatherHonorModifier
+      fatherHonorModifier,
+      chronicleBirthGifts
     };
     try {
       localStorage.setItem('paladin_chronicle_state', JSON.stringify(stateToSave));
@@ -450,7 +455,8 @@ export default function FamilyWinter({ character, setCharacter }) {
     chronicleHistory,
     chroniclePendingRoll,
     chronicleManualD6,
-    fatherHonorModifier
+    fatherHonorModifier,
+    chronicleBirthGifts
   ]);
 
   // 연도별 이벤트 매핑
@@ -612,6 +618,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setChronicleManualD20('');
     setChronicleManualD6('');
     setFatherHonorModifier(0);
+    setChronicleBirthGifts(0);
     setCurrentYearRolled(false);
     setCurrentYearResultText('');
     setFSkipYearsUntil(0);
@@ -694,6 +701,7 @@ export default function FamilyWinter({ character, setCharacter }) {
               } else {
                 outcomeText = `👑 불멸의 무공: 적장 압둘 라흐만 결투 처단 (+900 Glory, 무어 증오 +${val})`;
               }
+              setChronicleBirthGifts(prev => prev + 1);
             } else if (pending.customOutcome === 'danes_hate') {
               outcomeText = `덴마크 성벽 사수 및 덴마크 증오 +${val} 획득 (+${pending.gloryGained} Glory)`;
               logAdd = `\n  └ [새로운 위협] 평생 처음 마주한 덴마크인들에 대해 엄청난 분노를 품었습니다! (Hate [Danes] +${val})`;
@@ -859,6 +867,7 @@ export default function FamilyWinter({ character, setCharacter }) {
               if (pending.customOutcome === 'birth_gift') {
                 logMsg += "\n  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)";
                 yearOutcomeText = `셉티마니아 대승리 및 왕실 하사품(Birth Gift) 획득 (+${res.gloryGained} Glory)`;
+                setChronicleBirthGifts(prev => prev + 1);
               } else {
                 yearOutcomeText = `전투 생존 완료 (+${res.gloryGained} Glory)`;
               }
@@ -2159,10 +2168,12 @@ export default function FamilyWinter({ character, setCharacter }) {
             setChronicleManualD20('');
             return;
           } else {
-            setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + 6 }));
-            setFatherHonorModifier(prev => prev - 5);
-            logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 엄청난 굴욕을 겪었습니다. (Honor -5, 덴마크인 증오 대폭 상승)`;
-            yearOutcomeText = "오욕: 바이킹 포로 수모 및 덴마크 증오 +6, Honor -5 획득";
+            // 룰북 Father 757 Roll 19-20: 1d6 Hate [Danes], Honor -1
+            const daneHateRoll = Math.floor(Math.random() * 6) + 1;
+            setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + daneHateRoll }));
+            setFatherHonorModifier(prev => prev - 1);
+            logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 굴욕을 겪었습니다. (Honor -1, 덴마크인 증오 +${daneHateRoll})`;
+            yearOutcomeText = `오욕: 바이킹 포로 수모 및 덴마크 증오 +${daneHateRoll}, Honor -1 획득`;
           }
         } else if (yr === 758) {
           logMsg = `🏰 758년: [역사] ${event}\n  └ [주사위 ${d20}] - `;
@@ -2635,6 +2646,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let gfHateMoors = 0;
     let gfHateDanes = 0;
     let gfCruel = 0;
+    let gfBirthGifts = 0;
     let gfDead = false;
     let gfDeathYr = 744;
     let gfCause = '노환';
@@ -2926,19 +2938,22 @@ export default function FamilyWinter({ character, setCharacter }) {
             logs.push(`🔗 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 포로로 잡혀 무어인의 땅(스페인)으로 압송되어 소식이 끊겼습니다. (+400 Glory)`);
           } else if (pRoll === 13) {
             gfGlory += 500;
+            gfBirthGifts += 1;
             const hVal = rollD3();
             gfHateMoors += hVal;
-            logs.push(`✨ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal})`);
+            logs.push(`✨ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 적진을 돌파하는 영웅적 전공을 세우며 전리품을 획득했습니다! (+500 Glory, 무어인 증오 +${hVal}, Frankish Birth Gift 획득!)`);
           } else if (pRoll <= 19) {
             gfGlory += 400;
+            gfBirthGifts += 1;
             const hVal = rollD3();
             gfHateMoors += hVal;
-            logs.push(`🛡️ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal})`);
+            logs.push(`🛡️ 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 무사히 생존하여 대승리에 공헌했습니다. (+400 Glory, 무어인 증오 +${hVal}, Frankish Birth Gift 획득!)`);
           } else {
             gfGlory += 900;
+            gfBirthGifts += 1;
             const hVal = rollD3();
             gfHateMoors += hVal;
-            logs.push(`👑 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal})`);
+            logs.push(`👑 732년: [역사] ${event} -> 포아티에 주사위 ${pRoll} - 전장 한가운데서 침공 사령관 에미르 압둘 라흐만을 결투로 베는 불멸의 업적을 세우셨습니다! (+900 Glory, 무어인 증오 +${hVal}, Frankish Birth Gift 획득!)`);
           }
         }
       } else if (yr === 733) {
@@ -3038,6 +3053,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         } else {
           const res = runCombatSurvival(yr, event + " (셉티마니아 대공성)", true, 0, true, 50);
           if (!res.dead) {
+            gfBirthGifts += 1;
             logs.push("  └ [왕실의 선물] 수복 공헌을 기려 마르텔 공으로부터 프랑크 탄생 선물을 받았습니다! (Frankish Birth Gift 획득!)");
           }
         }
@@ -3531,6 +3547,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setFatherDeathCause(fCause);
     setFatherHates({ saxons: fHateSaxons, moors: fHateMoors, cruel: fCruel });
     setFatherHonorModifier(fHonorMod);
+    setChronicleBirthGifts(gfBirthGifts);
 
     logs.push("");
     logs.push("🎉 [연대기 결과 요약]");
@@ -3543,6 +3560,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     if (fHateDanes > 10) logs.push(`  - 계승 증오: 덴마크인에 대한 증오 Passion [${fHateDanes}]`);
     if (fCruel > 0) logs.push(`  - 계승 기질: 무자비함(Cruel) 기질 +${fCruel} (캐릭터 시트 반영)`);
     if (fHonorMod !== 0) logs.push(`  - 계승 명예 보정치: Honor Passion [${fHonorMod >= 0 ? '+' : ''}${fHonorMod}]`);
+    if (gfBirthGifts > 0) logs.push(`  - 계승 하사품: 프랑크 탄생 선물(Birth Gift) +${gfBirthGifts}회 롤링 획득 가능`);
 
     setAncestorRollLog(logs);
     setAncestorApplied(false);
@@ -3551,6 +3569,24 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const applyAncestorLegacy = () => {
     if (ancestorApplied) return;
+
+    // Roll birth gifts first
+    const rolledGiftsText = [];
+    const rollGiftIndices = [];
+    let giftsToRoll = chronicleBirthGifts;
+    
+    for (let i = 0; i < giftsToRoll; i++) {
+      const roll = Math.floor(Math.random() * 20) + 1;
+      rollGiftIndices.push(roll);
+      const gift = birthGiftsTable[roll - 1];
+      if (gift) {
+        rolledGiftsText.push(`[주사위 ${roll}] ${gift.name} (${gift.benefit})`);
+        if (roll === 19) {
+          // Roll twice (adds 2 more rolls)
+          giftsToRoll += 2;
+        }
+      }
+    }
 
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
@@ -3578,6 +3614,14 @@ export default function FamilyWinter({ character, setCharacter }) {
         updated.family.honor = (updated.family.honor || 16) + fatherHonorModifier;
         updated.passions.honor = (updated.passions.honor || 16) + fatherHonorModifier;
       }
+
+      // Apply the pre-rolled birth gifts
+      rollGiftIndices.forEach(roll => {
+        const gift = birthGiftsTable[roll - 1];
+        if (gift) {
+          gift.apply(updated);
+        }
+      });
 
       if (updated.family && updated.family.members) {
         updated.family.members = updated.family.members.map(m => {
@@ -3614,7 +3658,10 @@ export default function FamilyWinter({ character, setCharacter }) {
     const inheritedCruelMsg = fatherHates.cruel && fatherHates.cruel > 0 
       ? `\n(계승 잔혹성 기질: +${fatherHates.cruel} Cruel)`
       : '';
-    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!${inheritedGloryMsg}${inheritedHonorMsg}${inheritedCruelMsg}`);
+    const inheritedGiftsMsg = rolledGiftsText.length > 0
+      ? `\n\n🎁 [가문 전승 하사품 획득!]\n${rolledGiftsText.join('\n')}`
+      : '';
+    alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!${inheritedGloryMsg}${inheritedHonorMsg}${inheritedCruelMsg}${inheritedGiftsMsg}`);
   };
 
   const handleFamilyChange = (field, value) => {

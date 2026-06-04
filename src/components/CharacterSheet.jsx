@@ -21,6 +21,7 @@ const patronSaints = [
   { name: "성모 마리아 (St. Mary)", patronage: "어머니", benefit: "+2 신에 대한 사랑 (Love God)", apply: (char) => { char.passions.loveGod = (char.passions.loveGod || 15) + 2; } },
   { name: "성 미카엘 (St. Michael)", patronage: "전사", benefit: "+3 용맹 (Valorous)", apply: (char) => { char.traits.valorous = Math.min(20, (char.traits.valorous || 10) + 3); char.traits.cowardly = 20 - char.traits.valorous; } },
   { name: "성 오메르 (St. Omer)", patronage: "병자 및 빈민", benefit: "+3 관대 (Generous)", apply: (char) => { char.traits.generous = Math.min(20, (char.traits.generous || 10) + 3); char.traits.selfish = 20 - char.traits.generous; } },
+  { name: "자유 선택 (Player's Choice)", patronage: "자유 선택", benefit: "원하는 성인의 효과를 수동 적용", apply: () => { /* 룰북 Table 1-3 Roll 20: Player's choice. 캐릭터 시트에서 수동으로 원하는 성인 보너스를 적용하세요. */ } }
 ];
 
 const familyCharacteristics = [
@@ -38,18 +39,21 @@ const familyCharacteristics = [
   { name: "놀라운 통찰과 귀띔 (Surprisingly deductive)", benefit: "+10 음모 (Intrigue)", apply: (char) => { char.skills.intrigue = (char.skills.intrigue || 0) + 10; } },
   { name: "타고난 악사 (Gifted musicians)", benefit: "+10 악기 연주 (Play Instruments)", apply: (char) => { char.skills.playInstruments = (char.skills.playInstruments || 0) + 10; } },
   { name: "축복받은 목소리 (Excellent voice)", benefit: "+10 가창 (Singing)", apply: (char) => { char.skills.singing = (char.skills.singing || 0) + 10; } },
-  { name: "전장의 지배자 (Master tacticians)", benefit: "+5 전술 & 공성", apply: (char) => { char.skills.battle = (char.skills.battle || 0) + 5; char.skills.siege = (char.skills.siege || 0) + 5; } }
+  // 룰북 Table 1-1 Roll 19: "+5 Battle or Siege" (택1). 기본값은 Battle. 공성 선택 시 수동 조정 필요.
+  { name: "전장의 지배자 (Master tacticians)", benefit: "+5 전술 또는 공성 (택1, 기본: 전술)", apply: (char) => { char.skills.battle = (char.skills.battle || 0) + 5; } },
+  { name: "자유 선택 (Player's choice)", benefit: "원하는 가문 특성을 수동 적용", apply: () => { /* 룰북 Table 1-1 Roll 20: Player's choice */ } }
 ];
 
 const fathersClasses = [
-  { name: "봉신 기사 (Vassal Knight)", benefit: "+14 기술 포인트, 명예 250", skillsAdd: 14, glory: 250 },
-  { name: "기치 기사 (Banneret Knight)", benefit: "+16 기술 포인트, 명예 300", skillsAdd: 16, glory: 300 },
-  { name: "독신 기사 (Bachelor Knight)", benefit: "+12 기술 포인트, 명예 200", skillsAdd: 12, glory: 200 },
-  { name: "용병 기사 (Mercenary Knight)", benefit: "+10 기술 포인트, 검/둔기 +3, 명예 100", skillsAdd: 10, bonusWeapon: 3, glory: 100 },
-  { name: "영주/지방관 기사 (Lord or Officer)", benefit: "+18 기술 포인트, 명예 500", skillsAdd: 18, glory: 500 }
+  { name: "봉신 기사 (Vassal Knight)", benefit: "+14 기술 포인트, 영광 250", skillsAdd: 14, glory: 250 },
+  { name: "기치 기사 (Banneret Knight)", benefit: "+16 기술 포인트, 영광 300", skillsAdd: 16, glory: 300 },
+  { name: "독신 기사 (Bachelor Knight)", benefit: "+12 기술 포인트, 영광 200", skillsAdd: 12, glory: 200 },
+  { name: "용병 기사 (Mercenary Knight)", benefit: "+10 기술, 검 +3, 근접무기(택1) +3, Cruel +3, 영광 100", skillsAdd: 10, bonusWeapon: 3, glory: 100 },
+  // 룰북 Table 1-5: Lord(1-5) / Officer(6-20) 세부 직책별 보너스가 상이. 현재는 간소화 구현.
+  { name: "영주/지방관 기사 (Lord or Officer)", benefit: "+18 기술 포인트, 영광 500 (간소화)", skillsAdd: 18, glory: 500 }
 ];
 
-const birthGiftsTable = [
+export const birthGiftsTable = [
   { roll: 1, name: "Decorated Saddle", benefit: "장식된 말 안장 (가치 120d)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "장식된 말 안장 (가치 120d)"; } },
   { roll: 2, name: "Magnificent Cloak", benefit: "화려한 가문 망토 (가치 £1)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "화려한 가문 망토 (가치 £1)"; } },
   { roll: 3, name: "Blessed Spear", benefit: "축복받은 창 (Spear 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.spear = (char.skills.spear || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 창 (이교도 상대 +1)"; } },
@@ -117,7 +121,7 @@ const presets = [
         axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 15, unarmed: 6,
         lance: 14, bow: 4, crossbow: 5, thrownWeapon: 4
       },
-      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 15, honor: 16, hateSarasens: 12, loveGod: 15 },
+      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 15, honor: 16, hateSaracens: 12, loveGod: 15 },
       standings: { charlemagne: 10, liegeLord: 18, family: 16, retinue: 12, church: 15, commoners: 10 }
     }
   },
@@ -163,7 +167,7 @@ const presets = [
         axe: 5, bludgeon: 5, dagger: 8, spear: 8, sword: 12, unarmed: 6,
         lance: 11, bow: 4, crossbow: 5, thrownWeapon: 4
       },
-      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 16, honor: 17, hateSarasens: 12, loveGod: 15 },
+      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 16, honor: 17, hateSaracens: 12, loveGod: 15 },
       standings: { charlemagne: 12, liegeLord: 15, family: 17, retinue: 14, church: 15, commoners: 12 }
     }
   },
@@ -208,7 +212,7 @@ const presets = [
         axe: 6, bludgeon: 8, dagger: 8, spear: 10, sword: 13, unarmed: 6,
         lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
       },
-      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 15, honor: 16, hateSarasens: 12, loveGod: 17 },
+      passions: { loyaltyLiege: 15, loveFamily: 15, hospitality: 15, honor: 16, hateSaracens: 12, loveGod: 17 },
       standings: { charlemagne: 11, liegeLord: 15, family: 16, retinue: 14, church: 17, commoners: 15 }
     }
   },
@@ -252,7 +256,7 @@ const presets = [
         battle: 12, siege: 5,
         axe: 9, bludgeon: 8, dagger: 8, spear: 10, sword: 16, unarmed: 8, lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
       },
-      passions: { loyaltyLiege: 14, loveFamily: 15, hospitality: 12, honor: 15, hateSarasens: 15, loveGod: 11 },
+      passions: { loyaltyLiege: 14, loveFamily: 15, hospitality: 12, honor: 15, hateSaracens: 15, loveGod: 11 },
       standings: { charlemagne: 8, liegeLord: 15, family: 15, retinue: 10, church: 11, commoners: 8 }
     }
   }
@@ -320,7 +324,7 @@ const passions = [
   { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
   { key: "hospitality", label: "손대접 및 환대 (Hospitality)", defaultVal: 15 },
   { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
-  { key: "hateSarasens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
+  { key: "hateSaracens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
   { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
   { key: "amor", label: "연인에 대한 로맨스 (Amor)", defaultVal: 0 }
 ];
@@ -348,7 +352,7 @@ const getCharIndexFromRoll = (roll) => {
   if (r === 17) return 12; // 17: Instruments
   if (r === 18) return 13; // 18: Singing
   if (r === 19) return 14; // 19: Tacticians
-  return 14; // 20: Player's choice (default to Tacticians)
+  return 15; // 20: Player's choice
 };
 
 const getFatherIndexFromRoll = (roll) => {
@@ -476,15 +480,15 @@ export default function CharacterSheet({ character, setCharacter }) {
   };
 
   const handleRollAttributes = () => {
-    const roll3d6 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 3;
-    const roll2d6Plus6 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 8;
+    // 룰북 Table 1-8: 모든 남성 능력치 2d6+3 (범위 5~15)
+    const roll2d6plus3 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 5;
     const rollD20 = () => Math.floor(Math.random() * 20) + 1;
 
-    setCustomStr(roll3d6());
-    setCustomDex(roll3d6());
-    setCustomApp(roll3d6());
-    setCustomSiz(roll2d6Plus6());
-    setCustomCon(roll2d6Plus6());
+    setCustomStr(roll2d6plus3());
+    setCustomDex(roll2d6plus3());
+    setCustomApp(roll2d6plus3());
+    setCustomSiz(roll2d6plus3());
+    setCustomCon(roll2d6plus3());
     
     const saintRoll = rollD20();
     const charRoll = rollD20();
@@ -588,7 +592,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       home: "바스토뉴 (Bastogne)",
       culture: "프랑크 (Frankish)",
       lineage: "아르덴 (Ardennes)",
-      liegeLord: "티ಎ리 공작 (Duke Thierry)",
+      liegeLord: "티에리 공작 (Duke Thierry)",
       fathersClass: fathersClasses[customFatherIndex].name,
       personalClass: "종자 (Squire)",
       features: ["외마디 흉터", "다부진 근육", "예리한 시선"]
@@ -634,7 +638,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       loveFamily: 15,
       hospitality: 15,
       honor: 16,
-      hateSarasens: 12,
+      hateSaracens: 12,
       loveGod: 15
     };
 
@@ -654,7 +658,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     characteristic.apply(newChar);
 
     // Sync with FamilyWinter characteristic roll system
-    const indexToRoll = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19];
+    const indexToRoll = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
     const charRoll = indexToRoll[customCharIndex] || 1;
 
     const charIndexToEffect = [
@@ -672,7 +676,8 @@ export default function CharacterSheet({ character, setCharacter }) {
       { skills: { intrigue: 10 } },        // 11: 놀라운 통찰
       { skills: { playInstruments: 10 } }, // 12: 타고난 악사
       { skills: { singing: 10 } },         // 13: 축복받은 목소리
-      { skills: { battle: 5, siege: 5 } }  // 14: 전장의 지배자
+      { skills: { battle: 5 } },           // 14: 전장의 지배자 (룰북: Battle or Siege 택1, 기본 Battle)
+      { skills: {} }                        // 15: 자유 선택 (Player's choice — 수동 적용)
     ];
 
     const effect = charIndexToEffect[customCharIndex] || { skills: {} };
@@ -687,13 +692,16 @@ export default function CharacterSheet({ character, setCharacter }) {
     };
 
     const father = fathersClasses[customFatherIndex];
+    // 룰북: Father's Class의 skill points는 원래 플레이어 자유 분배이나, 편의상 검/마창에 자동 분배.
     if (father.skillsAdd) {
       newChar.skills.sword += Math.floor(father.skillsAdd / 2);
       newChar.skills.lance += Math.ceil(father.skillsAdd / 2);
     }
     if (father.bonusWeapon) {
       newChar.skills.sword += father.bonusWeapon;
-      newChar.skills.bludgeon += father.bonusWeapon;
+      // 룰북: "Sword +3, any other melee weapon +3" — 두 번째 무기는 플레이어 선택.
+      // 기본값으로 도끼(Axe)에 배정. 원하는 근접무기로 수동 조정 가능.
+      newChar.skills.axe = (newChar.skills.axe || 0) + father.bonusWeapon;
       newChar.traits.merciful = Math.max(0, newChar.traits.merciful - 3);
       newChar.traits.cruel = 20 - newChar.traits.merciful;
     }

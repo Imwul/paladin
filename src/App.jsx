@@ -119,7 +119,7 @@ const initialCharacterState = {
     loveFamily: 15,
     hospitality: 15,
     honor: 16,
-    hateSarasens: 12,
+    hateSaracens: 12,
     loveGod: 15
   },
   passionsChecked: {},
@@ -135,6 +135,21 @@ const initialCharacterState = {
 
 const mergeWithDefault = (data) => {
   if (!data || typeof data !== 'object') return initialCharacterState;
+
+  // Backward compatibility migration for hateSarasens typo
+  if (data.passions) {
+    if (data.passions.hateSarasens !== undefined && data.passions.hateSaracens === undefined) {
+      data.passions.hateSaracens = data.passions.hateSarasens;
+      delete data.passions.hateSarasens;
+    }
+  }
+  if (data.passionsChecked) {
+    if (data.passionsChecked.hateSarasens !== undefined && data.passionsChecked.hateSaracens === undefined) {
+      data.passionsChecked.hateSaracens = data.passionsChecked.hateSarasens;
+      delete data.passionsChecked.hateSarasens;
+    }
+  }
+
   return {
     ...initialCharacterState,
     ...data,
