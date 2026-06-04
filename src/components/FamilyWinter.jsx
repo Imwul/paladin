@@ -4597,25 +4597,49 @@ export default function FamilyWinter({ character, setCharacter }) {
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end', marginBottom: '12px', flexWrap: 'wrap' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', marginBottom: '2px' }}>수동 주사위 (d20):</span>
-                        <input
-                          type="number"
-                          placeholder="수동입력"
-                          value={fcManualD20}
-                          onChange={e => setFcManualD20(e.target.value)}
-                          style={{ width: '80px', padding: '6px', fontSize: '0.82rem', border: '1px solid #ccc', borderRadius: '4px' }}
-                        />
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <input
+                            type="number"
+                            min={1} max={20}
+                            placeholder="예: 12"
+                            value={fcManualD20}
+                            onChange={e => setFcManualD20(e.target.value)}
+                            style={{ width: '80px', padding: '6px', fontSize: '0.82rem', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px', textAlign: 'center' }}
+                          />
+                          <button
+                            type="button"
+                            className="btn-medieval"
+                            onClick={() => {
+                              if (!fcManualD20) {
+                                alert("수동 주사위 값을 먼저 입력해 주세요!");
+                                return;
+                              }
+                              rollFamilyCharacteristic();
+                            }}
+                            style={{ height: '32px', fontSize: '0.78rem', padding: '0 10px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            입력
+                          </button>
+                        </div>
                       </div>
+                      
+                      <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginBottom: '8px' }}>또는</div>
+
                       <button
                         type="button"
                         className="btn-medieval btn-medieval-primary"
-                        onClick={rollFamilyCharacteristic}
-                        style={{ height: '36px', marginTop: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: '0 16px' }}
+                        onClick={() => {
+                          setFcManualD20('');
+                          const r = Math.floor(Math.random() * 20) + 1;
+                          setFcRoll(r);
+                        }}
+                        style={{ height: '32px', display: 'flex', alignItems: 'center', gap: '6px', padding: '0 14px', fontSize: '0.82rem' }}
                       >
                         <Dices size={14} />
-                        특징 판정 주사위 굴림
+                        무작위 주사위 굴림
                       </button>
                     </div>
                   </div>
