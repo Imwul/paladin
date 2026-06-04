@@ -3634,6 +3634,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (m.id === 'albert' || m.relation === '조부') {
             return {
               ...m,
+              name: updated.family.ancestor || m.name,
               lifeYears: `702~${grandfatherDeathYear}`,
               status: '사망',
               deathCause: grandfatherDeathCause,
@@ -3647,6 +3648,12 @@ export default function FamilyWinter({ character, setCharacter }) {
               status: '사망',
               deathCause: fatherDeathCause,
               note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 영광 ${fatherGlory} Glory.`
+            };
+          }
+          if (m.relation === '본인') {
+            return {
+              ...m,
+              name: updated.personal.name || m.name
             };
           }
           return m;
@@ -3679,6 +3686,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (m.id === 'albert' || m.relation === '조부') {
             return {
               ...m,
+              name: updated.family.ancestor || m.name,
               lifeYears: `702~${grandfatherDeathYear}`,
               status: '사망',
               deathCause: grandfatherDeathCause,
@@ -3692,6 +3700,12 @@ export default function FamilyWinter({ character, setCharacter }) {
               status: '사망',
               deathCause: fatherDeathCause,
               note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 영광 ${fatherGlory} Glory.`
+            };
+          }
+          if (m.relation === '본인') {
+            return {
+              ...m,
+              name: updated.personal.name || m.name
             };
           }
           return m;
