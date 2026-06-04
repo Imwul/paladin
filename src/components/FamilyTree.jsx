@@ -67,9 +67,11 @@ const resolveMemberCharacteristic = (member, allMembers, globalFamilyChar) => {
     return null;
   }
 
+  const parentGender = parent.gender || getGender(parent);
+
   if (memberGender === 'female') {
     let mother = null;
-    if (parent.gender === 'female') {
+    if (parentGender === 'female') {
       mother = parent;
     } else {
       mother = allMembers.find(m => m.id === parent.spouseId || m.spouseId === parent.id);
@@ -80,7 +82,7 @@ const resolveMemberCharacteristic = (member, allMembers, globalFamilyChar) => {
     }
   } else {
     let father = null;
-    if (parent.gender === 'male') {
+    if (parentGender === 'male') {
       father = parent;
     } else {
       father = allMembers.find(m => m.id === parent.spouseId || m.spouseId === parent.id);
