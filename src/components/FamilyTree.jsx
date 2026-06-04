@@ -530,16 +530,7 @@ export default function FamilyTree({ character, setCharacter }) {
     // Recalculate layout paths after component rendering or data changes
     const timer = setTimeout(() => {
       calculateLines();
-
-      // Center scrollbar on initial render/mount
-      if (!hasCenteredRef.current && treeContainerRef.current) {
-        const wrapper = treeContainerRef.current.parentElement;
-        if (wrapper) {
-          wrapper.scrollLeft = (treeContainerRef.current.scrollWidth - wrapper.clientWidth) / 2;
-          hasCenteredRef.current = true;
-        }
-      }
-    }, 150);
+    }, 100);
 
     window.addEventListener('resize', calculateLines);
     
@@ -548,12 +539,36 @@ export default function FamilyTree({ character, setCharacter }) {
     if (treeContainerRef.current && typeof ResizeObserver !== 'undefined') {
       observer = new ResizeObserver(() => {
         calculateLines();
+
+        // Centering logic inside ResizeObserver to guarantee scrollWidth is fully calculated
+        if (!hasCenteredRef.current) {
+          const wrapper = treeContainerRef.current.parentElement;
+          if (wrapper) {
+            const maxScroll = treeContainerRef.current.scrollWidth - wrapper.clientWidth;
+            if (maxScroll > 0) {
+              wrapper.scrollLeft = maxScroll / 2;
+              hasCenteredRef.current = true;
+            }
+          }
+        }
       });
       observer.observe(treeContainerRef.current);
     }
 
+    // Fallback centering timer
+    const fallbackCenteringTimer = setTimeout(() => {
+      if (!hasCenteredRef.current && treeContainerRef.current) {
+        const wrapper = treeContainerRef.current.parentElement;
+        if (wrapper) {
+          wrapper.scrollLeft = (treeContainerRef.current.scrollWidth - wrapper.clientWidth) / 2;
+          hasCenteredRef.current = true;
+        }
+      }
+    }, 1000);
+
     return () => {
       clearTimeout(timer);
+      clearTimeout(fallbackCenteringTimer);
       window.removeEventListener('resize', calculateLines);
       if (observer) observer.disconnect();
     };
