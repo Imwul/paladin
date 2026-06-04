@@ -5276,7 +5276,6 @@ export default function FamilyTree({ character, setCharacter }) {
                   { key: 'battleCry', label: '전투 함성', ph: '예: 몽주아 생드니!' },
                   { key: 'ancestor', label: '가문 시조', ph: '예: 알베르 경' },
                   { key: 'homeCountry', label: '영지/고향', ph: '예: 아키텐' },
-                  { key: 'patronSaint', label: '수호 성인', ph: '예: 성 데니스' },
                 ].map(f => (
                   <div className="cs-field" key={f.key}>
                     <span className="cs-field-label">{f.label}:</span>
@@ -5290,15 +5289,68 @@ export default function FamilyTree({ character, setCharacter }) {
                     onChange={e => handleFamilyChange('honor', parseInt(e.target.value) || 0)} />
                 </div>
               </div>
+
+              {/* ⛪ 수호 성인 판정 (Table 1-3) */}
+              <div style={{ marginTop: '14px', border: '1.2px solid var(--color-gold)', borderRadius: '6px', padding: '12px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.88rem', color: 'var(--color-gold-dark)' }}>⛪ 수호 성인 (Table 1-3)</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                      type="number" min={1} max={20} placeholder="d20"
+                      value={patronSaintRoll}
+                      onChange={e => setPatronSaintRoll(e.target.value)}
+                      style={{ width: '55px', padding: '3px', textAlign: 'center', fontWeight: 'bold', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px', fontSize: '0.82rem' }}
+                    />
+                    <button
+                      type="button"
+                      className="btn-medieval btn-medieval-primary"
+                      style={{ fontSize: '0.78rem', padding: '4px 10px' }}
+                      onClick={() => {
+                        let d20 = parseInt(patronSaintRoll);
+                        if (isNaN(d20) || d20 < 1 || d20 > 20) {
+                          d20 = Math.floor(Math.random() * 20) + 1;
+                        }
+                        const saint = patronSaints[d20 - 1];
+                        setPatronSaintResult({ roll: d20, saint });
+                        // Auto-apply to character
+                        setCharacter(prev => {
+                          const updated = JSON.parse(JSON.stringify(prev));
+                          saint.apply(updated);
+                          updated.family.patronSaint = saint.name;
+                          return updated;
+                        });
+                      }}
+                    >
+                      🎲 수호 성인 굴림
+                    </button>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>현재 수호 성인:</span>
+                  <input type="text" value={character.family.patronSaint || ''} placeholder="예: 성 데니스"
+                    onChange={e => handleFamilyChange('patronSaint', e.target.value)}
+                    style={{ flex: 1 }}
+                  />
+                </div>
+                {patronSaintResult && (
+                  <div style={{ marginTop: '8px', backgroundColor: 'rgba(16, 185, 129, 0.05)', border: '1px solid var(--color-success)', padding: '8px 10px', borderRadius: '4px', fontSize: '0.8rem' }}>
+                    🎲 d20: [{patronSaintResult.roll}] → <strong>{patronSaintResult.saint.name}</strong> ({patronSaintResult.saint.patronage}) — <strong style={{ color: 'var(--color-royal-blue)' }}>{patronSaintResult.saint.benefit}</strong>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--color-success)', marginLeft: '8px' }}>✅ 시트 자동 적용됨</span>
+                  </div>
+                )}
+              </div>
+
               <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div>
                   <label style={{ fontSize: '0.9rem', fontWeight: 600, display: 'block', marginBottom: '4px' }}>우방 동맹 가문:</label>
-                  <textarea className="form-input" rows={2} value={character.family.allies || ''} style={{ width: '100%', padding: '6px' }}
+                  <textarea rows={2} value={character.family.allies || ''}
+                    style={{ width: '100%', padding: '8px', border: '1.2px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: 'rgba(255,255,255,0.8)', fontFamily: 'Pretendard, -apple-system, sans-serif', fontSize: '0.88rem', resize: 'vertical', outline: 'none' }}
                     onChange={e => handleFamilyChange('allies', e.target.value)} />
                 </div>
                 <div>
                   <label style={{ fontSize: '0.9rem', fontWeight: 600, display: 'block', marginBottom: '4px' }}>적대 대립 가문:</label>
-                  <textarea className="form-input" rows={2} value={character.family.enemies || ''} style={{ width: '100%', padding: '6px' }}
+                  <textarea rows={2} value={character.family.enemies || ''}
+                    style={{ width: '100%', padding: '8px', border: '1.2px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: 'rgba(255,255,255,0.8)', fontFamily: 'Pretendard, -apple-system, sans-serif', fontSize: '0.88rem', resize: 'vertical', outline: 'none' }}
                     onChange={e => handleFamilyChange('enemies', e.target.value)} />
                 </div>
               </div>
