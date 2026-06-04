@@ -895,6 +895,7 @@ export default function FamilyTree({ character, setCharacter }) {
     };
     genMembers.sort((a, b) => getBirthYear(a.lifeYears) - getBirthYear(b.lifeYears));
 
+    const positions = character.family.positions || {};
     const renderedIds = new Set();
     const groups = [];
 
@@ -931,10 +932,16 @@ export default function FamilyTree({ character, setCharacter }) {
         <div className="ft-gen-nodes">
           {groups.map((group, idx) => {
             if (group.type === 'marriage') {
+              const husbandPos = positions[group.husband.id] || { x: 0, y: 0 };
+              const wifePos = positions[group.wife.id] || { x: 0, y: 0 };
+              const heartX = (husbandPos.x + wifePos.x) / 2;
               return (
                 <div key={idx} className="ft-marriage-block">
                   {renderMemberCard(group.husband)}
-                  <div className="ft-marriage-heart">
+                  <div 
+                    className="ft-marriage-heart"
+                    style={{ transform: `translateX(${heartX}px)` }}
+                  >
                     <Heart size={14} fill="var(--color-danger)" color="var(--color-danger)" />
                   </div>
                   {renderMemberCard(group.wife)}

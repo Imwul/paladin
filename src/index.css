@@ -1664,10 +1664,13 @@ input[type="number"] {
 }
 
 .ft-canvas {
-  min-width: 1180px; /* 좌우 공간을 널찍하게 늘려 쾌적하게 배치 */
+  min-width: 100%;
+  width: max-content;
   position: relative;
   display: flex;
   flex-direction: column;
+  padding: 20px 300px;
+  box-sizing: border-box;
 }
 
 .ft-svg-layer {
@@ -1753,7 +1756,7 @@ input[type="number"] {
 
 .ft-gen-nodes {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 36px;
   justify-content: center; /* Fluid center alignment as members are dynamically added! */
   align-items: center;
@@ -1897,20 +1900,21 @@ input[type="number"] {
   font-family: var(--font-korean) !important;
   letter-spacing: -0.03em !important;
   width: 100%;
+  text-align: center;
 }
 
 .ft-name-ko {
-  display: block;
+  display: inline;
   font-weight: 700;
   line-height: 1.2;
 }
 
 .ft-name-en {
-  display: block;
+  display: inline;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--color-grey);
-  margin-top: 2px;
+  margin-left: 4px;
   font-family: var(--font-serif) !important;
 }
 
