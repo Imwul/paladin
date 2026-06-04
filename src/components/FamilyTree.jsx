@@ -556,15 +556,42 @@ export default function FamilyTree({ character, setCharacter }) {
         return;
       }
 
+      // 수동 입력 관계가 없거나 지워진 경우, 저장 시점에 자동 계산된 촌수 관계를 구해서 대입해 줍니다.
+      let savedRelation = formRelation.trim();
+      const targetId = modalMode === 'edit' ? editingMember.id : ('m-' + Date.now());
+      
+      if (!savedRelation) {
+        const tempMember = {
+          id: targetId,
+          parentId: formParentId || undefined,
+          spouseId: formSpouseId || undefined,
+          gender: formGender,
+          lifeYears: formLifeYears,
+          relation: ''
+        };
+        const allMembersForCalc = modalMode === 'edit'
+          ? members.map(m => m.id === editingMember.id ? tempMember : m)
+          : [...members, tempMember];
+        
+        savedRelation = getCalculatedRelation(tempMember, allMembersForCalc);
+      }
+
+      // 핵심 인물(albert, gerard, eleanor, roland)의 관계 강제 보존
+      if (modalMode === 'edit' && ['albert', 'gerard', 'eleanor', 'roland'].includes(editingMember.id)) {
+        if (editingMember.id === 'albert') savedRelation = '조부';
+        if (editingMember.id === 'gerard') savedRelation = '부친';
+        if (editingMember.id === 'eleanor') savedRelation = '모친';
+        if (editingMember.id === 'roland') savedRelation = '본인';
+      }
+
       const combinedName = getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass);
       let updatedMembers = [...members];
 
       if (modalMode === 'add') {
-        const newId = 'm-' + Date.now();
         const newMember = {
-          id: newId,
+          id: targetId,
           name: combinedName,
-          relation: formRelation,
+          relation: savedRelation,
           generation: Number(formGeneration),
           status: formStatus,
           lifeYears: formLifeYears,
@@ -582,7 +609,7 @@ export default function FamilyTree({ character, setCharacter }) {
         if (formSpouseId) {
           updatedMembers = updatedMembers.map(m => {
             if (m && m.id === formSpouseId) {
-              return { ...m, spouseId: newId };
+              return { ...m, spouseId: targetId };
             }
             return m;
           });
@@ -597,7 +624,7 @@ export default function FamilyTree({ character, setCharacter }) {
             return {
               ...m,
               name: combinedName,
-              relation: ['albert', 'gerard', 'eleanor', 'roland'].includes(m.id) ? m.relation : formRelation,
+              relation: savedRelation,
               generation: Number(formGeneration),
               status: formStatus,
               lifeYears: formLifeYears,
