@@ -249,6 +249,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [formGender, setFormGender] = useState('male');
 
   const treeContainerRef = useRef(null);
+  const hasCenteredRef = useRef(false);
   const [lines, setLines] = useState([]);
   const dragRef = useRef({
     memberId: null,
@@ -529,7 +530,16 @@ export default function FamilyTree({ character, setCharacter }) {
     // Recalculate layout paths after component rendering or data changes
     const timer = setTimeout(() => {
       calculateLines();
-    }, 100);
+
+      // Center scrollbar on initial render/mount
+      if (!hasCenteredRef.current && treeContainerRef.current) {
+        const wrapper = treeContainerRef.current.parentElement;
+        if (wrapper) {
+          wrapper.scrollLeft = (treeContainerRef.current.scrollWidth - wrapper.clientWidth) / 2;
+          hasCenteredRef.current = true;
+        }
+      }
+    }, 150);
 
     window.addEventListener('resize', calculateLines);
     
