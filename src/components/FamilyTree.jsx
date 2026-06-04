@@ -5930,7 +5930,34 @@ export default function FamilyTree({ character, setCharacter }) {
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Award size={14} /> ⛪ 기사 은퇴 및 영면 구원 판정 (Salvation)</span>
             <span style={{ fontSize: '0.8rem' }}>{activePanel === 'salvation' ? '접기 ▲' : '펼치기 ▼'}</span>
           </div>
-          {activePanel === 'salvation' && (
+          {activePanel === 'salvation' && (() => {
+            // Calculate all salvation variables at render time
+            const chaste = character.traits.chaste || 10;
+            const forgiving = character.traits.forgiving || 10;
+            const merciful = character.traits.merciful || 10;
+            const modest = character.traits.modest || 10;
+            const temperate = character.traits.temperate || 10;
+            const trusting = character.traits.trusting || 10;
+            const lowestReligiousTrait = Math.min(chaste, forgiving, merciful, modest, temperate, trusting);
+
+            const amorVal = character.passions.amor || 0;
+            const honorVal = character.passions.honor || 0;
+            const loyaltyLiege = character.passions.loyaltyLiege || 0;
+            const loveGodVal = character.passions.loveGod || 0;
+
+            const amorBonus = Math.min(5, Math.max(0, amorVal - 15));
+            const honorBonus = Math.min(5, Math.max(0, honorVal - 15));
+            const liegeBonus = Math.min(5, Math.max(0, loyaltyLiege - 15));
+            const godBonus = Math.min(5, Math.max(0, loveGodVal - 15));
+
+            const deedsBonus = (salvationDeedsPaladin ? 5 : 0) +
+              (salvationDeedsHolyWar ? 5 : 0) +
+              Math.min(5, Math.max(0, parseInt(salvationPagans) || 0)) +
+              (parseInt(salvationCustomDeeds) || 0);
+
+            const totalSalvationScore = lowestReligiousTrait + amorBonus + honorBonus + liegeBonus + godBonus + deedsBonus;
+
+            return (
             <div className="view-animate" style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.65)', borderTop: '1px solid var(--color-gold-light)' }}>
                         <section className="cs-section view-animate">
             <div className="sheet-ribbon"><h3>⛪ 기사 은퇴 및 영면 구원 판정 (Salvation Roll)</h3></div>
@@ -6079,7 +6106,8 @@ export default function FamilyTree({ character, setCharacter }) {
             </div>
           </section>
             </div>
-          )}
+            );
+          })()}
         </div>
 
       </div>
