@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull, Dices, Check, Shield, Award, ChevronLeft, ChevronRight, Sparkles, RotateCcw, Compass } from 'lucide-react';
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
-import { birthGiftsTable } from './CharacterSheet';
+import { birthGiftsTable, patronSaints } from './CharacterSheet';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -363,6 +363,8 @@ export default function FamilyTree({ character, setCharacter }) {
   const [salvationManualD20, setSalvationManualD20] = useState('');
   const [salvationRollResult, setSalvationRollResult] = useState(null);
   const [blessingRollResult, setBlessingRollResult] = useState(null);
+  const [patronSaintRoll, setPatronSaintRoll] = useState('');
+  const [patronSaintResult, setPatronSaintResult] = useState(null);
 
 
     // 📜 조상 연대기 발전기 (Page 45-49) States
@@ -5917,6 +5919,111 @@ export default function FamilyTree({ character, setCharacter }) {
                   )}
 
                 </div>
+
+                  {/* 📖 Table 1-3: 가문 수호 성인 판정 (Family Patron Saints) */}
+                  <div style={{ marginTop: '16px', border: '1.5px solid var(--color-gold)', borderRadius: '8px', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.7)' }}>
+                    <div style={{ backgroundColor: 'rgba(201,168,76,0.12)', padding: '10px 14px', borderBottom: '1px solid var(--color-gold-light)' }}>
+                      <h4 style={{ margin: 0, fontWeight: 'bold', fontSize: '0.92rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        ⛪ Table 1-3: 가문 수호 성인 판정 (Family Patron Saints)
+                      </h4>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '0.76rem', color: 'var(--color-grey)' }}>
+                        룰북 Page 25. 가문이 모시는 수호 성인을 d20으로 결정합니다. 성인의 가호에 따른 보너스가 가문원에게 적용됩니다.
+                      </p>
+                    </div>
+                    <div style={{ padding: '14px' }}>
+                      {/* Roll Controls */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>d20 수동 입력 (1~20):</span>
+                        <input
+                          type="number"
+                          min={1} max={20}
+                          placeholder="랜덤"
+                          value={patronSaintRoll}
+                          onChange={e => setPatronSaintRoll(e.target.value)}
+                          style={{ width: '70px', padding: '4px', textAlign: 'center', fontWeight: 'bold', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px' }}
+                        />
+                        <button
+                          type="button"
+                          className="btn-medieval btn-medieval-primary"
+                          style={{ fontSize: '0.82rem', padding: '6px 14px' }}
+                          onClick={() => {
+                            let d20 = parseInt(patronSaintRoll);
+                            if (isNaN(d20) || d20 < 1 || d20 > 20) {
+                              d20 = Math.floor(Math.random() * 20) + 1;
+                            }
+                            const saint = patronSaints[d20 - 1];
+                            setPatronSaintResult({ roll: d20, saint });
+                          }}
+                        >
+                          ⛪ 수호 성인 굴림
+                        </button>
+                        {patronSaintResult && (
+                          <button
+                            type="button"
+                            className="btn-medieval"
+                            style={{ fontSize: '0.78rem', padding: '5px 10px' }}
+                            onClick={() => {
+                              const saint = patronSaintResult.saint;
+                              setCharacter(prev => {
+                                const updated = JSON.parse(JSON.stringify(prev));
+                                saint.apply(updated);
+                                updated.personal.patronSaint = saint.name;
+                                return updated;
+                              });
+                              alert(`수호 성인 [${saint.name}]의 가호가 캐릭터 시트에 적용되었습니다!\n효과: ${saint.benefit}`);
+                            }}
+                          >
+                            🌟 시트에 적용
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Result Display */}
+                      {patronSaintResult && (
+                        <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.04)', border: '1.5px solid var(--color-success)', padding: '12px', borderRadius: '6px', marginBottom: '14px' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--color-success)', marginBottom: '6px' }}>
+                            🎲 d20: [{patronSaintResult.roll}] → {patronSaintResult.saint.name}
+                          </div>
+                          <div style={{ fontSize: '0.82rem', color: 'var(--color-ink)' }}>
+                            • 수호 대상: <strong>{patronSaintResult.saint.patronage}</strong><br />
+                            • 가호 효과: <strong style={{ color: 'var(--color-royal-blue)' }}>{patronSaintResult.saint.benefit}</strong>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Full Table Reference */}
+                      <div style={{ border: '1px solid rgba(201,168,76,0.25)', borderRadius: '6px', overflow: 'hidden' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.74rem' }}>
+                          <thead>
+                            <tr style={{ backgroundColor: 'rgba(201,168,76,0.1)' }}>
+                              <th style={{ padding: '6px 8px', textAlign: 'center', borderBottom: '1px solid var(--color-gold-light)', width: '50px' }}>d20</th>
+                              <th style={{ padding: '6px 8px', textAlign: 'left', borderBottom: '1px solid var(--color-gold-light)' }}>수호 성인 (Saint)</th>
+                              <th style={{ padding: '6px 8px', textAlign: 'left', borderBottom: '1px solid var(--color-gold-light)' }}>수호 대상</th>
+                              <th style={{ padding: '6px 8px', textAlign: 'left', borderBottom: '1px solid var(--color-gold-light)' }}>가호 효과</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {patronSaints.map((saint, idx) => (
+                              <tr
+                                key={idx}
+                                style={{
+                                  backgroundColor: patronSaintResult?.roll === idx + 1 ? 'rgba(16, 185, 129, 0.08)' : (idx % 2 === 0 ? 'rgba(255,255,255,0.5)' : 'rgba(201,168,76,0.03)'),
+                                  fontWeight: patronSaintResult?.roll === idx + 1 ? 'bold' : 'normal',
+                                  borderLeft: patronSaintResult?.roll === idx + 1 ? '3px solid var(--color-success)' : '3px solid transparent'
+                                }}
+                              >
+                                <td style={{ padding: '4px 8px', textAlign: 'center', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>{idx + 1}</td>
+                                <td style={{ padding: '4px 8px', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>{saint.name}</td>
+                                <td style={{ padding: '4px 8px', borderBottom: '1px solid rgba(201,168,76,0.1)' }}>{saint.patronage}</td>
+                                <td style={{ padding: '4px 8px', borderBottom: '1px solid rgba(201,168,76,0.1)', color: 'var(--color-royal-blue)' }}>{saint.benefit}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
             </div>
           )}
         </div>

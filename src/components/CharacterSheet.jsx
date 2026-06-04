@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check } from 'lucide-react';
 
-const patronSaints = [
+export const patronSaints = [
   { name: "성 암브로시오 (St. Ambrose)", patronage: "필기사", benefit: "+5 웅변 (Eloquence)", apply: (char) => { char.skills.eloquence = (char.skills.eloquence || 0) + 5; } },
   { name: "성 아나스타시아 (St. Anastasia)", patronage: "순교자", benefit: "+3 정숙 (Chaste)", apply: (char) => { char.traits.chaste = Math.min(20, (char.traits.chaste || 10) + 3); char.traits.lustful = 20 - char.traits.chaste; } },
   { name: "성 보니파시오 (St. Boniface)", patronage: "청년", benefit: "+3 자비 (Merciful)", apply: (char) => { char.traits.merciful = Math.min(20, (char.traits.merciful || 10) + 3); char.traits.cruel = 20 - char.traits.merciful; } },
