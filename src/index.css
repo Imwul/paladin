@@ -1910,11 +1910,12 @@ input[type="number"] {
 }
 
 .ft-name-en {
-  display: inline;
+  display: inline-block;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--color-grey);
-  margin-left: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
   font-family: var(--font-serif) !important;
 }
 
