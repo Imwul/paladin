@@ -44,6 +44,131 @@ const getGender = (member) => {
   return 'male';
 };
 
+const getCalculatedRelation = (member, allMembers) => {
+  const me = allMembers.find(m => m.relation === '본인');
+  if (!me) return member.relation;
+  if (member.id === me.id) return '본인';
+
+  // 만약 사용자가 수동으로 특수한 관계 명칭을 기입했다면, 이를 존중하여 그대로 표시합니다.
+  const standardRelations = ['조부', '부친', '모친', '본인', '남동생', '자녀', '형제', '친족', '가문원', ''];
+  const hasCustomRelation = member.relation && !standardRelations.includes(member.relation.trim());
+  if (hasCustomRelation) {
+    return member.relation;
+  }
+
+  const getBirthYear = (ly) => {
+    if (!ly) return 9999;
+    const match = String(ly).match(/^(\d+)/);
+    return match ? parseInt(match[1], 10) : 9999;
+  };
+
+  const memberGender = getGender(member);
+  const meBirth = getBirthYear(me.lifeYears);
+  const memberBirth = getBirthYear(member.lifeYears);
+
+  // 1. 본인의 배우자
+  if (member.spouseId === me.id) {
+    return memberGender === 'female' ? '부인' : '남편';
+  }
+
+  // 2. 본인의 부모
+  const myParents = allMembers.filter(p => p.id === me.parentId || p.spouseId === me.parentId);
+  const myParentIds = myParents.map(p => p.id);
+  if (myParentIds.includes(member.id)) {
+    return memberGender === 'female' ? '모친' : '부친';
+  }
+
+  // 3. 본인의 조부모
+  const parentObj = allMembers.find(p => p.id === me.parentId);
+  if (parentObj) {
+    const grandparents = allMembers.filter(gp => gp.id === parentObj.parentId || gp.spouseId === parentObj.parentId);
+    const grandparentIds = grandparents.map(gp => gp.id);
+    if (grandparentIds.includes(member.id)) {
+      return memberGender === 'female' ? '조모' : '조부';
+    }
+  }
+
+  // 4. 본인의 자녀
+  if (member.parentId === me.id || (me.spouseId && member.parentId === me.spouseId)) {
+    return memberGender === 'female' ? '딸' : '아들';
+  }
+
+  // 5. 본인의 형제/자매
+  if (member.parentId && myParentIds.includes(member.parentId)) {
+    if (memberBirth < meBirth) {
+      return memberGender === 'female' ? '누나' : '형';
+    } else {
+      return memberGender === 'female' ? '여동생' : '남동생';
+    }
+  }
+
+  // 6. 부모의 형제/자매 (삼촌, 고모, 큰아버지, 작은아버지 등)
+  if (parentObj && parentObj.parentId) {
+    const grandparents = allMembers.filter(gp => gp.id === parentObj.parentId || gp.spouseId === parentObj.parentId);
+    const grandparentIds = grandparents.map(gp => gp.id);
+    
+    // 조부모의 자녀들 (부모의 형제자매)
+    if (member.parentId && grandparentIds.includes(member.parentId) && !myParentIds.includes(member.id)) {
+      if (memberGender === 'female') {
+        return '고모';
+      } else {
+        const fatherBirth = getBirthYear(parentObj.lifeYears);
+        if (memberBirth < fatherBirth) {
+          return '큰아버지';
+        } else {
+          return '작은아버지';
+        }
+      }
+    }
+
+    // 부모의 형제자매의 배우자
+    const parentSiblings = allMembers.filter(ps => ps.parentId && grandparentIds.includes(ps.parentId) && !myParentIds.includes(ps.id));
+    const parentSiblingSpouse = parentSiblings.find(ps => ps.spouseId === member.id);
+    if (parentSiblingSpouse) {
+      const spouseGender = getGender(parentSiblingSpouse);
+      if (spouseGender === 'female') {
+        return '고모부';
+      } else {
+        const fatherBirth = getBirthYear(parentObj.lifeYears);
+        const siblingBirth = getBirthYear(parentSiblingSpouse.lifeYears);
+        if (siblingBirth < fatherBirth) {
+          return '큰어머니';
+        } else {
+          return '작은어머니';
+        }
+      }
+    }
+  }
+
+  // 7. 조카 (형제자매의 자녀)
+  const mySiblings = allMembers.filter(sib => sib.parentId && myParentIds.includes(sib.parentId) && sib.id !== me.id);
+  const mySiblingIds = mySiblings.map(sib => sib.id);
+  if (member.parentId && mySiblingIds.includes(member.parentId)) {
+    return memberGender === 'female' ? '조카 (딸)' : '조카 (아들)';
+  }
+
+  // 8. 사촌 (부모의 형제자매의 자녀)
+  if (parentObj && parentObj.parentId) {
+    const grandparents = allMembers.filter(gp => gp.id === parentObj.parentId || gp.spouseId === parentObj.parentId);
+    const grandparentIds = grandparents.map(gp => gp.id);
+    const parentSiblings = allMembers.filter(ps => ps.parentId && grandparentIds.includes(ps.parentId) && !myParentIds.includes(ps.id));
+    const parentSiblingIds = parentSiblings.map(ps => ps.id);
+    
+    if (member.parentId && parentSiblingIds.includes(member.parentId)) {
+      return '사촌';
+    }
+  }
+
+  // 9. 손자녀 (자녀의 자녀)
+  const myChildren = allMembers.filter(ch => ch.parentId === me.id || (me.spouseId && ch.parentId === me.spouseId));
+  const myChildrenIds = myChildren.map(ch => ch.id);
+  if (member.parentId && myChildrenIds.includes(member.parentId)) {
+    return memberGender === 'female' ? '손녀' : '손자';
+  }
+
+  return member.relation;
+};
+
 const getTitleByNameAndClass = (koName, enName, statusClass) => {
   if (!koName) return '';
   const cleanKo = koName.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
@@ -604,6 +729,8 @@ export default function FamilyTree({ character, setCharacter }) {
     "증손자녀 세대 (Great-Grandchildren)"
   ];
 
+
+
   // Helper to render spouse links side-by-side
   const renderGenerationRow = (gen) => {
     const genMembers = members.filter(m => m.generation === gen);
@@ -939,13 +1066,13 @@ export default function FamilyTree({ character, setCharacter }) {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="ft-form-group">
-                  <label className="ft-label">가문내 관계/역할:</label>
+                  <label className="ft-label">가문내 관계/역할 (선택):</label>
                   <input 
                     type="text" 
                     className="ft-input" 
                     value={formRelation} 
                     onChange={e => setFormRelation(e.target.value)}
-                    placeholder="예: 부인, 첫째 아들, 고모"
+                    placeholder="미입력 시 자동 계산 (예: 형, 작은아버지, 조카 등)"
                   />
                 </div>
                 
