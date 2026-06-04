@@ -44,6 +44,71 @@ const getGender = (member) => {
   return 'male';
 };
 
+const medievalDeathCauses = [
+  '노환 (Old Age)', '역병 (Plague)', '전투 중 전사 (Killed in Battle)', 
+  '상처 감염 (Wound Infection)', '마상창시합 사고 (Jousting Accident)', 
+  '낙마 사고 (Riding Accident)', '사냥 사고 (Hunting Accident)', 
+  '폐렴 (Pneumonia)', '심장마비 (Heart Attack)', '독살 의혹 (Suspected Poisoning)'
+];
+
+const generateRandomName = (gender) => {
+  const isFrankish = Math.random() < 0.5;
+  if (!isFrankish) {
+    const pool = gender === 'male' ? maleNames : femaleNames;
+    const selected = pool[Math.floor(Math.random() * pool.length)];
+    if (selected) {
+      return selected;
+    }
+  }
+  
+  const prefixes = gender === 'male' ? frankishMalePrefixes : frankishFemalePrefixes;
+  const suffixes = gender === 'male' ? frankishMaleSuffixes : frankishFemaleSuffixes;
+  const randPre = prefixes[Math.floor(Math.random() * prefixes.length)];
+  const randSuf = suffixes[Math.floor(Math.random() * suffixes.length)];
+
+  const cleanPre = randPre.split('/')[0].replace('(', '').replace(')', '').replace('-', '');
+  const cleanSuf = randSuf.split('/')[0].replace('(', '').replace(')', '').replace('-', '');
+
+  const fullNameEN = cleanPre + cleanSuf;
+  const capitalizedEN = fullNameEN.charAt(0).toUpperCase() + fullNameEN.slice(1).toLowerCase();
+
+  const preKoMap = {
+    Adal: '아달', Amal: '아말', Agil: '아길', Ag: '아그', Ald: '알드', Alb: '알브', And: '안드', Ans: '안스',
+    Angil: '앙질', Arbo: '아르보', Arn: '아르노', Aud: '오드', Aut: '오', Bald: '발드', Baud: '보',
+    Bern: '베른', Bert: '베르', Brun: '브륀', Char: '샤를', Gar: '가르', Chil: '실', Chlo: '클로',
+    Dag: '다그', Ever: '에베르', Erle: '에를레', Megin: '메진', Fara: '파라', Floris: '플로리스',
+    Fred: '프레드', Frid: '프리드', Foul: '풀', Fulc: '풀크', Geno: '제노', Ger: '제르', Geld: '겔드',
+    Gond: '공', Gund: '군드', Grim: '그림', Guerim: '게랭', Had: '하드', Hard: '하르드', Hegi: '헤지',
+    Her: '헤르', Heil: '하일', Heim: '하임', Hugo: '위고', Huno: '위노', Ingo: '인고', Irmin: '이르민',
+    Isem: '이젬', Lam: '람', Land: '랑드', Lud: '뤼드', Madal: '마달', Magin: '마쟁', Marc: '마르크',
+    Mero: '메로', Nort: '노르', Raban: '라반', Rade: '라드', Ragno: '라뇨', Ragin: '라쟁', Rein: '랭',
+    Rich: '리슈', Rudo: '뤼도', Sig: '지그', Swind: '스윈드', Theod: '테오드', Thiad: '티아드',
+    Thurin: '튀랭', Walde: '발데', Warin: '와랭', Wido: '위도', Wulf: '울프',
+    Ad: '아드', Bas: '바지', Chrot: '크로', Dhuo: '듀오', Flor: '플로르', Fleur: '플뢰르', Folch: '폴슈',
+    Gise: '지젤', Hersi: '에르지', Hilde: '힐데', Inge: '인게', Mat: '마트', Mar: '마르', Nant: '낭', Rol: '롤', Theo: '테오'
+  };
+
+  const sufKoMap = {
+    atus: '아투스', bert: '베르', bard: '바르', bold: '보', obald: '보', baud: '보', bern: '베르',
+    brand: '브랑', char: '샤르', gar: '가르', ger: '지에', cor: '코르', drad: '드라', don: '동',
+    dio: '디오', duin: '댕', elin: '랭', eric: '리', oric: '리', fried: '프리드', fred: '프레드',
+    froid: '프루아', gand: '강', gang: '강', gaud: '고', gast: '가스트', grim: '그림', hard: '하르드',
+    hart: '하르트', helm: '엘름', er: '에', hair: '에르', ing: '앵', land: '랑', lant: '랑',
+    mar: '마르', mer: '메르', man: '망', mond: '몽', nier: '니에', olph: '올프', gulph: '울프',
+    omer: '오메르', imer: '이메르', rad: '라드', ric: '릭', vech: '베슈', veus: '보', wald: '발트',
+    win: '뱅', ouin: '댕', wulf: '울프',
+    burge: '뷔르주', berga: '베르가', delis: '델리스', da: '다', tha: '타', dith: '디트', rada: '라다',
+    trada: '트라다', elma: '엘마', fride: '프리드', pride: '프리드', gise: '지즈', gisela: '지젤라',
+    gonde: '공드', gonda: '공다', haide: '아이드', hilde: '힐드', ilia: '일리아', hilda: '힐다',
+    inga: '인가', landa: '린다', lina: '리나', lindis: '린디스', lena: '레나', trudis: '트뤼디스', truda: '트뤼다'
+  };
+
+  const koPre = preKoMap[cleanPre] || cleanPre;
+  const koSuf = sufKoMap[cleanSuf] || cleanSuf;
+
+  return { ko: koPre + koSuf, en: capitalizedEN };
+};
+
 const getCalculatedRelation = (member, allMembers) => {
   const me = allMembers.find(m => m.relation === '본인');
   if (!me) return member.relation;
@@ -893,6 +958,165 @@ export default function FamilyTree({ character, setCharacter }) {
     }
   };
 
+  const getMeBirthYear = () => {
+    const me = members.find(m => m.relation === '본인');
+    if (me && me.lifeYears) {
+      const match = me.lifeYears.match(/^(\d+)/);
+      if (match) return parseInt(match[1], 10);
+    }
+    return 768; // Default fallback
+  };
+
+  const handleAddRandomMember = (gen) => {
+    const gender = Math.random() < 0.5 ? 'male' : 'female';
+    const randNameObj = generateRandomName(gender);
+    const memberClass = gender === 'male' 
+      ? (Math.random() < 0.8 ? '기사 (Knight)' : '종자 (Squire)') 
+      : '부인 (Lady)';
+    const fullName = getTitleByNameAndClass(randNameObj.ko, randNameObj.en, memberClass);
+
+    // Birth Year Calculation
+    const meBirth = getMeBirthYear();
+    const diff = gen - 3;
+    const baseBirth = meBirth + (diff * 25);
+    const birthYear = baseBirth + Math.floor(Math.random() * 11) - 5; // ±5 years
+
+    // Status and Death
+    const currentYear = character.personal?.campaignYear || 768;
+    let status = '생존';
+    let lifeYears = `${birthYear}~`;
+    let deathCause = undefined;
+
+    if (birthYear < currentYear - 75) {
+      status = '사망';
+      const ageAtDeath = 45 + Math.floor(Math.random() * 31); // 45~75 age
+      const deathYear = birthYear + ageAtDeath;
+      lifeYears = `${birthYear}~${deathYear}`;
+      deathCause = medievalDeathCauses[Math.floor(Math.random() * medievalDeathCauses.length)];
+    }
+
+    // Parent Link
+    let parentId = undefined;
+    if (gen > 1) {
+      // Find possible parents in gen - 1
+      const potentialParents = members.filter(m => m.generation === gen - 1);
+      if (potentialParents.length > 0) {
+        // Prefer married couples
+        const marriedParents = potentialParents.filter(m => m.spouseId);
+        if (marriedParents.length > 0) {
+          const randomParent = marriedParents[Math.floor(Math.random() * marriedParents.length)];
+          const partner = marriedParents.find(m => m.id === randomParent.spouseId);
+          if (partner && getGender(randomParent) === 'female') {
+            parentId = partner.id;
+          } else {
+            parentId = randomParent.id;
+          }
+        } else {
+          parentId = potentialParents[Math.floor(Math.random() * potentialParents.length)].id;
+        }
+      }
+    }
+
+    const newMember = {
+      id: 'm-rand-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+      name: fullName,
+      relation: '', // Calculated
+      generation: gen,
+      status,
+      lifeYears,
+      memberClass,
+      gender,
+      deathCause,
+      parentId,
+      note: '가계도 시스템에 의해 자동 생성된 가문원.'
+    };
+
+    // Calculate relation
+    const allMembersWithNew = [...members, newMember];
+    newMember.relation = getCalculatedRelation(newMember, allMembersWithNew);
+
+    setCharacter(prev => ({
+      ...prev,
+      family: {
+        ...prev.family,
+        members: [...(prev.family?.members || []), newMember]
+      }
+    }));
+  };
+
+  const handleAddRandomSpouse = (gen) => {
+    const genMembers = members.filter(m => m.generation === gen);
+    const eligibleSingles = genMembers.filter(m => !m.spouseId && m.relation !== '조모' && m.relation !== '모친');
+    
+    if (eligibleSingles.length === 0) {
+      alert(`${gen}대에 배우자가 없는 1인 구성원이 없습니다. 먼저 구성원을 생성해 주세요!`);
+      return;
+    }
+
+    const targetMember = eligibleSingles[Math.floor(Math.random() * eligibleSingles.length)];
+    const spouseGender = getGender(targetMember) === 'male' ? 'female' : 'male';
+    const randNameObj = generateRandomName(spouseGender);
+    const memberClass = spouseGender === 'male' 
+      ? '기사 (Knight)' 
+      : '부인 (Lady)';
+    const fullName = getTitleByNameAndClass(randNameObj.ko, randNameObj.en, memberClass);
+
+    // Birth Year aligned with spouse
+    let targetBirth = 740;
+    const match = String(targetMember.lifeYears || '').match(/^(\d+)/);
+    if (match) {
+      targetBirth = parseInt(match[1], 10);
+    }
+    const birthYear = targetBirth + Math.floor(Math.random() * 7) - 3; // ±3 years
+
+    // Status and Death aligned with spouse
+    let status = targetMember.status;
+    let lifeYears = `${birthYear}~`;
+    let deathCause = undefined;
+
+    if (status === '사망') {
+      let targetDeath = birthYear + 50;
+      const deathMatch = String(targetMember.lifeYears || '').match(/~(\d+)$/);
+      if (deathMatch) {
+        targetDeath = parseInt(deathMatch[1], 10);
+      }
+      const deathYear = targetDeath + Math.floor(Math.random() * 5) - 2; // ±2 years of spouse death
+      lifeYears = `${birthYear}~${deathYear}`;
+      deathCause = targetMember.deathCause || medievalDeathCauses[Math.floor(Math.random() * medievalDeathCauses.length)];
+    }
+
+    const newSpouseId = 'm-rand-spouse-' + Date.now();
+    const newSpouse = {
+      id: newSpouseId,
+      name: fullName,
+      relation: '', // Calculated
+      generation: gen,
+      status,
+      lifeYears,
+      memberClass,
+      gender: spouseGender,
+      deathCause,
+      spouseId: targetMember.id,
+      note: `${targetMember.name}의 배우자로 자동 생성됨.`
+    };
+
+    // Calculate relation
+    const allMembersWithNew = [...members, newSpouse];
+    newSpouse.relation = getCalculatedRelation(newSpouse, allMembersWithNew);
+
+    setCharacter(prev => {
+      const nextChar = JSON.parse(JSON.stringify(prev));
+      nextChar.family.members = nextChar.family.members.map(m => {
+        if (m.id === targetMember.id) {
+          return { ...m, spouseId: newSpouseId };
+        }
+        return m;
+      });
+      nextChar.family.members.push(newSpouse);
+      return nextChar;
+    });
+  };
+
   // Group Members by Generation
   const generations = [1, 2, 3, 4, 5, 6];
   const genLabels = [
@@ -950,9 +1174,31 @@ export default function FamilyTree({ character, setCharacter }) {
 
     return (
       <div key={gen} className="ft-gen-row view-animate">
-        <div className="ft-gen-label">
-          <span className="ft-gen-badge">{gen}대</span>
-          <span className="ft-gen-text">{genLabels[gen]}</span>
+        <div className="ft-gen-label" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span className="ft-gen-badge">{gen}대</span>
+            <span className="ft-gen-text">{genLabels[gen]}</span>
+          </div>
+          <div style={{ display: 'flex', gap: '4px', marginTop: '2px' }}>
+            <button 
+              type="button" 
+              className="btn-medieval" 
+              style={{ padding: '2px 6px', fontSize: '0.66rem', display: 'flex', alignItems: 'center', gap: '2px', borderRadius: '4px', background: 'rgba(201,168,76,0.06)' }}
+              onClick={() => handleAddRandomMember(gen)}
+              title="해당 세대에 랜덤 구성원(형제/친족)을 자동 생성하여 추가합니다."
+            >
+              🎲 랜덤 구성원
+            </button>
+            <button 
+              type="button" 
+              className="btn-medieval" 
+              style={{ padding: '2px 6px', fontSize: '0.66rem', display: 'flex', alignItems: 'center', gap: '2px', borderRadius: '4px', background: 'rgba(201,168,76,0.06)' }}
+              onClick={() => handleAddRandomSpouse(gen)}
+              title="해당 세대의 미혼 1인 가문원 중 한 명에게 배우자를 자동 생성하여 연결합니다."
+            >
+              ❤️ 배우자 생성
+            </button>
+          </div>
         </div>
         <div className="ft-gen-nodes">
           {groups.map((group, idx) => {
