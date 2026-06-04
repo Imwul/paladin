@@ -284,22 +284,20 @@ export default function FamilyTree({ character, setCharacter }) {
     if (!drag.memberId) return;
 
     const dx = e.clientX - drag.startX;
-    const dy = e.clientY - drag.startY;
 
-    if (!drag.isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+    if (!drag.isDragging && Math.abs(dx) > 3) {
       drag.isDragging = true;
     }
 
     if (drag.isDragging) {
-      const nextX = drag.startOffsetX + dx;
-      const nextY = drag.startOffsetY + dy;
+      const nextX = Math.max(-450, Math.min(450, drag.startOffsetX + dx));
 
       setCharacter(prev => {
         const updated = JSON.parse(JSON.stringify(prev));
         if (!updated.family.positions) {
           updated.family.positions = {};
         }
-        updated.family.positions[drag.memberId] = { x: nextX, y: nextY };
+        updated.family.positions[drag.memberId] = { x: nextX, y: 0 };
         return updated;
       });
       calculateLines();
@@ -337,22 +335,20 @@ export default function FamilyTree({ character, setCharacter }) {
     const touch = e.touches[0];
 
     const dx = touch.clientX - drag.startX;
-    const dy = touch.clientY - drag.startY;
 
-    if (!drag.isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+    if (!drag.isDragging && Math.abs(dx) > 3) {
       drag.isDragging = true;
     }
 
     if (drag.isDragging) {
-      const nextX = drag.startOffsetX + dx;
-      const nextY = drag.startOffsetY + dy;
+      const nextX = Math.max(-450, Math.min(450, drag.startOffsetX + dx));
 
       setCharacter(prev => {
         const updated = JSON.parse(JSON.stringify(prev));
         if (!updated.family.positions) {
           updated.family.positions = {};
         }
-        updated.family.positions[drag.memberId] = { x: nextX, y: nextY };
+        updated.family.positions[drag.memberId] = { x: nextX, y: 0 };
         return updated;
       });
       calculateLines();
@@ -973,6 +969,7 @@ export default function FamilyTree({ character, setCharacter }) {
     const statusColor = getStatusColor(member.status);
     const isDeceased = member.status === '사망';
     const memberGender = getGender(member);
+    const calculatedRelation = getCalculatedRelation(member, members);
 
     const positions = character.family.positions || {};
     const pos = positions[member.id] || { x: 0, y: 0 };
@@ -995,37 +992,36 @@ export default function FamilyTree({ character, setCharacter }) {
 
         
         <div className="ft-card-header">
-          <span className="ft-relation">{member.relation}</span>
-          {member.status !== '생존' && (
-            <span 
-              className="ft-status-text"
-              style={{ color: statusColor, fontWeight: 'bold', fontSize: '0.62rem', letterSpacing: '-0.02em', fontFamily: 'var(--font-korean)' }}
-            >
-              {member.status === '사망' && '🪦 영면'}
-              {member.status === '질병' && '🩸 병환'}
-              {member.status === '실종' && '🌫️ 행방불명'}
-              {member.status === '포로' && '⛓️ 억류'}
-            </span>
-          )}
+          <span className="ft-relation">{calculatedRelation}</span>
+          <span 
+            className="ft-status-text"
+            style={{ color: statusColor, fontWeight: 'bold', fontSize: '0.62rem', letterSpacing: '-0.02em' }}
+          >
+            {member.status === '생존' && '🌱 생존'}
+            {member.status === '사망' && '🪦 영면'}
+            {member.status === '질병' && '🩸 병환'}
+            {member.status === '실종' && '🌫️ 행방'}
+            {member.status === '포로' && '⛓️ 억류'}
+          </span>
         </div>
 
-        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none' }}>
-          <span className="ft-name-ko">{splitName(member.name).ko}</span>
+        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '2px 0 3px 0' }}>
+          <span className="ft-name-ko" style={{ fontSize: '0.84rem', fontWeight: 'bold' }}>{splitName(member.name).ko}</span>
           {splitName(member.name).en && (
-            <span className="ft-name-en">{splitName(member.name).en}</span>
+            <span className="ft-name-en" style={{ fontSize: '0.72rem', fontWeight: '500', color: 'var(--color-grey)', marginLeft: '4px', display: 'inline' }}>
+              ({splitName(member.name).en})
+            </span>
           )}
         </h4>
         
-        {member.lifeYears && (
-          <div className="ft-years">
-            {member.lifeYears}
-          </div>
-        )}
-        {isDeceased && member.deathCause && (
-          <div className="ft-death-cause">
-            ({member.deathCause})
-          </div>
-        )}
+        <div className="ft-details-row" style={{ display: 'flex', justifyContent: 'center', gap: '4px', fontSize: '0.72rem', color: 'var(--color-grey)', flexWrap: 'wrap', width: '100%', lineHeight: '1.2' }}>
+          {member.lifeYears && <span className="ft-years" style={{ display: 'inline', width: 'auto', margin: 0 }}>{member.lifeYears}</span>}
+          {isDeceased && member.deathCause && (
+            <span className="ft-death-cause" style={{ display: 'inline', width: 'auto', margin: 0, color: 'var(--color-crimson)' }}>
+              ({member.deathCause})
+            </span>
+          )}
+        </div>
 
 
 
