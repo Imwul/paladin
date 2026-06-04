@@ -166,6 +166,9 @@ const getCalculatedRelation = (member, allMembers) => {
     return memberGender === 'female' ? '손녀' : '손자';
   }
 
+  if (!member.relation || member.relation.trim() === '') {
+    return memberGender === 'female' ? '친족 (여)' : '친족 (남)';
+  }
   return member.relation;
 };
 
@@ -594,7 +597,7 @@ export default function FamilyTree({ character, setCharacter }) {
             return {
               ...m,
               name: combinedName,
-              relation: formRelation,
+              relation: ['albert', 'gerard', 'eleanor', 'roland'].includes(m.id) ? m.relation : formRelation,
               generation: Number(formGeneration),
               status: formStatus,
               lifeYears: formLifeYears,
@@ -1073,7 +1076,13 @@ export default function FamilyTree({ character, setCharacter }) {
                     value={formRelation} 
                     onChange={e => setFormRelation(e.target.value)}
                     placeholder="미입력 시 자동 계산 (예: 형, 작은아버지, 조카 등)"
+                    disabled={['albert', 'gerard', 'eleanor', 'roland'].includes(editingMember?.id)}
                   />
+                  {['albert', 'gerard', 'eleanor', 'roland'].includes(editingMember?.id) && (
+                    <span style={{ fontSize: '0.68rem', color: 'var(--color-grey)', marginTop: '2px' }}>
+                      🔒 핵심 구성원의 계보 관계는 고정됩니다.
+                    </span>
+                  )}
                 </div>
                 
                 <div className="ft-form-group">
