@@ -250,6 +250,131 @@ export default function FamilyTree({ character, setCharacter }) {
 
   const treeContainerRef = useRef(null);
   const [lines, setLines] = useState([]);
+  const dragRef = useRef({
+    memberId: null,
+    startX: 0,
+    startY: 0,
+    startOffsetX: 0,
+    startOffsetY: 0,
+    isDragging: false
+  });
+
+  const handleMouseDown = (e, memberId) => {
+    if (e.target.closest('.ft-action-btn') || e.target.closest('button')) return;
+
+    const positions = character.family.positions || {};
+    const pos = positions[memberId] || { x: 0, y: 0 };
+    
+    dragRef.current = {
+      memberId,
+      startX: e.clientX,
+      startY: e.clientY,
+      startOffsetX: pos.x,
+      startOffsetY: pos.y,
+      isDragging: false
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    e.preventDefault();
+  };
+
+  const handleMouseMove = (e) => {
+    const drag = dragRef.current;
+    if (!drag.memberId) return;
+
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+
+    if (!drag.isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+      drag.isDragging = true;
+    }
+
+    if (drag.isDragging) {
+      const nextX = drag.startOffsetX + dx;
+      const nextY = drag.startOffsetY + dy;
+
+      setCharacter(prev => {
+        const updated = JSON.parse(JSON.stringify(prev));
+        if (!updated.family.positions) {
+          updated.family.positions = {};
+        }
+        updated.family.positions[drag.memberId] = { x: nextX, y: nextY };
+        return updated;
+      });
+      calculateLines();
+    }
+  };
+
+  const handleMouseUp = () => {
+    dragRef.current = { memberId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0, isDragging: false };
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+  };
+
+  const handleTouchStart = (e, memberId) => {
+    if (e.target.closest('.ft-action-btn') || e.target.closest('button')) return;
+    const touch = e.touches[0];
+    const positions = character.family.positions || {};
+    const pos = positions[memberId] || { x: 0, y: 0 };
+    
+    dragRef.current = {
+      memberId,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      startOffsetX: pos.x,
+      startOffsetY: pos.y,
+      isDragging: false
+    };
+
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+  };
+
+  const handleTouchMove = (e) => {
+    const drag = dragRef.current;
+    if (!drag.memberId) return;
+    const touch = e.touches[0];
+
+    const dx = touch.clientX - drag.startX;
+    const dy = touch.clientY - drag.startY;
+
+    if (!drag.isDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+      drag.isDragging = true;
+    }
+
+    if (drag.isDragging) {
+      const nextX = drag.startOffsetX + dx;
+      const nextY = drag.startOffsetY + dy;
+
+      setCharacter(prev => {
+        const updated = JSON.parse(JSON.stringify(prev));
+        if (!updated.family.positions) {
+          updated.family.positions = {};
+        }
+        updated.family.positions[drag.memberId] = { x: nextX, y: nextY };
+        return updated;
+      });
+      calculateLines();
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = () => {
+    document.removeEventListener('touchmove', handleTouchMove);
+    document.removeEventListener('touchend', handleTouchEnd);
+    dragRef.current = { memberId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0, isDragging: false };
+  };
+
+  const handleResetPositions = () => {
+    if (window.confirm("가문원 카드의 수동 배치 위치를 모두 초기화하고 자동 정렬 상태로 되돌리시겠습니까?")) {
+      setCharacter(prev => {
+        const nextChar = JSON.parse(JSON.stringify(prev));
+        nextChar.family.positions = {};
+        return nextChar;
+      });
+    }
+  };
 
   const handleInheritCharacter = () => {
     if (!editingMember) return;
@@ -849,10 +974,22 @@ export default function FamilyTree({ character, setCharacter }) {
     const isDeceased = member.status === '사망';
     const memberGender = getGender(member);
 
+    const positions = character.family.positions || {};
+    const pos = positions[member.id] || { x: 0, y: 0 };
+    const isGrabbing = dragRef.current.memberId === member.id;
+ 
     return (
       <div 
         className={`ft-card ${isKnight ? 'ft-card-knight' : ''} ${isDeceased ? 'ft-card-deceased' : ''} ft-card-${memberGender}`}
         data-node-id={member.id}
+        style={{
+          transform: `translate(${pos.x}px, ${pos.y}px)`,
+          cursor: isGrabbing ? 'grabbing' : 'grab',
+          userSelect: 'none',
+          touchAction: 'none'
+        }}
+        onMouseDown={(e) => handleMouseDown(e, member.id)}
+        onTouchStart={(e) => handleTouchStart(e, member.id)}
       >
 
 
@@ -958,6 +1095,9 @@ export default function FamilyTree({ character, setCharacter }) {
         <div style={{ display: 'flex', gap: '8px' }}>
           <button className="btn-medieval btn-medieval-primary" onClick={() => handleOpenAdd()}>
             <Plus size={14} /> 새 가문원 영입
+          </button>
+          <button className="btn-medieval" onClick={handleResetPositions} title="수동 드래그한 카드 위치 초기화">
+            📐 배치 초기화
           </button>
           <button className="btn-medieval" onClick={handleReset}>
             <RefreshCw size={13} /> 계보도 초기화
