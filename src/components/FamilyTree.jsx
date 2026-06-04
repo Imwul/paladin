@@ -350,6 +350,64 @@ const splitName = (fullName) => {
   return { ko: koPart, en: enPart };
 };
 
+const revertSaint = (char, saintName) => {
+  if (!saintName) return;
+  const oldSaint = patronSaints.find(s => s.name === saintName || saintName.includes(s.name.split(' (')[0]));
+  if (!oldSaint) return;
+  
+  if (oldSaint.name.includes("암브로시오") || oldSaint.name.includes("Ambrose")) {
+    char.skills.eloquence = Math.max(0, (char.skills.eloquence || 0) - 5);
+  } else if (oldSaint.name.includes("아나스타시아") || oldSaint.name.includes("Anastasia")) {
+    char.traits.chaste = Math.max(0, (char.traits.chaste || 10) - 3);
+    char.traits.lustful = 20 - char.traits.chaste;
+  } else if (oldSaint.name.includes("보니파시오") || oldSaint.name.includes("Boniface")) {
+    char.traits.merciful = Math.max(0, (char.traits.merciful || 10) - 3);
+    char.traits.cruel = 20 - char.traits.merciful;
+  } else if (oldSaint.name.includes("크리스토포로") || oldSaint.name.includes("Christopher")) {
+    char.traits.modest = Math.max(0, (char.traits.modest || 10) - 3);
+    char.traits.proud = 20 - char.traits.modest;
+  } else if (oldSaint.name.includes("데니스") || oldSaint.name.includes("Denis")) {
+    char.standings.charlemagne = Math.max(0, (char.standings.charlemagne || 10) - 2);
+  } else if (oldSaint.name.includes("엘리기오") || oldSaint.name.includes("Eligius")) {
+    char.skills.firstAid = Math.max(0, (char.skills.firstAid || 0) - 5);
+  } else if (oldSaint.name.includes("가브리엘") || oldSaint.name.includes("Gabriel")) {
+    char.traits.forgiving = Math.max(0, (char.traits.forgiving || 10) - 3);
+    char.traits.vengeful = 20 - char.traits.forgiving;
+  } else if (oldSaint.name.includes("헬레나") || oldSaint.name.includes("Helena")) {
+    char.passions.loveFamily = Math.max(0, (char.passions.loveFamily || 15) - 2);
+  } else if (oldSaint.name.includes("힐라리오") || oldSaint.name.includes("Hilary")) {
+    char.traits.just = Math.max(0, (char.traits.just || 10) - 3);
+    char.traits.arbitrary = 20 - char.traits.just;
+  } else if (oldSaint.name.includes("후베르토") || oldSaint.name.includes("Hubert")) {
+    char.skills.hunting = Math.max(0, (char.skills.hunting || 0) - 5);
+  } else if (oldSaint.name.includes("야고보") || oldSaint.name.includes("James")) {
+    char.traits.energetic = Math.max(0, (char.traits.energetic || 10) - 3);
+    char.traits.lazy = 20 - char.traits.energetic;
+  } else if (oldSaint.name.includes("예로니모") || oldSaint.name.includes("Jerome")) {
+    char.traits.trusting = Math.max(0, (char.traits.trusting || 10) - 3);
+    char.traits.suspicious = 20 - char.traits.trusting;
+  } else if (oldSaint.name.includes("요한 세례자") || oldSaint.name.includes("John the Baptist")) {
+    char.traits.honest = Math.max(0, (char.traits.honest || 10) - 3);
+    char.traits.deceitful = 20 - char.traits.honest;
+  } else if (oldSaint.name.includes("요셉") || oldSaint.name.includes("Joseph")) {
+    char.passions.honor = Math.max(0, (char.passions.honor || 16) - 2);
+  } else if (oldSaint.name.includes("유스티노") || oldSaint.name.includes("Justin")) {
+    char.traits.prudent = Math.max(0, (char.traits.prudent || 10) - 3);
+    char.traits.reckless = 20 - char.traits.prudent;
+  } else if (oldSaint.name.includes("마르티노") || oldSaint.name.includes("Martin")) {
+    char.traits.temperate = Math.max(0, (char.traits.temperate || 10) - 3);
+    char.traits.indulgent = 20 - char.traits.temperate;
+  } else if (oldSaint.name.includes("성모 마리아") || oldSaint.name.includes("Mary")) {
+    char.passions.loveGod = Math.max(0, (char.passions.loveGod || 15) - 2);
+  } else if (oldSaint.name.includes("미카엘") || oldSaint.name.includes("Michael")) {
+    char.traits.valorous = Math.max(0, (char.traits.valorous || 10) - 3);
+    char.traits.cowardly = 20 - char.traits.valorous;
+  } else if (oldSaint.name.includes("오메르") || oldSaint.name.includes("Omer")) {
+    char.traits.generous = Math.max(0, (char.traits.generous || 10) - 3);
+    char.traits.selfish = 20 - char.traits.generous;
+  }
+};
+
 export default function FamilyTree({ character, setCharacter }) {
 
   // Collapsible accordion state
@@ -365,6 +423,68 @@ export default function FamilyTree({ character, setCharacter }) {
   const [blessingRollResult, setBlessingRollResult] = useState(null);
   const [patronSaintRoll, setPatronSaintRoll] = useState('');
   const [patronSaintResult, setPatronSaintResult] = useState(null);
+  
+  const [saintMode, setSaintMode] = useState('select'); // 'select' | 'roll'
+  const [musterMode, setMusterMode] = useState('manual'); // 'manual' | 'roll'
+  const [musterRollResults, setMusterRollResults] = useState(null);
+
+  const applyNewSaint = (saint, rollVal = null) => {
+    if (!saint) return;
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      
+      // Revert previous saint if exists
+      if (updated.family?.patronSaint) {
+        revertSaint(updated, updated.family.patronSaint);
+      }
+      
+      // Apply new saint
+      if (typeof saint.apply === 'function') {
+        saint.apply(updated);
+      }
+      updated.family = updated.family || {};
+      updated.family.patronSaint = saint.name;
+      return updated;
+    });
+    
+    setPatronSaintResult({
+      roll: rollVal || patronSaints.indexOf(saint) + 1,
+      saint
+    });
+  };
+
+  const rollFamilyMuster = () => {
+    const rOld1 = Math.floor(Math.random() * 6) + 1;
+    const oldVal = Math.max(0, rOld1 - 5);
+    
+    const rMid1 = Math.floor(Math.random() * 6) + 1;
+    const midVal = Math.max(0, rMid1 - 2);
+    
+    const rYoung1 = Math.floor(Math.random() * 6) + 1;
+    const youngVal = rYoung1 + 1;
+    
+    const rLin1 = Math.floor(Math.random() * 6) + 1;
+    const rLin2 = Math.floor(Math.random() * 6) + 1;
+    const rLin3 = Math.floor(Math.random() * 6) + 1;
+    const linVal = rLin1 + rLin2 + rLin3 + 5;
+    
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+      updated.family = updated.family || {};
+      updated.family.oldKnights = oldVal;
+      updated.family.middleKnights = midVal;
+      updated.family.youngKnights = youngVal;
+      updated.family.lineageMen = linVal;
+      return updated;
+    });
+    
+    setMusterRollResults({
+      old: { roll: rOld1, val: oldVal },
+      middle: { roll: rMid1, val: midVal },
+      young: { roll: rYoung1, val: youngVal },
+      lineage: { rolls: [rLin1, rLin2, rLin3], val: linVal }
+    });
+  };
 
 
     // 📜 조상 연대기 발전기 (Page 45-49) States
@@ -5269,91 +5389,377 @@ export default function FamilyTree({ character, setCharacter }) {
           </div>
           {activePanel === 'settings' && (
             <div className="view-animate" style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.65)', borderTop: '1px solid var(--color-gold-light)' }}>
-              <div className="cs-field-grid">
-                {[
-                  { key: 'name', label: '가문 성씨', ph: '예: 아르덴' },
-                  { key: 'motto', label: '가언/신조', ph: '예: 명예와 신조' },
-                  { key: 'battleCry', label: '전투 함성', ph: '예: 몽주아 생드니!' },
-                  { key: 'ancestor', label: '가문 시조', ph: '예: 알베르 경' },
-                  { key: 'homeCountry', label: '영지/고향', ph: '예: 아키텐' },
-                ].map(f => (
-                  <div className="cs-field" key={f.key}>
-                    <span className="cs-field-label">{f.label}:</span>
-                    <input type="text" value={character.family[f.key] || ''} placeholder={f.ph}
-                      onChange={e => handleFamilyChange(f.key, e.target.value)} />
-                  </div>
-                ))}
-                <div className="cs-field">
+              
+              {/* 가문 기본 설정 (세로 스택형 컬럼 그리드) */}
+              <div className="cs-field-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px 20px' }}>
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                  <span className="cs-field-label">가문 성씨:</span>
+                  <input type="text" value={character.family.name || ''} placeholder="예: 아르덴"
+                    onChange={e => handleFamilyChange('name', e.target.value)} />
+                </div>
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                  <span className="cs-field-label">가문 시조:</span>
+                  <input type="text" value={character.family.ancestor || ''} placeholder="예: 알베르 경"
+                    onChange={e => handleFamilyChange('ancestor', e.target.value)} />
+                </div>
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                  <span className="cs-field-label">영지/고향:</span>
+                  <input type="text" value={character.family.homeCountry || ''} placeholder="예: 아키텐"
+                    onChange={e => handleFamilyChange('homeCountry', e.target.value)} />
+                </div>
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
                   <span className="cs-field-label">가문 고유 명예:</span>
                   <input type="number" value={character.family.honor || 0}
                     onChange={e => handleFamilyChange('honor', parseInt(e.target.value) || 0)} />
                 </div>
+                
+                {/* 가언 및 전투 함성 (긴 텍스트도 글씨 잘림 없이 행 분리하여 가로 100% 한 줄씩 차지하도록 설정) */}
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px', gridColumn: '1 / -1' }}>
+                  <span className="cs-field-label">가언/신조 (Motto):</span>
+                  <input type="text" value={character.family.motto || ''} placeholder="예: 명예와 신조"
+                    onChange={e => handleFamilyChange('motto', e.target.value)} />
+                </div>
+                <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px', gridColumn: '1 / -1' }}>
+                  <span className="cs-field-label">전투 함성 (Battle Cry):</span>
+                  <input type="text" value={character.family.battleCry || ''} placeholder="예: 몽주아 생드니!"
+                    onChange={e => handleFamilyChange('battleCry', e.target.value)} />
+                </div>
               </div>
 
-              {/* ⛪ 수호 성인 판정 (Table 1-3) */}
-              <div style={{ marginTop: '14px', border: '1.2px solid var(--color-gold)', borderRadius: '6px', padding: '12px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontWeight: 'bold', fontSize: '0.88rem', color: 'var(--color-gold-dark)' }}>⛪ 수호 성인 (Table 1-3)</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* ⛪ 가문 수호 성인 설정 (Table 1-3) */}
+              <div style={{ marginTop: '20px', border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)', boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.02)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyRules: 'space-between', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    ⛪ 가문 수호 성인 설정 (Table 1-3)
+                  </span>
+                  
+                  {/* Mode switcher tabs (선택하기 / 랜덤으로 굴리기 버튼 분리) */}
+                  <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
+                    <button
+                      type="button"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.76rem',
+                        fontWeight: 'bold',
+                        border: 'none',
+                        borderRadius: '4px',
+                        backgroundColor: saintMode === 'select' ? '#fff' : 'transparent',
+                        color: saintMode === 'select' ? 'var(--color-gold-dark)' : 'var(--color-grey)',
+                        cursor: 'pointer',
+                        boxShadow: saintMode === 'select' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onClick={() => setSaintMode('select')}
+                    >
+                      ✍️ 목록에서 선택
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.76rem',
+                        fontWeight: 'bold',
+                        border: 'none',
+                        borderRadius: '4px',
+                        backgroundColor: saintMode === 'roll' ? '#fff' : 'transparent',
+                        color: saintMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-grey)',
+                        cursor: 'pointer',
+                        boxShadow: saintMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onClick={() => setSaintMode('roll')}
+                    >
+                      🎲 랜덤으로 굴리기
+                    </button>
+                  </div>
+                </div>
+
+                {/* Saint Selection UI depending on Mode */}
+                {saintMode === 'select' ? (
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <select
+                        style={{
+                          width: '100%',
+                          padding: '8px 12px',
+                          border: '1.5px solid var(--color-gold-light)',
+                          borderRadius: '6px',
+                          backgroundColor: '#faf6eb',
+                          fontFamily: 'inherit',
+                          fontSize: '0.9rem',
+                          color: 'var(--color-ink)',
+                          outline: 'none',
+                          cursor: 'pointer'
+                        }}
+                        value={patronSaints.findIndex(s => s.name === character.family.patronSaint)}
+                        onChange={e => {
+                          const idx = parseInt(e.target.value);
+                          if (idx >= 0 && idx < patronSaints.length) {
+                            applyNewSaint(patronSaints[idx]);
+                          }
+                        }}
+                      >
+                        <option value={-1}>-- 수호 성인을 선택하세요 --</option>
+                        {patronSaints.map((saint, idx) => (
+                          <option key={idx} value={idx}>
+                            {idx + 1}. {saint.name} ({saint.patronage})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    {/* Custom type-in input just in case */}
+                    <div className="cs-field" style={{ flex: 1, minWidth: '200px' }}>
+                      <span className="cs-field-label" style={{ fontSize: '0.85rem' }}>이름 직접 수정:</span>
+                      <input
+                        type="text"
+                        value={character.family.patronSaint || ''}
+                        onChange={e => handleFamilyChange('patronSaint', e.target.value)}
+                        placeholder="성인 이름 직접 입력"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 'bold' }}>주사위 값 직접 지정 (선택):</span>
                     <input
                       type="number" min={1} max={20} placeholder="d20"
                       value={patronSaintRoll}
                       onChange={e => setPatronSaintRoll(e.target.value)}
-                      style={{ width: '55px', padding: '3px', textAlign: 'center', fontWeight: 'bold', border: '1.5px solid var(--color-gold-light)', borderRadius: '4px', fontSize: '0.82rem' }}
+                      style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 'bold', border: '1.5px solid var(--color-gold-light)', borderRadius: '6px', fontSize: '0.85rem', backgroundColor: '#fff', outline: 'none' }}
                     />
                     <button
                       type="button"
                       className="btn-medieval btn-medieval-primary"
-                      style={{ fontSize: '0.78rem', padding: '4px 10px' }}
+                      style={{ fontSize: '0.82rem', padding: '6px 14px' }}
                       onClick={() => {
                         let d20 = parseInt(patronSaintRoll);
                         if (isNaN(d20) || d20 < 1 || d20 > 20) {
                           d20 = Math.floor(Math.random() * 20) + 1;
                         }
                         const saint = patronSaints[d20 - 1];
-                        setPatronSaintResult({ roll: d20, saint });
-                        // Auto-apply to character
-                        setCharacter(prev => {
-                          const updated = JSON.parse(JSON.stringify(prev));
-                          saint.apply(updated);
-                          updated.family.patronSaint = saint.name;
-                          return updated;
-                        });
+                        applyNewSaint(saint, d20);
                       }}
                     >
-                      🎲 수호 성인 굴림
+                      🎲 수호 성인 주사위 굴리기
+                    </button>
+                  </div>
+                )}
+
+                {/* Selected Saint Info card and benefit description (수호 성인 효과 상세 노출) */}
+                {(() => {
+                  const currentSaintName = character.family.patronSaint;
+                  const currentSaint = patronSaints.find(s => s.name === currentSaintName || (currentSaintName && currentSaintName.includes(s.name.split(' (')[0])));
+                  
+                  if (!currentSaint) return null;
+                  return (
+                    <div className="view-animate" style={{ marginTop: '12px', backgroundColor: '#faf6eb', border: '1.5px dashed var(--color-gold)', padding: '10px 14px', borderRadius: '6px' }}>
+                      <div style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-gold-dark)', borderBottom: '1px dashed rgba(201,168,76,0.3)', paddingBottom: '4px', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
+                        <span>✨ 수호 성인의 축복 및 효과</span>
+                        {patronSaintResult?.roll && <span style={{ fontSize: '0.8rem', color: 'var(--color-grey)' }}>🎲 판정 다이스: d20 [{patronSaintResult.roll}]</span>}
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '4px 10px', fontSize: '0.82rem', lineHeight: '1.4' }}>
+                        <span style={{ color: 'var(--color-grey)' }}>성인 명칭:</span>
+                        <strong style={{ color: 'var(--color-ink)' }}>{currentSaint.name}</strong>
+                        <span style={{ color: 'var(--color-grey)' }}>수호 분야:</span>
+                        <span>{currentSaint.patronage}</span>
+                        <span style={{ color: 'var(--color-grey)' }}>가호 효과:</span>
+                        <strong style={{ color: 'var(--color-royal-blue)' }}>{currentSaint.benefit}</strong>
+                      </div>
+                      <div style={{ marginTop: '6px', fontSize: '0.74rem', color: 'var(--color-success)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <span>✅ 캐릭터 시트에 해당 성인의 보너스가 즉시 적용되었습니다.</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* 🛡️ 가문 군사 동원력 설정 (Table on p.28) */}
+              <div style={{ marginTop: '14px', border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+                  <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문 군사 동원력 설정 (p.28)</span>
+                  
+                  {/* Mode switcher tabs (수동 입력 / 랜덤 굴리기 버튼 분리) */}
+                  <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
+                    <button
+                      type="button"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.76rem',
+                        fontWeight: 'bold',
+                        border: 'none',
+                        borderRadius: '4px',
+                        backgroundColor: musterMode === 'manual' ? '#fff' : 'transparent',
+                        color: musterMode === 'manual' ? 'var(--color-gold-dark)' : 'var(--color-grey)',
+                        cursor: 'pointer',
+                        boxShadow: musterMode === 'manual' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onClick={() => setMusterMode('manual')}
+                    >
+                      ✍️ 직접 입력하기
+                    </button>
+                    <button
+                      type="button"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.76rem',
+                        fontWeight: 'bold',
+                        border: 'none',
+                        borderRadius: '4px',
+                        backgroundColor: musterMode === 'roll' ? '#fff' : 'transparent',
+                        color: musterMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-grey)',
+                        cursor: 'pointer',
+                        boxShadow: musterMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                      onClick={() => setMusterMode('roll')}
+                    >
+                      🎲 랜덤으로 굴리기
                     </button>
                   </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>현재 수호 성인:</span>
-                  <input type="text" value={character.family.patronSaint || ''} placeholder="예: 성 데니스"
-                    onChange={e => handleFamilyChange('patronSaint', e.target.value)}
-                    style={{ flex: 1 }}
-                  />
-                </div>
-                {patronSaintResult && (
-                  <div style={{ marginTop: '8px', backgroundColor: 'rgba(16, 185, 129, 0.05)', border: '1px solid var(--color-success)', padding: '8px 10px', borderRadius: '4px', fontSize: '0.8rem' }}>
-                    🎲 d20: [{patronSaintResult.roll}] → <strong>{patronSaintResult.saint.name}</strong> ({patronSaintResult.saint.patronage}) — <strong style={{ color: 'var(--color-royal-blue)' }}>{patronSaintResult.saint.benefit}</strong>
-                    <span style={{ fontSize: '0.74rem', color: 'var(--color-success)', marginLeft: '8px' }}>✅ 시트 자동 적용됨</span>
+
+                {musterMode === 'roll' ? (
+                  <div style={{ marginBottom: '12px' }}>
+                    <button
+                      type="button"
+                      className="btn-medieval btn-medieval-primary"
+                      onClick={rollFamilyMuster}
+                      style={{ padding: '6px 16px', fontSize: '0.85rem' }}
+                    >
+                      🎲 가문 동원력 다이스 굴리기 (p.28 공식 적용)
+                    </button>
+                    
+                    {musterRollResults && (
+                      <div className="view-animate" style={{ marginTop: '8px', fontSize: '0.8rem', backgroundColor: '#faf6eb', border: '1px dashed var(--color-gold)', borderRadius: '6px', padding: '8px 12px' }}>
+                        <div style={{ fontWeight: 'bold', color: 'var(--color-gold-dark)', marginBottom: '4px' }}>🎲 주사위 굴림 상세 결과:</div>
+                        <ul style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <li>👴 노년 기사: 1d6 - 5 = <strong>d6: [{musterRollResults.old.roll}]</strong> - 5 → <strong>{musterRollResults.old.val}명</strong> (최소 0)</li>
+                          <li>⚔️ 장년 기사: 1d6 - 2 = <strong>d6: [{musterRollResults.middle.roll}]</strong> - 2 → <strong>{musterRollResults.middle.val}명</strong> (최소 0)</li>
+                          <li>🛡️ 청년 기사: 1d6 + 1 = <strong>d6: [{musterRollResults.young.roll}]</strong> + 1 → <strong>{musterRollResults.young.val}명</strong></li>
+                          <li>🏹 친족 보병: 3d6 + 5 = <strong>3d6: [{musterRollResults.lineage.rolls.join(', ')}]</strong> + 5 → <strong>{musterRollResults.lineage.val}명</strong></li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ fontSize: '0.78rem', color: 'var(--color-grey)', marginBottom: '8px' }}>
+                    * 가문원의 수치들을 아래 입력창에서 수동으로 입력할 수 있습니다. (입력 시 상단에 실시간으로 집계됩니다)
                   </div>
                 )}
+
+                {/* Muster score input fields */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(135px, 1fr))', gap: '10px 16px' }}>
+                  <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.8rem' }}>👴 노년 기사 (50세+):</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <input
+                        type="number"
+                        min={0}
+                        value={character.family.oldKnights ?? 0}
+                        onChange={e => handleFamilyChange('oldKnights', Math.max(0, parseInt(e.target.value) || 0))}
+                        disabled={musterMode === 'roll' && !musterRollResults}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <span style={{ fontSize: '0.8rem' }}>명</span>
+                    </div>
+                  </div>
+                  <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.8rem' }}>⚔️ 장년 기사 (31~49세):</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <input
+                        type="number"
+                        min={0}
+                        value={character.family.middleKnights ?? 0}
+                        onChange={e => handleFamilyChange('middleKnights', Math.max(0, parseInt(e.target.value) || 0))}
+                        disabled={musterMode === 'roll' && !musterRollResults}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <span style={{ fontSize: '0.8rem' }}>명</span>
+                    </div>
+                  </div>
+                  <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.8rem' }}>🛡️ 청년 기사 (30세 이하):</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <input
+                        type="number"
+                        min={0}
+                        value={character.family.youngKnights ?? 0}
+                        onChange={e => handleFamilyChange('youngKnights', Math.max(0, parseInt(e.target.value) || 0))}
+                        disabled={musterMode === 'roll' && !musterRollResults}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <span style={{ fontSize: '0.8rem' }}>명</span>
+                    </div>
+                  </div>
+                  <div className="cs-field" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '4px' }}>
+                    <span className="cs-field-label" style={{ fontSize: '0.8rem' }}>🏹 친족 보병 (비기사 친족):</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <input
+                        type="number"
+                        min={0}
+                        value={character.family.lineageMen ?? 0}
+                        onChange={e => handleFamilyChange('lineageMen', Math.max(0, parseInt(e.target.value) || 0))}
+                        disabled={musterMode === 'roll' && !musterRollResults}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                      <span style={{ fontSize: '0.8rem' }}>명</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div>
-                  <label style={{ fontSize: '0.9rem', fontWeight: 600, display: 'block', marginBottom: '4px' }}>우방 동맹 가문:</label>
+              {/* 우방 및 적대 가문 설정 (텍스트 영역 줄맞춤 및 글씨 크기 개선) */}
+              <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-ink)' }}>우방 동맹 가문 (Allies):</label>
                   <textarea rows={2} value={character.family.allies || ''}
-                    style={{ width: '100%', padding: '8px', border: '1.2px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: 'rgba(255,255,255,0.8)', fontFamily: 'Pretendard, -apple-system, sans-serif', fontSize: '0.88rem', resize: 'vertical', outline: 'none' }}
-                    onChange={e => handleFamilyChange('allies', e.target.value)} />
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1.5px solid var(--color-gold-light)',
+                      borderRadius: '6px',
+                      backgroundColor: 'rgba(255,255,255,0.7)',
+                      fontFamily: 'inherit',
+                      fontSize: '0.9rem',
+                      lineHeight: '1.4',
+                      color: 'var(--color-ink)',
+                      resize: 'vertical',
+                      outline: 'none',
+                      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onFocus={e => e.target.style.borderColor = 'var(--color-royal-blue)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--color-gold-light)'}
+                    onChange={e => handleFamilyChange('allies', e.target.value)}
+                  />
                 </div>
-                <div>
-                  <label style={{ fontSize: '0.9rem', fontWeight: 600, display: 'block', marginBottom: '4px' }}>적대 대립 가문:</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-ink)' }}>적대 대립 가문 (Enemies):</label>
                   <textarea rows={2} value={character.family.enemies || ''}
-                    style={{ width: '100%', padding: '8px', border: '1.2px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: 'rgba(255,255,255,0.8)', fontFamily: 'Pretendard, -apple-system, sans-serif', fontSize: '0.88rem', resize: 'vertical', outline: 'none' }}
-                    onChange={e => handleFamilyChange('enemies', e.target.value)} />
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1.5px solid var(--color-gold-light)',
+                      borderRadius: '6px',
+                      backgroundColor: 'rgba(255,255,255,0.7)',
+                      fontFamily: 'inherit',
+                      fontSize: '0.9rem',
+                      lineHeight: '1.4',
+                      color: 'var(--color-ink)',
+                      resize: 'vertical',
+                      outline: 'none',
+                      boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.05)',
+                      transition: 'border-color 0.2s'
+                    }}
+                    onFocus={e => e.target.style.borderColor = 'var(--color-royal-blue)'}
+                    onBlur={e => e.target.style.borderColor = 'var(--color-gold-light)'}
+                    onChange={e => handleFamilyChange('enemies', e.target.value)}
+                  />
                 </div>
               </div>
+
             </div>
           )}
         </div>
@@ -6269,6 +6675,43 @@ export default function FamilyTree({ character, setCharacter }) {
           })()}
         </div>
 
+      </div>
+
+      {/* 가문 동원력 현황판 (Family Muster Scores, p.28) */}
+      <div className="view-animate" style={{
+        margin: '0 0 12px 0',
+        padding: '10px 16px',
+        backgroundColor: '#faf6eb',
+        border: '1.5px solid var(--color-gold)',
+        borderRadius: '8px',
+        boxShadow: 'var(--shadow-medieval)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '1.1rem' }}>🛡️</span>
+          <strong style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>가문 군사 동원력 (Family Muster, p.28)</strong>
+        </div>
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+            👴 노년 기사 (50세+): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.oldKnights ?? 0}</strong>명
+          </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+            ⚔️ 장년 기사 (31~49세): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.middleKnights ?? 0}</strong>명
+          </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+            🛡️ 청년 기사 (30세 이하): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.youngKnights ?? 0}</strong>명
+          </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+            🏹 친족 보병 (비기사 친족): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.lineageMen ?? 0}</strong>명
+          </div>
+        </div>
+        <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)' }}>
+          * 총 동원력: 기사 <strong>{(character.family.oldKnights || 0) + (character.family.middleKnights || 0) + (character.family.youngKnights || 0)}</strong>명 / 보병 <strong>{character.family.lineageMen || 0}</strong>명
+        </div>
       </div>
 
       {/* Main Family Tree Drawer Canvas */}
