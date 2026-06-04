@@ -2616,6 +2616,9 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const completeInteractiveChronicle = (finalFGlory, finalFDeathYear, finalFDeathCause) => {
     setInteractiveStage('completed');
+    setFatherGlory(finalFGlory);
+    setFatherDeathYear(finalFDeathYear);
+    setFatherDeathCause(finalFDeathCause);
 
     const summaryLogs = [
       "",
@@ -3600,6 +3603,9 @@ export default function FamilyWinter({ character, setCharacter }) {
       if (fatherHates.moors > 10) {
         updated.passions.hateMoors = fatherHates.moors;
       }
+      if (fatherHates.danes > 10) {
+        updated.passions.hateDanes = fatherHates.danes;
+      }
 
       // Inherit Cruel trait if father had any
       if (fatherHates.cruel && fatherHates.cruel > 0) {
@@ -3662,6 +3668,40 @@ export default function FamilyWinter({ character, setCharacter }) {
       ? `\n\n🎁 [가문 전승 하사품 획득!]\n${rolledGiftsText.join('\n')}`
       : '';
     alert(`조상들의 연대기 유산이 캐릭터 시트와 가계도에 영구히 반영되었습니다!${inheritedGloryMsg}${inheritedHonorMsg}${inheritedCruelMsg}${inheritedGiftsMsg}`);
+  };
+
+  const syncFamilyTreeOnly = () => {
+    setCharacter(prev => {
+      const updated = JSON.parse(JSON.stringify(prev));
+
+      if (updated.family && updated.family.members) {
+        updated.family.members = updated.family.members.map(m => {
+          if (m.id === 'albert' || m.relation === '조부') {
+            return {
+              ...m,
+              lifeYears: `702~${grandfatherDeathYear}`,
+              status: '사망',
+              deathCause: grandfatherDeathCause,
+              note: `가문의 기틀을 세운 조부. ${grandfatherDeathCause}로 서거. 최종 영광 ${grandfatherGlory} Glory.`
+            };
+          }
+          if (m.id === 'gerard' || m.relation === '부친') {
+            return {
+              ...m,
+              lifeYears: `724~${fatherDeathYear}`,
+              status: '사망',
+              deathCause: fatherDeathCause,
+              note: `작센 및 파비아 원정에 참전한 부친. ${fatherDeathCause}로 장렬히 서거. 최종 영광 ${fatherGlory} Glory.`
+            };
+          }
+          return m;
+        });
+      }
+
+      return updated;
+    });
+
+    alert(`가계도 계보의 조상(조부, 부친) 정보가 연대기 결과로 재연동되었습니다!\n• 조부: 702~${grandfatherDeathYear} (${grandfatherDeathCause})\n• 부친: 724~${fatherDeathYear} (${fatherDeathCause || '평화로운 영면'})`);
   };
 
   const handleFamilyChange = (field, value) => {
@@ -4903,16 +4943,28 @@ export default function FamilyWinter({ character, setCharacter }) {
                           <RefreshCw size={14} />
                           조상 연대기 일괄 주사위 롤링 (Auto-Roll All)
                         </button>
-                        {ancestorRollLog.length > 0 && !ancestorApplied && (
-                          <button
-                            type="button"
-                            className="btn-medieval btn-medieval-primary"
-                            style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}
-                            onClick={applyAncestorLegacy}
-                          >
-                            <Check size={14} />
-                            연대기 유산 적용하기 (Glory & 증오 계승)
-                          </button>
+                        {ancestorRollLog.length > 0 && (
+                          ancestorApplied ? (
+                            <button
+                              type="button"
+                              className="btn-medieval"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--color-gold-dark)', borderColor: 'var(--color-gold)' }}
+                              onClick={syncFamilyTreeOnly}
+                            >
+                              <RefreshCw size={13} />
+                              가계도 재연동 (Re-sync)
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="btn-medieval btn-medieval-primary"
+                              style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}
+                              onClick={applyAncestorLegacy}
+                            >
+                              <Check size={14} />
+                              연대기 유산 적용하기 (Glory & 증오 계승)
+                            </button>
+                          )
                         )}
                       </div>
 
@@ -5246,8 +5298,18 @@ export default function FamilyWinter({ character, setCharacter }) {
                                     연대기 유산 최종 적용하기 (시트 계승)
                                   </button>
                                 ) : (
-                                  <div style={{ color: 'var(--color-success)', fontWeight: 'bold', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 14px', border: '1px solid var(--color-success)', borderRadius: '4px', backgroundColor: 'rgba(16, 185, 129, 0.03)' }}>
-                                    <Check size={18} /> 계승 유산 시트 반영 완료!
+                                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+                                    <div style={{ color: 'var(--color-success)', fontWeight: 'bold', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', border: '1px solid var(--color-success)', borderRadius: '4px', backgroundColor: 'rgba(16, 185, 129, 0.03)' }}>
+                                      <Check size={16} /> 계승 유산 시트 반영 완료!
+                                    </div>
+                                    <button
+                                      type="button"
+                                      className="btn-medieval"
+                                      style={{ fontSize: '0.8rem', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-gold-dark)', borderColor: 'var(--color-gold)' }}
+                                      onClick={syncFamilyTreeOnly}
+                                    >
+                                      <RefreshCw size={12} /> 가계도 재연동 (Re-sync)
+                                    </button>
                                   </div>
                                 )}
                                 <button

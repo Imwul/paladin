@@ -1470,6 +1470,37 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </span>
               </div>
             ))}
+            {/* Dynamic Hates/Passions inherited from lineage */}
+            {Object.keys(character?.passions || {}).map(key => {
+              if (passions.some(p => p.key === key)) return null;
+              const label = key === 'hateSaxons' ? '작센인에 대한 증오 (Hate Saxons)'
+                          : key === 'hateMoors' ? '이교도(무어인)에 대한 증오 (Hate Moors)'
+                          : key === 'hateDanes' ? '덴마크인에 대한 증오 (Hate Danes)'
+                          : key;
+              return (
+                <div className="cs-passion-row" key={key}>
+                  <input type="checkbox" className="exp-checkbox"
+                    checked={character?.passionsChecked?.[key] || false}
+                    onChange={e => handleInputChange('passionsChecked', key, e.target.checked)} />
+                  <span className="cs-passion-name">{label}</span>
+                  <span className="cs-skill-val">
+                    <div className="cs-num-ctrl">
+                      <button type="button" className="cs-ctrl-btn" onClick={() => {
+                        const val = character?.passions?.[key] || 0;
+                        handleInputChange('passions', key, Math.max(0, val - 1));
+                      }}>−</button>
+                      <input type="number"
+                        value={character?.passions?.[key] || 0}
+                        onChange={e => handleInputChange('passions', key, parseInt(e.target.value) || 0)} />
+                      <button type="button" className="cs-ctrl-btn" onClick={() => {
+                        const val = character?.passions?.[key] || 0;
+                        handleInputChange('passions', key, val + 1);
+                      }}>+</button>
+                    </div>
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </section>
 
