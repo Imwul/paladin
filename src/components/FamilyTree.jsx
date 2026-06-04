@@ -1040,7 +1040,7 @@ export default function FamilyTree({ character, setCharacter }) {
         <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '2px 0 3px 0' }}>
           <span className="ft-name-ko" style={{ fontSize: '0.84rem', fontWeight: 'bold' }}>{splitName(member.name).ko}</span>
           {splitName(member.name).en && (
-            <span className="ft-name-en" style={{ fontSize: '0.72rem', fontWeight: '500', color: 'var(--color-grey)', marginLeft: '4px', display: 'inline' }}>
+            <span className="ft-name-en" style={{ fontSize: '0.72rem', fontWeight: '500', color: 'var(--color-grey)', marginLeft: '4px' }}>
               ({splitName(member.name).en})
             </span>
           )}
