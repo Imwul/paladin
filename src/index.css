@@ -1682,21 +1682,21 @@ input[type="number"] {
 
 .ft-svg-path {
   fill: none;
+  stroke-linejoin: miter;
   transition: stroke 0.3s;
 }
 
 .ft-svg-path.path-marriage {
   stroke: var(--color-gold-dark); /* Gilded gold-bronze connection */
-  stroke-width: 2.5px;
-  stroke-linecap: round;
+  stroke-width: 2px;
+  stroke-linecap: square;
   filter: drop-shadow(0 1px 2px rgba(46, 31, 15, 0.15));
 }
 
 .ft-svg-path.path-lineage {
   stroke: #8b6914; /* Deep sepia/bronze instead of modern royal blue */
-  stroke-width: 1.8px;
-  stroke-dasharray: 4, 3;
-  stroke-linecap: round;
+  stroke-width: 1.5px;
+  stroke-linecap: square;
 }
 
 .ft-rows-container {
@@ -1818,19 +1818,41 @@ input[type="number"] {
   border-color: var(--color-gold) !important;
 }
 
+.ft-card-male {
+  background: linear-gradient(145deg, #f0f5fa 0%, #e2edf6 100%) !important;
+  border-color: rgba(70, 130, 180, 0.4) !important;
+  box-shadow: 
+    inset 0 0 10px rgba(70, 130, 180, 0.1),
+    0 3px 8px rgba(46, 31, 15, 0.08);
+}
+.ft-card-male:hover {
+  border-color: rgba(70, 130, 180, 0.75) !important;
+}
+
+.ft-card-female {
+  background: linear-gradient(145deg, #fdf5f5 0%, #fae6e6 100%) !important;
+  border-color: rgba(219, 112, 147, 0.4) !important;
+  box-shadow: 
+    inset 0 0 10px rgba(219, 112, 147, 0.1),
+    0 3px 8px rgba(46, 31, 15, 0.08);
+}
+.ft-card-female:hover {
+  border-color: rgba(219, 112, 147, 0.75) !important;
+}
+
 .ft-card-knight {
   border: 3.5px double var(--color-gold) !important; /* Grand double gold border for the Knight */
   background: linear-gradient(145deg, #fffdf4 0%, #f6e8c3 100%) !important; /* Glowing noble paper scroll texture */
   box-shadow: 
     inset 0 0 14px rgba(201, 168, 76, 0.28),
-    0 3px 10px rgba(201, 168, 76, 0.15);
+    0 3px 10px rgba(201, 168, 76, 0.15) !important;
 }
 
 .ft-card-knight:hover {
   border-color: var(--color-gold-dark) !important;
   box-shadow: 
     inset 0 0 16px rgba(201, 168, 76, 0.35),
-    0 6px 18px rgba(201, 168, 76, 0.25);
+    0 6px 18px rgba(201, 168, 76, 0.25) !important;
 }
 
 .ft-card-header {

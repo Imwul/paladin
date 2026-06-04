@@ -22,6 +22,28 @@ const parseName = (fullName) => {
   return { ko: cleanKo, en: cleanEn };
 };
 
+const getGender = (member) => {
+  if (member.gender) return member.gender;
+  const rel = member.relation || '';
+  const name = member.name || '';
+  const mClass = member.memberClass || '';
+  if (
+    rel.includes('모친') || 
+    rel.includes('부인') || 
+    rel.includes('딸') || 
+    rel.includes('여동생') || 
+    rel.includes('누나') || 
+    rel.includes('조모') ||
+    name.includes('부인') || 
+    name.includes('Lady') || 
+    mClass.includes('부인') || 
+    mClass.includes('Lady')
+  ) {
+    return 'female';
+  }
+  return 'male';
+};
+
 const getTitleByNameAndClass = (koName, enName, statusClass) => {
   if (!koName) return '';
   const cleanKo = koName.replace(/\s*(경|남작|백작|공작|영주|부인|종자)$/, '').trim();
@@ -96,6 +118,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [formDeathCause, setFormDeathCause] = useState('');
   const [formParentId, setFormParentId] = useState('');
   const [formSpouseId, setFormSpouseId] = useState('');
+  const [formGender, setFormGender] = useState('male');
 
   const treeContainerRef = useRef(null);
   const [lines, setLines] = useState([]);
@@ -163,11 +186,11 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // Default Template for reset
   const defaultMembers = [
-    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
-    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
-    { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
-    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
-    { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
+    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.', gender: 'male' },
+    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor', gender: 'male' },
+    { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard', gender: 'female' },
+    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard', gender: 'male' },
+    { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard', gender: 'male' }
   ];
 
   // SVG Lines Calculation
@@ -236,9 +259,9 @@ export default function FamilyTree({ character, setCharacter }) {
           }
 
           if (parentX !== undefined && parentY !== undefined) {
-            // Cubic Bezier curve for vertical flow
+            // Orthogonal routing (직각 형태 연결선)
             const midY = (parentY + childY) / 2;
-            const path = `M ${parentX} ${parentY} C ${parentX} ${midY}, ${childX} ${midY}, ${childX} ${childY}`;
+            const path = `M ${parentX} ${parentY} L ${parentX} ${midY} L ${childX} ${midY} L ${childX} ${childY}`;
             
             computedLines.push({
               type: 'lineage',
@@ -278,6 +301,7 @@ export default function FamilyTree({ character, setCharacter }) {
   }, [members]);
 
   const handleRandomName = (gender) => {
+    setFormGender(gender);
     // 50% chance: Choose from pre-defined historical names
     // 50% chance: Combine Frankish prefixes & suffixes
     const isFrankish = Math.random() < 0.5;
@@ -355,6 +379,17 @@ export default function FamilyTree({ character, setCharacter }) {
     setFormDeathCause('');
     setFormParentId(defaultParentId);
     setFormSpouseId(defaultSpouseId);
+    
+    if (defaultSpouseId) {
+      const spouse = members.find(m => m.id === defaultSpouseId);
+      if (spouse) {
+        setFormGender(getGender(spouse) === 'male' ? 'female' : 'male');
+      } else {
+        setFormGender('male');
+      }
+    } else {
+      setFormGender('male');
+    }
     setIsModalOpen(true);
   };
 
@@ -375,6 +410,7 @@ export default function FamilyTree({ character, setCharacter }) {
     setFormDeathCause(member.deathCause || '');
     setFormParentId(member.parentId || '');
     setFormSpouseId(member.spouseId || '');
+    setFormGender(member.gender || getGender(member));
     setIsModalOpen(true);
   };
 
@@ -406,6 +442,7 @@ export default function FamilyTree({ character, setCharacter }) {
           lifeYears: formLifeYears,
           note: formNote,
           memberClass: formMemberClass,
+          gender: formGender,
           deathCause: formStatus === '사망' ? formDeathCause : undefined,
           parentId: formParentId || undefined,
           spouseId: formSpouseId || undefined
@@ -438,6 +475,7 @@ export default function FamilyTree({ character, setCharacter }) {
               lifeYears: formLifeYears,
               note: formNote,
               memberClass: formMemberClass,
+              gender: formGender,
               deathCause: formStatus === '사망' ? formDeathCause : undefined,
               parentId: formParentId || undefined,
               spouseId: formSpouseId || undefined
@@ -571,6 +609,14 @@ export default function FamilyTree({ character, setCharacter }) {
     const genMembers = members.filter(m => m.generation === gen);
     if (genMembers.length === 0) return null;
 
+    // 출생연도 기준 오름차순 정렬 (나이가 많은 순으로 왼쪽부터 정렬)
+    const getBirthYear = (ly) => {
+      if (!ly) return 9999;
+      const match = String(ly).match(/^(\d+)/);
+      return match ? parseInt(match[1], 10) : 9999;
+    };
+    genMembers.sort((a, b) => getBirthYear(a.lifeYears) - getBirthYear(b.lifeYears));
+
     const renderedIds = new Set();
     const groups = [];
 
@@ -644,10 +690,11 @@ export default function FamilyTree({ character, setCharacter }) {
     const isKnight = member.relation === '본인';
     const statusColor = getStatusColor(member.status);
     const isDeceased = member.status === '사망';
+    const memberGender = getGender(member);
 
     return (
       <div 
-        className={`ft-card ${isKnight ? 'ft-card-knight' : ''} ${isDeceased ? 'ft-card-deceased' : ''}`}
+        className={`ft-card ${isKnight ? 'ft-card-knight' : ''} ${isDeceased ? 'ft-card-deceased' : ''} ft-card-${memberGender}`}
         data-node-id={member.id}
       >
 
@@ -796,6 +843,32 @@ export default function FamilyTree({ character, setCharacter }) {
             </div>
             
             <div className="ft-modal-body">
+              <div className="ft-form-group">
+                <label className="ft-label">성별 (Gender):</label>
+                <div style={{ display: 'flex', gap: '16px', marginTop: '4px', marginBottom: '8px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+                    <input 
+                      type="radio" 
+                      name="gender" 
+                      value="male" 
+                      checked={formGender === 'male'} 
+                      onChange={() => setFormGender('male')} 
+                    />
+                    남성 (Male)
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '0.85rem', color: 'var(--color-ink)' }}>
+                    <input 
+                      type="radio" 
+                      name="gender" 
+                      value="female" 
+                      checked={formGender === 'female'} 
+                      onChange={() => setFormGender('female')} 
+                    />
+                    여성 (Female)
+                  </label>
+                </div>
+              </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div className="ft-form-group">
                   <label className="ft-label">한국어 이름:</label>
