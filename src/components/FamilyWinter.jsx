@@ -767,7 +767,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);
     setWinterStep(1);
-    setActiveSubTab('family');
+    setActiveSubTab('tree');
     
     // reset states
     setAgingD20(null); setHarvestRoll(null); setSquireSurvivalRoll(null);

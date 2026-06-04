@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull, Dices, Check, Shield, Award, ChevronLeft, ChevronRight, Sparkles, RotateCcw } from 'lucide-react';
+import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull, Dices, Check, Shield, Award, ChevronLeft, ChevronRight, Sparkles, RotateCcw, Compass } from 'lucide-react';
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable } from './CharacterSheet';
