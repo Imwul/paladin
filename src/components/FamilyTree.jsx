@@ -89,7 +89,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [formNameEn, setFormNameEn] = useState('');
   const [formMemberClass, setFormMemberClass] = useState('기사 (Knight)');
   const [formRelation, setFormRelation] = useState('자녀');
-  const [formGeneration, setFormGeneration] = useState(2);
+  const [formGeneration, setFormGeneration] = useState(3);
   const [formStatus, setFormStatus] = useState('생존');
   const [formLifeYears, setFormLifeYears] = useState('');
   const [formNote, setFormNote] = useState('');
@@ -163,11 +163,11 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // Default Template for reset
   const defaultMembers = [
-    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 0, status: '사망', lifeYears: '702~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
-    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 1, status: '사망', lifeYears: '724~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
-    { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 1, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
-    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 2, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
-    { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 2, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
+    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
+    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
+    { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
+    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
+    { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
   ];
 
   // SVG Lines Calculation
@@ -341,7 +341,7 @@ export default function FamilyTree({ character, setCharacter }) {
   };
 
   // Open Modal to Add Member
-  const handleOpenAdd = (defaultParentId = '', defaultSpouseId = '', targetGen = 2) => {
+  const handleOpenAdd = (defaultParentId = '', defaultSpouseId = '', targetGen = 3) => {
     setModalMode('add');
     setFormNameKo('');
     setFormNameEn('');
@@ -555,8 +555,9 @@ export default function FamilyTree({ character, setCharacter }) {
   };
 
   // Group Members by Generation
-  const generations = [0, 1, 2, 3, 4, 5];
+  const generations = [1, 2, 3, 4, 5, 6];
   const genLabels = [
+    "",
     "조부모 세대 (Grandparents)",
     "부모 세대 (Parents)",
     "본인 및 형제 세대 (Knight's Gen)",

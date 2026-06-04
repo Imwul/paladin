@@ -101,11 +101,11 @@ const initialCharacterState = {
     allies: "몽글란 가문 (House of Monglane)",
     enemies: "마옌스 가문 (반역자 무리)",
     members: [
-      { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 0, status: '사망', lifeYears: '702~770', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
-      { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 1, status: '사망', lifeYears: '724~768', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
-      { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 1, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
-      { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 2, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
-      { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 2, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
+      { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.' },
+      { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor' },
+      { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard' },
+      { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard' },
+      { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard' }
     ]
   },
   journal: {

@@ -3965,7 +3965,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       const updated = JSON.parse(JSON.stringify(prev));
       const currentYear = prev.personal?.campaignYear || 768;
       const selfMember = updated.family?.members?.find(m => m.relation === '본인');
-      const playerGen = selfMember?.generation ?? 2;
+      const playerGen = selfMember?.generation ?? 3;
       const playerId = selfMember?.id ?? 'roland';
 
       // 1. Marriage Cash, Glory, and Spouse Addition
@@ -6345,7 +6345,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             // Find old self in family tree
             const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
             let oldSelfId = 'roland';
-            let oldSelfGen = 2;
+            let oldSelfGen = 3;
             
             if (oldSelfIndex !== -1 && updated.family && updated.family.members) {
               const oldSelf = updated.family.members[oldSelfIndex];
