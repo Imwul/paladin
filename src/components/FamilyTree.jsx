@@ -1528,20 +1528,47 @@ export default function FamilyTree({ character, setCharacter }) {
           const resolvedChar = resolveMemberCharacteristic(member, members, character.family?.characteristic);
           if (!resolvedChar) return null;
           const isInherited = !member.familyCharacteristic;
+          
+          const desc = resolvedChar.desc || '';
+          const parenIndex = desc.indexOf('(');
+          let enPart = desc;
+          let koPart = '';
+          if (parenIndex !== -1) {
+            enPart = desc.substring(0, parenIndex).trim();
+            koPart = desc.substring(parenIndex).trim();
+          }
+
           return (
             <div className="ft-char-badge" style={{ 
               fontSize: '0.68rem', 
-              color: memberGender === 'female' ? '#b83b5e' : '#2b5876',
               marginTop: '4px', 
               paddingTop: '3px',
               borderTop: '1px dashed rgba(0,0,0,0.08)',
               width: '100%',
               textAlign: 'center',
-              fontWeight: 'bold',
               lineHeight: '1.2',
               opacity: isInherited ? 0.85 : 1
             }} title={resolvedChar.bonusText + (isInherited ? ' (상속됨)' : '')}>
-              ⭐ {resolvedChar.desc}
+              <div style={{ 
+                fontWeight: 'bold', 
+                color: memberGender === 'female' ? '#b83b5e' : '#2b5876',
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '2px' 
+              }}>
+                <span>⭐</span> {enPart}
+              </div>
+              {koPart && (
+                <div style={{ 
+                  fontSize: '0.64rem', 
+                  fontWeight: '500', 
+                  color: 'var(--color-grey)', 
+                  marginTop: '1px' 
+                }}>
+                  {koPart}
+                </div>
+              )}
             </div>
           );
         })()}
