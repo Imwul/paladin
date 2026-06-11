@@ -1825,7 +1825,7 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div className="cs-field cs-field-full" style={{ gridColumn: 'span 2', backgroundColor: 'rgba(46,107,51,0.03)', padding: '8px 12px', borderRadius: '4px', border: '1px solid rgba(46,107,51,0.15)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <span style={{ fontSize: '0.78rem', color: '#2e6b33', fontWeight: 'bold' }}>🛡️ 가문 전승 특징:</span>
                 <span style={{ fontSize: '0.82rem', color: 'var(--color-royal-blue)' }}>
-                  <strong>{character.family.characteristic.desc}</strong> ({character.family.characteristic.bonusText})
+                  <strong>{character.family?.characteristic?.desc}</strong> ({character.family?.characteristic?.bonusText})
                 </span>
               </div>
             )}
@@ -2781,11 +2781,11 @@ export default function CharacterSheet({ character, setCharacter }) {
               {character?.family?.patronSaint && (
                 <div style={{ marginTop: '10px', backgroundColor: '#faf6eb', border: '1px dashed var(--color-gold)', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem' }}>
                   <div style={{ fontWeight: 'bold', color: 'var(--color-gold-dark)', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>⛪ {character.family.patronSaint}</span>
+                    <span>⛪ {character.family?.patronSaint}</span>
                     {sheetSaintResult && <span style={{ color: 'var(--color-grey)' }}>🎲 굴림값: {sheetSaintResult.roll}</span>}
                   </div>
                   {(() => {
-                    const saint = patronSaints.find(s => s.name === character.family.patronSaint);
+                    const saint = patronSaints.find(s => s.name === character.family?.patronSaint);
                     if (!saint) return null;
                     return (
                       <div style={{ marginTop: '4px', lineHeight: '1.4' }}>
@@ -2867,11 +2867,11 @@ export default function CharacterSheet({ character, setCharacter }) {
               {character?.family?.characteristic?.name && (
                 <div style={{ marginTop: '10px', backgroundColor: '#faf6eb', border: '1px dashed var(--color-gold)', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem' }}>
                   <div style={{ fontWeight: 'bold', color: 'var(--color-gold-dark)', display: 'flex', justifyContent: 'space-between' }}>
-                    <span>⚔️ {character.family.characteristic.name}</span>
+                    <span>⚔️ {character.family?.characteristic?.name}</span>
                     {sheetCharResult && <span style={{ color: 'var(--color-grey)' }}>🎲 굴림값: {sheetCharResult.roll}</span>}
                   </div>
                   <div style={{ marginTop: '4px', color: 'var(--color-royal-blue)' }}>
-                    <strong>효과:</strong> {character.family.characteristic.bonusText}
+                    <strong>효과:</strong> {character.family?.characteristic?.bonusText}
                   </div>
                 </div>
               )}

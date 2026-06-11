@@ -439,7 +439,7 @@ export default function FamilyTree({ character, setCharacter }) {
   );
   const [ancestorRollLog, setAncestorRollLog] = useState(() => {
     if (character?.family?.ancestorRollLog !== undefined) {
-      return character.family.ancestorRollLog;
+      return character.family?.ancestorRollLog;
     }
     return initialChronicleState.ancestorRollLog !== undefined ? initialChronicleState.ancestorRollLog : [];
   });
@@ -470,7 +470,7 @@ export default function FamilyTree({ character, setCharacter }) {
   );
   const [ancestorApplied, setAncestorApplied] = useState(() => {
     if (character?.family?.ancestorApplied !== undefined) {
-      return character.family.ancestorApplied;
+      return character.family?.ancestorApplied;
     }
     return initialChronicleState.ancestorApplied !== undefined ? initialChronicleState.ancestorApplied : false;
   });
@@ -648,7 +648,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
   const getEventText = (yr) => {
     if (!ANCESTOR_EVENTS[yr]) return "";
-    const ancestorFullName = character.family.ancestor || '알베르 경';
+    const ancestorFullName = character.family?.ancestor || '알베르 경';
     const rawAncestorName = cleanAncestorName(ancestorFullName);
     return ANCESTOR_EVENTS[yr]
       .replace(/조조부/g, '조부')
@@ -2656,7 +2656,7 @@ export default function FamilyTree({ character, setCharacter }) {
         if (nextYr > 744) {
           const deathYr = 744 + rollD20();
           const cause = "평화로운 영면 (Old Age)";
-          const finalMsg = `👴 ${deathYr}년: 은퇴한 조부님(시조 ${character.family.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`;
+          const finalMsg = `👴 ${deathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`;
 
           setGfDead(true);
           setGrandfatherDeathYear(deathYr);
@@ -2772,7 +2772,7 @@ export default function FamilyTree({ character, setCharacter }) {
     const rollD6 = () => Math.floor(Math.random() * 6) + 1;
     const rollD3 = () => Math.floor(Math.random() * 3) + 1;
 
-    logs.push(`📜 [${character.family.ancestor || '알베르'} 경(조부)의 생애: 연대기 시작 723년]`);
+    logs.push(`📜 [${character.family?.ancestor || '알베르'} 경(조부)의 생애: 연대기 시작 723년]`);
     let gfGlory = 2500;
     let gfHateSaxons = 0;
     let gfHateMoors = 0;
@@ -3283,7 +3283,7 @@ export default function FamilyTree({ character, setCharacter }) {
     if (!gfDead) {
       gfDeathYr = 744 + rollD20();
       gfCause = "평화로운 영면 (Old Age)";
-      logs.push(`👴 ${gfDeathYr}년: 은퇴한 조부님(시조 ${character.family.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`);
+      logs.push(`👴 ${gfDeathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`);
     }
 
     setGrandfatherGlory(gfGlory);
@@ -4084,7 +4084,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const handleMouseDown = (e, memberId) => {
     if (e.target.closest('.ft-action-btn') || e.target.closest('button')) return;
 
-    const positions = character.family.positions || {};
+    const positions = character.family?.positions || {};
     const pos = positions[memberId] || { x: 0, y: 0 };
     
     dragRef.current = {
@@ -4135,7 +4135,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const handleTouchStart = (e, memberId) => {
     if (e.target.closest('.ft-action-btn') || e.target.closest('button')) return;
     const touch = e.touches[0];
-    const positions = character.family.positions || {};
+    const positions = character.family?.positions || {};
     const pos = positions[memberId] || { x: 0, y: 0 };
     
     dragRef.current = {
@@ -5066,7 +5066,7 @@ export default function FamilyTree({ character, setCharacter }) {
     };
     genMembers.sort((a, b) => getBirthYear(a.lifeYears) - getBirthYear(b.lifeYears));
 
-    const positions = character.family.positions || {};
+    const positions = character.family?.positions || {};
     const renderedIds = new Set();
     const groups = [];
 
@@ -5171,7 +5171,7 @@ export default function FamilyTree({ character, setCharacter }) {
     const memberGender = getGender(member);
     const calculatedRelation = getCalculatedRelation(member, members);
 
-    const positions = character.family.positions || {};
+    const positions = character.family?.positions || {};
     const pos = positions[member.id] || { x: 0, y: 0 };
     const isGrabbing = dragRef.current.memberId === member.id;
  
@@ -5332,7 +5332,7 @@ export default function FamilyTree({ character, setCharacter }) {
       {/* Action Header controls */}
       <div className="ft-toolbar">
         <div>
-          <h4 style={{ fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>🏰 {character.family.name} 가문 계보도</h4>
+          <h4 style={{ fontWeight: 'bold', color: 'var(--color-royal-blue)' }}>🏰 {character.family?.name || '무명'} 가문 계보도</h4>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginTop: '2px' }}>
             가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 {character.personal?.name || '롤랑 경'} 중심)
           </p>
@@ -5598,7 +5598,7 @@ export default function FamilyTree({ character, setCharacter }) {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                             <div>
-                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family.ancestor || '알베르 경 (Sir Albert)'})</h5>
+                              <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family?.ancestor || '알베르 경 (Sir Albert)'})</h5>
                               <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                 • 최종 영광: <strong>{grandfatherGlory} Glory</strong><br />
                                 • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
@@ -5651,7 +5651,7 @@ export default function FamilyTree({ character, setCharacter }) {
                               <div>
                                 <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textTransform: 'uppercase' }}>진행 인물</span>
                                 <h5 style={{ margin: '2px 0 0 0', fontWeight: 'bold', fontSize: '0.92rem', color: interactiveStage.startsWith('gf') ? 'var(--color-royal-blue)' : 'var(--color-crimson)' }}>
-                                  {interactiveStage.startsWith('gf') ? `👴 조부 (${character.family.ancestor || '알베르 경 (Sir Albert)'})` : '👨 부친 (Gerard 경)'}
+                                  {interactiveStage.startsWith('gf') ? `👴 조부 (${character.family?.ancestor || '알베르 경 (Sir Albert)'})` : '👨 부친 (Gerard 경)'}
                                 </h5>
                                 <div style={{ fontSize: '0.76rem', marginTop: '4px', color: 'var(--color-ink)' }}>
                                   • 생몰: {interactiveStage.startsWith('gf') ? '702 ~ ?' : '724 ~ ?'}<br />
@@ -5886,14 +5886,14 @@ export default function FamilyTree({ character, setCharacter }) {
                                   🎉 위대한 조상들의 연대기가 완전히 완성되었습니다!
                                 </h4>
                                 <p style={{ fontSize: '0.8rem', color: 'var(--color-grey)', marginTop: '4px', lineHeight: 1.4 }}>
-                                  조부 {character.family.ancestor || '알베르 경 (Sir Albert)'}와 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
+                                  조부 {character.family?.ancestor || '알베르 경 (Sir Albert)'}와 부친 제라르 경의 웅장한 영웅담이 가문에 뿌리내렸습니다.<br />
                                   쌓아올린 영광(Glory)의 1/10과 불굴의 신조, 이교도에 대한 분노가 당신에게 오롯이 계승됩니다.
                                 </p>
                               </div>
 
                               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', backgroundColor: 'rgba(43, 65, 112, 0.04)', padding: '12px', borderRadius: '6px', border: '1.5px solid var(--color-gold-light)' }}>
                                 <div>
-                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family.ancestor || '알베르 경 (Sir Albert)'})</h5>
+                                  <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-royal-blue)', fontSize: '0.86rem' }}>👴 조부 ({character.family?.ancestor || '알베르 경 (Sir Albert)'})</h5>
                                   <span style={{ fontSize: '0.78rem', color: 'var(--color-ink)', lineHeight: '1.4' }}>
                                     • 최종 영광: <strong>{grandfatherGlory} Glory</strong><br />
                                     • 생몰년도: 702년 ~ {grandfatherDeathYear}년<br />
@@ -6288,20 +6288,20 @@ export default function FamilyTree({ character, setCharacter }) {
         </div>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
-            👴 노년 기사 (50세+): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.oldKnights ?? 0}</strong>명
+            👴 노년 기사 (50세+): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family?.oldKnights ?? 0}</strong>명
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
-            ⚔️ 장년 기사 (31~49세): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.middleKnights ?? 0}</strong>명
+            ⚔️ 장년 기사 (31~49세): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family?.middleKnights ?? 0}</strong>명
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
-            🛡️ 청년 기사 (30세 이하): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.youngKnights ?? 0}</strong>명
+            🛡️ 청년 기사 (30세 이하): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family?.youngKnights ?? 0}</strong>명
           </div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
-            🏹 친족 보병 (비기사 친족): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family.lineageMen ?? 0}</strong>명
+            🏹 친족 보병 (비기사 친족): <strong style={{ color: 'var(--color-crimson)', fontSize: '0.95rem' }}>{character.family?.lineageMen ?? 0}</strong>명
           </div>
         </div>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)' }}>
-          * 총 동원력: 기사 <strong>{(character.family.oldKnights || 0) + (character.family.middleKnights || 0) + (character.family.youngKnights || 0)}</strong>명 / 보병 <strong>{character.family.lineageMen || 0}</strong>명
+          * 총 동원력: 기사 <strong>{(character.family?.oldKnights || 0) + (character.family?.middleKnights || 0) + (character.family?.youngKnights || 0)}</strong>명 / 보병 <strong>{character.family?.lineageMen || 0}</strong>명
         </div>
       </div>
 
@@ -6738,7 +6738,7 @@ export default function FamilyTree({ character, setCharacter }) {
                 {formRelation === '본인' && character.family?.characteristic?.applied && (
                   <div style={{ marginTop: '8px', backgroundColor: 'rgba(46,107,51,0.05)', border: '1px solid rgba(46,107,51,0.2)', borderRadius: '4px', padding: '6px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div style={{ fontSize: '0.74rem', color: '#2e6b33' }}>
-                      <strong>✓ 시트 반영됨</strong>: [{character.family.characteristic.desc}] ({character.family.characteristic.bonusText})
+                      <strong>✓ 시트 반영됨</strong>: [{character.family?.characteristic?.desc || ''}] ({character.family?.characteristic?.bonusText || ''})
                     </div>
                     <button
                       type="button"
