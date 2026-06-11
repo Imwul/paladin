@@ -421,8 +421,8 @@ export default function FamilyTree({ character, setCharacter }) {
   const [salvationManualD20, setSalvationManualD20] = useState('');
   const [salvationRollResult, setSalvationRollResult] = useState(null);
   const [blessingRollResult, setBlessingRollResult] = useState(null);
-
-
+  const [patronSaintRoll, setPatronSaintRoll] = useState('');
+  const [patronSaintResult, setPatronSaintResult] = useState(null);
 
     // 📜 조상 연대기 발전기 (Page 45-49) States
   const initialChronicleState = (() => {

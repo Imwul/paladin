@@ -105,6 +105,17 @@ export default function ChronologyJournal({ character, setCharacter }) {
   const campaignYear = parseInt(character.personal?.campaignYear) || 768;
   const ancestorRollLog = character?.family?.ancestorRollLog || [];
 
+  const patronSaint =
+    character?.family?.patronSaint ||
+    character?.patronSaint ||
+    character?.familySaint ||
+    "기록 없음";
+
+  const patronSaintRoll =
+    character?.family?.patronSaintRoll ??
+    character?.patronSaintRoll ??
+    null;
+
   // Auto-select era based on current campaign year or default
   useEffect(() => {
     if (activeEra === 'player') {
@@ -463,10 +474,12 @@ export default function ChronologyJournal({ character, setCharacter }) {
               <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-royal-blue)', margin: 0 }}>
                 {character.family?.name || '아르덴'} 가문 역사 대연대기
               </h2>
-              <p style={{ fontStyle: 'italic', fontSize: '0.85rem', color: 'var(--color-grey)', margin: '2px 0 0 0', display: 'flex', gap: '8px' }}>
+              <p style={{ fontStyle: 'italic', fontSize: '0.85rem', color: 'var(--color-grey)', margin: '2px 0 0 0', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <span>🛡️ 가문훈: <strong>"{character.family?.motto || '명예와 신조'}"</strong></span>
                 <span>•</span>
                 <span>📣 함성: <strong>"{character.family?.battleCry || '몽주아 생드니!'}"</strong></span>
+                <span>•</span>
+                <span>⛪ 수호 성인: <strong>{patronSaint}</strong>{patronSaintRoll !== null ? ` (🎲 d20: ${patronSaintRoll})` : ''}</span>
               </p>
             </div>
           </div>
