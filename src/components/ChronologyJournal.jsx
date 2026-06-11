@@ -102,7 +102,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showRawLogs, setShowRawLogs] = useState({}); // mapping: year -> bool
 
-  const campaignYear = character.personal.campaignYear || 768;
+  const campaignYear = parseInt(character.personal?.campaignYear) || 768;
 
   // Auto-select era based on current campaign year or default
   useEffect(() => {
@@ -179,7 +179,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
   // Automated log parser
   const parseWinterLog = (text, year) => {
-    if (!text) return [];
+    if (!text || typeof text !== 'string') return [];
     const lines = text.split('\n');
     const annals = [];
     const cleanLine = (l) => l.replace(/^•\s*/, '').trim();
@@ -321,35 +321,39 @@ export default function ChronologyJournal({ character, setCharacter }) {
     const members = character.family?.members || [];
 
     members.forEach(m => {
-      const lifeYears = m.lifeYears || '';
+      if (!m) return;
+      const lifeYears = typeof m.lifeYears === 'string' ? m.lifeYears : (m.lifeYears ? String(m.lifeYears) : '');
       const parts = lifeYears.split('~');
       const birthYear = parseInt(parts[0]);
       const deathYear = parts[1] ? parseInt(parts[1]) : null;
 
+      const mName = typeof m.name === 'string' ? m.name : '';
+      const cleanName = mName.split(' (')[0] || '이름 없음';
+
       if (birthYear === currentYear) {
         if (m.relation === '자녀') {
-          annals.push(`자녀 탄생: 가문에 명예로운 적통 자녀 [${m.name.split(' (')[0]}]가 출생하여 기쁨을 더함.`);
+          annals.push(`자녀 탄생: 가문에 명예로운 적통 자녀 [${cleanName}]가 출생하여 기쁨을 더함.`);
         } else if (m.relation === '배우자') {
-          annals.push(`가문 혼사: 기사가 배우자 [${m.name.split(' (')[0]}]과 성대한 혼례를 맺고 가연을 세움.`);
+          annals.push(`가문 혼사: 기사가 배우자 [${cleanName}]과 성대한 혼례를 맺고 가연을 세움.`);
         }
       }
 
       if (deathYear === currentYear) {
-        annals.push(`가문 상사: 가문원 [${m.name.split(' (')[0]}] 서거 (사인: ${m.deathCause || m.note || '선종'}).`);
+        annals.push(`가문 상사: 가문원 [${cleanName}] 서거 (사인: ${m.deathCause || m.note || '선종'}).`);
       }
     });
 
     // Inheritance in initial year 768
     if (currentYear === 768) {
-      const selfMember = members.find(m => m.relation === '본인') || { name: '롤랑 경' };
-      const selfName = selfMember.name.split(' (')[0];
+      const selfMember = members.find(m => m && m.relation === '본인') || { name: '롤랑 경' };
+      const selfName = (selfMember.name || '롤랑 경').split(' (')[0] || '롤랑 경';
       annals.push(`가업 상속: 부친 제라르 경의 파비아 원정 전사로 인해 [${selfName}]이 아르덴 가문을 정식 계승함.`);
     }
 
     // Dynamic Glory thresholds crossed
     const getGlory = (y) => {
       const entry = character.journal?.[y];
-      if (!entry) return null;
+      if (!entry || typeof entry.text !== 'string') return null;
       const match = entry.text.match(/누적 영예:\s*(\d+)/);
       return match ? parseInt(match[1]) : null;
     };
@@ -396,7 +400,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
       end: 767
     },
     player: {
-      title: `기사 ${character.personal.name.split(' (')[0]}의 연대 (768 AD ~ 현재)`,
+      title: `기사 ${(character.personal?.name || '롤랑 경').split(' (')[0]}의 연대 (768 AD ~ 현재)`,
       start: 768,
       end: Math.max(768, campaignYear)
     }
@@ -419,7 +423,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
     return years.filter(year => {
       const globalHist = chronologyData.find(item => item.year === year) || ANCESTOR_EVENTS[year] || '';
-      const globalStr = typeof globalHist === 'object' ? `${globalHist.title} ${globalHist.summary} ${globalHist.details}` : globalHist;
+      const globalStr = typeof globalHist === 'object' && globalHist !== null ? `${globalHist.title || ''} ${globalHist.summary || ''} ${globalHist.details || ''}` : String(globalHist || '');
       
       const journalText = character.journal?.[year]?.text || '';
       const annals = getAnnalsForYear(year).join(' ');
@@ -442,7 +446,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
   // Compute family stats
   const totalGlory = character.gear?.gloryTotal || 1200;
-  const currentLeaderName = character.personal?.name.split(' (')[0] || '롤랑 경';
+  const currentLeaderName = (character.personal?.name || '롤랑 경').split(' (')[0];
 
   return (
     <div className="cs-page view-animate">
@@ -620,10 +624,10 @@ export default function ChronologyJournal({ character, setCharacter }) {
                         
                         {isInteractiveAncestor ? (
                           // Render ancestor log rolls if available
-                          character.family?.ancestorRollLog && character.family.ancestorRollLog.some(line => line.includes(`${year}년`)) ? (
+                          Array.isArray(character.family?.ancestorRollLog) && character.family.ancestorRollLog.some(line => typeof line === 'string' && line.includes(`${year}년`)) ? (
                             <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.84rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
                               {character.family.ancestorRollLog
-                                .filter(line => line.includes(`${year}년`))
+                                .filter(line => typeof line === 'string' && line.includes(`${year}년`))
                                 .map((line, idx) => (
                                   <li key={idx} style={{ listStyleType: 'square' }}>
                                     {line.replace(/^🏰\s*\d+년:\s*\[역사\]\s*/, '').replace(/^🏰\s*\d+년:\s*/, '').replace(/└\s*/, '').trim()}
