@@ -103,6 +103,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
   const [showRawLogs, setShowRawLogs] = useState({}); // mapping: year -> bool
 
   const campaignYear = parseInt(character.personal?.campaignYear) || 768;
+  const ancestorRollLog = character?.family?.ancestorRollLog || [];
 
   // Auto-select era based on current campaign year or default
   useEffect(() => {
@@ -544,7 +545,11 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
           {/* 📜 Clear Year-by-Year Annals Parchment Timeline */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            {activeYears.length === 0 ? (
+            {(activeEra === 'grandfather' || activeEra === 'father') && ancestorRollLog.length === 0 ? (
+              <div style={{ padding: '40px 10px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', backgroundColor: 'rgba(255, 255, 255, 0.3)', border: '1px dashed var(--color-gold-light)', borderRadius: '8px' }}>
+                아직 보존된 조상 연대기가 없습니다. 가계도에서 조상 생성을 완료하면 이곳에 기록됩니다.
+              </div>
+            ) : activeYears.length === 0 ? (
               <div style={{ padding: '40px 10px', textAlign: 'center', color: 'var(--color-grey)', fontStyle: 'italic', backgroundColor: 'rgba(255, 255, 255, 0.3)', border: '1px dashed var(--color-gold-light)', borderRadius: '8px' }}>
                 이 연대와 일치하는 기록이 아직 성취되지 않았거나 검색어와 일치하는 편년 기록이 존재하지 않습니다.
               </div>
@@ -624,9 +629,9 @@ export default function ChronologyJournal({ character, setCharacter }) {
                         
                         {isInteractiveAncestor ? (
                           // Render ancestor log rolls if available
-                          Array.isArray(character.family?.ancestorRollLog) && character.family.ancestorRollLog.some(line => typeof line === 'string' && line.includes(`${year}년`)) ? (
+                          ancestorRollLog.some(line => typeof line === 'string' && line.includes(`${year}년`)) ? (
                             <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.84rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                              {character.family.ancestorRollLog
+                              {ancestorRollLog
                                 .filter(line => typeof line === 'string' && line.includes(`${year}년`))
                                 .map((line, idx) => (
                                   <li key={idx} style={{ listStyleType: 'square' }}>

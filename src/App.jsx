@@ -106,7 +106,9 @@ const initialCharacterState = {
       { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard', gender: 'female' },
       { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard', gender: 'male' },
       { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard', gender: 'male' }
-    ]
+    ],
+    ancestorRollLog: [],
+    ancestorApplied: false
   },
   journal: {
     768: {
@@ -172,7 +174,9 @@ const mergeWithDefault = (data) => {
     family: { 
       ...initialCharacterState.family, 
       ...data.family,
-      members: data.family?.members || initialCharacterState.family.members 
+      members: data.family?.members || initialCharacterState.family.members,
+      ancestorRollLog: Array.isArray(data.family?.ancestorRollLog) ? data.family.ancestorRollLog : [],
+      ancestorApplied: typeof data.family?.ancestorApplied === 'boolean' ? data.family.ancestorApplied : false
     },
     journal: { ...initialCharacterState.journal, ...data.journal },
     passions: { ...initialCharacterState.passions, ...data.passions },
