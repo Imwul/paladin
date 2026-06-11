@@ -2293,7 +2293,7 @@ export default function SoloOracles({ character, setCharacter }) {
                   <button className="btn-medieval" onClick={askOracle} style={{ justifyContent: 'center', height: '38px', margin: 0 }} disabled={isRollingOracle}>
                     {isRollingOracle ? "신탁 묻는 중..." : "오라클에 묻기"}
                   </button>
-                  <div className="cs-field" style={{ margin: 0, height: '38px', padding: '0 8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="cs-field" style={{ margin: 0, height: '38px', padding: '0 8px', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                     <span className="cs-field-label" style={{ fontSize: '0.72rem', whiteSpace: 'nowrap', color: 'var(--color-gold-dark)' }}>🎲 d20:</span>
                     <input 
                       type="number" 
@@ -2882,7 +2882,7 @@ export default function SoloOracles({ character, setCharacter }) {
                   </span>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', gap: '8px', alignItems: 'center' }}>
-                    <div className="cs-field" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '6px', padding: '0 8px' }}>
+                    <div className="cs-field" style={{ margin: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', padding: '0 8px' }}>
                       <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>헌납 금액:</span>
                       <input 
                         type="number" 
