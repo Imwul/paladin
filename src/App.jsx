@@ -138,14 +138,18 @@ const mergeWithDefault = (data) => {
 
   // Backward compatibility migration for hateSarasens typo
   if (data.passions) {
-    if (data.passions.hateSarasens !== undefined && data.passions.hateSaracens === undefined) {
-      data.passions.hateSaracens = data.passions.hateSarasens;
+    if (data.passions.hateSarasens !== undefined) {
+      if (data.passions.hateSaracens === undefined || data.passions.hateSaracens === 12) {
+        data.passions.hateSaracens = data.passions.hateSarasens;
+      }
       delete data.passions.hateSarasens;
     }
   }
   if (data.passionsChecked) {
-    if (data.passionsChecked.hateSarasens !== undefined && data.passionsChecked.hateSaracens === undefined) {
-      data.passionsChecked.hateSaracens = data.passionsChecked.hateSarasens;
+    if (data.passionsChecked.hateSarasens !== undefined) {
+      if (data.passionsChecked.hateSaracens === undefined) {
+        data.passionsChecked.hateSaracens = data.passionsChecked.hateSarasens;
+      }
       delete data.passionsChecked.hateSarasens;
     }
   }

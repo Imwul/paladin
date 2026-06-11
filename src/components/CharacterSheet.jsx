@@ -2421,24 +2421,6 @@ export default function CharacterSheet({ character, setCharacter }) {
         </section>
       </div>
 
-      {/* ══════ DISTINCTIVE FEATURES ══════ */}
-      <section className="cs-section">
-        <div className="sheet-ribbon"><h3>외형적 특징</h3></div>
-        <div className="cs-section-inner">
-          <div className="cs-feature-list">
-            {[0, 1, 2].map(i => (
-              <input key={i} type="text"
-                value={character?.personal?.features?.[i] || ''}
-                onChange={e => {
-                  const arr = [...(character?.personal?.features || ['', '', ''])];
-                  arr[i] = e.target.value;
-                  handleInputChange('personal', 'features', arr);
-                }}
-                placeholder={['1. 예: 왼쪽 뺨의 흉터', '2. 예: 날카로운 벽안', '3. 예: 크고 날씬한 체형'][i]} />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ══════ SQUIRE + HORSE (side by side) ══════ */}
       <div className="cs-row">
@@ -2698,7 +2680,7 @@ export default function CharacterSheet({ character, setCharacter }) {
             
             {/* Family Honor (2d6+3) */}
             <div className="cs-field" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', flexWrap: 'wrap', gap: '6px' }}>
                 <span className="cs-field-label">가문 고유 명예 (Family Honor):</span>
                 <button type="button" className="btn-medieval" style={{ padding: '2px 6px', fontSize: '0.7rem' }} onClick={rollSheetHonor}>
                   <Dices size={10} style={{ marginRight: '2px' }} /> 2d6+3 굴리기
@@ -2732,7 +2714,7 @@ export default function CharacterSheet({ character, setCharacter }) {
             
             {/* ⛪ 가문 수호 성인 설정 (Table 1-3) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⛪ 가문 수호 성인 설정 (Table 1-3)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
                   <button type="button" 
@@ -2818,7 +2800,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
             {/* ⚔️ 가문 특징 설정 (Table 1-1) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⚔️ 가문 특징 설정 (Table 1-1)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
                   <button type="button" 
@@ -2901,7 +2883,7 @@ export default function CharacterSheet({ character, setCharacter }) {
             
             {/* 📊 가문 평판 설정 (Family Standings, 2d6) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>📊 가문 평판 설정 (2d6, p.30)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
                   <button type="button" 
@@ -2966,7 +2948,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
             {/* 🛡️ 가문 군사 동원력 설정 (Family Muster, p.28) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문 군사 동원력 (Muster, p.28)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
                   <button type="button" 

@@ -437,9 +437,12 @@ export default function FamilyTree({ character, setCharacter }) {
   const [isAncestorGenOpen, setIsAncestorGenOpen] = useState(
     initialChronicleState.isAncestorGenOpen !== undefined ? initialChronicleState.isAncestorGenOpen : false
   );
-  const [ancestorRollLog, setAncestorRollLog] = useState(
-    initialChronicleState.ancestorRollLog !== undefined ? initialChronicleState.ancestorRollLog : []
-  );
+  const [ancestorRollLog, setAncestorRollLog] = useState(() => {
+    if (character?.family?.ancestorRollLog !== undefined) {
+      return character.family.ancestorRollLog;
+    }
+    return initialChronicleState.ancestorRollLog !== undefined ? initialChronicleState.ancestorRollLog : [];
+  });
   const [grandfatherGlory, setGrandfatherGlory] = useState(
     initialChronicleState.grandfatherGlory !== undefined ? initialChronicleState.grandfatherGlory : 2500
   );
@@ -465,9 +468,12 @@ export default function FamilyTree({ character, setCharacter }) {
   const [fatherHates, setFatherHates] = useState(
     initialChronicleState.fatherHates !== undefined ? initialChronicleState.fatherHates : { saxons: 0, moors: 0, danes: 0 }
   );
-  const [ancestorApplied, setAncestorApplied] = useState(
-    initialChronicleState.ancestorApplied !== undefined ? initialChronicleState.ancestorApplied : false
-  );
+  const [ancestorApplied, setAncestorApplied] = useState(() => {
+    if (character?.family?.ancestorApplied !== undefined) {
+      return character.family.ancestorApplied;
+    }
+    return initialChronicleState.ancestorApplied !== undefined ? initialChronicleState.ancestorApplied : false;
+  });
   const [showRefTables, setShowRefTables] = useState(false);
   const [showRefAging, setShowRefAging] = useState(false);
   const [showRefHarvest, setShowRefHarvest] = useState(false);
@@ -3783,6 +3789,11 @@ export default function FamilyTree({ character, setCharacter }) {
         });
       }
 
+      if (updated.family) {
+        updated.family.ancestorRollLog = [...ancestorRollLog];
+        updated.family.ancestorApplied = true;
+      }
+
       return updated;
     });
 
@@ -3833,6 +3844,11 @@ export default function FamilyTree({ character, setCharacter }) {
           }
           return m;
         });
+      }
+
+      if (updated.family) {
+        updated.family.ancestorRollLog = [...ancestorRollLog];
+        updated.family.ancestorApplied = true;
       }
 
       return updated;
@@ -4006,6 +4022,16 @@ export default function FamilyTree({ character, setCharacter }) {
       if (isSaint) {
         updated.personal.blessing = "가문의 수호 성인 축복 (Saintly Lineage)";
       }
+
+      // Record succession in campaign year journal
+      if (!updated.journal) updated.journal = {};
+      const msg = `[계승] 기사 ${oldName} 은퇴/사망 및 후계자 ${newName} 가업 승계.`;
+      const currentEntry = updated.journal[currentYear]?.text || '';
+      updated.journal[currentYear] = {
+        text: currentEntry ? `${currentEntry}\n\n• ${msg}` : `• ${msg}`,
+        updatedAt: new Date().toISOString()
+      };
+
       return updated;
     });
 
@@ -4181,6 +4207,9 @@ export default function FamilyTree({ character, setCharacter }) {
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
 
+      const oldName = prev.personal?.name || "롤랑 경";
+      const newName = editingMember.name;
+
       // 1. Find and update the old "본인"
       const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
       let oldSelfId = 'roland';
@@ -4213,6 +4242,15 @@ export default function FamilyTree({ character, setCharacter }) {
       updated.personal.name = editingMember.name;
       updated.personal.age = calculatedAge;
       updated.gear.gloryTotal = Math.floor((prev.gear?.gloryTotal || 1000) * 1.1);
+
+      // 4. Record succession in campaign year journal
+      if (!updated.journal) updated.journal = {};
+      const msg = `[계승] 기사 ${oldName} 은퇴/사망 및 후계자 ${newName} 가업 승계.`;
+      const currentEntry = updated.journal[currentYear]?.text || '';
+      updated.journal[currentYear] = {
+        text: currentEntry ? `${currentEntry}\n\n• ${msg}` : `• ${msg}`,
+        updatedAt: new Date().toISOString()
+      };
 
       return updated;
     });
