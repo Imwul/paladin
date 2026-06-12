@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
-import { greatFamilies } from '../data/lore';
 import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
-import { birthGiftsTable } from './CharacterSheet';
+import { applyOnce, appendWinterLog, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
 
 export default function FamilyWinter({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('tree');
@@ -58,6 +57,36 @@ export default function FamilyWinter({ character, setCharacter }) {
   // 연도별 이벤트 매핑
   const addLog = (msg) => {
     setLogMessages(prev => [msg, ...prev]);
+    setCharacter(prev => ({
+      ...prev,
+      campaign: appendWinterLog(prev, msg)
+    }));
+  };
+
+  const currentYear = character.personal?.campaignYear || 768;
+  const currentWinter = character.campaign?.winter || {};
+  const [calculatedAnnualGlory, setCalculatedAnnualGlory] = useState(null);
+  const [gloryApplied, setGloryApplied] = useState(hasAppliedEvent(character, `winter:annual_glory:${currentYear}`));
+  const [gloryBonusPoints, setGloryBonusPoints] = useState(currentWinter.gloryBonusPoints || 0);
+  const [bonusSpent, setBonusSpent] = useState(currentWinter.bonusSpent || 0);
+  const [showRefAging, setShowRefAging] = useState(false);
+  const [showRefHarvest, setShowRefHarvest] = useState(false);
+  const [showRefSurvival, setShowRefSurvival] = useState(false);
+  const [showRefPersonal, setShowRefPersonal] = useState(false);
+  const [showRefFamily, setShowRefFamily] = useState(false);
+  const [showRefExperience, setShowRefExperience] = useState(false);
+
+  useEffect(() => {
+    if (Array.isArray(currentWinter.logs)) {
+      setLogMessages([...currentWinter.logs].reverse());
+    }
+  }, [currentWinter.year]);
+
+  const resolveWinterStep = (step, status = 'resolved') => {
+    setCharacter(prev => ({
+      ...prev,
+      campaign: markWinterStep(prev, step, status)
+    }));
   };
 
   // ══════════════════════════════════════════════════
@@ -70,6 +99,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       setAgingD20(20);
       setAgingLosses([]);
       setAgingApplied(true);
+      resolveWinterStep('aging');
       return;
     }
 
@@ -100,17 +130,24 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const applyAging = () => {
     if (agingApplied) return;
+    const eventId = `winter:aging:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 노화 정산은 이미 반영되었습니다.");
+      return;
+    }
     const resolvedLosses = agingLosses.filter(l => l !== "None");
 
     setCharacter(prev => {
-      const updatedAttr = { ...prev.attributes };
-      resolvedLosses.forEach(stat => {
-        const key = stat.toLowerCase();
-        updatedAttr[key] = Math.max(1, (updatedAttr[key] || 0) - 1);
-      });
-      // Adjust current HP if SIZ or CON changed
-      updatedAttr.currentHp = Math.min(updatedAttr.currentHp || 0, updatedAttr.siz + updatedAttr.con);
-      return { ...prev, attributes: updatedAttr };
+      const result = applyOnce(prev, eventId, updated => {
+        resolvedLosses.forEach(stat => {
+          const key = stat.toLowerCase();
+          updated.attributes[key] = Math.max(3, (updated.attributes[key] || 0) - 1);
+        });
+        updated.attributes.currentHp = Math.min(updated.attributes.currentHp || 0, updated.attributes.siz + updated.attributes.con);
+        updated.campaign = markWinterStep(updated, 'aging');
+        return updated;
+      }, '겨울 노화 정산');
+      return result.character;
     });
 
     const lossText = resolvedLosses.length > 0 ? resolvedLosses.join(', ') + ' 각 -1' : '하락 없음';
@@ -122,6 +159,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   // STEP 3: HARVEST LOGIC
   // ══════════════════════════════════════════════════
   const rollHarvest = () => {
+    if (hasAppliedEvent(character, `winter:harvest:${currentYear}`)) {
+      alert("올해 수확 수입은 이미 반영되었습니다.");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setHarvestRoll(d20);
 
@@ -147,10 +188,18 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const applyHarvest = () => {
     if (harvestApplied) return;
+    const eventId = `winter:harvest:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 수확 수입은 이미 반영되었습니다.");
+      return;
+    }
     setCharacter(prev => {
-      const updatedGear = { ...prev.gear };
-      updatedGear.cash = (updatedGear.cash || 0) + harvestRevenue;
-      return { ...prev, gear: updatedGear };
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.cash = (updated.gear.cash || 0) + harvestRevenue;
+        updated.campaign = markWinterStep(updated, 'harvest');
+        return updated;
+      }, `겨울 수확 £${harvestRevenue}`);
+      return result.character;
     });
 
     addLog(`[영지 수확]: 영지관리 d20 [${harvestRoll}] vs [${character.skills.stewardship}]. 배율 x${harvestMult} -> £${harvestRevenue} 획득!`);
@@ -182,6 +231,28 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const applySurvival = () => {
     if (survivalApplied) return;
+    const eventId = `winter:survival:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 종자/군마 생존 정산은 이미 반영되었습니다.");
+      return;
+    }
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        if (squireStatus.includes('사망')) {
+          updated.squire = { ...updated.squire, status: '사망' };
+        } else if (squireStatus.includes('질병')) {
+          updated.squire = { ...updated.squire, status: '질병', nextYearPenalty: -5 };
+        }
+        if (horseStatus.includes('사망')) {
+          updated.horses.warhorse = { ...updated.horses.warhorse, status: '사망', hp: 0 };
+        } else if (horseStatus.includes('질병')) {
+          updated.horses.warhorse = { ...updated.horses.warhorse, status: '질병', nextYearPenalty: -5 };
+        }
+        updated.campaign = markWinterStep(updated, 'survival');
+        return updated;
+      }, '종자/군마 생존 정산');
+      return result.character;
+    });
     addLog(`[동료 생존]: 종자 d20 [${squireSurvivalRoll}] -> ${squireStatus}, 군마 d20 [${horseSurvivalRoll}] -> ${horseStatus}`);
     setSurvivalApplied(true);
   };
@@ -212,16 +283,107 @@ export default function FamilyWinter({ character, setCharacter }) {
     20: { name: "기사의 결단 (Player's Choice)", trait: "choice", crit: "기사가 원하는 성향 하나를 자유롭게 +1 올립니다.", succ: "원하는 성향이나 기술 하나에 자유롭게 체크를 남깁니다.", fail: "아무 일도 일어나지 않았습니다.", fumb: "사소한 수치로 무작위 명망 하나가 1점 하락합니다." }
   };
 
+  const fullyAutomatedPersonalEvents = new Set([12, 14, 16]);
+  const automatedFamilyEvents = new Set([2, 3, 8, 10, 19]);
+  const personalEventNeedsManualResolution = personalEventRoll && !fullyAutomatedPersonalEvents.has(Number(personalEventRoll));
+  const familyEventNeedsManualResolution = familyEventRoll
+    && familyEventResult
+    && !familyEventResult.includes('평온')
+    && !automatedFamilyEvents.has(Number(familyEventRoll));
+
   const rollPersonalEvent = () => {
+    if (hasAppliedEvent(character, `winter:personal_event:${currentYear}`)) {
+      alert("올해 개인 사건은 이미 해결되었습니다.");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setPersonalEventRoll(d20);
     setPersonalEventText(personalEventTable[d20]);
     setPersonalEventApplied(false);
   };
 
-  const applyPersonalEvent = (outcome) => {
+  const applyPersonalEvent = () => {
     if (personalEventApplied) return;
-    addLog(`[개인 사건]: d20 [${personalEventRoll}] ${personalEventText.name} -> 결과 [${outcome}] 적용.`);
+    const eventId = `winter:personal_event:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 개인 사건은 이미 해결되었습니다.");
+      return;
+    }
+    if (!personalEventText) return;
+    const key = personalEventText.trait;
+    const testValue = character.traits?.[key] ?? character.passions?.[key] ?? character.standings?.[key] ?? 10;
+    const testRoll = Math.floor(Math.random() * 20) + 1;
+    let outcome = 'Failure';
+    if (testRoll === 20) outcome = 'Fumble';
+    else if (testRoll === 1 || testRoll === testValue) outcome = 'Critical';
+    else if (testRoll < testValue) outcome = 'Success';
+
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        const checkTrait = (traitKey) => {
+          if (updated.traits?.[traitKey] !== undefined) {
+            updated.traitsChecked = { ...(updated.traitsChecked || {}), [traitKey]: true };
+          } else if (updated.passions?.[traitKey] !== undefined) {
+            updated.passionsChecked = { ...(updated.passionsChecked || {}), [traitKey]: true };
+          } else if (updated.standings?.[traitKey] !== undefined) {
+            updated.standings[traitKey] = Math.min(25, (updated.standings[traitKey] || 0) + 1);
+          }
+        };
+        const addTrait = (traitKey, amount) => {
+          const opposites = {
+            chaste: 'lustful', energetic: 'lazy', forgiving: 'vengeful',
+            generous: 'selfish', honest: 'deceitful', just: 'arbitrary',
+            merciful: 'cruel', modest: 'proud', pious: 'worldly',
+            prudent: 'reckless', temperate: 'indulgent', trusting: 'suspicious',
+            valorous: 'cowardly'
+          };
+          const next = Math.min(20, Math.max(0, (updated.traits[traitKey] || 0) + amount));
+          updated.traits[traitKey] = next;
+          if (opposites[traitKey]) updated.traits[opposites[traitKey]] = 20 - next;
+        };
+        const addPassion = (passionKey, amount) => {
+          updated.passions[passionKey] = Math.min(25, Math.max(0, (updated.passions[passionKey] || 0) + amount));
+        };
+        const addStanding = (standingKey, amount) => {
+          updated.standings[standingKey] = Math.min(25, Math.max(0, (updated.standings[standingKey] || 0) + amount));
+        };
+
+        if (outcome === 'Critical') {
+          if (updated.traits?.[key] !== undefined) addTrait(key, 1);
+          if (key === 'valorous') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 50;
+          if (key === 'honor') {
+            updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 20;
+            updated.gear.cash = (updated.gear.cash || 0) + Math.floor(Math.random() * 12) + 2;
+          }
+          if (key === 'loveGod') {
+            addPassion('loveGod', 1);
+            addStanding('church', 1);
+            updated.campaign.winter.steps.training = 'skipped';
+          }
+        } else if (outcome === 'Success') {
+          checkTrait(key);
+          if (key === 'valorous') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
+          if (key === 'honor') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 20;
+        } else if (outcome === 'Failure') {
+          if (key === 'loveFamily') addPassion('loveFamily', -1);
+          if (key === 'loveGod') addStanding('church', -1);
+          if (key === 'generous') updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 1);
+          if (updated.traits?.[key] !== undefined) checkTrait(key);
+        } else if (outcome === 'Fumble') {
+          if (key === 'honor') addPassion('honor', -1);
+          if (key === 'loveFamily') addPassion('loveFamily', -2);
+          if (key === 'loveGod') addPassion('loveGod', -1);
+          if (key === 'standingChurch') addStanding('church', -1);
+          if (key === 'standingCommoners') addStanding('commoners', -1);
+          if (key === 'energetic') updated.campaign.winter.steps.training = 'skipped';
+        }
+
+        updated.campaign = markWinterStep(updated, 'personalEvent');
+        return updated;
+      }, `개인 사건 ${personalEventText.name}: ${outcome}`);
+      return result.character;
+    });
+    addLog(`[개인 사건]: 사건 d20 [${personalEventRoll}] ${personalEventText.name}; 테스트 d20 [${testRoll}] vs [${testValue}] -> ${outcome} 적용.`);
     setPersonalEventApplied(true);
   };
 
@@ -229,6 +391,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   // STEP 6: FAMILY LOGIC (Marriage / Childbirth / Family Event)
   // ══════════════════════════════════════════════════
   const rollMarriage = () => {
+    if (hasAppliedEvent(character, `winter:family_phase:${currentYear}`)) {
+      alert("올해 가문 단계는 이미 정산되었습니다.");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setMarriageRoll(d20);
     let rank = "가신 기사의 딸";
@@ -247,6 +413,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const rollChildbirth = () => {
+    if (hasAppliedEvent(character, `winter:family_phase:${currentYear}`)) {
+      alert("올해 가문 단계는 이미 정산되었습니다.");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setChildbirthRoll(d20);
     let outcome = "아무 일 없음";
@@ -259,6 +429,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const rollFamilyEvent = () => {
+    if (hasAppliedEvent(character, `winter:family_phase:${currentYear}`)) {
+      alert("올해 가문 단계는 이미 정산되었습니다.");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setFamilyEventRoll(d20);
     let outcome = "평온한 한 해";
@@ -277,9 +451,14 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   const applyFamilyPhase = () => {
     if (familyApplied) return;
+    const eventId = `winter:family_phase:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 가문 단계는 이미 정산되었습니다.");
+      return;
+    }
 
     setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
+      const result = applyOnce(prev, eventId, updated => {
       const currentYear = prev.personal?.campaignYear || 768;
       const selfMember = updated.family?.members?.find(m => m.relation === '본인');
       const playerGen = selfMember?.generation ?? 3;
@@ -287,40 +466,40 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       // 1. Marriage Cash, Glory, and Spouse Addition
       if (marriageResult) {
-        updated.gear.cash = (updated.gear?.cash || 0) + marriageResult.dowry;
-        updated.gear.gloryThisGame = (updated.gear?.gloryThisGame || 0) + marriageResult.glory;
+        const existingLivingSpouse = updated.family?.members?.some(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+        if (!existingLivingSpouse) {
+          updated.gear.cash = (updated.gear?.cash || 0) + marriageResult.dowry;
+          updated.gear.gloryThisGame = (updated.gear?.gloryThisGame || 0) + marriageResult.glory;
 
-        // Add Spouse to Family Tree automatically
-        const spouseId = 'spouse_' + Date.now();
-        const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Mathilde", ko: "마틸드" };
-        const spouseName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
-        const newSpouseMember = {
-          id: spouseId,
-          name: spouseName,
-          relation: '배우자',
-          generation: playerGen,
-          status: '생존',
-          lifeYears: `${currentYear}~`,
-          note: `기사와 정식 혼례를 올린 배우자. 신분: ${marriageResult.rank}. 지참금: £${marriageResult.dowry}.`,
-          spouseId: playerId
-        };
+          // Add Spouse to Family Tree automatically
+          const spouseId = 'spouse_' + Date.now();
+          const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Mathilde", ko: "마틸드" };
+          const spouseName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
+          const newSpouseMember = {
+            id: spouseId,
+            name: spouseName,
+            relation: '배우자',
+            generation: playerGen,
+            status: '생존',
+            lifeYears: `${currentYear - 18}~`,
+            note: `기사와 ${currentYear}년에 정식 혼례를 올린 배우자. 신분: ${marriageResult.rank}. 지참금: £${marriageResult.dowry}.`,
+            spouseId: playerId
+          };
 
-        if (updated.family) {
-          if (!updated.family.members) updated.family.members = [];
-          
-          // Archive existing alive spouse if any
-          const existingSpouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.status === '생존');
-          if (existingSpouseIndex !== -1) {
-            updated.family.members[existingSpouseIndex].status = '사망';
-            updated.family.members[existingSpouseIndex].lifeYears = updated.family.members[existingSpouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          if (updated.family) {
+            if (!updated.family.members) updated.family.members = [];
+            updated.family.members.push(newSpouseMember);
           }
-          updated.family.members.push(newSpouseMember);
         }
       }
 
       // 2. Childbirth Member Addition
       if (childbirthResult && updated.family) {
         if (!updated.family.members) updated.family.members = [];
+        const hasLivingSpouse = updated.family.members.some(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+        if (!hasLivingSpouse) {
+          updated.campaign.unresolvedChildbirthBlocked = true;
+        } else {
 
         const spawnChild = (isSon) => {
           const childId = 'child_' + Math.random().toString(36).substr(2, 9);
@@ -378,9 +557,39 @@ export default function FamilyWinter({ character, setCharacter }) {
             updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
           }
         }
+        }
       }
 
+      if (familyEventResult && updated.family?.members) {
+        const candidates = updated.family.members.filter(m => m.relation !== '본인' && m.status === '생존');
+        const target = candidates[Math.floor(Math.random() * candidates.length)];
+        if (familyEventRoll === 1 && target) {
+          target.status = '사망';
+          target.deathCause = '가문 사건';
+          target.lifeYears = (target.lifeYears || `${currentYear - 20}~`).split('~')[0] + `~${currentYear}`;
+        } else if (familyEventRoll === 2) {
+          updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
+        } else if (familyEventRoll === 3) {
+          updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 5;
+        } else if (familyEventRoll === 4 && target) {
+          target.status = '실종';
+          target.note = `${target.note || ''}\n${currentYear}년 납치됨.`;
+        } else if (familyEventRoll === 5 && target) {
+          target.status = '실종';
+          target.note = `${target.note || ''}\n${currentYear}년 행방불명.`;
+        } else if (familyEventRoll === 8) {
+          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 선조 유물`;
+        } else if (familyEventRoll === 10) {
+          updated.passions.honor = Math.min(25, (updated.passions.honor || 16) + 1);
+        } else if (familyEventRoll === 19) {
+          updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
+        }
+      }
+
+      updated.campaign = markWinterStep(updated, 'familyEvent');
       return updated;
+      }, '겨울 가문 단계 정산');
+      return result.character;
     });
 
     let msg = `[가문 정산]: `;
@@ -397,13 +606,20 @@ export default function FamilyWinter({ character, setCharacter }) {
   // ══════════════════════════════════════════════════
   const runExperiencePhase = () => {
     if (experienceApplied) return;
+    const eventId = `winter:experience:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 경험 판정은 이미 반영되었습니다.");
+      return;
+    }
 
     const checkedSkills = Object.keys(character.skillsChecked).filter(k => character.skillsChecked[k]);
     const checkedPassions = Object.keys(character.passionsChecked).filter(k => character.passionsChecked[k]);
+    const checkedTraits = Object.keys(character.traitsChecked || {}).filter(k => character.traitsChecked[k]);
 
     const logs = [];
     const updatedSkills = { ...character.skills };
     const updatedPassions = { ...character.passions };
+    const updatedTraits = { ...character.traits };
 
     // Roll for skills
     checkedSkills.forEach(key => {
@@ -431,13 +647,40 @@ export default function FamilyWinter({ character, setCharacter }) {
       }
     });
 
-    setCharacter(prev => ({
-      ...prev,
-      skills: updatedSkills,
-      skillsChecked: {},
-      passions: updatedPassions,
-      passionsChecked: {}
-    }));
+    const oppositeMap = {
+      chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
+      generous: "selfish", honest: "deceitful", just: "arbitrary",
+      merciful: "cruel", modest: "proud", pious: "worldly",
+      prudent: "reckless", temperate: "indulgent", trusting: "suspicious",
+      valorous: "cowardly"
+    };
+    checkedTraits.forEach(key => {
+      const val = character.traits[key] || 0;
+      const d20 = Math.floor(Math.random() * 20) + 1;
+      const success = d20 >= val || d20 === 20;
+      if (success && val < 20) {
+        updatedTraits[key] = val + 1;
+        if (oppositeMap[key]) updatedTraits[oppositeMap[key]] = 20 - updatedTraits[key];
+        logs.push(`[성향 ${key} 성장]: d20 [${d20}] vs [${val}]. 성공! → ${val + 1} 🎉`);
+      } else {
+        logs.push(`[성향 ${key} 유지]: d20 [${d20}] vs [${val}]. 실패.`);
+      }
+    });
+
+    setCharacter(prev => {
+      const updated = {
+        ...prev,
+        skills: updatedSkills,
+        skillsChecked: {},
+        traits: updatedTraits,
+        traitsChecked: {},
+        passions: updatedPassions,
+        passionsChecked: {}
+      };
+      updated.campaign = markAppliedEvent(updated, eventId, '겨울 경험 판정');
+      updated.campaign = markWinterStep(updated, 'experience');
+      return updated;
+    });
 
     setExperienceLogs(logs);
     if (logs.length > 0) {
@@ -454,6 +697,11 @@ export default function FamilyWinter({ character, setCharacter }) {
   // ══════════════════════════════════════════════════
   const applyTraining = () => {
     if (trainingApplied) return;
+    const eventId = `winter:training:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해 훈련은 이미 반영되었습니다.");
+      return;
+    }
 
     if (trainingOption === 'optionA') {
       if (selectedAttribute) {
@@ -466,10 +714,15 @@ export default function FamilyWinter({ character, setCharacter }) {
           alert("나이가 21세 이상입니다! 룰북 규정에 따라 체구(SIZ)는 21세 이후로 증가시킬 수 없습니다.");
           return;
         }
-        setCharacter(prev => ({
-          ...prev,
-          attributes: { ...prev.attributes, [selectedAttribute]: (prev.attributes[selectedAttribute] || 0) + 1 }
-        }));
+        setCharacter(prev => {
+          const updated = {
+            ...prev,
+            attributes: { ...prev.attributes, [selectedAttribute]: Math.min(20, (prev.attributes[selectedAttribute] || 0) + 1) }
+          };
+          updated.campaign = markWinterStep(updated, 'training');
+          updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+          return updated;
+        });
         addLog(`[자유 단련]: 능력치 [${selectedAttribute.toUpperCase()}] +1 영구 증가!`);
       } else if (selectedTrait) {
         if ((character.traits[selectedTrait] || 0) >= 15) {
@@ -490,10 +743,13 @@ export default function FamilyWinter({ character, setCharacter }) {
           const newVal = Math.min(15, (prev.traits[selectedTrait] || 0) + 1);
           nextTraits[selectedTrait] = newVal;
           nextTraits[opp] = 20 - newVal;
-          return {
+          const updated = {
             ...prev,
             traits: nextTraits
           };
+          updated.campaign = markWinterStep(updated, 'training');
+          updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+          return updated;
         });
         addLog(`[자유 단련]: 성향 [${selectedTrait}] +1 증가!`);
       } else if (selectedPassion) {
@@ -501,27 +757,37 @@ export default function FamilyWinter({ character, setCharacter }) {
           alert("열망은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
           return;
         }
-        setCharacter(prev => ({
-          ...prev,
-          passions: { ...prev.passions, [selectedPassion]: Math.min(15, (prev.passions[selectedPassion] || 0) + 1) }
-        }));
+        setCharacter(prev => {
+          const updated = {
+            ...prev,
+            passions: { ...prev.passions, [selectedPassion]: Math.min(15, (prev.passions[selectedPassion] || 0) + 1) }
+          };
+          updated.campaign = markWinterStep(updated, 'training');
+          updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+          return updated;
+        });
         addLog(`[자유 단련]: 열망 [${selectedPassion}] +1 증가!`);
       } else if (selectedStanding) {
         if ((character.standings[selectedStanding] || 0) >= 15) {
           alert("사회적 명망은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
           return;
         }
-        setCharacter(prev => ({
-          ...prev,
-          standings: { ...prev.standings, [selectedStanding]: Math.min(15, (prev.standings[selectedStanding] || 0) + 1) }
-        }));
+        setCharacter(prev => {
+          const updated = {
+            ...prev,
+            standings: { ...prev.standings, [selectedStanding]: Math.min(15, (prev.standings[selectedStanding] || 0) + 1) }
+          };
+          updated.campaign = markWinterStep(updated, 'training');
+          updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+          return updated;
+        });
         addLog(`[자유 단련]: 명망 [${selectedStanding}] +1 증가!`);
       }
     }
     else if (trainingOption === 'optionB') {
       const keys = Object.values(selectedSkills).filter(k => k);
-      if (keys.length === 0) {
-        alert("단련할 기술을 최소 하나 이상 선택해 주세요!");
+      if (keys.length !== 4) {
+        alert("Option B는 정확히 4개의 기술을 선택해야 합니다.");
         return;
       }
 
@@ -550,16 +816,24 @@ export default function FamilyWinter({ character, setCharacter }) {
         keys.forEach(k => {
           skills[k] = (skills[k] || 0) + 1;
         });
-        return { ...prev, skills };
+        const updated = { ...prev, skills };
+        updated.campaign = markWinterStep(updated, 'training');
+        updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+        return updated;
       });
       addLog(`[자유 단련]: 4개 기술 훈련 (+1 상승, 한계 15) 적용 완료!`);
     }
     else if (trainingOption === 'optionC') {
       if (selectedHighSkill && (character.skills[selectedHighSkill] >= 15)) {
-        setCharacter(prev => ({
-          ...prev,
-          skills: { ...prev.skills, [selectedHighSkill]: Math.min(20, (prev.skills[selectedHighSkill] || 0) + 1) }
-        }));
+        setCharacter(prev => {
+          const updated = {
+            ...prev,
+            skills: { ...prev.skills, [selectedHighSkill]: Math.min(20, (prev.skills[selectedHighSkill] || 0) + 1) }
+          };
+          updated.campaign = markWinterStep(updated, 'training');
+          updated.campaign = markAppliedEvent(updated, eventId, '겨울 훈련');
+          return updated;
+        });
         addLog(`[자유 단련]: 상급 기술 [${selectedHighSkill}] +1 돌파 상승! (상한 20)`);
       } else {
         alert("선택한 기술의 수치가 15 미만입니다! 옵션 C는 수치 15 이상인 기술만 단련할 수 있습니다.");
@@ -575,7 +849,13 @@ export default function FamilyWinter({ character, setCharacter }) {
   // ══════════════════════════════════════════════════
   const computeGlory = () => {
     // 1. Manor: +6
-    let annual = 6;
+    const hasEstate = Boolean(
+      character.family?.hasEstate ||
+      character.family?.manors > 0 ||
+      character.personal?.home ||
+      String(character.gear?.homePossessions || '').includes('장원')
+    );
+    let annual = hasEstate ? 6 : 0;
 
     // 2. Chivalrous Active: +100
     const chivalrousTraitsTotal =
@@ -621,7 +901,15 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const applyGlory = () => {
-    if (gloryApplied) return;
+    const eventId = `winter:annual_glory:${currentYear}`;
+    if (gloryApplied || hasAppliedEvent(character, eventId)) {
+      alert("올해 영예 정산은 이미 반영되었습니다.");
+      return;
+    }
+    if (calculatedAnnualGlory === null) {
+      alert("먼저 연간 영예를 계산해 주세요.");
+      return;
+    }
 
     const previousTotal = character.gear.gloryTotal || 0;
     const addedGlory = calculatedAnnualGlory + (character.gear.gloryThisGame || 0);
@@ -632,19 +920,30 @@ export default function FamilyWinter({ character, setCharacter }) {
     const newThreshold = Math.floor(newTotal / 1000);
     const bonusEarned = Math.max(0, newThreshold - prevThreshold);
 
-    setCharacter(prev => ({
-      ...prev,
-      gear: {
-        ...prev.gear,
-        gloryTotal: newTotal,
-        gloryThisGame: 0
-      }
-    }));
+    setCharacter(prev => {
+      const updated = {
+        ...prev,
+        gear: {
+          ...prev.gear,
+          gloryTotal: newTotal,
+          gloryThisGame: 0
+        }
+      };
+      updated.campaign = markWinterStep(updated, 'annualGlory');
+      updated.campaign = markAppliedEvent(updated, eventId, `연간 영예 +${addedGlory}`);
+      updated.campaign.winter = {
+        ...updated.campaign.winter,
+        gloryBonusPoints: bonusEarned,
+        bonusSpent: 0
+      };
+      return updated;
+    });
 
     addLog(`[영예 정산]: 연간정산 +${calculatedAnnualGlory} Glory (장원 6점 + 활성 이상 보너스) 합산 완료. 누적 영예: ${newTotal}`);
     if (bonusEarned > 0) {
       addLog(`[축하합니다!]: 영예 1,000단위 돌파! 자유 능력치 +1 보너스 점수 [${bonusEarned}]점을 획득했습니다! (Step 10 위젯 사용)`);
       setGloryBonusPoints(bonusEarned);
+      setBonusSpent(0);
     }
     setGloryApplied(true);
   };
@@ -683,7 +982,7 @@ export default function FamilyWinter({ character, setCharacter }) {
         nextTraits[opp] = Math.max(0, (prev.traits[opp] || 0) - 1);
       }
 
-      return {
+      const updated = {
         ...prev,
         skills: nextSkills,
         attributes: nextAttributes,
@@ -691,6 +990,15 @@ export default function FamilyWinter({ character, setCharacter }) {
         standings: nextStandings,
         traits: nextTraits
       };
+      updated.campaign = {
+        ...(updated.campaign || {}),
+        winter: {
+          ...(updated.campaign?.winter || {}),
+          gloryBonusPoints,
+          bonusSpent: bonusSpent + 1
+        }
+      };
+      return updated;
     });
 
     addLog(`[영예 돌파 보너스 사용]: ${key} +1 영구 증가!`);
@@ -698,20 +1006,50 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const endWinterPhase = () => {
+    const requiredSteps = [
+      ['aging', '노화'],
+      ['harvest', '수확'],
+      ['survival', '종자/군마 생존'],
+      ['personalEvent', '개인 사건'],
+      ['familyEvent', '가문 사건'],
+      ['experience', '경험'],
+      ['training', '훈련'],
+      ['annualGlory', '연간 영예'],
+      ['maintenance', '생활 유지비']
+    ];
+    const winterSteps = character.campaign?.winter?.steps || {};
+    const unresolvedRequiredEvents = Object.entries(character.campaign?.winter?.unresolved || {})
+      .filter(([, event]) => event?.required !== false);
+    const maintenanceResolved = hasAppliedEvent(character, `economy:maintenance:${currentYear}`);
+    const unresolved = requiredSteps.filter(([key]) => {
+      if (key === 'maintenance' && maintenanceResolved) return false;
+      return !['resolved', 'skipped'].includes(winterSteps[key]);
+    });
+    let skippedNow = [];
+    if (unresolved.length > 0 || unresolvedRequiredEvents.length > 0) {
+      const names = [
+        ...unresolved.map(([, label]) => label),
+        ...unresolvedRequiredEvents.map(([key, event]) => event?.label || key)
+      ].join(', ');
+      const confirmSkip = window.confirm(`아직 해결되지 않은 겨울 단계가 있습니다: ${names}\n명시적으로 건너뛰고 겨울을 종료하시겠습니까?`);
+      if (!confirmSkip) return;
+      skippedNow = unresolved.map(([key]) => key);
+    }
+
     // Check if there are unspent Glory Bonus points
     if (gloryBonusPoints > 0 && bonusSpent < gloryBonusPoints) {
       const confirmEnd = window.confirm(`아직 사용하지 않은 돌파 보너스 점수가 [ ${gloryBonusPoints - bonusSpent} ]점 있습니다. 정산을 완료하면 이 보너스 점수는 사라집니다. 그래도 정산을 끝내시겠습니까?`);
       if (!confirmEnd) return;
     }
 
-    const currentYear = character.personal?.campaignYear || 768;
+    const endingYear = character.personal?.campaignYear || 768;
 
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
 
       // 1. Increment player's age and campaign year
       updated.personal.age = (prev.personal?.age || 0) + 1;
-      updated.personal.campaignYear = currentYear + 1;
+      updated.personal.campaignYear = endingYear + 1;
 
       // 2. Increment Squire's age and replace if age >= 21
       let squireStatusMsg = '';
@@ -738,23 +1076,61 @@ export default function FamilyWinter({ character, setCharacter }) {
       }
 
       // 3. Compile Winter Logs into Chronology Journal
-      const reverseLogs = [...logMessages].reverse();
+      const persistedLogs = Array.isArray(prev.campaign?.winter?.logs) ? prev.campaign.winter.logs : [];
+      const skipLogs = skippedNow.map(step => `[겨울 단계 스킵]: ${step} 단계가 사용자 확인으로 건너뛰어졌습니다.`);
+      const reverseLogs = [...persistedLogs, ...skipLogs];
       const logsCombined = [...reverseLogs.map(line => `• ${line}`)];
       if (squireStatusMsg) {
         logsCombined.push(squireStatusMsg);
       }
-      
-      const winterSummary = `[${currentYear}년 겨울 정산 일지]\n` + logsCombined.join('\n');
-      
-      if (!updated.journal) updated.journal = {};
-      const existingEntry = prev.journal?.[currentYear]?.text || '';
-      const combinedText = existingEntry
-        ? `${existingEntry}\n\n${winterSummary}`
-        : winterSummary;
-        
-      updated.journal[currentYear] = {
-        text: combinedText,
-        updatedAt: new Date().toISOString()
+
+      if (logsCombined.length > 0) {
+        const winterSummary = `[${endingYear}년 겨울 정산 일지]\n` + logsCombined.join('\n');
+
+        if (!updated.journal) updated.journal = {};
+        const existingEntry = prev.journal?.[endingYear]?.text || '';
+        const combinedText = existingEntry
+          ? `${existingEntry}\n\n${winterSummary}`
+          : winterSummary;
+
+        updated.journal[endingYear] = {
+          text: combinedText,
+          updatedAt: new Date().toISOString()
+        };
+      }
+
+      const nextSteps = {
+        aging: 'pending',
+        harvest: 'pending',
+        survival: 'pending',
+        personalEvent: 'pending',
+        familyEvent: 'pending',
+        experience: 'pending',
+        training: 'pending',
+        annualGlory: 'pending',
+        maintenance: 'pending'
+      };
+      skippedNow.forEach(step => {
+        if (!updated.campaign) updated.campaign = {};
+        if (!updated.campaign.winter) updated.campaign.winter = {};
+        updated.campaign.winter.steps = {
+          ...(updated.campaign.winter.steps || {}),
+          [step]: 'skipped'
+        };
+      });
+      updated.campaign = {
+        ...(updated.campaign || {}),
+        schemaVersion: 2,
+        appliedEvents: updated.campaign?.appliedEvents || {},
+        winter: {
+        year: endingYear + 1,
+          steps: nextSteps,
+          logs: [],
+          unresolved: {},
+          gloryBonusPoints: 0,
+          bonusSpent: 0,
+          skippedWithConfirmation: {}
+        }
       };
 
       return updated;
@@ -768,7 +1144,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);
     setWinterStep(1);
     setActiveSubTab('tree');
-    
+
     // reset states
     setAgingD20(null); setHarvestRoll(null); setSquireSurvivalRoll(null);
     setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
@@ -1205,14 +1581,16 @@ export default function FamilyWinter({ character, setCharacter }) {
                           <div><strong>대실패 (Fumble):</strong> {personalEventText.fumb}</div>
                         </div>
 
-                        {!personalEventApplied && (
-                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                            {['Critical', 'Success', 'Failure', 'Fumble'].map(o => (
-                              <button key={o} className="btn-medieval" style={{ fontSize: '0.8rem', padding: '4px 10px' }} onClick={() => applyPersonalEvent(o)}>
-                                {o} 결과 적용
-                              </button>
-                            ))}
+                        {personalEventNeedsManualResolution && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', color: 'var(--color-crimson)', fontSize: '0.82rem', fontWeight: 'bold' }}>
+                            <AlertTriangle size={14} /> manual resolution required: 자동 반영되지 않는 세부 효과는 기록 후 수동으로 적용하세요.
                           </div>
+                        )}
+
+                        {!personalEventApplied && (
+                          <button className="btn-medieval btn-medieval-primary" style={{ fontSize: '0.82rem', padding: '6px 12px' }} onClick={applyPersonalEvent}>
+                            <Dices size={14} /> 테스트 굴려 결과 자동 반영
+                          </button>
                         )}
                       </div>
                     )}
@@ -1404,6 +1782,11 @@ export default function FamilyWinter({ character, setCharacter }) {
                       {familyEventResult && (
                         <div style={{ border: '1px solid var(--color-gold-light)', padding: '8px', background: '#fff', fontSize: '0.85rem' }}>
                           <strong>가문사건 d20 [{familyEventRoll}]:</strong> {familyEventResult}
+                          {familyEventNeedsManualResolution && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', color: 'var(--color-crimson)', fontWeight: 'bold' }}>
+                              <AlertTriangle size={14} /> manual resolution required: 인물 사망, 납치, 실종 등 선택 대상이 필요한 효과는 수동으로 확정하세요.
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>

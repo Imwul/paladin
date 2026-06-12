@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProperNoun from './ProperNoun';
 import { X, Download, Upload, Settings, Lock } from 'lucide-react';
+import { validateCampaignImport } from '../utils/campaignState';
 import './SettingsModal.css';
 
 export default function SettingsModal({ isOpen, onClose, character, setCharacter, firebaseStatus }) {
@@ -35,8 +36,13 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
   // Save config
   const saveFirebaseConfig = () => {
     const config = { apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId };
+    const missing = ['apiKey', 'authDomain', 'projectId', 'appId'].filter(field => !config[field]?.trim() || config[field] === 'YOUR_API_KEY');
+    if (missing.length > 0) {
+      alert(`Firebase 설정을 저장할 수 없습니다. 필수 항목 누락: ${missing.join(', ')}`);
+      return;
+    }
     localStorage.setItem('paladin_firebase_config', JSON.stringify(config));
-    alert("파이어베이스 설정이 완료되었습니다! 컴패니언 연동을 위해 웹앱을 재부팅합니다.");
+    alert("파이어베이스 설정이 완료되었습니다. 기존 초기화된 연결을 버리고 새 설정으로 동작하기 위해 웹앱을 재시작합니다.");
     window.location.reload();
   };
 
@@ -72,12 +78,13 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
     fileReader.onload = (e) => {
       try {
         const parsedData = JSON.parse(e.target.result);
-        if (parsedData.personal && parsedData.attributes && parsedData.skills) {
+        const validation = validateCampaignImport(parsedData);
+        if (validation.ok) {
           setCharacter(parsedData);
           alert("성공! 파일 복원을 마쳤습니다. 기사의 영웅담을 시트에서 다시 이어가세요!");
           onClose();
         } else {
-          alert("파일 포맷이 어긋납니다. 올바른 Paladin 컴패니언 백업 JSON 파일인지 확인해 주세요.");
+          alert(`파일 포맷이 어긋납니다. 누락/손상된 섹션: ${validation.errors.join(', ')}`);
         }
       } catch (err) {
         alert("JSON 백업 파일 파싱에 실패했습니다.");

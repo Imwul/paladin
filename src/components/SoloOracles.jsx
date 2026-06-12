@@ -3,6 +3,7 @@ import ProperNoun from './ProperNoun';
 import { maleNames, femaleNames, surnames, locations, titles } from '../data/names';
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
+import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
 
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
@@ -897,29 +898,37 @@ export default function SoloOracles({ character, setCharacter }) {
   };
 
   const applyGloryToSheet = () => {
-    if (gloryActionApplied) return;
+    const eventId = `solo:glory:${character.personal?.campaignYear || 768}`;
+    if (gloryActionApplied || hasAppliedEvent(character, eventId)) {
+      alert("올해의 솔로 오라클 명예 보상은 이미 시트에 반영되었습니다.");
+      return;
+    }
     const addedGlory = getCalculatedGlory();
-    setCharacter(prev => ({
-      ...prev,
-      gear: {
-        ...prev.gear,
-        gloryTotal: (prev.gear?.gloryTotal || 1000) + addedGlory
-      }
-    }));
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + addedGlory;
+        return updated;
+      }, `솔로 오라클 명예 +${addedGlory}`);
+      return result.character;
+    });
     setGloryActionApplied(true);
     alert(`[명예 획득 반영]: +${addedGlory} Glory가 성기사의 시트 명예 총량에 성공적으로 반영되었습니다!`);
   };
 
   const applyMarriageGloryToSheet = () => {
-    if (marriageGloryActionApplied) return;
+    const eventId = `solo:marriage_glory:${character.personal?.campaignYear || 768}`;
+    if (marriageGloryActionApplied || hasAppliedEvent(character, eventId)) {
+      alert("올해의 결혼 명예 보상은 이미 시트에 반영되었습니다.");
+      return;
+    }
     const addedGlory = getCalculatedMarriageGlory();
-    setCharacter(prev => ({
-      ...prev,
-      gear: {
-        ...prev.gear,
-        gloryTotal: (prev.gear?.gloryTotal || 1000) + addedGlory
-      }
-    }));
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + addedGlory;
+        return updated;
+      }, `결혼 명예 +${addedGlory}`);
+      return result.character;
+    });
     setMarriageGloryActionApplied(true);
     alert(`[결혼 명예 반영]: +${addedGlory} Glory가 성공적으로 기사 시트에 반영되었습니다!`);
   };
@@ -1591,16 +1600,20 @@ export default function SoloOracles({ character, setCharacter }) {
   };
 
   const applyBattleToSheet = () => {
-    if (battleApplied) return;
+    const eventId = `solo:battle_settlement:${character.personal?.campaignYear || 768}`;
+    if (battleApplied || hasAppliedEvent(character, eventId)) {
+      alert("올해의 전투 정산은 이미 시트에 반영되었습니다.");
+      return;
+    }
 
-    setCharacter(prev => ({
-      ...prev,
-      gear: {
-        ...prev.gear,
-        gloryTotal: (prev.gear?.gloryTotal || 1000) + battleGloryTotal,
-        cash: Math.max(0, (prev.gear?.cash || 0) + battleLootTotal)
-      }
-    }));
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + battleGloryTotal;
+        updated.gear.cash = Math.max(0, (updated.gear?.cash || 0) + battleLootTotal);
+        return updated;
+      }, `전투 정산: Glory +${battleGloryTotal}, £${battleLootTotal}`);
+      return result.character;
+    });
 
     setBattleApplied(true);
     alert(`[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`);
@@ -1926,25 +1939,22 @@ export default function SoloOracles({ character, setCharacter }) {
   };
 
   const applyMagicToSheet = () => {
-    if (magicApplied) return;
+    const eventId = `solo:magic_settlement:${character.personal?.campaignYear || 768}`;
+    if (magicApplied || hasAppliedEvent(character, eventId)) {
+      alert("올해의 신앙과 기적 정산은 이미 시트에 반영되었습니다.");
+      return;
+    }
 
     setCharacter(prev => {
-      const updatedGear = {
-        ...prev.gear,
-        gloryTotal: (prev.gear?.gloryTotal || 1000) + magicGloryTotal
-      };
-      
-      const updatedPassions = { ...prev.passions };
-      if (courtshipResult?.amorIncrease) {
-        const currentAmor = prev.passions?.amor || 0;
-        updatedPassions.amor = Math.min(20, currentAmor + courtshipResult.amorIncrease);
-      }
-
-      return {
-        ...prev,
-        gear: updatedGear,
-        passions: updatedPassions
-      };
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + magicGloryTotal;
+        if (courtshipResult?.amorIncrease) {
+          const currentAmor = updated.passions?.amor || 0;
+          updated.passions.amor = Math.min(20, currentAmor + courtshipResult.amorIncrease);
+        }
+        return updated;
+      }, `신앙과 기적 정산: Glory +${magicGloryTotal}`);
+      return result.character;
     });
 
     setMagicApplied(true);
@@ -1970,6 +1980,11 @@ export default function SoloOracles({ character, setCharacter }) {
   // 7. WEALTH & TREASURE (CHAPTER 12) LOGIC
   // ==========================================
   const payMaintenance = () => {
+    const eventId = `economy:maintenance:${character.personal?.campaignYear || 768}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해의 생활 수준 유지비는 이미 지불되었습니다.");
+      return;
+    }
     const costMap = { rich: 12, ordinary: 6, poor: 3, miserly: 1.5 };
     const cost = costMap[selectedLivingStandard];
     const currentCash = character?.gear?.cash || 0;
@@ -1979,13 +1994,18 @@ export default function SoloOracles({ character, setCharacter }) {
       return;
     }
 
-    setCharacter(prev => ({
-      ...prev,
-      gear: {
-        ...prev.gear,
-        cash: Math.max(0, (prev.gear?.cash || 0) - cost)
-      }
-    }));
+    setCharacter(prev => {
+      const updated = {
+        ...prev,
+        gear: {
+          ...prev.gear,
+          cash: Math.max(0, (prev.gear?.cash || 0) - cost)
+        }
+      };
+      updated.campaign = markWinterStep(updated, 'maintenance');
+      updated.campaign = markAppliedEvent(updated, eventId, `생활 수준 유지비 £${cost}`);
+      return updated;
+    });
 
     const logs = [
       {
@@ -2061,6 +2081,11 @@ export default function SoloOracles({ character, setCharacter }) {
   };
 
   const rollAppraiseLoot = () => {
+    const eventId = `economy:treasure_appraisal:${character.personal?.campaignYear || 768}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert("올해의 전리품 감정 현금 보상은 이미 정산되었습니다.");
+      return;
+    }
     if (isAppraising) return;
     setIsAppraising(true);
     setAppraisedTreasure(null);
@@ -2102,13 +2127,13 @@ export default function SoloOracles({ character, setCharacter }) {
         desc = '전설적인 성 성골함의 모조 장식 테두리 조각 또는 황금 세공 뚜껑입니다! 룰북 p.209에 해당하는 최고의 위엄찬 보화로 주군에게 명예를 사거나 £12의 엄청난 소지금으로 즉시 정산할 수 있습니다!';
       }
 
-      setCharacter(prev => ({
-        ...prev,
-        gear: {
-          ...prev.gear,
-          cash: (prev.gear?.cash || 0) + value
-        }
-      }));
+      setCharacter(prev => {
+        const result = applyOnce(prev, eventId, updated => {
+          updated.gear.cash = (updated.gear?.cash || 0) + value;
+          return updated;
+        }, `전리품 감정 £${value}`);
+        return result.character;
+      });
 
       setAppraisedTreasure({ roll, name, value, desc });
       setIsAppraising(false);

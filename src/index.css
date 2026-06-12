@@ -782,7 +782,7 @@ body {
   box-shadow: 
     0 1px 3px rgba(139, 105, 20, 0.05),
     inset 0 1px 0 rgba(255,255,255,0.5);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .cs-section-inner {
@@ -1665,12 +1665,24 @@ input[type="number"] {
 
 .ft-canvas {
   min-width: 100%;
-  width: max-content;
+  width: max(100%, max-content);
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 20px 300px;
+  padding: 20px clamp(20px, 10vw, 160px);
   box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .ft-canvas-wrapper {
+    padding: 8px;
+  }
+
+  .ft-canvas {
+    width: 100%;
+    min-width: max-content;
+    padding: 16px 20px;
+  }
 }
 
 .ft-svg-layer {
@@ -2737,5 +2749,4 @@ input[type="number"] {
     padding: 6px 8px;
   }
 }
-
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check } from 'lucide-react';
+import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
 
 export const patronSaints = [
   { name: "성 암브로시오 (St. Ambrose)", patronage: "필기사", benefit: "+5 웅변 (Eloquence)", apply: (char) => { char.skills.eloquence = (char.skills.eloquence || 0) + 5; } },
@@ -398,7 +399,7 @@ const parseName = (fullName) => {
   const match = fullName.match(regex);
   let koPart = fullName;
   let enPart = '';
-  
+
   if (match) {
     koPart = match[1].trim();
     enPart = match[2] ? match[2].trim() : '';
@@ -417,7 +418,7 @@ const getTitleByNameAndClass = (koName, enName, statusClass) => {
   const cleanEn = enName ? enName.replace(/^(Sir|Baron|Count|Earl|Duke|Lord|Lady)\s+/i, '').trim() : '';
 
   const cls = (statusClass || '').toLowerCase();
-  
+
   let koTitle = '';
   let enPrefix = '';
 
@@ -456,7 +457,7 @@ const revertSaint = (char, saintName) => {
   if (!saintName) return;
   const oldSaint = patronSaints.find(s => s.name === saintName || saintName.includes(s.name.split(' (')[0]));
   if (!oldSaint) return;
-  
+
   if (oldSaint.name.includes("암브로시오") || oldSaint.name.includes("Ambrose")) {
     char.skills.eloquence = Math.max(0, (char.skills.eloquence || 0) - 5);
   } else if (oldSaint.name.includes("아나스타시아") || oldSaint.name.includes("Anastasia")) {
@@ -549,7 +550,7 @@ const revertCharacteristic = (char, charName) => {
   }
 };
 
-export default function CharacterSheet({ character, setCharacter }) {
+export default function CharacterSheet({ character, setCharacter, initialCharacterState }) {
   const [isGenOpen, setIsGenOpen] = useState(false);
   const [genActiveTab, setGenActiveTab] = useState('preset'); // 'preset' or 'custom'
   const [selectedPreset, setSelectedPreset] = useState(0);
@@ -581,21 +582,26 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   const applySheetSaint = (saint, rollVal = null) => {
     if (!saint) return;
+    if (hasAppliedEvent(character, 'character_creation:patron_saint')) {
+      alert("수호 성인 보너스는 이미 이 캠페인에 반영되었습니다.");
+      return;
+    }
     setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
-      
-      // Revert old saint
-      if (updated.family?.patronSaint) {
-        revertSaint(updated, updated.family.patronSaint);
-      }
-      
-      // Apply new saint
-      if (typeof saint.apply === 'function') {
-        saint.apply(updated);
-      }
-      updated.family = updated.family || {};
-      updated.family.patronSaint = saint.name;
-      return updated;
+      const result = applyOnce(prev, 'character_creation:patron_saint', updated => {
+        if (updated.family?.patronSaintApplied && updated.family?.patronSaint) {
+          revertSaint(updated, updated.family.patronSaint);
+        }
+        if (typeof saint.apply === 'function') {
+          saint.apply(updated);
+        }
+        updated.family = updated.family || {};
+        updated.family.patronSaint = saint.name;
+        updated.family.patronSaintRoll = rollVal || patronSaints.indexOf(saint) + 1;
+        updated.family.patronSaintBenefit = saint.benefit;
+        updated.family.patronSaintApplied = true;
+        return updated;
+      }, `수호 성인: ${saint.name}`);
+      return result.character;
     });
     setSheetSaintResult({
       roll: rollVal || patronSaints.indexOf(saint) + 1,
@@ -605,26 +611,29 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   const applySheetChar = (characteristic, rollVal = null) => {
     if (!characteristic) return;
+    if (hasAppliedEvent(character, 'character_creation:family_characteristic')) {
+      alert("가문 특성 보너스는 이미 이 캠페인에 반영되었습니다.");
+      return;
+    }
     setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
-      
-      // Revert old characteristic
-      if (updated.family?.characteristic?.name) {
-        revertCharacteristic(updated, updated.family.characteristic.name);
-      }
-      
-      // Apply new characteristic
-      if (typeof characteristic.apply === 'function') {
-        characteristic.apply(updated);
-      }
-      updated.family = updated.family || {};
-      updated.family.characteristic = {
-        name: characteristic.name,
-        desc: characteristic.name,
-        bonusText: characteristic.benefit,
-        applied: true
-      };
-      return updated;
+      const result = applyOnce(prev, 'character_creation:family_characteristic', updated => {
+        if (updated.family?.characteristic?.name && updated.family?.characteristic?.applied) {
+          revertCharacteristic(updated, updated.family.characteristic.name);
+        }
+        if (typeof characteristic.apply === 'function') {
+          characteristic.apply(updated);
+        }
+        updated.family = updated.family || {};
+        updated.family.characteristic = {
+          name: characteristic.name,
+          desc: characteristic.name,
+          bonusText: characteristic.benefit,
+          applied: true,
+          appliedBonus: null
+        };
+        return updated;
+      }, `가문 특성: ${characteristic.name}`);
+      return result.character;
     });
     setSheetCharResult({
       roll: rollVal || familyCharacteristics.indexOf(characteristic) + 1,
@@ -695,7 +704,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     const r1 = Math.floor(Math.random() * 6) + 1;
     const r2 = Math.floor(Math.random() * 6) + 1;
     const val = r1 + r2 + 3;
-    
+
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
       updated.family = updated.family || {};
@@ -724,7 +733,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     else if (r >= 4 && r <= 8) className = "봉신 기사 (Vassal Knight)";
     else if (r >= 9 && r <= 15) className = "독신 기사 (Bachelor Knight)";
     else className = "용병 기사 (Mercenary Knight)";
-    
+
     handleInputChange('personal', 'fathersClass', className);
     setKnightFatherClassRollResult({ roll: r, name: className });
   };
@@ -770,47 +779,63 @@ export default function CharacterSheet({ character, setCharacter }) {
   };
 
   const rollKnightLeap = () => {
+    if (hasAppliedEvent(character, 'character_creation:knight_leap_glory')) {
+      alert("기사 도약 영광은 이미 이 캠페인에 반영되었습니다.");
+      return;
+    }
     const r = Math.floor(Math.random() * 20) + 1;
     const dex = character?.attributes?.dex || 10;
     const success = r <= dex;
     setKnightLeapRollResult({ roll: r, dex, success });
     if (success) {
-      handleInputChange('gear', 'gloryTotal', (character?.gear?.gloryTotal || 0) + 10);
+      setCharacter(prev => {
+        const result = applyOnce(prev, 'character_creation:knight_leap_glory', updated => {
+          updated.gear.gloryTotal = (updated.gear.gloryTotal || 0) + 10;
+          return updated;
+        }, '기사 도약 영광 +10');
+        return result.character;
+      });
     }
   };
 
   const rollKnightCulturalModifiers = () => {
+    if (hasAppliedEvent(character, 'character_creation:frankish_cultural_modifiers')) {
+      alert("프랑크 문화 보정은 이미 이 캠페인에 반영되었습니다.");
+      return;
+    }
     const r1 = Math.floor(Math.random() * 3) + 1; // +1d3 Energetic
     const r2 = Math.floor(Math.random() * 3) + 1; // +1d3 Generous
     const r3 = Math.floor(Math.random() * 3) + 1; // +1d3 Valorous
-    
+
     setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
-      updated.traits.energetic = Math.min(20, (updated.traits.energetic || 10) + r1);
-      updated.traits.lazy = 20 - updated.traits.energetic;
-      
-      updated.traits.generous = Math.min(20, (updated.traits.generous || 10) + r2);
-      updated.traits.selfish = 20 - updated.traits.generous;
-      
-      updated.traits.valorous = Math.min(20, (updated.traits.valorous || 10) + r3);
-      updated.traits.cowardly = 20 - updated.traits.valorous;
-      
-      updated.passions.honor = (updated.passions.honor || 16) + 1;
-      updated.passions.loveGod = (updated.passions.loveGod || 15) + 1;
-      
-      const rels = ['chaste', 'forgiving', 'merciful', 'modest', 'temperate', 'trusting'];
-      rels.forEach(trait => {
-        updated.traits[trait] = Math.min(20, (updated.traits[trait] || 10) + 1);
-        const opposed = {
-          chaste: 'lustful', forgiving: 'vengeful', merciful: 'cruel',
-          modest: 'proud', temperate: 'indulgent', trusting: 'suspicious'
-        }[trait];
-        updated.traits[opposed] = 20 - updated.traits[trait];
-      });
-      
-      return updated;
+      const result = applyOnce(prev, 'character_creation:frankish_cultural_modifiers', updated => {
+        updated.traits.energetic = Math.min(20, (updated.traits.energetic || 10) + r1);
+        updated.traits.lazy = 20 - updated.traits.energetic;
+
+        updated.traits.generous = Math.min(20, (updated.traits.generous || 10) + r2);
+        updated.traits.selfish = 20 - updated.traits.generous;
+
+        updated.traits.valorous = Math.min(20, (updated.traits.valorous || 10) + r3);
+        updated.traits.cowardly = 20 - updated.traits.valorous;
+
+        updated.passions.honor = (updated.passions.honor || 16) + 1;
+        updated.passions.loveGod = (updated.passions.loveGod || 15) + 1;
+
+        const rels = ['chaste', 'forgiving', 'merciful', 'modest', 'temperate', 'trusting'];
+        rels.forEach(trait => {
+          updated.traits[trait] = Math.min(20, (updated.traits[trait] || 10) + 1);
+          const opposed = {
+            chaste: 'lustful', forgiving: 'vengeful', merciful: 'cruel',
+            modest: 'proud', temperate: 'indulgent', trusting: 'suspicious'
+          }[trait];
+          updated.traits[opposed] = 20 - updated.traits[trait];
+        });
+
+        return updated;
+      }, '프랑크 문화 보정');
+      return result.character;
     });
-    
+
     setKnightCulturalRollResult({ energetic: r1, generous: r2, valorous: r3 });
   };
 
@@ -819,23 +844,23 @@ export default function CharacterSheet({ character, setCharacter }) {
     const r2 = Math.floor(Math.random() * 3) + 1;
     const r3 = Math.floor(Math.random() * 3) + 1;
     const r4 = Math.floor(Math.random() * 3) + 1;
-    
+
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
       updated.skills.hunting = (updated.skills.hunting || 0) + r1;
-      
+
       updated.traits.temperate = Math.min(20, (updated.traits.temperate || 10) + r2);
       updated.traits.indulgent = 20 - updated.traits.temperate;
-      
+
       updated.traits.modest = Math.min(20, (updated.traits.modest || 10) + r3);
       updated.traits.proud = 20 - updated.traits.modest;
-      
+
       updated.traits.suspicious = Math.min(20, (updated.traits.suspicious || 10) + r4);
       updated.traits.trusting = 20 - updated.traits.suspicious;
-      
+
       return updated;
     });
-    
+
     setKnightHomelandRollResult({ hunting: r1, temperate: r2, modest: r3, suspicious: r4 });
   };
 
@@ -843,7 +868,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     const catRoll = Math.floor(Math.random() * 6) + 1;
     let desc = '';
     let feature = '';
-    
+
     if (catRoll === 1) {
       desc = "헤어스타일 (Hair)";
       const items = ["아주 긴 머리", "곱슬머리", "적발", "스포츠머리", "금발", "털이 아주 많음", "새치 머리", "윤기 나는 머리", "대머리"];
@@ -869,7 +894,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       const items = ["빛나는 눈동자", "자존심 강한 표정", "비웃는 표정", "오만함", "싱그러운 미소", "털수염에 가려진 미소", "고른 하얀 이목구비", "시무룩함", "매사 쾌활함", "찌푸린 미간", "꿰뚫어보는 듯한 사나운 눈빛"];
       feature = items[Math.floor(Math.random() * items.length)];
     }
-    
+
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
       updated.personal = updated.personal || {};
@@ -877,7 +902,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       updated.personal.features.push(`${desc}: ${feature}`);
       return updated;
     });
-    
+
     setKnightFeatureRollResult({ catRoll, desc, feature });
   };
 
@@ -888,7 +913,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     let armorText = '';
     let clothingText = '';
     let weaponsText = '';
-    
+
     if (roll === 1) {
       armorText = "Cuirbouilli/Chainmail; 1 shield";
       clothingText = "90d 상당의 기본 의상";
@@ -960,7 +985,7 @@ export default function CharacterSheet({ character, setCharacter }) {
       updated.skills = updated.skills || {};
       updated.traits = updated.traits || {};
       updated.horses = updated.horses || {};
-      
+
       const gift = birthGiftsTable.find(g => g.roll === gearBirthGiftRollResult.roll);
       if (gift && gift.apply) {
         gift.apply(updated);
@@ -1038,7 +1063,7 @@ export default function CharacterSheet({ character, setCharacter }) {
     setCustomApp(roll2d6plus3());
     setCustomSiz(roll2d6plus3());
     setCustomCon(roll2d6plus3());
-    
+
     const saintRoll = rollD20();
     const charRoll = rollD20();
     const fatherRoll = rollD20();
@@ -1059,7 +1084,7 @@ export default function CharacterSheet({ character, setCharacter }) {
 
   const handleApplyPreset = () => {
     const preset = presets[selectedPreset];
-    
+
     // Mapping of family characteristics corresponding to each preset knight
     const presetCharacteristics = [
       {
@@ -1088,36 +1113,57 @@ export default function CharacterSheet({ character, setCharacter }) {
       }
     ];
 
-    setCharacter(prev => {
+    setCharacter(() => {
+      const base = deepClone(initialCharacterState || character);
+      base.campaign = {
+        ...base.campaign,
+        schemaVersion: 2,
+        appliedEvents: {
+          'character_creation:preset': {
+            appliedAt: new Date().toISOString(),
+            year: preset.stats.personal?.campaignYear || 768,
+            label: `프리셋 생성: ${preset.name}`
+          },
+          'character_creation:family_characteristic': {
+            appliedAt: new Date().toISOString(),
+            year: preset.stats.personal?.campaignYear || 768,
+            label: '프리셋 가문 특성'
+          }
+        },
+        winter: {
+          ...base.campaign?.winter,
+          year: preset.stats.personal?.campaignYear || 768
+        }
+      };
       return {
-        ...prev,
+        ...base,
         personal: {
-          ...prev.personal,
+          ...base.personal,
           ...preset.stats.personal,
           campaignYear: 768
         },
         attributes: {
-          ...prev.attributes,
+          ...base.attributes,
           ...preset.stats.attributes
         },
         traits: {
-          ...prev.traits,
+          ...base.traits,
           ...preset.stats.traits
         },
         skills: {
-          ...prev.skills,
+          ...base.skills,
           ...preset.stats.skills
         },
         passions: {
-          ...prev.passions,
+          ...base.passions,
           ...preset.stats.passions
         },
         standings: {
-          ...prev.standings,
+          ...base.standings,
           ...preset.stats.standings
         },
         family: {
-          ...prev.family,
+          ...base.family,
           characteristic: presetCharacteristics[selectedPreset] || null
         }
       };
@@ -1127,9 +1173,9 @@ export default function CharacterSheet({ character, setCharacter }) {
   };
 
   const handleApplyCustom = () => {
-    const newChar = JSON.parse(JSON.stringify(character || {}));
+    const newChar = deepClone(initialCharacterState || character || {});
     const finalCustomName = getTitleByNameAndClass(customNameKo, customNameEn, "종자 (Squire)");
-    
+
     newChar.personal = {
       ...newChar.personal,
       name: finalCustomName,
@@ -1241,19 +1287,6 @@ export default function CharacterSheet({ character, setCharacter }) {
     };
 
     const father = fathersClasses[customFatherIndex];
-    // 룰북: Father's Class의 skill points는 원래 플레이어 자유 분배이나, 편의상 검/마창에 자동 분배.
-    if (father.skillsAdd) {
-      newChar.skills.sword += Math.floor(father.skillsAdd / 2);
-      newChar.skills.lance += Math.ceil(father.skillsAdd / 2);
-    }
-    if (father.bonusWeapon) {
-      newChar.skills.sword += father.bonusWeapon;
-      // 룰북: "Sword +3, any other melee weapon +3" — 두 번째 무기는 플레이어 선택.
-      // 기본값으로 도끼(Axe)에 배정. 원하는 근접무기로 수동 조정 가능.
-      newChar.skills.axe = (newChar.skills.axe || 0) + father.bonusWeapon;
-      newChar.traits.merciful = Math.max(0, newChar.traits.merciful - 3);
-      newChar.traits.cruel = 20 - newChar.traits.merciful;
-    }
     newChar.personal.fathersClass = father.name;
     newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
     newChar.gear.gloryTotal = 1000 + father.glory;
@@ -1284,6 +1317,53 @@ export default function CharacterSheet({ character, setCharacter }) {
     }
 
     newChar.attributes.currentHp = newChar.attributes.siz + newChar.attributes.con;
+    newChar.campaign = {
+      schemaVersion: 2,
+      appliedEvents: {
+        'character_creation:custom': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `커스텀 생성: ${finalCustomName}`
+        },
+        'character_creation:patron_saint': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `수호 성인: ${saint.name}`
+        },
+        'character_creation:family_characteristic': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `가문 특성: ${characteristic.name}`
+        },
+        ...appliedGifts.reduce((acc, gift, index) => {
+          acc[`character_creation:birth_gift:${index + 1}`] = {
+            appliedAt: new Date().toISOString(),
+            year: 768,
+            label: `탄생 선물: ${gift}`
+          };
+          return acc;
+        }, {})
+      },
+      winter: {
+        year: 768,
+        steps: {
+          aging: 'pending',
+          harvest: 'pending',
+          survival: 'pending',
+          personalEvent: 'pending',
+          familyEvent: 'pending',
+          experience: 'pending',
+          training: 'pending',
+          annualGlory: 'pending',
+          maintenance: 'pending'
+        },
+        logs: [],
+        unresolved: {},
+        gloryBonusPoints: 0,
+        bonusSpent: 0,
+        skippedWithConfirmation: {}
+      }
+    };
 
     setCharacter(newChar);
     setIsGenOpen(false);
@@ -1420,9 +1500,9 @@ export default function CharacterSheet({ character, setCharacter }) {
 
       {/* 🔮 룰북 기반 캐릭터 생성 도우미 배너 및 패널 */}
       <div className="cs-gen-trigger-bar" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-        <button 
-          type="button" 
-          className="btn-medieval btn-medieval-primary" 
+        <button
+          type="button"
+          className="btn-medieval btn-medieval-primary"
           style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontSize: '0.88rem' }}
           onClick={() => setIsGenOpen(!isGenOpen)}
         >
@@ -1444,15 +1524,15 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
 
           <div className="cs-gen-tabs">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`cs-gen-tab-btn ${genActiveTab === 'preset' ? 'active' : ''}`}
               onClick={() => setGenActiveTab('preset')}
             >
               👑 기사 프리셋 빠른 시작
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`cs-gen-tab-btn ${genActiveTab === 'custom' ? 'active' : ''}`}
               onClick={() => setGenActiveTab('custom')}
             >
@@ -1464,8 +1544,8 @@ export default function CharacterSheet({ character, setCharacter }) {
             <div>
               <div className="cs-presets-grid">
                 {presets.map((p, idx) => (
-                  <div 
-                    key={p.name} 
+                  <div
+                    key={p.name}
                     className={`cs-preset-card ${selectedPreset === idx ? 'selected' : ''}`}
                     onClick={() => setSelectedPreset(idx)}
                   >
@@ -1504,20 +1584,20 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div className="ft-form-group">
                       <label className="ft-label">기사 한국어 이름:</label>
-                      <input 
-                        type="text" 
-                        className="ft-input" 
-                        value={customNameKo} 
+                      <input
+                        type="text"
+                        className="ft-input"
+                        value={customNameKo}
                         onChange={e => setCustomNameKo(e.target.value)}
                         placeholder="예: 지벤"
                       />
                     </div>
                     <div className="ft-form-group">
                       <label className="ft-label">기사 영어 이름 (선택):</label>
-                      <input 
-                        type="text" 
-                        className="ft-input" 
-                        value={customNameEn} 
+                      <input
+                        type="text"
+                        className="ft-input"
+                        value={customNameEn}
                         onChange={e => setCustomNameEn(e.target.value)}
                         placeholder="예: Ghiben"
                       />
@@ -1531,15 +1611,15 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <div className="ft-form-group">
                     <label className="ft-label">가문 수호 성인 (Table 1-3 d20 굴림 입력):</label>
                     <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
-                      <input 
-                        type="number" 
-                        className="ft-input" 
+                      <input
+                        type="number"
+                        className="ft-input"
                         min="1" max="20"
                         value={customSaintRoll}
                         onChange={e => handleSaintRollChange(Number(e.target.value))}
                         style={{ textAlign: 'center', fontWeight: 'bold' }}
                       />
-                      <select 
+                      <select
                         className="cs-roll-select"
                         value={customSaintIndex}
                         onChange={e => {
@@ -1558,15 +1638,15 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <div className="ft-form-group">
                     <label className="ft-label">가문 특성 (Table 1-1 d20 굴림 입력):</label>
                     <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
-                      <input 
-                        type="number" 
-                        className="ft-input" 
+                      <input
+                        type="number"
+                        className="ft-input"
                         min="1" max="20"
                         value={customCharRoll}
                         onChange={e => handleCharRollChange(Number(e.target.value))}
                         style={{ textAlign: 'center', fontWeight: 'bold' }}
                       />
-                      <select 
+                      <select
                         className="cs-roll-select"
                         value={customCharIndex}
                         onChange={e => {
@@ -1586,15 +1666,15 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <div className="ft-form-group">
                     <label className="ft-label">부친의 신분 (Table 1-4 d20 굴림 입력):</label>
                     <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
-                      <input 
-                        type="number" 
-                        className="ft-input" 
+                      <input
+                        type="number"
+                        className="ft-input"
                         min="1" max="20"
                         value={customFatherRoll}
                         onChange={e => handleFatherRollChange(Number(e.target.value))}
                         style={{ textAlign: 'center', fontWeight: 'bold' }}
                       />
-                      <select 
+                      <select
                         className="cs-roll-select"
                         value={customFatherIndex}
                         onChange={e => {
@@ -1613,10 +1693,10 @@ export default function CharacterSheet({ character, setCharacter }) {
 
                   <div className="ft-form-group">
                     <label className="ft-label">시작 축복 이름:</label>
-                    <input 
-                      type="text" 
-                      className="ft-input" 
-                      value={customBlessing} 
+                    <input
+                      type="text"
+                      className="ft-input"
+                      value={customBlessing}
                       onChange={e => setCustomBlessing(e.target.value)}
                     />
                   </div>
@@ -1629,18 +1709,18 @@ export default function CharacterSheet({ character, setCharacter }) {
                     <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', display: 'block', marginBottom: '8px' }}>
                       룰북 40쪽 Table 1-15에 따라 조상 소지품 또는 유산을 획득합니다.
                     </span>
-                    
+
                     {getBirthGiftRollCount(customFatherIndex) >= 1 && (
                       <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
-                        <input 
-                          type="number" 
-                          className="ft-input" 
+                        <input
+                          type="number"
+                          className="ft-input"
                           min="1" max="20"
                           value={customBirthGiftRoll1}
                           onChange={e => setCustomBirthGiftRoll1(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
                           style={{ textAlign: 'center', fontWeight: 'bold' }}
                         />
-                        <select 
+                        <select
                           className="cs-roll-select"
                           value={customBirthGiftRoll1}
                           onChange={e => setCustomBirthGiftRoll1(Number(e.target.value))}
@@ -1654,15 +1734,15 @@ export default function CharacterSheet({ character, setCharacter }) {
 
                     {getBirthGiftRollCount(customFatherIndex) >= 2 && (
                       <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
-                        <input 
-                          type="number" 
-                          className="ft-input" 
+                        <input
+                          type="number"
+                          className="ft-input"
                           min="1" max="20"
                           value={customBirthGiftRoll2}
                           onChange={e => setCustomBirthGiftRoll2(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
                           style={{ textAlign: 'center', fontWeight: 'bold' }}
                         />
-                        <select 
+                        <select
                           className="cs-roll-select"
                           value={customBirthGiftRoll2}
                           onChange={e => setCustomBirthGiftRoll2(Number(e.target.value))}
@@ -1676,15 +1756,15 @@ export default function CharacterSheet({ character, setCharacter }) {
 
                     {getBirthGiftRollCount(customFatherIndex) >= 3 && (
                       <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
-                        <input 
-                          type="number" 
-                          className="ft-input" 
+                        <input
+                          type="number"
+                          className="ft-input"
                           min="1" max="20"
                           value={customBirthGiftRoll3}
                           onChange={e => setCustomBirthGiftRoll3(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
                           style={{ textAlign: 'center', fontWeight: 'bold' }}
                         />
-                        <select 
+                        <select
                           className="cs-roll-select"
                           value={customBirthGiftRoll3}
                           onChange={e => setCustomBirthGiftRoll3(Number(e.target.value))}
@@ -1769,27 +1849,27 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <React.Fragment key={f.key}>
                     <div className="cs-field">
                       <span className="cs-field-label">한국어 이름:</span>
-                      <input 
-                        type="text" 
-                        value={ko} 
+                      <input
+                        type="text"
+                        value={ko}
                         onChange={e => {
                           const newKo = e.target.value;
                           const newName = getTitleByNameAndClass(newKo, en, character?.personal?.personalClass);
                           handleInputChange('personal', 'name', newName);
-                        }} 
+                        }}
                         placeholder="예: 롤랑"
                       />
                     </div>
                     <div className="cs-field">
                       <span className="cs-field-label">영어 이름 (선택):</span>
-                      <input 
-                        type="text" 
-                        value={en} 
+                      <input
+                        type="text"
+                        value={en}
                         onChange={e => {
                           const newEn = e.target.value;
                           const newName = getTitleByNameAndClass(ko, newEn, character?.personal?.personalClass);
                           handleInputChange('personal', 'name', newName);
-                        }} 
+                        }}
                         placeholder="예: Roland"
                       />
                     </div>
@@ -1809,14 +1889,14 @@ export default function CharacterSheet({ character, setCharacter }) {
                     onChange={e => {
                       const val = e.target.value;
                       handleInputChange('personal', f.key, f.type === 'number' ? (parseInt(val) || 0) : val);
-                      
+
                       // If editing current status (personalClass), recalculate name titles!
                       if (f.key === 'personalClass') {
                         const { ko, en } = parseName(character?.personal?.name);
                         const newName = getTitleByNameAndClass(ko, en, val);
                         handleInputChange('personal', 'name', newName);
                       }
-                    }} 
+                    }}
                   />
                 </div>
               );
@@ -1838,7 +1918,7 @@ export default function CharacterSheet({ character, setCharacter }) {
         <div className="sheet-ribbon"><h3>출생, 교육 및 축복 (Birth, Education & Blessing)</h3></div>
         <div className="cs-section-inner">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
-            
+
             {/* Father's Class */}
             <div style={{ backgroundColor: 'rgba(201,168,76,0.03)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(201,168,76,0.18)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
@@ -1848,17 +1928,17 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <select 
-                  value={character?.personal?.fathersClass || ''} 
+                <select
+                  value={character?.personal?.fathersClass || ''}
                   onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
                 >
                   <option value="">-- 신분 선택 --</option>
                   {fathersClasses.map(fc => <option key={fc.name} value={fc.name}>{fc.name}</option>)}
                 </select>
-                <input 
-                  type="text" 
-                  value={character?.personal?.fathersClass || ''} 
+                <input
+                  type="text"
+                  value={character?.personal?.fathersClass || ''}
                   onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)}
                   placeholder="또는 직접 입력"
                   style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -1880,8 +1960,8 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <select 
-                  value={character?.personal?.fathersSurvival || ''} 
+                <select
+                  value={character?.personal?.fathersSurvival || ''}
                   onChange={e => handleInputChange('personal', 'fathersSurvival', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
                 >
@@ -1891,9 +1971,9 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <option value="부친 병상 (Father bedridden)">부친 병상 (Father bedridden)</option>
                   <option value="부친 실종 (Father missing)">부친 실종 (Father missing)</option>
                 </select>
-                <input 
-                  type="text" 
-                  value={character?.personal?.fathersSurvival || ''} 
+                <input
+                  type="text"
+                  value={character?.personal?.fathersSurvival || ''}
                   onChange={e => handleInputChange('personal', 'fathersSurvival', e.target.value)}
                   placeholder="또는 직접 입력"
                   style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -1915,8 +1995,8 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <select 
-                  value={character?.personal?.sonNumber || ''} 
+                <select
+                  value={character?.personal?.sonNumber || ''}
                   onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
                 >
@@ -1926,9 +2006,9 @@ export default function CharacterSheet({ character, setCharacter }) {
                   <option value="셋째 (Third)">셋째 (Third)</option>
                   <option value="넷째 (Fourth)">넷째 (Fourth)</option>
                 </select>
-                <input 
-                  type="text" 
-                  value={character?.personal?.sonNumber || ''} 
+                <input
+                  type="text"
+                  value={character?.personal?.sonNumber || ''}
                   onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)}
                   placeholder="직접 입력"
                   style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -1950,17 +2030,17 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <select 
-                  value={character?.personal?.pageEducation || ''} 
+                <select
+                  value={character?.personal?.pageEducation || ''}
                   onChange={e => handleInputChange('personal', 'pageEducation', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
                 >
                   <option value="">-- 교육 기관 선택 --</option>
                   {pageEducations.map(pe => <option key={pe.name} value={pe.name}>{pe.name}</option>)}
                 </select>
-                <input 
-                  type="text" 
-                  value={character?.personal?.pageEducation || ''} 
+                <input
+                  type="text"
+                  value={character?.personal?.pageEducation || ''}
                   onChange={e => handleInputChange('personal', 'pageEducation', e.target.value)}
                   placeholder="또는 직접 입력"
                   style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -1987,8 +2067,8 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
-                <select 
-                  value={character?.personal?.blessing || ''} 
+                <select
+                  value={character?.personal?.blessing || ''}
                   onChange={e => handleInputChange('personal', 'blessing', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
                 >
@@ -1997,9 +2077,9 @@ export default function CharacterSheet({ character, setCharacter }) {
                     <option key={b.name} value={`${b.name}: ${b.desc}`}>{b.name}</option>
                   ))}
                 </select>
-                <input 
-                  type="text" 
-                  value={character?.personal?.blessing || ''} 
+                <input
+                  type="text"
+                  value={character?.personal?.blessing || ''}
                   onChange={e => handleInputChange('personal', 'blessing', e.target.value)}
                   placeholder="또는 직접 입력"
                   style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -2027,12 +2107,12 @@ export default function CharacterSheet({ character, setCharacter }) {
                 DEX 이하로 굴리면 성공하여 <strong>+10 Glory</strong>를 획득합니다.
               </p>
               {knightLeapRollResult && (
-                <div style={{ 
-                  fontSize: '0.85rem', 
-                  backgroundColor: knightLeapRollResult.success ? 'rgba(46,107,51,0.06)' : 'rgba(139,0,0,0.06)', 
+                <div style={{
+                  fontSize: '0.85rem',
+                  backgroundColor: knightLeapRollResult.success ? 'rgba(46,107,51,0.06)' : 'rgba(139,0,0,0.06)',
                   border: knightLeapRollResult.success ? '1px solid rgba(46,107,51,0.2)' : '1px solid rgba(139,0,0,0.2)',
                   color: knightLeapRollResult.success ? '#2e6b33' : 'var(--color-danger)',
-                  padding: '8px', 
+                  padding: '8px',
                   borderRadius: '4px',
                   fontWeight: 'bold',
                   textAlign: 'center'
@@ -2091,21 +2171,21 @@ export default function CharacterSheet({ character, setCharacter }) {
               {/* Features List displaying on character sheet */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 {(character?.personal?.features || []).map((feat, fidx) => (
-                  <div key={fidx} style={{ 
-                    fontSize: '0.9rem', 
-                    backgroundColor: 'rgba(201,168,76,0.06)', 
-                    border: '1.2px solid rgba(201,168,76,0.25)', 
-                    padding: '6px 12px', 
+                  <div key={fidx} style={{
+                    fontSize: '0.9rem',
+                    backgroundColor: 'rgba(201,168,76,0.06)',
+                    border: '1.2px solid rgba(201,168,76,0.25)',
+                    padding: '6px 12px',
                     borderRadius: '6px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                   }}>
                     <span style={{ fontWeight: '500', color: 'var(--color-ink)' }}>{feat}</span>
-                    <button type="button" style={{ 
-                      border: 'none', 
-                      background: 'none', 
-                      color: 'var(--color-danger)', 
+                    <button type="button" style={{
+                      border: 'none',
+                      background: 'none',
+                      color: 'var(--color-danger)',
                       cursor: 'pointer',
                       padding: '2px 6px',
                       fontWeight: 'bold',
@@ -2137,9 +2217,9 @@ export default function CharacterSheet({ character, setCharacter }) {
                 <input type="number" value={character?.attributes?.[attr.key] || 0}
                   onChange={e => handleInputChange('attributes', attr.key, parseInt(e.target.value) || 0)} />
                 <div className="cs-attr-actions">
-                  <button type="button" className="cs-attr-btn" 
+                  <button type="button" className="cs-attr-btn"
                     onClick={() => handleInputChange('attributes', attr.key, Math.max(0, (character?.attributes?.[attr.key] || 0) - 1))}>−</button>
-                  <button type="button" className="cs-attr-btn" 
+                  <button type="button" className="cs-attr-btn"
                     onClick={() => handleInputChange('attributes', attr.key, (character?.attributes?.[attr.key] || 0) + 1)}>+</button>
                 </div>
                 {attr.note && <span className="cs-attr-note">{attr.note}</span>}
@@ -2506,10 +2586,10 @@ export default function CharacterSheet({ character, setCharacter }) {
       <section className="cs-section" style={{ marginTop: '16px' }}>
         <div className="sheet-ribbon"><h3>장비 및 금고 (Gear & Treasury)</h3></div>
         <div className="cs-section-inner">
-          
+
           {/* 시작 장비 복장 패키지 & 가문 탄생 유산 굴리기 (Table 1-14 & 1-15) */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '16px', padding: '12px', borderRadius: '8px', border: '1px dashed var(--color-gold)', backgroundColor: 'rgba(201,168,76,0.03)' }}>
-            
+
             {/* Table 1-14 Starting Outfit */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -2556,14 +2636,14 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '12px' }}>
-            
+
             {/* Cash */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>소지금 (Cash):</label>
               <div className="cs-num-ctrl" style={{ width: '120px', height: '32px', border: '1px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', padding: '0 4px', gap: '4px' }}>
                 <button type="button" style={{ width: '24px', height: '24px', borderRadius: '3px', border: 'none', background: 'var(--color-crimson)', color: '#fff', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => handleInputChange('gear', 'cash', Math.max(0, (character?.gear?.cash || 0) - 1))}>−</button>
                 <input type="number" value={character?.gear?.cash || 0}
-                  onChange={e => handleInputChange('gear', 'cash', parseInt(e.target.value) || 0)} 
+                  onChange={e => handleInputChange('gear', 'cash', parseInt(e.target.value) || 0)}
                   style={{ width: '50px', height: '24px', border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 'bold', fontSize: '1rem', outline: 'none' }}
                 />
                 <button type="button" style={{ width: '24px', height: '24px', borderRadius: '3px', border: 'none', background: 'var(--color-crimson)', color: '#fff', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => handleInputChange('gear', 'cash', (character?.gear?.cash || 0) + 1)}>+</button>
@@ -2575,17 +2655,17 @@ export default function CharacterSheet({ character, setCharacter }) {
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>갑옷 및 방패 (Armor & Shield):</label>
               <input type="text" value={character?.gear?.armorShield || ''}
                 onChange={e => handleInputChange('gear', 'armorShield', e.target.value)}
-                placeholder="예: 사슬갑옷 (10점) + 방패 (+3)" 
-                style={{ 
-                  width: '100%', 
-                  padding: '6px 10px', 
-                  fontSize: '0.9rem', 
-                  borderRadius: '4px', 
-                  border: '1px solid var(--color-gold-light)', 
+                placeholder="예: 사슬갑옷 (10점) + 방패 (+3)"
+                style={{
+                  width: '100%',
+                  padding: '6px 10px',
+                  fontSize: '0.9rem',
+                  borderRadius: '4px',
+                  border: '1px solid var(--color-gold-light)',
                   backgroundColor: '#faf6eb',
                   color: 'var(--color-ink)',
                   outline: 'none'
-                }} 
+                }}
               />
             </div>
 
@@ -2594,17 +2674,17 @@ export default function CharacterSheet({ character, setCharacter }) {
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>의상 (Clothing):</label>
               <input type="text" value={character?.gear?.clothing || ''}
                 onChange={e => handleInputChange('gear', 'clothing', e.target.value)}
-                placeholder="예: £2 상당의 궁정 튜닉" 
-                style={{ 
-                  width: '100%', 
-                  padding: '6px 10px', 
-                  fontSize: '0.9rem', 
-                  borderRadius: '4px', 
-                  border: '1px solid var(--color-gold-light)', 
+                placeholder="예: £2 상당의 궁정 튜닉"
+                style={{
+                  width: '100%',
+                  padding: '6px 10px',
+                  fontSize: '0.9rem',
+                  borderRadius: '4px',
+                  border: '1px solid var(--color-gold-light)',
                   backgroundColor: '#faf6eb',
                   color: 'var(--color-ink)',
                   outline: 'none'
-                }} 
+                }}
               />
             </div>
 
@@ -2613,15 +2693,15 @@ export default function CharacterSheet({ character, setCharacter }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginTop: '12px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>개인 소지품 (Personal Gear):</label>
-              <textarea 
+              <textarea
                 value={character?.gear?.personalGear || ''}
                 onChange={e => handleInputChange('gear', 'personalGear', e.target.value)}
                 placeholder="예: 나무 십자가, 숫돌, 리넨 천 뭉치"
-                style={{ 
-                  width: '100%', 
-                  minHeight: '80px', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.6)', 
-                  border: '1px solid var(--color-gold-light)', 
+                style={{
+                  width: '100%',
+                  minHeight: '80px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                  border: '1px solid var(--color-gold-light)',
                   borderRadius: '4px',
                   padding: '8px',
                   fontFamily: 'inherit',
@@ -2632,15 +2712,15 @@ export default function CharacterSheet({ character, setCharacter }) {
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>영지 소유물 (Home Possessions):</label>
-              <textarea 
+              <textarea
                 value={character?.gear?.homePossessions || ''}
                 onChange={e => handleInputChange('gear', 'homePossessions', e.target.value)}
                 placeholder="예: 곡물 상자, 여분의 검 두 자루, 조상의 태피스트리"
-                style={{ 
-                  width: '100%', 
-                  minHeight: '80px', 
-                  backgroundColor: 'rgba(255, 255, 255, 0.6)', 
-                  border: '1px solid var(--color-gold-light)', 
+                style={{
+                  width: '100%',
+                  minHeight: '80px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                  border: '1px solid var(--color-gold-light)',
                   borderRadius: '4px',
                   padding: '8px',
                   fontFamily: 'inherit',
@@ -2659,25 +2739,25 @@ export default function CharacterSheet({ character, setCharacter }) {
           <h3>🏰 가문 캐릭터 시트 (Family Character Sheet, p.28-31)</h3>
         </div>
         <div className="cs-section-inner" style={{ backgroundColor: 'rgba(250, 246, 235, 0.4)' }}>
-          
+
           {/* 가문 기본 정보 */}
           <div className="cs-field-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px 20px', marginBottom: '16px' }}>
             <div className="cs-field">
               <span className="cs-field-label">가문 성씨 (Family Name):</span>
-              <input type="text" value={character?.family?.name || ''} 
+              <input type="text" value={character?.family?.name || ''}
                 onChange={e => handleFamilyChange('name', e.target.value)} placeholder="예: 아르덴 (Ardennes)" />
             </div>
             <div className="cs-field">
               <span className="cs-field-label">가문 시조 (Ancestor Founder):</span>
-              <input type="text" value={character?.family?.ancestor || ''} 
+              <input type="text" value={character?.family?.ancestor || ''}
                 onChange={e => handleFamilyChange('ancestor', e.target.value)} placeholder="예: 알베르 경 (Sir Albert)" />
             </div>
             <div className="cs-field">
               <span className="cs-field-label">고향 영지 (Home County):</span>
-              <input type="text" value={character?.family?.homeCountry || ''} 
+              <input type="text" value={character?.family?.homeCountry || ''}
                 onChange={e => handleFamilyChange('homeCountry', e.target.value)} placeholder="예: 아키텐 (Aquitaine)" />
             </div>
-            
+
             {/* Family Honor (2d6+3) */}
             <div className="cs-field" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', flexWrap: 'wrap', gap: '6px' }}>
@@ -2687,7 +2767,7 @@ export default function CharacterSheet({ character, setCharacter }) {
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <input type="number" value={character?.family?.honor || 0} 
+                <input type="number" value={character?.family?.honor || 0}
                   onChange={e => handleFamilyChange('honor', parseInt(e.target.value) || 0)} style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }} />
                 {sheetHonorRollResult && (
                   <span style={{ fontSize: '0.78rem', color: 'var(--color-royal-blue)', fontWeight: 'bold' }}>
@@ -2700,49 +2780,49 @@ export default function CharacterSheet({ character, setCharacter }) {
             {/* Motto & Battle Cry (Full Width) */}
             <div className="cs-field" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
               <span className="cs-field-label">가언/신조 (Motto):</span>
-              <input type="text" value={character?.family?.motto || ''} 
+              <input type="text" value={character?.family?.motto || ''}
                 onChange={e => handleFamilyChange('motto', e.target.value)} placeholder="예: Amore non timore (사랑으로, 두려움 없이)" />
             </div>
             <div className="cs-field" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
               <span className="cs-field-label">전투 함성 (Battle Cry):</span>
-              <input type="text" value={character?.family?.battleCry || ''} 
+              <input type="text" value={character?.family?.battleCry || ''}
                 onChange={e => handleFamilyChange('battleCry', e.target.value)} placeholder="예: 몽주아! (Monjoie!)" />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-            
+
             {/* ⛪ 가문 수호 성인 설정 (Table 1-3) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⛪ 가문 수호 성인 설정 (Table 1-3)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetSaintMode === 'select' ? '#fff' : 'none', 
+                      background: sheetSaintMode === 'select' ? '#fff' : 'none',
                       color: sheetSaintMode === 'select' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetSaintMode === 'select' ? 'bold' : 'normal',
                       boxShadow: sheetSaintMode === 'select' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetSaintMode('select')}
                   >선택</button>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetSaintMode === 'roll' ? '#fff' : 'none', 
+                      background: sheetSaintMode === 'roll' ? '#fff' : 'none',
                       color: sheetSaintMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetSaintMode === 'roll' ? 'bold' : 'normal',
                       boxShadow: sheetSaintMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetSaintMode('roll')}
                   >굴리기</button>
                 </div>
@@ -2803,32 +2883,32 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⚔️ 가문 특징 설정 (Table 1-1)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetCharMode === 'select' ? '#fff' : 'none', 
+                      background: sheetCharMode === 'select' ? '#fff' : 'none',
                       color: sheetCharMode === 'select' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetCharMode === 'select' ? 'bold' : 'normal',
                       boxShadow: sheetCharMode === 'select' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetCharMode('select')}
                   >선택</button>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetCharMode === 'roll' ? '#fff' : 'none', 
+                      background: sheetCharMode === 'roll' ? '#fff' : 'none',
                       color: sheetCharMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetCharMode === 'roll' ? 'bold' : 'normal',
                       boxShadow: sheetCharMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetCharMode('roll')}
                   >굴리기</button>
                 </div>
@@ -2880,38 +2960,38 @@ export default function CharacterSheet({ character, setCharacter }) {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-            
+
             {/* 📊 가문 평판 설정 (Family Standings, 2d6) */}
             <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>📊 가문 평판 설정 (2d6, p.30)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetStandingsMode === 'manual' ? '#fff' : 'none', 
+                      background: sheetStandingsMode === 'manual' ? '#fff' : 'none',
                       color: sheetStandingsMode === 'manual' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetStandingsMode === 'manual' ? 'bold' : 'normal',
                       boxShadow: sheetStandingsMode === 'manual' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetStandingsMode('manual')}
                   >직접 입력</button>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetStandingsMode === 'roll' ? '#fff' : 'none', 
+                      background: sheetStandingsMode === 'roll' ? '#fff' : 'none',
                       color: sheetStandingsMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetStandingsMode === 'roll' ? 'bold' : 'normal',
                       boxShadow: sheetStandingsMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetStandingsMode('roll')}
                   >굴리기</button>
                 </div>
@@ -2951,32 +3031,32 @@ export default function CharacterSheet({ character, setCharacter }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문 군사 동원력 (Muster, p.28)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetMusterMode === 'manual' ? '#fff' : 'none', 
+                      background: sheetMusterMode === 'manual' ? '#fff' : 'none',
                       color: sheetMusterMode === 'manual' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetMusterMode === 'manual' ? 'bold' : 'normal',
                       boxShadow: sheetMusterMode === 'manual' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetMusterMode('manual')}
                   >직접 입력</button>
-                  <button type="button" 
-                    style={{ 
-                      padding: '4px 10px', 
-                      fontSize: '0.74rem', 
-                      border: 'none', 
+                  <button type="button"
+                    style={{
+                      padding: '4px 10px',
+                      fontSize: '0.74rem',
+                      border: 'none',
                       borderRadius: '4px',
-                      background: sheetMusterMode === 'roll' ? '#fff' : 'none', 
+                      background: sheetMusterMode === 'roll' ? '#fff' : 'none',
                       color: sheetMusterMode === 'roll' ? 'var(--color-gold-dark)' : 'var(--color-ink-light)',
                       fontWeight: sheetMusterMode === 'roll' ? 'bold' : 'normal',
                       boxShadow: sheetMusterMode === 'roll' ? '0 1px 3px rgba(0,0,0,0.15)' : 'none',
                       cursor: 'pointer'
-                    }} 
+                    }}
                     onClick={() => setSheetMusterMode('roll')}
                   >굴리기</button>
                 </div>
@@ -3047,7 +3127,7 @@ export default function CharacterSheet({ character, setCharacter }) {
               <textarea rows={3} value={character?.family?.allies || ''} onChange={e => handleFamilyChange('allies', e.target.value)}
                 placeholder="동맹 가문들과 그 관계를 적어두세요." style={{ width: '100%', resize: 'vertical', fontSize: '0.85rem', padding: '8px', minHeight: '80px', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }} />
             </div>
-            
+
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '28px', marginBottom: '4px' }}>
                 <label style={{ fontWeight: 'bold' }}>적대 대립 가문 (Enemies, p.30):</label>

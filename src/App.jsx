@@ -9,6 +9,7 @@ import LoreEncyclopedia from './components/LoreEncyclopedia';
 import SettingsModal from './components/SettingsModal';
 import { getFirebaseServices } from './firebase';
 import { BookOpen, User, Shield, Compass, Sparkles, Cloud, Settings, LogIn, LogOut, Library } from 'lucide-react';
+import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import './components/SettingsModal.css';
 
 // Initial state template representing the full blank Knight Character Sheet & Linage
@@ -60,7 +61,8 @@ const initialCharacterState = {
     lance: 12,
     bow: 4, crossbow: 5, thrownWeapon: 4
   },
-  skillsChecked: {}, 
+  skillsChecked: {},
+  traitsChecked: {},
   squire: {
     name: "피에르 (Pierre)",
     age: 14,
@@ -132,58 +134,35 @@ const initialCharacterState = {
     retinue: 13,
     church: 15,
     commoners: 11
+  },
+  campaign: {
+    schemaVersion: 2,
+    appliedEvents: {},
+    winter: {
+      year: 768,
+      steps: {
+        aging: 'pending',
+        harvest: 'pending',
+        survival: 'pending',
+        personalEvent: 'pending',
+        familyEvent: 'pending',
+        experience: 'pending',
+        training: 'pending',
+        annualGlory: 'pending',
+        maintenance: 'pending'
+      },
+      logs: [],
+      unresolved: {},
+      gloryBonusPoints: 0,
+      bonusSpent: 0,
+      skippedWithConfirmation: {}
+    }
   }
 };
 
-const mergeWithDefault = (data) => {
-  if (!data || typeof data !== 'object') return initialCharacterState;
+const createInitialCharacterState = () => deepClone(initialCharacterState);
 
-  // Backward compatibility migration for hateSarasens typo
-  if (data.passions) {
-    if (data.passions.hateSarasens !== undefined) {
-      if (data.passions.hateSaracens === undefined || data.passions.hateSaracens === 12) {
-        data.passions.hateSaracens = data.passions.hateSarasens;
-      }
-      delete data.passions.hateSarasens;
-    }
-  }
-  if (data.passionsChecked) {
-    if (data.passionsChecked.hateSarasens !== undefined) {
-      if (data.passionsChecked.hateSaracens === undefined) {
-        data.passionsChecked.hateSaracens = data.passionsChecked.hateSarasens;
-      }
-      delete data.passionsChecked.hateSarasens;
-    }
-  }
-
-  return {
-    ...initialCharacterState,
-    ...data,
-    personal: { ...initialCharacterState.personal, ...data.personal },
-    attributes: { ...initialCharacterState.attributes, ...data.attributes },
-    traits: { ...initialCharacterState.traits, ...data.traits },
-    skills: { ...initialCharacterState.skills, ...data.skills },
-    skillsChecked: { ...initialCharacterState.skillsChecked, ...data.skillsChecked },
-    squire: { ...initialCharacterState.squire, ...data.squire },
-    horses: { 
-      ...initialCharacterState.horses, 
-      ...data.horses,
-      warhorse: { ...initialCharacterState.horses?.warhorse, ...data.horses?.warhorse }
-    },
-    gear: { ...initialCharacterState.gear, ...data.gear },
-    family: { 
-      ...initialCharacterState.family, 
-      ...data.family,
-      members: data.family?.members || initialCharacterState.family.members,
-      ancestorRollLog: Array.isArray(data.family?.ancestorRollLog) ? data.family.ancestorRollLog : [],
-      ancestorApplied: typeof data.family?.ancestorApplied === 'boolean' ? data.family.ancestorApplied : false
-    },
-    journal: { ...initialCharacterState.journal, ...data.journal },
-    passions: { ...initialCharacterState.passions, ...data.passions },
-    passionsChecked: { ...initialCharacterState.passionsChecked || {}, ...data.passionsChecked },
-    standings: { ...initialCharacterState.standings || {}, ...data.standings }
-  };
-};
+const mergeWithDefault = (data) => sanitizeCampaignState(data, createInitialCharacterState());
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -194,12 +173,12 @@ export default function App() {
   const [rawCharacter, setRawCharacter] = useState(() => {
     try {
       const saved = localStorage.getItem('paladin_companion_data');
-      if (!saved) return initialCharacterState;
+      if (!saved) return createInitialCharacterState();
       const parsed = JSON.parse(saved);
       return mergeWithDefault(parsed);
     } catch (e) {
       console.warn("Failed to parse saved state, loading template:", e);
-      return initialCharacterState;
+      return createInitialCharacterState();
     }
   });
 
@@ -243,9 +222,7 @@ export default function App() {
               if (localSaved) {
                 try {
                   const localParsed = JSON.parse(localSaved);
-                  if (localParsed?.personal?.name === cloudData?.personal?.name &&
-                      JSON.stringify(localParsed?.attributes) === JSON.stringify(cloudData?.attributes) &&
-                      JSON.stringify(localParsed?.traits) === JSON.stringify(cloudData?.traits)) {
+                  if (JSON.stringify(mergeWithDefault(localParsed)) === JSON.stringify(mergeWithDefault(cloudData))) {
                     isDifferent = false;
                   }
                 } catch (e) {}
@@ -310,7 +287,8 @@ export default function App() {
     if (!user) return;
     const services = getFirebaseServices();
     try {
-      await services.saveToCloud(user.uid, character);
+      const sanitizedForCloud = mergeWithDefault(character);
+      await services.saveToCloud(user.uid, sanitizedForCloud);
       alert("성공적으로 기사 시트와 일지 정보가 클라우드 서버에 백업되었습니다!");
     } catch (error) {
       alert(`클라우드 백업 실패: ${error.message}`);
@@ -415,7 +393,7 @@ export default function App() {
       {/* Main Content Render area */}
       <div className="main-content">
         {activeTab === 'dashboard' && <Dashboard setActiveTab={setActiveTab} />}
-        {activeTab === 'character' && <CharacterSheet character={character} setCharacter={setCharacter} />}
+        {activeTab === 'character' && <CharacterSheet character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />}
         {activeTab === 'family' && <FamilyWinter character={character} setCharacter={setCharacter} />}
         {activeTab === 'journal' && <ChronologyJournal character={character} setCharacter={setCharacter} />}
         {activeTab === 'oracles' && <SoloOracles character={character} setCharacter={setCharacter} />}

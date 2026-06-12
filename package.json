@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "ci:temporary": "npm run build && node scripts/hostile-regression.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

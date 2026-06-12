@@ -4,6 +4,7 @@ import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calenda
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable, patronSaints } from './CharacterSheet';
+import { applyOnce, hasAppliedEvent } from '../utils/campaignState';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -425,14 +426,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const [patronSaintResult, setPatronSaintResult] = useState(null);
 
     // 📜 조상 연대기 발전기 (Page 45-49) States
-  const initialChronicleState = (() => {
-    try {
-      const saved = localStorage.getItem('paladin_chronicle_state');
-      return saved ? JSON.parse(saved) : {};
-    } catch (e) {
-      return {};
-    }
-  })();
+  const initialChronicleState = character?.family?.chronicleState || {};
 
   const [isAncestorGenOpen, setIsAncestorGenOpen] = useState(
     initialChronicleState.isAncestorGenOpen !== undefined ? initialChronicleState.isAncestorGenOpen : false
@@ -528,9 +522,9 @@ export default function FamilyTree({ character, setCharacter }) {
     initialChronicleState.chronicleBirthGifts !== undefined ? initialChronicleState.chronicleBirthGifts : 0
   );
 
-  // --- 연대기 상태 로컬스토리지 동기화 ---
+	  // --- 연대기 상태 메인 캠페인 저장소 동기화 ---
 
-    useEffect(() => {
+	    useEffect(() => {
     const stateToSave = {
       isAncestorGenOpen,
       chronicleMode,
@@ -557,13 +551,26 @@ export default function FamilyTree({ character, setCharacter }) {
       fatherHonorModifier,
       chronicleBirthGifts
     };
-    try {
-      localStorage.setItem('paladin_chronicle_state', JSON.stringify(stateToSave));
-    } catch (e) {
-      console.error("Failed to save chronicle state to localStorage", e);
-    }
-  }, [
-    isAncestorGenOpen,
+      const nextSerialized = JSON.stringify(stateToSave);
+      if (character.family?.chronicleState && JSON.stringify(character.family.chronicleState) === nextSerialized) {
+        return;
+      }
+      setCharacter(prev => {
+        if (prev.family?.chronicleState && JSON.stringify(prev.family.chronicleState) === nextSerialized) {
+          return prev;
+        }
+        return {
+          ...prev,
+          family: {
+            ...prev.family,
+            chronicleState: stateToSave,
+            ancestorRollLog
+          }
+        };
+      });
+	  }, [
+      character.family?.chronicleState,
+	    isAncestorGenOpen,
     chronicleMode,
     interactiveYear,
     interactiveStage,
@@ -729,9 +736,10 @@ export default function FamilyTree({ character, setCharacter }) {
   };
 
   const startInteractiveChronicle = () => {
-    try {
-      localStorage.removeItem('paladin_chronicle_state');
-    } catch (e) {}
+    if (hasAppliedEvent(character, 'ancestor:legacy')) {
+      alert("조상 유산은 이미 이 캠페인에 반영되었습니다. 다시 굴려 중복 보상을 만들 수 없습니다.");
+      return;
+    }
     setInteractiveStage('gf_running');
     setInteractiveYear(723);
     setGrandfatherGlory(2500);
@@ -3699,8 +3707,11 @@ export default function FamilyTree({ character, setCharacter }) {
   };
 
 
-  const applyAncestorLegacy = () => {
-    if (ancestorApplied) return;
+	  const applyAncestorLegacy = () => {
+	    if (ancestorApplied || hasAppliedEvent(character, 'ancestor:legacy')) {
+        alert("조상 연대기 유산은 이미 이 캠페인에 반영되었습니다.");
+        return;
+      }
 
     // Roll birth gifts first
     const rolledGiftsText = [];
@@ -3720,10 +3731,10 @@ export default function FamilyTree({ character, setCharacter }) {
       }
     }
 
-    setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
+	    setCharacter(prev => {
+        const result = applyOnce(prev, 'ancestor:legacy', updated => {
 
-      const inheritedGlory = Math.floor(fatherGlory / 10);
+	      const inheritedGlory = Math.floor(fatherGlory / 10);
       updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + inheritedGlory;
 
       if (fatherHates.saxons > 10) {
@@ -3789,13 +3800,28 @@ export default function FamilyTree({ character, setCharacter }) {
         });
       }
 
-      if (updated.family) {
-        updated.family.ancestorRollLog = [...ancestorRollLog];
-        updated.family.ancestorApplied = true;
-      }
+	      if (updated.family) {
+	        updated.family.ancestorRollLog = [...ancestorRollLog];
+	        updated.family.ancestorApplied = true;
+          updated.family.chronicleState = {
+            ...(updated.family.chronicleState || {}),
+            grandfatherGlory,
+            grandfatherDeathYear,
+            grandfatherDeathCause,
+            fatherGlory,
+            fatherDeathYear,
+            fatherDeathCause,
+            fatherHates,
+            fatherHonorModifier,
+            chronicleBirthGifts,
+            ancestorApplied: true
+          };
+	      }
 
-      return updated;
-    });
+	      return updated;
+        }, '조상 연대기 유산');
+        return result.character;
+	    });
 
     setAncestorApplied(true);
     const inheritedGloryMsg = `\n(계승 영광: +${Math.floor(fatherGlory / 10)} Glory)`;
@@ -4194,18 +4220,27 @@ export default function FamilyTree({ character, setCharacter }) {
     }
   };
 
-  const handleInheritCharacter = () => {
-    if (!editingMember) return;
-    const confirmInherit = window.confirm(`정말로 이 인물(${editingMember.name})로 대를 이어 플레이를 계속하시겠습니까?\n• 기사 시트의 실명, 나이(가계도 기반 자동 계산)가 동적 전환됩니다.\n• 가계도 내 기존 '본인'은 은퇴/사망 처리되고 이 인물이 새로운 '본인'이 됩니다.`);
-    if (!confirmInherit) return;
+	  const handleInheritCharacter = () => {
+	    if (!editingMember) return;
+      const eventId = `succession:${editingMember.id}`;
+      if (hasAppliedEvent(character, eventId)) {
+        alert("이 후계자로의 승계는 이미 처리되었습니다.");
+        return;
+      }
+	    const confirmInherit = window.confirm(`정말로 이 인물(${editingMember.name})로 대를 이어 플레이를 계속하시겠습니까?\n• 기사 시트의 실명, 나이(가계도 기반 자동 계산)가 동적 전환됩니다.\n• 가계도 내 기존 '본인'은 은퇴/사망 처리되고 이 인물이 새로운 '본인'이 됩니다.`);
+	    if (!confirmInherit) return;
 
     const birthYearStr = editingMember.lifeYears?.split('~')?.[0]?.trim() || '';
     const birthYear = parseInt(birthYearStr) || 768;
     const currentYear = character.personal?.campaignYear || 768;
-    const calculatedAge = Math.max(15, currentYear - birthYear);
+	    const calculatedAge = currentYear - birthYear;
+      if (!Number.isFinite(calculatedAge) || calculatedAge < 18) {
+        alert("18세 미만 후계자는 플레이 가능한 기사로 승계할 수 없습니다.");
+        return;
+      }
 
-    setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
+	    setCharacter(prev => {
+        const result = applyOnce(prev, eventId, updated => {
 
       const oldName = prev.personal?.name || "롤랑 경";
       const newName = editingMember.name;
@@ -4217,11 +4252,11 @@ export default function FamilyTree({ character, setCharacter }) {
         const oldSelf = updated.family.members[oldSelfIndex];
         oldSelfId = oldSelf.id;
         const isChildOfOldSelf = editingMember.parentId === oldSelf.id;
-        oldSelf.relation = isChildOfOldSelf ? '부친' : '친족';
-        oldSelf.status = '사망';
-        oldSelf.lifeYears = oldSelf.lifeYears.split('~')[0] + `~${currentYear}`;
-        oldSelf.note = `위대한 모험을 마치고 명예롭게 은퇴/전사한 선조 기사. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
-      }
+	        oldSelf.relation = isChildOfOldSelf ? '부친' : '친족';
+	        oldSelf.status = '은퇴';
+	        oldSelf.lifeYears = oldSelf.lifeYears.split('~')[0] + `~${currentYear}`;
+	        oldSelf.note = `위대한 모험을 마치고 명예롭게 은퇴한 선조 기사. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
+	      }
 
       // 2. Find and update the new "본인" in members array
       if (updated.family && updated.family.members) {
@@ -4239,9 +4274,49 @@ export default function FamilyTree({ character, setCharacter }) {
       }
 
       // 3. Update character sheet profile
-      updated.personal.name = editingMember.name;
-      updated.personal.age = calculatedAge;
-      updated.gear.gloryTotal = Math.floor((prev.gear?.gloryTotal || 1000) * 1.1);
+	      updated.personal = {
+          ...updated.personal,
+          name: editingMember.name,
+          age: calculatedAge,
+          personalClass: "기사 (Knight)"
+        };
+        updated.attributes = {
+          siz: 14, dex: 12, str: 13, con: 12, app: 11, currentHp: 26
+        };
+        updated.skills = {
+          awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
+          horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
+          courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
+          battle: 10, siege: 5, axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 13, unarmed: 6,
+          lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
+        };
+        updated.traits = {
+          chaste: 10, lustful: 10, energetic: 12, lazy: 8, forgiving: 11, vengeful: 9,
+          generous: 13, selfish: 7, honest: 12, deceitful: 8, just: 10, arbitrary: 10,
+          merciful: 11, cruel: 9, modest: 10, proud: 10, pious: 12, worldly: 8,
+          prudent: 10, reckless: 10, temperate: 10, indulgent: 10, trusting: 11, suspicious: 9,
+          valorous: 15, cowardly: 5
+        };
+        updated.passions = {
+          loyaltyLiege: 15,
+          loveFamily: 15,
+          hospitality: 15,
+          honor: 16,
+          hateSaracens: 12,
+          loveGod: 15
+        };
+        updated.skillsChecked = {};
+        updated.traitsChecked = {};
+        updated.passionsChecked = {};
+        updated.gear = {
+          armorShield: "사슬갑옷 (10점) + 방패 (+3)",
+          clothing: "£2 상당의 궁정 튜닉",
+          personalGear: "나무 십자가, 숫돌, 리넨 천 뭉치",
+          homePossessions: "가문 상속 장비",
+          cash: 5,
+          gloryThisGame: 0,
+          gloryTotal: 1000 + Math.floor((prev.gear?.gloryTotal || 0) / 10)
+        };
 
       // 4. Record succession in campaign year journal
       if (!updated.journal) updated.journal = {};
@@ -4252,8 +4327,10 @@ export default function FamilyTree({ character, setCharacter }) {
         updatedAt: new Date().toISOString()
       };
 
-      return updated;
-    });
+	      return updated;
+        }, `가문 승계: ${editingMember.name}`);
+        return result.character;
+	    });
 
     setIsModalOpen(false);
     setEditingMember(null);
@@ -4488,15 +4565,20 @@ export default function FamilyTree({ character, setCharacter }) {
     setFcManualD20('');
   };
 
-  const applyFamilyCharacteristicToCharacter = (rollVal, genderVal, choiceSkillVal, choiceValueVal, choiceAttributeVal) => {
-    const details = getCharacteristicDetails(rollVal, genderVal, choiceSkillVal, choiceValueVal, choiceAttributeVal);
-    if (!details) return;
+	  const applyFamilyCharacteristicToCharacter = (rollVal, genderVal, choiceSkillVal, choiceValueVal, choiceAttributeVal) => {
+	    const details = getCharacteristicDetails(rollVal, genderVal, choiceSkillVal, choiceValueVal, choiceAttributeVal);
+	    if (!details) return;
+      if (hasAppliedEvent(character, 'character_creation:family_characteristic')) {
+        alert("가문 특성 보너스는 이미 이 캠페인에 반영되었습니다.");
+        return;
+      }
 
     const prevApplied = character.family?.characteristic?.appliedBonus;
     
-    setCharacter(prev => {
-      const nextSkills = { ...prev.skills };
-      const nextAttributes = { ...prev.attributes };
+	    setCharacter(prev => {
+        const result = applyOnce(prev, 'character_creation:family_characteristic', draft => {
+	      const nextSkills = { ...prev.skills };
+	      const nextAttributes = { ...prev.attributes };
 
       if (prevApplied && prev.family?.characteristic?.applied) {
         if (prevApplied.skills) {
@@ -4522,13 +4604,13 @@ export default function FamilyTree({ character, setCharacter }) {
         });
       }
 
-      return {
-        ...prev,
-        skills: nextSkills,
-        attributes: nextAttributes,
-        family: {
-          ...prev.family,
-          characteristic: {
+	      return {
+	        ...draft,
+	        skills: nextSkills,
+	        attributes: nextAttributes,
+	        family: {
+	          ...draft.family,
+	          characteristic: {
             gender: genderVal,
             roll: rollVal,
             desc: details.desc,
@@ -4536,9 +4618,11 @@ export default function FamilyTree({ character, setCharacter }) {
             applied: true,
             appliedBonus: details.effect
           }
-        }
-      };
-    });
+	        }
+	      };
+        }, `가문 특성: ${details.desc}`);
+        return result.character;
+	    });
 
     alert(`가문 특징 [${details.desc}] 보너스가 캐릭터 시트에 성공적으로 반영되었습니다!\n(${details.bonusText})`);
   };
@@ -4668,6 +4752,53 @@ export default function FamilyTree({ character, setCharacter }) {
       // 수동 입력 관계가 없거나 지워진 경우, 저장 시점에 자동 계산된 촌수 관계를 구해서 대입해 줍니다.
       let savedRelation = formRelation.trim();
       const targetId = modalMode === 'edit' ? editingMember.id : ('m-' + Date.now());
+      const selectedParent = formParentId ? members.find(m => m.id === formParentId) : null;
+      const selectedSpouse = formSpouseId ? members.find(m => m.id === formSpouseId) : null;
+
+      const wouldCreateParentCycle = (candidateParentId) => {
+        let cursor = candidateParentId;
+        const seen = new Set([targetId]);
+        while (cursor) {
+          if (seen.has(cursor)) return true;
+          seen.add(cursor);
+          const parent = members.find(m => m.id === cursor);
+          cursor = parent?.parentId;
+        }
+        return false;
+      };
+
+      if (formParentId === targetId) {
+        alert("가문원은 자기 자신을 부모로 지정할 수 없습니다.");
+        return;
+      }
+
+      if (formSpouseId === targetId) {
+        alert("가문원은 자기 자신을 배우자로 지정할 수 없습니다.");
+        return;
+      }
+
+      if (formParentId && formSpouseId && formParentId === formSpouseId) {
+        alert("같은 인물을 부모와 배우자로 동시에 지정할 수 없습니다.");
+        return;
+      }
+
+      if (formParentId && wouldCreateParentCycle(formParentId)) {
+        alert("부모 연결이 가문 계보 순환을 만들기 때문에 저장할 수 없습니다.");
+        return;
+      }
+
+      if (selectedParent && Number(formGeneration) <= Number(selectedParent.generation || 0)) {
+        alert("자녀 세대는 부모 세대보다 뒤여야 합니다.");
+        return;
+      }
+
+      if (
+        selectedSpouse
+        && (selectedSpouse.parentId === targetId || formParentId === selectedSpouse.id || selectedSpouse.id === selectedParent?.id)
+      ) {
+        alert("부모/자녀 관계의 인물은 배우자로 지정할 수 없습니다.");
+        return;
+      }
       
       if (!savedRelation) {
         const tempMember = {
@@ -4691,6 +4822,14 @@ export default function FamilyTree({ character, setCharacter }) {
         if (editingMember.id === 'gerard') savedRelation = '부친';
         if (editingMember.id === 'eleanor') savedRelation = '모친';
         if (editingMember.id === 'roland') savedRelation = '본인';
+      }
+
+      if (savedRelation === '본인' && formStatus === '생존') {
+        const otherActiveSelf = members.find(m => m.id !== targetId && m.relation === '본인' && m.status === '생존');
+        if (otherActiveSelf) {
+          alert(`활성 플레이어 기사(본인)는 한 명만 존재할 수 있습니다. 현재 본인: ${otherActiveSelf.name}`);
+          return;
+        }
       }
 
       const combinedName = getTitleByNameAndClass(formNameKo, formNameEn, formMemberClass);
@@ -6011,16 +6150,24 @@ export default function FamilyTree({ character, setCharacter }) {
                             type="button"
                             className="btn-medieval"
                             style={{ fontSize: '0.78rem', padding: '5px 10px' }}
-                            onClick={() => {
-                              const saint = patronSaintResult.saint;
-                              setCharacter(prev => {
-                                const updated = JSON.parse(JSON.stringify(prev));
-                                saint.apply(updated);
-                                updated.personal.patronSaint = saint.name;
-                                return updated;
-                              });
-                              alert(`수호 성인 [${saint.name}]의 가호가 캐릭터 시트에 적용되었습니다!\n효과: ${saint.benefit}`);
-                            }}
+	                            onClick={() => {
+	                              const saint = patronSaintResult.saint;
+                                if (hasAppliedEvent(character, 'character_creation:patron_saint')) {
+                                  alert("수호 성인 보너스는 이미 이 캠페인에 반영되었습니다.");
+                                  return;
+                                }
+	                              setCharacter(prev => {
+                                  const result = applyOnce(prev, 'character_creation:patron_saint', updated => {
+                                    saint.apply(updated);
+                                    updated.family = updated.family || {};
+                                    updated.family.patronSaint = saint.name;
+                                    updated.family.patronSaintApplied = true;
+                                    return updated;
+                                  }, `수호 성인: ${saint.name}`);
+	                                return result.character;
+	                              });
+	                              alert(`수호 성인 [${saint.name}]의 가호가 캐릭터 시트에 적용되었습니다!\n효과: ${saint.benefit}`);
+	                            }}
                           >
                             🌟 시트에 적용
                           </button>

@@ -1,55 +1,54 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
 
-// Default mock/empty configuration fallback
-const defaultFirebaseConfig = {
-  apiKey: "AIzaSyCBiEh_2YmbU9W_isONi2FugkTzDIYJ0mE",
-  authDomain: "skogsduvasbookshop.firebaseapp.com",
-  projectId: "skogsduvasbookshop",
-  storageBucket: "skogsduvasbookshop.firebasestorage.app",
-  messagingSenderId: "1051912666392",
-  appId: "1:1051912666392:web:effb955c211c174b26326d"
+const REQUIRED_CONFIG_FIELDS = ['apiKey', 'authDomain', 'projectId', 'appId'];
+
+const createMockServices = (error = null) => ({
+  isMock: true,
+  auth: null,
+  db: null,
+  googleProvider: null,
+  loginWithGoogle: async () => {
+    throw error || new Error("Firebase is not configured. Please set up your API keys in the Settings tab.");
+  },
+  logout: async () => {},
+  saveToCloud: async () => {
+    throw error || new Error("Firebase is not configured.");
+  },
+  loadFromCloud: async () => null
+});
+
+const getStoredFirebaseConfig = () => {
+  try {
+    const savedConfig = localStorage.getItem('paladin_firebase_config');
+    if (!savedConfig) return null;
+    const parsed = JSON.parse(savedConfig);
+    const hasRequiredFields = REQUIRED_CONFIG_FIELDS.every(field => (
+      typeof parsed[field] === 'string' &&
+      parsed[field].trim() &&
+      parsed[field] !== 'YOUR_API_KEY'
+    ));
+    return hasRequiredFields ? parsed : null;
+  } catch (e) {
+    console.warn("Failed to load custom Firebase config:", e);
+    return null;
+  }
 };
+
+const getConfigAppName = (config) => `paladin-${btoa(`${config.projectId}:${config.appId}`).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 32)}`;
 
 /**
  * Dynamically initializes Firebase based on user-provided config in LocalStorage,
- * or falls back to system defaults.
+ * or falls back to mock/offline mode.
  */
 export function getFirebaseServices() {
-  let config = defaultFirebaseConfig;
-  
-  try {
-    const savedConfig = localStorage.getItem('paladin_firebase_config');
-    if (savedConfig) {
-      const parsed = JSON.parse(savedConfig);
-      // Verify basic fields are present and not mock values
-      if (parsed.apiKey && parsed.apiKey !== "YOUR_API_KEY") {
-        config = parsed;
-      }
-    }
-  } catch (e) {
-    console.warn("Failed to load custom Firebase config:", e);
-  }
-
-  // If Firebase credentials are still placeholders, return a mocked offline mode
-  if (config.apiKey === "YOUR_API_KEY") {
-    return {
-      isMock: true,
-      auth: null,
-      db: null,
-      googleProvider: null,
-      loginWithGoogle: async () => {
-        throw new Error("Firebase is not configured. Please set up your API keys in the Settings tab.");
-      },
-      logout: async () => {},
-      saveToCloud: async () => {},
-      loadFromCloud: async () => null
-    };
-  }
+  const config = getStoredFirebaseConfig();
+  if (!config) return createMockServices();
 
   try {
-    const app = getApps().length === 0 ? initializeApp(config) : getApp();
+    const appName = getConfigAppName(config);
+    const app = getApps().find(existing => existing.name === appName) || initializeApp(config, appName);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const googleProvider = new GoogleAuthProvider();
@@ -95,15 +94,6 @@ export function getFirebaseServices() {
     };
   } catch (error) {
     console.error("Error initializing Firebase, falling back to mock mode:", error);
-    return {
-      isMock: true,
-      auth: null,
-      db: null,
-      googleProvider: null,
-      loginWithGoogle: async () => { throw error; },
-      logout: async () => {},
-      saveToCloud: async () => {},
-      loadFromCloud: async () => null
-    };
+    return createMockServices(error);
   }
 }
