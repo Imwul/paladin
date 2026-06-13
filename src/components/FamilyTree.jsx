@@ -4354,6 +4354,7 @@ export default function FamilyTree({ character, setCharacter }) {
   ];
 
   // SVG Lines Calculation
+  // SVG Lines Calculation
   const calculateLines = useCallback(() => {
     if (!treeContainerRef.current) return;
     const containerRect = treeContainerRef.current.getBoundingClientRect();
@@ -4361,6 +4362,18 @@ export default function FamilyTree({ character, setCharacter }) {
 
     // Track drawn marriages to avoid duplicate lines
     const drawnMarriages = new Set();
+
+    // Helper to robustly find card DOM elements by attribute value (bypassing querySelector syntax/escaping quirks)
+    const findNodeEl = (id) => {
+      if (!treeContainerRef.current || !id) return null;
+      const nodes = treeContainerRef.current.querySelectorAll('[data-node-id]');
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].getAttribute('data-node-id') === String(id)) {
+          return nodes[i];
+        }
+      }
+      return null;
+    };
 
     // Cache generation bounds to place horizontal lines in the center of the vertical gaps
     const genBounds = {};
@@ -4370,7 +4383,7 @@ export default function FamilyTree({ character, setCharacter }) {
       let minTop = Infinity;
       let maxBottom = -Infinity;
       genMembers.forEach(m => {
-        const el = treeContainerRef.current.querySelector(`[data-node-id="${m.id}"]`);
+        const el = findNodeEl(m.id);
         if (el) {
           const rect = el.getBoundingClientRect();
           const top = rect.top - containerRect.top;
@@ -4387,9 +4400,9 @@ export default function FamilyTree({ character, setCharacter }) {
     members.forEach(member => {
       // 1. Marriage Lines
       if (member.spouseId && !drawnMarriages.has(`${member.id}-${member.spouseId}`) && !drawnMarriages.has(`${member.spouseId}-${member.id}`)) {
-        const nodeEl = treeContainerRef.current.querySelector(`[data-node-id="${member.id}"]`);
-        const spouseEl = treeContainerRef.current.querySelector(`[data-node-id="${member.spouseId}"]`);
-
+        const nodeEl = findNodeEl(member.id);
+        const spouseEl = findNodeEl(member.spouseId);
+        
         if (nodeEl && spouseEl) {
           const r1 = nodeEl.getBoundingClientRect();
           const r2 = spouseEl.getBoundingClientRect();
@@ -4416,9 +4429,21 @@ export default function FamilyTree({ character, setCharacter }) {
 
       // 2. Parent-Child Lines
       if (member.parentId) {
-        const childEl = treeContainerRef.current.querySelector(`[data-node-id="${member.id}"]`);
+        const childEl = findNodeEl(member.id);
         const parentNode = members.find(m => m.id === member.parentId);
         
+        if (member.name.includes("하르드랑") || member.name.includes("에르지지젤라") || (parentNode && parentNode.name.includes("하르드랑"))) {
+          console.log("LINE DBG:", {
+            memberName: member.name,
+            memberId: member.id,
+            parentId: member.parentId,
+            parentNodeFound: !!parentNode,
+            parentNodeName: parentNode?.name,
+            childElFound: !!childEl,
+            parentElFound: parentNode ? !!findNodeEl(parentNode.id) : false
+          });
+        }
+
         if (childEl && parentNode) {
           const childRect = childEl.getBoundingClientRect();
           const childX = (childRect.left + childRect.right) / 2 - containerRect.left;
@@ -4426,8 +4451,8 @@ export default function FamilyTree({ character, setCharacter }) {
 
           // If the parent has a spouse, we should draw from the marriage center rather than a single parent
           let parentX, parentY;
-          const parentEl = treeContainerRef.current.querySelector(`[data-node-id="${parentNode.id}"]`);
-          const spouseEl = parentNode.spouseId ? treeContainerRef.current.querySelector(`[data-node-id="${parentNode.spouseId}"]`) : null;
+          const parentEl = findNodeEl(parentNode.id);
+          const spouseEl = parentNode.spouseId ? findNodeEl(parentNode.spouseId) : null;
 
           if (parentEl && spouseEl) {
             const pr = parentEl.getBoundingClientRect();
@@ -6542,6 +6567,21 @@ export default function FamilyTree({ character, setCharacter }) {
 
         </div>
       </div>
+
+      {/* Collapsible Debug Panel */}
+      <details style={{ margin: '20px 0', padding: '10px', border: '1px solid #ccc', backgroundColor: '#f9f9f9', fontSize: '0.8rem', borderRadius: '4px', zIndex: 10, position: 'relative' }}>
+        <summary style={{ cursor: 'pointer', fontWeight: 'bold', outline: 'none' }}>[디버그] 가계도 데이터 상태 점검 (Debug Family State)</summary>
+        <pre style={{ overflow: 'auto', maxHeight: '300px', margin: '10px 0 0 0', padding: '10px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', textAlign: 'left' }}>
+          {JSON.stringify(members.map(m => ({ 
+            id: m.id, 
+            name: m.name, 
+            relation: m.relation, 
+            generation: m.generation, 
+            parentId: m.parentId || null,
+            spouseId: m.spouseId || null
+          })), null, 2)}
+        </pre>
+      </details>
 
       {/* Modal Dialog for Add/Edit Member */}
       {isModalOpen && createPortal(
