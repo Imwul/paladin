@@ -1,6 +1,6 @@
-/* Fonts: Pretendard (Korean), Noto Serif KR (Korean Serif), Cinzel (EN Serif), Marcellus (EN Titles) */
+/* Fonts: Pretendard (Korean), Hahmlet (Korean Serif), Cinzel (EN Serif), Marcellus (EN Titles) */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700;900&family=Cinzel:wght@400;500;600;700;800&family=Marcellus&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Hahmlet:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700;800&family=Marcellus&display=swap");
 
 :root {
   /* Illuminated Manuscript Palette */
@@ -20,8 +20,8 @@
   --color-grey-light: #ddd3c1;
   --color-success: #2e6b33;
   
-  --font-korean: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif; /* Reading content defaults to Noto Serif KR */
-  --font-korean-serif: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
+  --font-korean: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif; /* Reading content defaults to Hahmlet */
+  --font-korean-serif: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
   --font-heading: 'Marcellus', 'Cinzel', 'Georgia', serif; /* Titles default to Marcellus/Cinzel */
   --font-serif: 'Cinzel', 'Georgia', serif;
   --font-gothic: 'Marcellus', 'Cinzel', 'Georgia', serif;

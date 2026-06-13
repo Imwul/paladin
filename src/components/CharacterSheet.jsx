@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Dices, RefreshCw, Check } from 'lucide-react';
+import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
 
 export const patronSaints = [
