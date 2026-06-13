@@ -5358,7 +5358,7 @@ export default function FamilyTree({ character, setCharacter }) {
           <span className="ft-relation">{calculatedRelation}</span>
           <span 
             className="ft-status-text"
-            style={{ color: statusColor, fontWeight: '600', fontSize: '0.68rem', letterSpacing: '-0.02em' }}
+            style={{ color: statusColor, fontWeight: '600', fontSize: '0.64rem', letterSpacing: '-0.02em' }}
           >
             {member.status === '생존' && '생존'}
             {member.status === '사망' && '영면'}
@@ -5368,29 +5368,51 @@ export default function FamilyTree({ character, setCharacter }) {
           </span>
         </div>
 
-        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '2px 0 3px 0' }}>
-          <span className="ft-name-ko" style={{ fontSize: '0.84rem', fontWeight: 'bold' }}>{splitName(member.name).ko}</span>
+        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '1px 0 2px 0' }}>
+          <span className="ft-name-ko" style={{ fontSize: '0.76rem', fontWeight: 'bold' }}>{splitName(member.name).ko}</span>
           {splitName(member.name).en && (
-            <span className="ft-name-en" style={{ fontSize: '0.72rem', fontWeight: '500', color: 'var(--color-grey)', marginLeft: '4px' }}>
+            <span className="ft-name-en" style={{ fontSize: '0.62rem', display: 'block', margin: 0 }}>
               ({splitName(member.name).en})
             </span>
           )}
         </h4>
         
-        <div className="ft-details-row" style={{ display: 'flex', justifyContent: 'center', gap: '4px', fontSize: '0.72rem', color: 'var(--color-grey)', flexWrap: 'wrap', width: '100%', lineHeight: '1.2' }}>
-          {member.lifeYears && <span className="ft-years" style={{ display: 'inline', width: 'auto', margin: 0 }}>{member.lifeYears}</span>}
+        <div className="ft-details-row" style={{ display: 'flex', justifyContent: 'center', gap: '4px', fontSize: '0.64rem', color: 'var(--color-grey)', flexWrap: 'wrap', width: '100%', lineHeight: '1.2', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '3px', marginBottom: '4px' }}>
+          {member.lifeYears && <span className="ft-years" style={{ display: 'inline', width: 'auto', margin: 0, fontSize: '0.64rem' }}>{member.lifeYears}</span>}
           {isDeceased && member.deathCause && (
-            <span className="ft-death-cause" style={{ display: 'inline', width: 'auto', margin: 0, color: 'var(--color-crimson)' }}>
+            <span className="ft-death-cause" style={{ display: 'inline', width: 'auto', margin: 0, color: 'var(--color-crimson)', fontSize: '0.6rem' }}>
               ({member.deathCause})
             </span>
           )}
+        </div>
+
+        {/* Ledger Entries: Estate, Muster, Heirs */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.64rem', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '3px', marginBottom: '4px', textAlign: 'left', width: '100%', lineHeight: 1.25 }}>
+          <div>
+            <span style={{ color: 'var(--color-grey)' }}>영지: </span>
+            <span style={{ color: 'var(--color-ink-light)', fontWeight: 500 }}>
+              {isKnight ? (character.personal?.home || '바스토뉴') : '아르덴'}
+            </span>
+          </div>
+          <div>
+            <span style={{ color: 'var(--color-grey)' }}>군역: </span>
+            <span style={{ color: 'var(--color-ink-light)', fontWeight: 500 }}>
+              {isKnight ? `${character.family?.lineageMen || 20}명` : (member.gender === 'female' ? '면제' : (isDeceased ? '봉사 완료' : '의무 수임'))}
+            </span>
+          </div>
+          <div>
+            <span style={{ color: 'var(--color-grey)' }}>상속자: </span>
+            <span style={{ color: 'var(--color-ink-light)', fontWeight: 500 }}>
+              {members.filter(m => m.parentId === member.id || (member.spouseId && m.parentId === member.spouseId)).map(c => splitName(c.name).ko).join(', ') || '없음'}
+            </span>
+          </div>
         </div>
 
         {(() => {
           const marginaliaText = getChronicleMarginalia(member);
           if (!marginaliaText) return null;
           return (
-            <div className="chronicle-marginalia">
+            <div className="chronicle-marginalia" style={{ marginBottom: '3px', fontSize: '0.62rem' }}>
               {marginaliaText}
             </div>
           );
@@ -5401,46 +5423,12 @@ export default function FamilyTree({ character, setCharacter }) {
           if (!resolvedChar) return null;
           const isInherited = !member.familyCharacteristic;
           
-          const desc = resolvedChar.desc || '';
-          const parenIndex = desc.indexOf('(');
-          let enPart = desc;
-          let koPart = '';
-          if (parenIndex !== -1) {
-            enPart = desc.substring(0, parenIndex).trim();
-            koPart = desc.substring(parenIndex).trim();
-          }
-
           return (
-            <div className="ft-char-badge" style={{ 
-              fontSize: '0.68rem', 
-              marginTop: '4px', 
-              paddingTop: '3px',
-              borderTop: '1px dashed rgba(0,0,0,0.08)',
-              width: '100%',
-              textAlign: 'center',
-              lineHeight: '1.2',
-              opacity: isInherited ? 0.85 : 1
-            }} title={resolvedChar.bonusText + (isInherited ? ' (상속됨)' : '')}>
-              <div style={{ 
-                fontWeight: 'bold', 
-                color: memberGender === 'female' ? '#8f2c2c' : '#4a3726',
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                gap: '2px' 
-              }}>
-                {enPart}
-              </div>
-              {koPart && (
-                <div style={{ 
-                  fontSize: '0.64rem', 
-                  fontWeight: '500', 
-                  color: 'var(--color-grey)', 
-                  marginTop: '1px' 
-                }}>
-                  {koPart}
-                </div>
-              )}
+            <div style={{ fontSize: '0.62rem', color: 'var(--color-grey)', borderTop: '1px dotted rgba(0,0,0,0.08)', paddingTop: '2px', width: '100%', textAlign: 'left', lineHeight: '1.2' }}>
+              <span>특성: </span>
+              <span style={{ color: 'var(--color-ink-light)', fontWeight: 500 }}>
+                {resolvedChar.desc} {isInherited && '(상속)'}
+              </span>
             </div>
           );
         })()}
