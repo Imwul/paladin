@@ -5248,7 +5248,7 @@ export default function FamilyTree({ character, setCharacter }) {
               onClick={() => handleAddRandomMember(gen)}
               title="해당 세대에 랜덤 구성원(형제/친족)을 자동 생성하여 추가합니다."
             >
-              🎲 랜덤 구성원
+              구성원 추가
             </button>
             <button 
               type="button" 
@@ -5257,7 +5257,7 @@ export default function FamilyTree({ character, setCharacter }) {
               onClick={() => handleAddRandomSpouse(gen)}
               title="해당 세대의 미혼 1인 가문원 중 한 명에게 배우자를 자동 생성하여 연결합니다."
             >
-              ❤️ 배우자 생성
+              배우자 등록
             </button>
           </div>
         </div>
@@ -5274,7 +5274,7 @@ export default function FamilyTree({ character, setCharacter }) {
                     className="ft-marriage-heart"
                     style={{ transform: `translateX(${heartX}px)` }}
                   >
-                    <Heart size={14} fill="var(--color-danger)" color="var(--color-danger)" />
+                    <span style={{ fontSize: '0.9rem', color: 'var(--color-ink-light)', fontWeight: 'bold', lineHeight: 1 }}>⚭</span>
                   </div>
                   {renderMemberCard(group.wife)}
                 </div>
@@ -5301,6 +5301,30 @@ export default function FamilyTree({ character, setCharacter }) {
       case '포로': return '#d27c2c';
       default: return '#2e1f0f';
     }
+  };
+
+  const getChronicleMarginalia = (member) => {
+    if (!member) return null;
+    const note = member.note || '';
+    const status = member.status || '';
+    const deathCause = member.deathCause || '';
+
+    if (note.includes('수도원') || deathCause.includes('수도원')) {
+      return '수도원의 기록에 이름이 남음';
+    }
+    if (status === '은퇴' || note.includes('은퇴') || deathCause.includes('은퇴')) {
+      return '명예롭게 칼을 내려놓음';
+    }
+    if (note.includes('전사') || deathCause.includes('전사')) {
+      return '봉사의 길 위에서 생을 마침';
+    }
+    if (note.includes('순례') || deathCause.includes('순례')) {
+      return '먼 성지를 향해 길을 나섬';
+    }
+    if (note.includes('병사') || deathCause.includes('병사') || note.includes('전장') || deathCause.includes('전장')) {
+      return '전장에서 오래 복무함';
+    }
+    return null;
   };
 
   const renderMemberCard = (member) => {
@@ -5334,13 +5358,13 @@ export default function FamilyTree({ character, setCharacter }) {
           <span className="ft-relation">{calculatedRelation}</span>
           <span 
             className="ft-status-text"
-            style={{ color: statusColor, fontWeight: 'bold', fontSize: '0.62rem', letterSpacing: '-0.02em' }}
+            style={{ color: statusColor, fontWeight: '600', fontSize: '0.68rem', letterSpacing: '-0.02em' }}
           >
-            {member.status === '생존' && '🌱 생존'}
-            {member.status === '사망' && '🪦 영면'}
-            {member.status === '질병' && '🩸 병환'}
-            {member.status === '실종' && '🌫️ 행방'}
-            {member.status === '포로' && '⛓️ 억류'}
+            {member.status === '생존' && '생존'}
+            {member.status === '사망' && '영면'}
+            {member.status === '질병' && '병환'}
+            {member.status === '실종' && '실종'}
+            {member.status === '포로' && '포로'}
           </span>
         </div>
 
@@ -5361,6 +5385,16 @@ export default function FamilyTree({ character, setCharacter }) {
             </span>
           )}
         </div>
+
+        {(() => {
+          const marginaliaText = getChronicleMarginalia(member);
+          if (!marginaliaText) return null;
+          return (
+            <div className="chronicle-marginalia">
+              {marginaliaText}
+            </div>
+          );
+        })()}
 
         {(() => {
           const resolvedChar = resolveMemberCharacteristic(member, members, character.family?.characteristic);
@@ -6224,13 +6258,13 @@ export default function FamilyTree({ character, setCharacter }) {
           )}
         </div>
 
-        {/* Panel 3: 기사 은퇴 및 구원 판정 */}
-        <div className="ft-panel" style={{ border: '1px solid var(--color-gold-light)', borderRadius: '8px', backgroundColor: 'rgba(255, 255, 255, 0.45)', overflow: 'hidden', boxShadow: 'var(--shadow-medieval)' }}>
+        {/* Panel 3: 기사의 마지막 기록과 구원 판정 */}
+        <div className="ft-panel" style={{ border: '1px solid var(--color-gold-light)', borderRadius: '8px', backgroundColor: 'rgba(255, 255, 255, 0.45)', overflow: 'hidden', boxShadow: 'none' }}>
           <div 
             style={{ backgroundColor: 'rgba(201, 168, 76, 0.1)', padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}
             onClick={() => setActivePanel(activePanel === 'salvation' ? null : 'salvation')}
           >
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Award size={14} /> ⛪ 기사 은퇴 및 영면 구원 판정 (Salvation)</span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Award size={14} /> ⛪ 기사의 마지막 기록과 구원 판정 (Salvation)</span>
             <span style={{ fontSize: '0.8rem' }}>{activePanel === 'salvation' ? '접기 ▲' : '펼치기 ▼'}</span>
           </div>
           {activePanel === 'salvation' && (() => {
@@ -6263,15 +6297,15 @@ export default function FamilyTree({ character, setCharacter }) {
             return (
             <div className="view-animate" style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.65)', borderTop: '1px solid var(--color-gold-light)' }}>
                         <section className="cs-section view-animate">
-            <div className="sheet-ribbon"><h3>⛪ 기사 은퇴 및 영면 구원 판정 (Salvation Roll)</h3></div>
+            <div className="sheet-ribbon"><h3>⛪ 기사의 마지막 기록과 구원 판정 (Salvation Roll)</h3></div>
             <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
               <div style={{ backgroundColor: 'rgba(43, 65, 112, 0.04)', border: '1.5px solid var(--color-gold)', padding: '16px', borderRadius: '6px' }}>
                 <h4 style={{ margin: '0 0 8px 0', fontWeight: 'bold', fontSize: '1rem', color: 'var(--color-royal-blue)' }}>
-                  📖 구원(Salvation) 판정 규칙
+                  📖 기사의 마지막 기록과 구원 판정 규칙
                 </h4>
                 <p style={{ fontSize: '0.82rem', color: 'var(--color-ink)', lineHeight: '1.45', margin: 0 }}>
-                  룰북 42쪽 규칙에 의거, 기사 캐릭터가 전사하거나 은퇴할 때 자신의 평생의 공적과 신앙심을 저울질하여 천국, 연옥, 지옥 중 어디로 갈지 판정합니다.<br />
+                  룰북 42쪽 규칙에 의거, 기사 캐릭터가 전사하거나 일생을 마칠 때 자신의 평생의 공적과 신앙심을 저울질하여 천국, 연옥, 지옥 중 어디로 갈지 판정합니다.<br />
                   구원 판정에 성공하면 다음 세대 계승자는 **이전 캐릭터의 특정한 핵심 스킬 전수 보너스** 및 **시작 탄생 선물 가산 혜택**을 누립니다.
                 </p>
               </div>
@@ -6321,7 +6355,7 @@ export default function FamilyTree({ character, setCharacter }) {
                       </label>
                       <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 'bold' }}>
                         <input type="checkbox" checked={salvationDeedsHolyWar} onChange={e => setSalvationDeedsHolyWar(e.target.checked)} />
-                        ⛪ 성전 참전 중 전사 또는 은퇴 후 수도자 귀의: +5 점
+                        ⛪ 성전 참전 중 전사 또는 일생을 마치고 수도자 귀의: +5 점
                       </label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
                         <span style={{ fontWeight: 'bold' }}>🧙 직접 개종시킨 이교도 수 (최대 5):</span>
@@ -6421,8 +6455,8 @@ export default function FamilyTree({ character, setCharacter }) {
         padding: '10px 16px',
         backgroundColor: '#faf6eb',
         border: '1.5px solid var(--color-gold)',
-        borderRadius: '8px',
-        boxShadow: 'var(--shadow-medieval)',
+        borderRadius: '2px',
+        boxShadow: 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -6431,7 +6465,7 @@ export default function FamilyTree({ character, setCharacter }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{ fontSize: '1.1rem' }}>🛡️</span>
-          <strong style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>가문 군사 동원력 (Family Muster, p.28)</strong>
+          <strong style={{ fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>가문의 군역 (Family Muster, p.28)</strong>
         </div>
         <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>
@@ -6448,7 +6482,7 @@ export default function FamilyTree({ character, setCharacter }) {
           </div>
         </div>
         <div style={{ fontSize: '0.82rem', color: 'var(--color-grey)' }}>
-          * 총 동원력: 기사 <strong>{(character.family?.oldKnights || 0) + (character.family?.middleKnights || 0) + (character.family?.youngKnights || 0)}</strong>명 / 보병 <strong>{character.family?.lineageMen || 0}</strong>명
+          * 총 군역: 기사 <strong>{(character.family?.oldKnights || 0) + (character.family?.middleKnights || 0) + (character.family?.youngKnights || 0)}</strong>명 / 보병 <strong>{character.family?.lineageMen || 0}</strong>명
         </div>
       </div>
 

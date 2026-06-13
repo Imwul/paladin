@@ -1,6 +1,6 @@
-/* Fonts: Pretendard (Korean), Noto Serif KR (Korean Serif), UnifrakturMaguntia (blackletter EN headings), Cinzel (EN fallback) */
+/* Fonts: Pretendard (Korean), Noto Serif KR (Korean Serif), Cinzel (EN Serif), Marcellus (EN Titles) */
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700;900&family=UnifrakturMaguntia&family=Cinzel:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700;900&family=Cinzel:wght@400;500;600;700;800&family=Marcellus&display=swap");
 
 :root {
   /* Illuminated Manuscript Palette */
@@ -12,21 +12,21 @@
   --color-gold: #c9a84c;
   --color-gold-light: #e8d5a0;
   --color-gold-dark: #8b6914;
-  --color-crimson: #2b4170;          /* Now mapped to royal blue for unified theme */
-  --color-crimson-light: rgba(43, 65, 112, 0.08);
-  --color-royal-blue: #2b4170;
+  --color-crimson: #8f2c2c;          /* Deep medieval crimson */
+  --color-crimson-light: rgba(143, 44, 44, 0.05);
+  --color-royal-blue: #4b628a;       /* Muted blue */
   --color-danger: #8b2020;           /* Actual red — only for HP/death indicators */
   --color-grey: #6b5d4e;
   --color-grey-light: #ddd3c1;
   --color-success: #2e6b33;
   
-  --font-korean: 'Pretendard', -apple-system, sans-serif;
+  --font-korean: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif; /* Reading content defaults to Noto Serif KR */
   --font-korean-serif: 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
-  --font-heading: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
+  --font-heading: 'Marcellus', 'Cinzel', 'Georgia', serif; /* Titles default to Marcellus/Cinzel */
   --font-serif: 'Cinzel', 'Georgia', serif;
-  --font-gothic: 'UnifrakturMaguntia', 'Cinzel', 'Georgia', serif;
+  --font-gothic: 'Marcellus', 'Cinzel', 'Georgia', serif;
   
-  --shadow-medieval: 0 4px 15px rgba(46, 31, 15, 0.1);
+  --shadow-medieval: 0 2px 8px rgba(46, 31, 15, 0.05);
 }
 
 * {
@@ -36,15 +36,15 @@
   font-family: var(--font-korean);
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
-  letter-spacing: -0.05em !important;
+  letter-spacing: -0.02em !important;
   overflow-wrap: break-word;
   word-break: keep-all;
 }
 
-/* Force override browser-specific user agent styles for input elements */
-input, textarea, button, select, input[type="number"], input[type="text"] {
+/* Force override browser-specific user agent styles for input/button/UI elements to keep them easily readable (Pretendard) */
+input, textarea, button, select, input[type="number"], input[type="text"], .btn-medieval, .btn-medieval-primary, .auth-badge, .tab-btn {
   font-family: 'Pretendard', -apple-system, sans-serif !important;
-  letter-spacing: -0.05em !important;
+  letter-spacing: -0.03em !important;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
 }
@@ -52,9 +52,9 @@ input, textarea, button, select, input[type="number"], input[type="text"] {
 body {
   background-color: #cfc4ae;
   color: var(--color-ink);
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: var(--font-korean) !important;
   font-size: 16px;
-  letter-spacing: -0.05em !important;
+  letter-spacing: -0.02em !important;
   line-height: 1.65;
   width: 100%;
   min-height: 100vh;
@@ -211,8 +211,8 @@ body {
 
 .tab-btn.active {
   background-color: var(--color-parchment);
-  color: var(--color-royal-blue);
-  border-top: 3px solid var(--color-royal-blue);
+  color: var(--color-crimson);
+  border-top: 3px solid var(--color-crimson);
   border-bottom: 2px solid var(--color-parchment);
   padding-bottom: 11px;
   z-index: 2;
@@ -221,7 +221,7 @@ body {
 
 /* Tutorial Text Style */
 .tutorial-banner {
-  background-color: rgba(43, 65, 112, 0.04);
+  background-color: rgba(75, 98, 138, 0.04);
   border-bottom: 1px solid var(--color-gold-light);
   border-top: 1px solid var(--color-gold-light);
   border-left: 3px solid var(--color-gold);
@@ -232,7 +232,7 @@ body {
   align-items: flex-start;
   gap: 10px;
   line-height: 1.6;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 4px 4px 0;
 }
 
 .tutorial-banner p {
@@ -241,7 +241,7 @@ body {
 
 .tutorial-banner-title {
   font-weight: 700;
-  color: var(--color-royal-blue);
+  color: var(--color-crimson);
   font-family: var(--font-heading);
   font-size: 1rem;
   letter-spacing: 0.02em;
@@ -261,7 +261,7 @@ body {
 .medieval-card {
   background-color: rgba(255,255,255,0.35);
   border: 1px solid var(--color-gold-light);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
   padding: 20px 22px;
   margin-bottom: 20px;
   position: relative;
@@ -314,20 +314,20 @@ body {
 
 /* Section Header Ribbons — matching official crimson background style */
 .sheet-ribbon {
-  background: linear-gradient(135deg, var(--color-royal-blue) 0%, #1e3158 50%, var(--color-royal-blue) 100%);
+  background: linear-gradient(135deg, var(--color-crimson) 0%, #6e1c1c 50%, var(--color-crimson) 100%);
   border: none;
   padding: 8px 28px;
   text-align: center;
   position: relative;
-  border-radius: 8px;
+  border-radius: 4px;
   margin: 8px 12px;
   box-shadow: 
-    0 2px 8px rgba(43, 65, 112, 0.2),
-    inset 0 1px 0 rgba(255,255,255,0.1);
+    0 2px 6px rgba(143, 44, 44, 0.15),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .sheet-ribbon h3 {
-  font-family: var(--font-korean), var(--font-serif) !important;
+  font-family: var(--font-heading) !important;
   color: #fff;
   font-size: 0.95rem;
   font-weight: 600;
@@ -549,37 +549,37 @@ body {
 
 /* Medieval Buttons */
 .btn-medieval {
-  font-family: var(--font-korean);
+  font-family: 'Pretendard', -apple-system, sans-serif !important;
   font-weight: 600;
   font-size: 0.85rem;
-  padding: 7px 14px;
-  background-color: rgba(255, 250, 240, 0.8);
+  padding: 6px 14px;
+  background-color: rgba(255, 250, 240, 0.85);
   border: 1px solid var(--color-gold);
-  color: var(--color-royal-blue);
+  color: var(--color-crimson);
   cursor: pointer;
   transition: all 0.2s;
-  letter-spacing: 0;
+  letter-spacing: -0.02em !important;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  border-radius: 20px;
+  border-radius: 4px;
 }
 
 .btn-medieval:hover {
-  background-color: var(--color-royal-blue);
+  background-color: var(--color-crimson);
   color: #fff;
-  border-color: var(--color-royal-blue);
+  border-color: var(--color-crimson);
 }
 
 .btn-medieval-primary {
-  background-color: var(--color-royal-blue);
-  border-color: var(--color-royal-blue);
+  background-color: var(--color-crimson);
+  border-color: var(--color-crimson);
   color: #fff;
 }
 
 .btn-medieval-primary:hover {
-  background-color: #7b1212;
-  border-color: #7b1212;
+  background-color: #6e1c1c;
+  border-color: #6e1c1c;
 }
 
 /* Custom Scrollbar for manuscript feel */
@@ -775,13 +775,11 @@ body {
 .cs-section {
   width: 100%;
   box-sizing: border-box;
-  background: linear-gradient(145deg, rgba(255, 250, 235, 0.7) 0%, rgba(244, 237, 216, 0.5) 100%);
-  border: 1px solid rgba(201, 168, 76, 0.2);
-  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(255, 250, 235, 0.45) 0%, rgba(244, 237, 216, 0.3) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.15);
+  border-radius: 2px;
   position: relative;
-  box-shadow: 
-    0 1px 3px rgba(139, 105, 20, 0.05),
-    inset 0 1px 0 rgba(255,255,255,0.5);
+  box-shadow: none;
   overflow: visible;
 }
 
@@ -1702,15 +1700,14 @@ input[type="number"] {
 }
 
 .ft-svg-path.path-marriage {
-  stroke: var(--color-gold-dark); /* Gilded gold-bronze connection */
-  stroke-width: 2px;
+  stroke: #5c4c38; /* Sepia/charcoal ink connection */
+  stroke-width: 2.5px;
   stroke-linecap: square;
-  filter: drop-shadow(0 1px 2px rgba(46, 31, 15, 0.15));
 }
 
 .ft-svg-path.path-lineage {
-  stroke: #8b6914; /* Deep sepia/bronze instead of modern royal blue */
-  stroke-width: 1.5px;
+  stroke: #2e1f0f; /* Bold sepia/charcoal ink connection */
+  stroke-width: 2.5px;
   stroke-linecap: square;
 }
 
@@ -1729,7 +1726,7 @@ input[type="number"] {
   align-items: center;
   gap: 12px;
   width: 100%;
-  border-bottom: 1.5px dashed rgba(201, 168, 76, 0.15);
+  border-bottom: 1px solid var(--color-gold-light); /* Solid administrative rule line */
   padding-bottom: 16px;
   padding-top: 16px;
 }
@@ -1747,23 +1744,24 @@ input[type="number"] {
   min-width: 230px;
   width: auto;
   flex-shrink: 0;
-  border-right: 3px double rgba(139, 105, 20, 0.35); /* Royal double line divider */
+  border-right: 1px solid var(--color-gold-light); /* Clean separator line */
   padding-right: 22px;
-  font-family: var(--font-korean-serif) !important; /* Elegant Korean Serif for headers */
-  font-size: 0.88rem;
+  font-family: var(--font-korean-serif) !important;
+  font-size: 0.82rem; /* Small ledger heading */
   font-weight: 700;
-  color: var(--color-gold-dark);
+  color: var(--color-ink-light);
   white-space: nowrap;
 }
 
 .ft-gen-badge {
-  background: var(--color-gold-dark); /* Old gold tone badge */
-  color: #fff;
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-size: 0.75rem;
+  background: transparent;
+  color: var(--color-ink-light);
+  border: 1px solid var(--color-gold-light);
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-size: 0.72rem;
   font-family: var(--font-serif) !important;
-  box-shadow: 0 1px 3px rgba(139, 105, 20, 0.25);
+  box-shadow: none;
 }
 
 .ft-gen-nodes {
@@ -1794,10 +1792,9 @@ input[type="number"] {
   justify-content: center;
   background: #faf5eb;
   border: 1px solid var(--color-gold-light);
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border-radius: 2px;
+  width: 22px;
+  height: 22px;
   z-index: 3;
 }
 
@@ -1809,65 +1806,47 @@ input[type="number"] {
 .ft-card {
   width: 196px;
   padding: 4px 8px 6px 8px;
-  border: 3px double var(--color-gold-light); /* Historical double gold border */
-  border-radius: 6px;
-  background: linear-gradient(145deg, #fdfaf2 0%, #f5ecd3 100%) !important; /* Warm antique paper scroll texture */
-  box-shadow: 
-    inset 0 0 10px rgba(139, 105, 20, 0.15),
-    0 3px 8px rgba(46, 31, 15, 0.08);
+  border: 1px solid var(--color-gold-light); /* Thin administrative border */
+  border-radius: 2px;
+  background: #fbf9f5 !important; /* Flat parchment base */
+  box-shadow: none;
   position: relative;
-  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: border-color 0.2s;
   overflow: visible;
   z-index: 2;
 }
 
 .ft-card * {
-  font-family: var(--font-korean-serif) !important; /* Force elegant classic serif text inside card! */
+  font-family: var(--font-korean-serif) !important;
 }
 
 .ft-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    inset 0 0 12px rgba(139, 105, 20, 0.2),
-    0 6px 16px rgba(46, 31, 15, 0.15);
   border-color: var(--color-gold) !important;
 }
 
 .ft-card-male {
-  background: linear-gradient(145deg, #f0f5fa 0%, #e2edf6 100%) !important;
-  border-color: rgba(70, 130, 180, 0.4) !important;
-  box-shadow: 
-    inset 0 0 10px rgba(70, 130, 180, 0.1),
-    0 3px 8px rgba(46, 31, 15, 0.08);
+  background: #f4f6f8 !important; /* Flat administrative ledger tone */
+  border-color: #cbd4e1 !important;
 }
 .ft-card-male:hover {
-  border-color: rgba(70, 130, 180, 0.75) !important;
+  border-color: var(--color-royal-blue) !important;
 }
 
 .ft-card-female {
-  background: linear-gradient(145deg, #fdf5f5 0%, #fae6e6 100%) !important;
-  border-color: rgba(219, 112, 147, 0.4) !important;
-  box-shadow: 
-    inset 0 0 10px rgba(219, 112, 147, 0.1),
-    0 3px 8px rgba(46, 31, 15, 0.08);
+  background: #faf6f6 !important; /* Flat administrative ledger tone */
+  border-color: #ebd5d5 !important;
 }
 .ft-card-female:hover {
-  border-color: rgba(219, 112, 147, 0.75) !important;
+  border-color: var(--color-crimson) !important;
 }
 
 .ft-card-knight {
-  border: 3.5px double var(--color-gold) !important; /* Grand double gold border for the Knight */
-  background: linear-gradient(145deg, #fffdf4 0%, #f6e8c3 100%) !important; /* Glowing noble paper scroll texture */
-  box-shadow: 
-    inset 0 0 14px rgba(201, 168, 76, 0.28),
-    0 3px 10px rgba(201, 168, 76, 0.15) !important;
+  border: 1.5px solid var(--color-gold) !important; /* Simplified thin gold outline for the active Knight */
+  background: #fdfaf2 !important;
 }
 
 .ft-card-knight:hover {
   border-color: var(--color-gold-dark) !important;
-  box-shadow: 
-    inset 0 0 16px rgba(201, 168, 76, 0.35),
-    0 6px 18px rgba(201, 168, 76, 0.25) !important;
 }
 
 .ft-card-header {
@@ -1889,12 +1868,13 @@ input[type="number"] {
 .ft-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  padding: 1px 4px;
-  border-radius: 10px;
+  gap: 3px;
+  padding: 0;
+  border-radius: 0;
   font-size: 0.72rem;
-  font-weight: 700;
-  border: 1px solid;
+  font-weight: 600;
+  border: none !important;
+  background: transparent !important;
   letter-spacing: -0.03em;
 }
 
@@ -2749,4 +2729,30 @@ input[type="number"] {
     padding: 6px 8px;
   }
 }
+
+/* Chronicle Dividers & Marginalia annotations */
+.chronicle-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 16px 0;
+  color: var(--color-gold-dark);
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  opacity: 0.6;
+  user-select: none;
+}
+
+.chronicle-marginalia {
+  font-family: var(--font-korean-serif) !important;
+  font-size: 0.72rem !important;
+  color: #7d654c !important; /* soft faded ink tone */
+  font-style: italic !important;
+  text-align: center;
+  margin-top: 4px;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  opacity: 0.85;
+}
+
 

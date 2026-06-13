@@ -2962,7 +2962,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '16px' }}>
 
             {/* 📊 가문 평판 설정 (Family Standings, 2d6) */}
-            <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
+            <div className="cs-section-flat" style={{ border: 'none', borderBottom: '1px solid var(--color-gold-light)', padding: '14px 0', backgroundColor: 'transparent' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>📊 가문 평판 설정 (2d6, p.30)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
@@ -3026,10 +3026,10 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               </div>
             </div>
 
-            {/* 🛡️ 가문 군사 동원력 설정 (Family Muster, p.28) */}
-            <div style={{ border: '1.2px solid var(--color-gold)', borderRadius: '8px', padding: '14px', backgroundColor: 'rgba(255,255,255,0.5)' }}>
+            {/* 🛡️ 가문의 군역 설정 (Family Muster, p.28) */}
+            <div className="cs-section-flat" style={{ border: 'none', borderBottom: '1px solid var(--color-gold-light)', padding: '14px 0', backgroundColor: 'transparent' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문 군사 동원력 (Muster, p.28)</span>
+                <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문의 군역 (Muster, p.28)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
                   <button type="button"
                     style={{
@@ -3064,7 +3064,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
               {sheetMusterMode === 'roll' && (
                 <div style={{ marginBottom: '10px' }}>
-                  <button type="button" className="btn-medieval" onClick={rollSheetMuster}>🎲 동원력 다이스 굴리기</button>
+                  <button type="button" className="btn-medieval" onClick={rollSheetMuster}>🎲 군역 다이스 굴리기</button>
                   {sheetMusterRollResults && (
                     <div style={{ marginTop: '8px', fontSize: '0.74rem', color: 'var(--color-royal-blue)', backgroundColor: 'white', padding: '6px', borderRadius: '4px', border: '1px dotted var(--color-border)' }}>
                       👴 노년 (1d6-5): <strong>d6:[{sheetMusterRollResults.old.roll}]</strong> → {sheetMusterRollResults.old.val}명<br />

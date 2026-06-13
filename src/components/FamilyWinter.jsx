@@ -1188,8 +1188,8 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       <div className="tutorial-banner">
         <div>
-          <h4 className="tutorial-banner-title">🏰 가문 및 겨울 정산 (The Winter Phase)</h4>
-          <p>1년 주기의 모험 정리는 기사의 성장과 다음 해의 경제를 결정합니다. 룰북 공식 10단계를 진행하세요.</p>
+          <h4 className="tutorial-banner-title">🏰 가문의 겨울 정산과 역사 기록 (The Winter Phase)</h4>
+          <p>1년 주기의 모험 정리는 기사의 성장과 다음 해의 경제를 결정합니다. 연대기 작성이 다음 세대를 향해 나아갑니다.</p>
         </div>
       </div>
 
@@ -1199,13 +1199,13 @@ export default function FamilyWinter({ character, setCharacter }) {
           className={`sub-tab-btn ${activeSubTab === 'tree' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('tree')}
         >
-          <Shield size={14} /> 🏰 가문 명망 및 대서사 계보도 (Lineage)
+          <Shield size={14} /> 가문의 영예와 연대기 계보 (Lineage)
         </button>
         <button
           className={`sub-tab-btn ${activeSubTab === 'winter' ? 'active' : ''}`}
           onClick={() => setActiveSubTab('winter')}
         >
-          <RotateCcw size={14} /> ❄️ 겨울 나기와 봉토 경제 경영
+          <RotateCcw size={14} /> 겨울 정산과 역사 서술 (Winter Phase)
         </button>
       </div>
 
@@ -2076,7 +2076,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
           {/* Sub Panel: Logger */}
           <section className="cs-section" style={{ marginTop: '8px' }}>
-            <div className="sheet-ribbon"><h3>겨울 정산 결과 실시간 기록실 (Log)</h3></div>
+            <div className="sheet-ribbon"><h3>겨울 정산 연대기 기록 (Log)</h3></div>
             <div className="cs-section-inner">
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '180px', overflowY: 'auto', backgroundColor: '#fff', padding: '10px', border: '1px solid var(--color-gold-light)' }}>
                 {logMessages.length === 0 ? (

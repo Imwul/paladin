@@ -320,10 +320,10 @@ export default function App() {
       <div className="header-decor">
         <div className="header-title-container">
           <h1>
-            Paladin: Passage of Arms <span className="title-ko-sub">팔라딘: 성기사들의 모험</span>
+            성기사의 모험과 연대기 <span className="title-ko-sub">Paladin: Passage of Arms</span>
           </h1>
           <p className="subtitle">
-            <ProperNoun en="Warriors of Charlemagne" ko="샤를마뉴 대제의 용사들" /> &bull; 1인 전용 컴패니언 웹앱
+            <ProperNoun en="Warriors of Charlemagne" ko="샤를마뉴 대제 용사들의 기록서" />
           </p>
         </div>
 
@@ -371,22 +371,22 @@ export default function App() {
       {/* Navigation tab bar */}
       <div className="tab-navigation">
         <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-          <BookOpen size={16} /> 성기사의 대시보드
+          <BookOpen size={16} /> 성기사의 기록
         </button>
         <button className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`} onClick={() => setActiveTab('character')}>
-          <User size={16} /> 기사 캐릭터 시트
+          <User size={16} /> 기사의 기록
         </button>
         <button className={`tab-btn ${activeTab === 'family' ? 'active' : ''}`} onClick={() => setActiveTab('family')}>
-          <Shield size={16} /> 가문 역사와 겨울 정산
+          <Shield size={16} /> 가문의 계보
         </button>
         <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> 모험 역사 연대기 &amp; 일지
+          <Compass size={16} /> 모험 연대기
         </button>
         <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
-          <Sparkles size={16} /> 운명의 주사위 &amp; 오라클
+          <Sparkles size={16} /> 운명의 신탁과 주사위
         </button>
         <button className={`tab-btn ${activeTab === 'lore' ? 'active' : ''}`} onClick={() => setActiveTab('lore')}>
-          <Library size={16} /> 제국 백과사전 &amp; 아카이브
+          <Library size={16} /> 제국의 서고
         </button>
       </div>
 
