@@ -4362,6 +4362,28 @@ export default function FamilyTree({ character, setCharacter }) {
     // Track drawn marriages to avoid duplicate lines
     const drawnMarriages = new Set();
 
+    // Cache generation bounds to place horizontal lines in the center of the vertical gaps
+    const genBounds = {};
+    const getGenBounds = (g) => {
+      if (genBounds[g]) return genBounds[g];
+      const genMembers = members.filter(m => m.generation === g);
+      let minTop = Infinity;
+      let maxBottom = -Infinity;
+      genMembers.forEach(m => {
+        const el = treeContainerRef.current.querySelector(`[data-node-id="${m.id}"]`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const top = rect.top - containerRect.top;
+          const bottom = rect.bottom - containerRect.top;
+          if (top < minTop) minTop = top;
+          if (bottom > maxBottom) maxBottom = bottom;
+        }
+      });
+      const bounds = { minTop, maxBottom };
+      genBounds[g] = bounds;
+      return bounds;
+    };
+
     members.forEach(member => {
       // 1. Marriage Lines
       if (member.spouseId && !drawnMarriages.has(`${member.id}-${member.spouseId}`) && !drawnMarriages.has(`${member.spouseId}-${member.id}`)) {
@@ -4419,8 +4441,18 @@ export default function FamilyTree({ character, setCharacter }) {
           }
 
           if (parentX !== undefined && parentY !== undefined) {
+            // Determine vertical center of the gap between the parent's generation and child's generation
+            const parentGenBounds = getGenBounds(parentNode.generation);
+            const childGenBounds = getGenBounds(member.generation);
+            
+            let midY;
+            if (parentGenBounds.maxBottom !== -Infinity && childGenBounds.minTop !== Infinity && childGenBounds.minTop > parentGenBounds.maxBottom) {
+              midY = (parentGenBounds.maxBottom + childGenBounds.minTop) / 2;
+            } else {
+              midY = (parentY + childY) / 2;
+            }
+
             // Orthogonal routing (직각 형태 연결선)
-            const midY = (parentY + childY) / 2;
             const path = `M ${parentX} ${parentY} L ${parentX} ${midY} L ${childX} ${midY} L ${childX} ${childY}`;
             
             computedLines.push({

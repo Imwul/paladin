@@ -1739,7 +1739,7 @@ input[type="number"] {
 .ft-rows-container {
   display: flex;
   flex-direction: column;
-  gap: 48px;
+  gap: 80px; /* Increased from 48px to give ample space for taller registry cards with notes and characteristics */
   position: relative;
   z-index: 2;
   width: 100%;
