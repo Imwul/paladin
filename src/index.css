@@ -22,9 +22,9 @@
   
   --font-korean: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif; /* Reading content defaults to Hahmlet */
   --font-korean-serif: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
-  --font-heading: 'Marcellus', 'Cinzel', 'Georgia', serif; /* Titles default to Marcellus/Cinzel */
-  --font-serif: 'Cinzel', 'Georgia', serif;
-  --font-gothic: 'Marcellus', 'Cinzel', 'Georgia', serif;
+  --font-heading: 'Marcellus', 'Cinzel', 'Hahmlet', 'Georgia', serif; /* Titles default to Marcellus/Cinzel, falling back to Hahmlet for Korean */
+  --font-serif: 'Cinzel', 'Hahmlet', 'Georgia', serif;
+  --font-gothic: 'Marcellus', 'Cinzel', 'Hahmlet', 'Georgia', serif;
   
   --shadow-medieval: 0 2px 8px rgba(46, 31, 15, 0.05);
 }
@@ -1919,6 +1919,10 @@ input[type="number"] {
   letter-spacing: -0.03em !important;
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
 }
 
 .ft-name-ko {

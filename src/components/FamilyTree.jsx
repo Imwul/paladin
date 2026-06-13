@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calendar, Skull, Dices, Check, Shield, Award, ChevronLeft, ChevronRight, Sparkles, RotateCcw, Compass } from 'lucide-react';
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
@@ -4148,7 +4148,6 @@ export default function FamilyTree({ character, setCharacter }) {
         updated.family.positions[drag.memberId] = { x: nextX, y: 0 };
         return updated;
       });
-      calculateLines();
     }
   };
 
@@ -4199,7 +4198,6 @@ export default function FamilyTree({ character, setCharacter }) {
         updated.family.positions[drag.memberId] = { x: nextX, y: 0 };
         return updated;
       });
-      calculateLines();
       e.preventDefault();
     }
   };
@@ -4337,12 +4335,14 @@ export default function FamilyTree({ character, setCharacter }) {
     alert(`[가문 상속 완료]: 새로운 계승자 기사(${editingMember.name}, ${calculatedAge}세)로의 전환이 시트와 가계도에 공식 적용되었습니다!`);
   };
 
-  const members = (character.family?.members || []).map(m => {
-    if (m.relation === '본인') {
-      return { ...m, name: character.personal?.name || m.name };
-    }
-    return m;
-  });
+  const members = useMemo(() => {
+    return (character.family?.members || []).map(m => {
+      if (m.relation === '본인') {
+        return { ...m, name: character.personal?.name || m.name };
+      }
+      return m;
+    });
+  }, [character.family?.members, character.personal?.name]);
 
   // Default Template for reset
   const defaultMembers = [
@@ -4354,7 +4354,7 @@ export default function FamilyTree({ character, setCharacter }) {
   ];
 
   // SVG Lines Calculation
-  const calculateLines = () => {
+  const calculateLines = useCallback(() => {
     if (!treeContainerRef.current) return;
     const containerRect = treeContainerRef.current.getBoundingClientRect();
     const computedLines = [];
@@ -4434,27 +4434,42 @@ export default function FamilyTree({ character, setCharacter }) {
     });
 
     setLines(computedLines);
-  };
+  }, [members]);
 
-  useEffect(() => {
-    // Recalculate layout paths after component rendering or data changes
-    const timer = setTimeout(() => {
+  useLayoutEffect(() => {
+    // 1. Calculate lines immediately
+    calculateLines();
+
+    // 2. Schedule progressive recalculations for animations or font loads
+    const timeouts = [50, 150, 300, 600, 1000].map(delay => 
+      setTimeout(() => {
+        calculateLines();
+      }, delay)
+    );
+
+    // 3. Re-align lines when transitions finish inside the container
+    const container = treeContainerRef.current;
+    const handleTransitionEnd = (e) => {
       calculateLines();
-    }, 100);
+    };
+    if (container) {
+      container.addEventListener('transitionend', handleTransitionEnd);
+    }
 
+    // 4. Handle resize events
     window.addEventListener('resize', calculateLines);
     
-    // Setup ResizeObserver for the tree container itself to track dynamic DOM shifts
+    // 5. Setup ResizeObserver for dynamic DOM shifts
     let observer;
-    if (treeContainerRef.current && typeof ResizeObserver !== 'undefined') {
+    if (container && typeof ResizeObserver !== 'undefined') {
       observer = new ResizeObserver(() => {
         calculateLines();
 
         // Centering logic inside ResizeObserver to guarantee scrollWidth is fully calculated
         if (!hasCenteredRef.current) {
-          const wrapper = treeContainerRef.current.parentElement;
+          const wrapper = container.parentElement;
           if (wrapper) {
-            const maxScroll = treeContainerRef.current.scrollWidth - wrapper.clientWidth;
+            const maxScroll = container.scrollWidth - wrapper.clientWidth;
             if (maxScroll > 0) {
               wrapper.scrollLeft = maxScroll / 2;
               hasCenteredRef.current = true;
@@ -4462,27 +4477,18 @@ export default function FamilyTree({ character, setCharacter }) {
           }
         }
       });
-      observer.observe(treeContainerRef.current);
+      observer.observe(container);
     }
 
-    // Fallback centering timer
-    const fallbackCenteringTimer = setTimeout(() => {
-      if (!hasCenteredRef.current && treeContainerRef.current) {
-        const wrapper = treeContainerRef.current.parentElement;
-        if (wrapper) {
-          wrapper.scrollLeft = (treeContainerRef.current.scrollWidth - wrapper.clientWidth) / 2;
-          hasCenteredRef.current = true;
-        }
-      }
-    }, 1000);
-
     return () => {
-      clearTimeout(timer);
-      clearTimeout(fallbackCenteringTimer);
+      timeouts.forEach(clearTimeout);
       window.removeEventListener('resize', calculateLines);
+      if (container) {
+        container.removeEventListener('transitionend', handleTransitionEnd);
+      }
       if (observer) observer.disconnect();
     };
-  }, [members]);
+  }, [calculateLines, character.family?.positions]);
 
   const handleRandomName = (gender) => {
     setFormGender(gender);
