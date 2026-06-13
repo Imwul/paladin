@@ -1185,11 +1185,16 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   return (
     <div className="cs-page view-animate">
+      <h2 className="cs-page-title">
+        <Shield size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        가문 계보 및 겨울 정산부
+      </h2>
 
       <div className="tutorial-banner">
         <div>
-          <h4 className="tutorial-banner-title">🏰 가문의 겨울 정산과 역사 기록 (The Winter Phase)</h4>
-          <p>1년 주기의 모험 정리는 기사의 성장과 다음 해의 경제를 결정합니다. 연대기 작성이 다음 세대를 향해 나아갑니다.</p>
+          <p style={{ margin: 0 }}>
+            1년 주기의 모험 정리는 기사의 성장과 다음 해의 경제를 결정합니다. 연대기 작성이 다음 세대를 향해 나아갑니다.
+          </p>
         </div>
       </div>
 

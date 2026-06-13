@@ -1497,6 +1497,10 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   return (
     <div className="cs-page view-animate">
+      <h2 className="cs-page-title">
+        <User size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        기사의 개인 기록부
+      </h2>
 
       {/* 🔮 룰북 기반 캐릭터 생성 도우미 배너 및 패널 */}
       <div className="cs-gen-trigger-bar" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>

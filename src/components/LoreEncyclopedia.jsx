@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures, frankishSociety, franklandTerritories, minorNpcs } from '../data/lore';
-import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword } from 'lucide-react';
+import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword, Library } from 'lucide-react';
 import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
 
@@ -239,11 +239,16 @@ export default function LoreEncyclopedia() {
 
   return (
     <div className="cs-page view-animate">
+      <h2 className="cs-page-title">
+        <Library size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        제국의 백과사전
+      </h2>
       {/* Tutorial Header Banner */}
       <div className="tutorial-banner">
         <div>
-          <h4 className="tutorial-banner-title">🏛️ 제국 백과사전 (Carolingian Encyclopedia)</h4>
-          <p>샤를마뉴 대제 시대의 8대 명가 및 제국 지리(Gazetteer), 전설의 괴수 및 야수(Bestiary)와 솔로 시나리오 공식을 열람하세요.</p>
+          <p style={{ margin: 0 }}>
+            샤를마뉴 대제 시대의 8대 명가 및 제국 지리(Gazetteer), 전설의 괴수 및 야수(Bestiary)와 솔로 시나리오 공식을 열람하세요.
+          </p>
         </div>
       </div>
 

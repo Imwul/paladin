@@ -751,6 +751,36 @@ body {
   gap: 6px;
 }
 
+.cs-page-title {
+  font-family: var(--font-heading) !important;
+  font-size: 1.25rem !important;
+  color: var(--color-ink) !important;
+  border-bottom: 1.5px solid var(--color-gold-light) !important;
+  padding-bottom: 6px;
+  margin: 10px 0 16px 0 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.record-label {
+  font-family: var(--font-korean-serif) !important;
+  color: var(--color-grey) !important;
+  font-weight: 400 !important;
+  font-size: 0.65rem !important;
+  opacity: 0.8;
+}
+
+.record-value {
+  font-family: var(--font-korean-serif) !important;
+  color: var(--color-ink-light) !important;
+  font-weight: 500 !important;
+  font-size: 0.65rem !important;
+}
+
+
 /* Flex row for side-by-side cards */
 .cs-row {
   display: flex;
@@ -1853,11 +1883,12 @@ input[type="number"] {
 }
 
 .ft-relation {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-ink-light);
+  font-size: 0.62rem;
+  font-weight: 400 !important;
+  color: var(--color-grey) !important;
   font-family: var(--font-korean-serif) !important;
   letter-spacing: -0.02em;
+  opacity: 0.85;
 }
 
 .ft-status-badge {

@@ -463,39 +463,39 @@ export default function ChronologyJournal({ character, setCharacter }) {
   return (
     <div className="cs-page view-animate">
       
-      {/* 📜 Elegant Illuminated Parchment Shield Header Card */}
-      <section className="cs-section" style={{ border: '2px solid var(--color-gold)' }}>
-        <div className="cs-section-inner" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'rgba(201, 168, 76, 0.05)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '56px', height: '56px', border: '2px solid var(--color-gold-dark)', borderRadius: '50%', backgroundColor: 'rgba(43, 65, 112, 0.1)' }}>
-              <Shield size={28} style={{ color: 'var(--color-gold-dark)' }} />
-            </div>
-            <div>
-              <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--color-royal-blue)', margin: 0 }}>
-                {character.family?.name || '아르덴'} 가문 역사 대연대기
-              </h2>
-              <p style={{ fontStyle: 'italic', fontSize: '0.85rem', color: 'var(--color-grey)', margin: '2px 0 0 0', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                <span>🛡️ 가문훈: <strong>"{character.family?.motto || '명예와 신조'}"</strong></span>
-                <span>•</span>
-                <span>📣 함성: <strong>"{character.family?.battleCry || '몽주아 생드니!'}"</strong></span>
-                <span>•</span>
-                <span>⛪ 수호 성인: <strong>{patronSaint}</strong>{patronSaintRoll !== null ? ` (🎲 d20: ${patronSaintRoll})` : ''}</span>
-              </p>
-            </div>
+      <h2 className="cs-page-title">
+        <BookOpen size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        {character.family?.name || '아르덴'} 가문 역사 대연대기
+      </h2>
+
+      {/* 📜 Family General Records Summary */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0 16px 0', borderBottom: '1px solid var(--color-gold-light)', marginBottom: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '42px', height: '42px', border: '1.5px solid var(--color-gold-dark)', borderRadius: '50%', backgroundColor: 'transparent' }}>
+            <Shield size={20} style={{ color: 'var(--color-gold-dark)' }} />
           </div>
-          
-          <div style={{ display: 'flex', gap: '20px', fontSize: '0.88rem' }}>
-            <div style={{ textAlign: 'center', padding: '6px 12px', background: 'rgba(255, 255, 255, 0.5)', borderRadius: '6px', border: '1px solid var(--color-gold-light)' }}>
-              <div style={{ color: 'var(--color-grey)', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 600 }}>가문 누적 영예</div>
-              <strong style={{ fontSize: '1.15rem', color: 'var(--color-gold-dark)' }}>{totalGlory.toLocaleString()} Glory</strong>
-            </div>
-            <div style={{ textAlign: 'center', padding: '6px 12px', background: 'rgba(255, 255, 255, 0.5)', borderRadius: '6px', border: '1px solid var(--color-gold-light)' }}>
-              <div style={{ color: 'var(--color-grey)', fontSize: '0.74rem', textTransform: 'uppercase', fontWeight: 600 }}>현재 작위 수임</div>
-              <strong style={{ fontSize: '1.15rem', color: 'var(--color-royal-blue)' }}>{currentLeaderName}</strong>
-            </div>
+          <div>
+            <p style={{ fontStyle: 'italic', fontSize: '0.85rem', color: 'var(--color-grey)', margin: 0, display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <span>🛡️ 가문훈: <strong>"{character.family?.motto || '명예와 신조'}"</strong></span>
+              <span>•</span>
+              <span>📣 함성: <strong>"{character.family?.battleCry || '몽주아 생드니!'}"</strong></span>
+              <span>•</span>
+              <span>⛪ 수호 성인: <strong>{patronSaint}</strong>{patronSaintRoll !== null ? ` (🎲 d20: ${patronSaintRoll})` : ''}</span>
+            </p>
           </div>
         </div>
-      </section>
+        
+        <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem' }}>
+          <div style={{ textAlign: 'center', padding: '4px 10px', background: 'transparent', border: '1px solid var(--color-gold-light)' }}>
+            <div style={{ color: 'var(--color-grey)', fontSize: '0.72rem', textTransform: 'uppercase', fontWeight: 500 }}>가문 누적 영예</div>
+            <strong style={{ fontSize: '1.05rem', color: 'var(--color-gold-dark)' }}>{totalGlory.toLocaleString()} Glory</strong>
+          </div>
+          <div style={{ textAlign: 'center', padding: '4px 10px', background: 'transparent', border: '1px solid var(--color-gold-light)' }}>
+            <div style={{ color: 'var(--color-grey)', fontSize: '0.72rem', textTransform: 'uppercase', fontWeight: 500 }}>현재 작위 수임</div>
+            <strong style={{ fontSize: '1.05rem', color: 'var(--color-ink-light)' }}>{currentLeaderName}</strong>
+          </div>
+        </div>
+      </div>
 
       {/* 🧭 Primary View Toggle Tabs */}
       <div style={{ display: 'flex', gap: '6px', margin: '4px 0 10px 0' }}>

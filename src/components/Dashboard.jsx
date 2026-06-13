@@ -5,10 +5,13 @@ import { BookOpen, Award, Compass } from 'lucide-react';
 export default function Dashboard({ setActiveTab }) {
   return (
     <div className="cs-page view-animate">
+      <h2 className="cs-page-title">
+        <BookOpen size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        성기사 입문 기록부
+      </h2>
       <div className="tutorial-banner">
         <div>
-          <h4 className="tutorial-banner-title">입문 기록</h4>
-          <p>
+          <p style={{ margin: 0 }}>
             <ProperNoun en="Paladin" ko="팔라딘" /> 모험 기록에 오신 것을 환영합니다. 이 연대기는 <ProperNoun en="Charlemagne" ko="샤를마뉴" /> 대제 시대의 성기사가 되어 가문의 역사와 무훈을 남길 수 있도록 돕습니다.
             규칙에 익숙하지 않더라도 기록을 이어나갈 수 있도록 구성되어 있습니다.
           </p>

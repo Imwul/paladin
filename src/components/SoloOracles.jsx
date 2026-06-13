@@ -2165,16 +2165,17 @@ export default function SoloOracles({ character, setCharacter }) {
 
   return (
     <div className="cs-page view-animate">
+      <h2 className="cs-page-title">
+        <Sparkles size={20} style={{ color: 'var(--color-gold-dark)' }} />
+        운명의 신탁과 주사위
+      </h2>
       
       {/* Profile Header Banner */}
       <div className="tutorial-banner" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px 22px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '8px' }}>
           <div>
-            <h4 className="tutorial-banner-title" style={{ fontSize: '1.05rem' }}>
-              🛡️ {character?.personal?.name || '기사'}의 오라클 &amp; 기사단 무대
-            </h4>
-            <p style={{ fontSize: '0.86rem', margin: 0 }}>
-              명예: {character?.gear?.gloryTotal || 1000} Glory &bull; 소지금: £{character?.gear?.cash || 0}
+            <p style={{ fontSize: '0.86rem', margin: 0, color: 'var(--color-grey)' }}>
+              기사: <strong style={{ color: 'var(--color-ink)' }}>{(character?.personal?.name || '기사').split(' (')[0]}</strong> &bull; 명예: <strong style={{ color: 'var(--color-ink)' }}>{character?.gear?.gloryTotal || 1000} Glory</strong> &bull; 소지금: <strong style={{ color: 'var(--color-ink)' }}>£{character?.gear?.cash || 0}</strong>
             </p>
           </div>
         </div>
