@@ -14,7 +14,7 @@
   --color-gold-dark: #8b6914;
   --color-crimson: #8f2c2c;          /* Deep medieval crimson */
   --color-crimson-light: rgba(143, 44, 44, 0.05);
-  --color-royal-blue: #4b628a;       /* Muted blue */
+  --color-royal-blue: #31271c;       /* Iron gall charcoal ink */
   --color-danger: #8b2020;           /* Actual red — only for HP/death indicators */
   --color-grey: #6b5d4e;
   --color-grey-light: #ddd3c1;
@@ -1804,10 +1804,10 @@ input[type="number"] {
 }
 
 .ft-card {
-  width: 196px;
-  padding: 4px 8px 6px 8px;
+  width: 156px;
+  padding: 2px 4px 3px 4px;
   border: 1px solid var(--color-gold-light); /* Thin administrative border */
-  border-radius: 2px;
+  border-radius: 0;
   background: #fbf9f5 !important; /* Flat parchment base */
   box-shadow: none;
   position: relative;
@@ -1829,7 +1829,7 @@ input[type="number"] {
   border-color: #cbd4e1 !important;
 }
 .ft-card-male:hover {
-  border-color: var(--color-royal-blue) !important;
+  border-color: var(--color-gold-dark) !important;
 }
 
 .ft-card-female {
@@ -1837,7 +1837,7 @@ input[type="number"] {
   border-color: #ebd5d5 !important;
 }
 .ft-card-female:hover {
-  border-color: var(--color-crimson) !important;
+  border-color: var(--color-gold-dark) !important;
 }
 
 .ft-card-knight {
@@ -1858,9 +1858,9 @@ input[type="number"] {
 }
 
 .ft-relation {
-  font-size: 0.78rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  color: var(--color-gold-dark);
+  color: var(--color-ink-light);
   font-family: var(--font-korean-serif) !important;
   letter-spacing: -0.02em;
 }
@@ -1885,10 +1885,10 @@ input[type="number"] {
 }
 
 .ft-name {
-  font-size: 0.84rem;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--color-ink);
-  margin: 2px 0 3px 0;
+  margin: 1px 0 2px 0;
   font-family: var(--font-korean) !important;
   letter-spacing: -0.03em !important;
   width: 100%;
@@ -1896,23 +1896,23 @@ input[type="number"] {
 }
 
 .ft-name-ko {
-  display: inline;
+  display: block; /* Stack English below Korean */
   font-weight: 700;
   line-height: 1.2;
 }
 
 .ft-name-en {
-  display: inline-block;
-  font-size: 0.75rem;
+  display: block; /* Stack on new line */
+  font-size: 0.62rem;
   font-weight: 500;
   color: var(--color-grey);
-  margin-left: 2px;
-  margin-right: 2px;
+  margin: 0;
   font-family: var(--font-serif) !important;
+  line-height: 1.1;
 }
 
 .ft-years {
-  font-size: 0.78rem;
+  font-size: 0.64rem;
   color: var(--color-grey);
   display: flex;
   justify-content: center;
@@ -1925,11 +1925,11 @@ input[type="number"] {
 }
 
 .ft-death-cause {
-  font-size: 0.68rem;
+  font-size: 0.6rem;
   color: var(--color-crimson) !important;
   font-style: italic;
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 1px;
   text-align: center;
   word-break: keep-all;
   display: block;

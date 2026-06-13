@@ -5423,13 +5423,13 @@ export default function FamilyTree({ character, setCharacter }) {
             }} title={resolvedChar.bonusText + (isInherited ? ' (상속됨)' : '')}>
               <div style={{ 
                 fontWeight: 'bold', 
-                color: memberGender === 'female' ? '#b83b5e' : '#2b5876',
+                color: memberGender === 'female' ? '#8f2c2c' : '#4a3726',
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
                 gap: '2px' 
               }}>
-                <span>⭐</span> {enPart}
+                {enPart}
               </div>
               {koPart && (
                 <div style={{ 

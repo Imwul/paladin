@@ -582,68 +582,64 @@ export default function ChronologyJournal({ character, setCharacter }) {
                   <div 
                     key={year} 
                     style={{ 
-                      borderLeft: isCurrentYear ? '4px solid var(--color-royal-blue)' : '4px solid var(--color-gold)', 
-                      borderRadius: '4px',
-                      backgroundColor: isCurrentYear ? 'rgba(43, 65, 112, 0.02)' : 'rgba(255,255,255,0.4)',
-                      boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
-                      overflow: 'hidden'
+                      borderBottom: '1px solid var(--color-gold-light)', 
+                      padding: '10px 0', 
+                      backgroundColor: isCurrentYear ? 'rgba(201, 168, 76, 0.04)' : 'transparent',
+                      borderLeft: isCurrentYear ? '3px solid var(--color-gold-dark)' : 'none',
+                      paddingLeft: isCurrentYear ? '8px' : '0'
                     }}
                   >
                     {/* Header */}
                     <div style={{ 
-                      backgroundColor: isCurrentYear ? 'rgba(43, 65, 112, 0.07)' : 'rgba(201, 168, 76, 0.06)', 
-                      padding: '10px 16px', 
+                      padding: '2px 0 4px 0', 
                       display: 'flex', 
                       justifyContent: 'space-between', 
                       alignItems: 'center',
-                      borderBottom: '1px solid rgba(201, 168, 76, 0.12)'
+                      borderBottom: '1px dotted rgba(201, 168, 76, 0.25)'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ 
                           fontFamily: 'var(--font-heading)', 
-                          fontSize: '1rem', 
+                          fontSize: '0.9rem', 
                           fontWeight: 'bold', 
-                          color: isCurrentYear ? 'var(--color-royal-blue)' : 'var(--color-gold-dark)',
-                          background: 'rgba(255,255,255,0.8)',
-                          padding: '2px 8px',
-                          borderRadius: '4px',
-                          border: '1px solid rgba(201,168,76,0.3)'
+                          color: 'var(--color-ink)',
+                          marginRight: '8px'
                         }}>
                           {year} AD
                         </span>
-                        <strong style={{ fontSize: '0.9rem', color: 'var(--color-ink)' }}>
+                        <strong style={{ fontSize: '0.84rem', color: 'var(--color-ink-light)' }}>
                           {globalHist ? globalHist.title : isInteractiveAncestor ? (year <= 744 ? "조부 알베르의 연대기" : "부친 제라르의 연대기") : "가문의 안정기"}
                         </strong>
                       </div>
                       {isCurrentYear && (
-                        <span style={{ fontSize: '0.74rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', backgroundColor: 'rgba(43, 65, 112, 0.1)', padding: '2px 6px', borderRadius: '10px' }}>
-                          현재 플레이 연도
+                        <span style={{ fontSize: '0.68rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>
+                          [현재 플레이 연도]
                         </span>
                       )}
                     </div>
 
-                    <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ padding: '6px 0', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       
                       {/* Kingdom History */}
-                      <div style={{ fontSize: '0.86rem', color: 'var(--color-ink-light)', lineHeight: 1.5 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.78rem', textTransform: 'uppercase', marginBottom: '2px' }}>
-                          <Compass size={12} /> 제국 연대기 (Kingdom History)
+                      <div style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', lineHeight: 1.4 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.74rem', textTransform: 'uppercase', marginBottom: '2px' }}>
+                          <Compass size={11} /> 제국 연대기 (Kingdom History)
                         </div>
-                        <p style={{ fontStyle: 'italic', paddingLeft: '4px' }}>
+                        <p style={{ fontStyle: 'italic', paddingLeft: '4px', margin: 0 }}>
                           {globalHist ? globalHist.summary : ancestorHist ? ancestorHist : "제국의 국경이 평화롭게 보존되며 기사들이 한 해의 원정을 준비하였습니다."}
                         </p>
                       </div>
 
                       {/* House Annals (Parsed Factual Record) */}
-                      <div style={{ borderTop: '1px dashed rgba(201, 168, 76, 0.15)', paddingTop: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.78rem', textTransform: 'uppercase', marginBottom: '4px' }}>
-                          <Shield size={12} /> 가문사 편년 (House Annals)
+                      <div style={{ borderTop: '1px dashed rgba(201, 168, 76, 0.15)', paddingTop: '6px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-ink-light)', fontWeight: 'bold', fontSize: '0.74rem', textTransform: 'uppercase', marginBottom: '4px' }}>
+                          <Shield size={11} /> 가문사 편년 (House Annals)
                         </div>
                         
                         {isInteractiveAncestor ? (
                           // Render ancestor log rolls if available
                           ancestorRollLog.some(line => typeof line === 'string' && line.includes(`${year}년`)) ? (
-                            <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.84rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                            <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.82rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               {ancestorRollLog
                                 .filter(line => typeof line === 'string' && line.includes(`${year}년`))
                                 .map((line, idx) => (
@@ -653,14 +649,14 @@ export default function ChronologyJournal({ character, setCharacter }) {
                                 ))}
                             </ul>
                           ) : (
-                            <p style={{ fontSize: '0.84rem', color: 'var(--color-grey)', fontStyle: 'italic', paddingLeft: '4px' }}>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', fontStyle: 'italic', paddingLeft: '4px', margin: 0 }}>
                               조상 편년 기록이 비어있습니다. 기본 수확과 임무 수주를 거쳤습니다.
                             </p>
                           )
                         ) : (
                           // Render parsed player winter logs + marriages + births + deaths
                           annals.length > 0 ? (
-                            <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.84rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                            <ul style={{ paddingLeft: '14px', margin: 0, fontSize: '0.82rem', color: 'var(--color-ink)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                               {annals.map((event, idx) => (
                                 <li key={idx} style={{ listStyleType: 'square', lineHeight: 1.4 }}>
                                   {event}
@@ -668,7 +664,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
                               ))}
                             </ul>
                           ) : (
-                            <p style={{ fontSize: '0.84rem', color: 'var(--color-grey)', fontStyle: 'italic', paddingLeft: '4px' }}>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', fontStyle: 'italic', paddingLeft: '4px', margin: 0 }}>
                               기록될 만한 특별한 가문 사건이나 겨울 정산 기록이 존재하지 않습니다.
                             </p>
                           )
@@ -677,16 +673,16 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
                       {/* Knight's Memoir (Manual Journal Entry) */}
                       {!isInteractiveAncestor && (
-                        <div style={{ borderTop: '1px dashed rgba(201, 168, 76, 0.15)', paddingTop: '8px' }}>
+                        <div style={{ borderTop: '1px dashed rgba(201, 168, 76, 0.15)', paddingTop: '6px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-grey)', fontWeight: 'bold', fontSize: '0.78rem', textTransform: 'uppercase' }}>
-                              <Edit3 size={12} /> 기사의 비망록 (Knight's Memoir)
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-grey)', fontWeight: 'bold', fontSize: '0.74rem', textTransform: 'uppercase' }}>
+                              <Edit3 size={11} /> 기사의 비망록 (Knight's Memoir)
                             </div>
                             {editingYear !== year && (
                               <button 
                                 onClick={() => startEditing(year, manual)}
                                 className="btn-medieval" 
-                                style={{ fontSize: '0.72rem', padding: '2px 8px', borderRadius: '4px' }}
+                                style={{ fontSize: '0.68rem', padding: '1px 6px', borderRadius: '2px' }}
                               >
                                 비망록 작성/수정
                               </button>
@@ -694,35 +690,35 @@ export default function ChronologyJournal({ character, setCharacter }) {
                           </div>
 
                           {editingYear === year ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '4px' }}>
                               <textarea 
                                 className="form-input" 
-                                style={{ minHeight: '100px', fontSize: '0.86rem', resize: 'vertical', width: '100%' }}
+                                style={{ minHeight: '80px', fontSize: '0.82rem', resize: 'vertical', width: '100%' }}
                                 value={journalInput}
                                 onChange={e => setJournalInput(e.target.value)}
                                 placeholder="올해의 전투 무훈, 성스러운 서약, 개인적인 행적 등을 기록하십시오..."
                               />
                               <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
-                                <button onClick={() => setEditingYear(null)} className="btn-medieval" style={{ fontSize: '0.76rem', padding: '4px 10px' }}>
+                                <button onClick={() => setEditingYear(null)} className="btn-medieval" style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
                                   취소
                                 </button>
                                 {manual && (
-                                  <button onClick={() => deleteJournalEntry(year)} className="btn-medieval" style={{ fontSize: '0.76rem', padding: '4px 10px', color: 'var(--color-danger)' }}>
+                                  <button onClick={() => deleteJournalEntry(year)} className="btn-medieval" style={{ fontSize: '0.72rem', padding: '3px 8px', color: 'var(--color-danger)' }}>
                                     지우기
                                   </button>
                                 )}
-                                <button onClick={() => saveJournalEntry(year)} className="btn-medieval btn-medieval-primary" style={{ fontSize: '0.76rem', padding: '4px 10px' }}>
-                                  <Save size={12} /> 기록 보관
+                                <button onClick={() => saveJournalEntry(year)} className="btn-medieval btn-medieval-primary" style={{ fontSize: '0.72rem', padding: '3px 8px' }}>
+                                  <Save size={11} /> 기록 보관
                                 </button>
                               </div>
                             </div>
                           ) : (
                             manual ? (
-                              <p style={{ padding: '8px 12px', background: 'rgba(179,143,67,0.03)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '4px', fontStyle: 'italic', fontSize: '0.86rem', lineHeight: 1.5, color: 'var(--color-ink-light)', whiteSpace: 'pre-wrap', margin: 0 }}>
+                              <p style={{ padding: '6px 10px', background: 'rgba(179,143,67,0.02)', border: '1px solid rgba(201,168,76,0.12)', borderRadius: '2px', fontStyle: 'italic', fontSize: '0.82rem', lineHeight: 1.4, color: 'var(--color-ink-light)', whiteSpace: 'pre-wrap', margin: 0 }}>
                                 "{manual}"
                               </p>
                             ) : (
-                              <p style={{ fontSize: '0.84rem', color: 'var(--color-grey)', fontStyle: 'italic', margin: 0, paddingLeft: '4px' }}>
+                              <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', fontStyle: 'italic', margin: 0, paddingLeft: '4px' }}>
                                 "올해는 기록된 기사의 비망록이 없습니다."
                               </p>
                             )
@@ -732,7 +728,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
                       {/* Raw Game Log Reference Toggle */}
                       {!isInteractiveAncestor && winter && (
-                        <div style={{ borderTop: '1px solid rgba(201, 168, 76, 0.08)', paddingTop: '6px', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ borderTop: '1px solid rgba(201, 168, 76, 0.06)', paddingTop: '4px', display: 'flex', flexDirection: 'column' }}>
                           <button 
                             onClick={() => setShowRawLogs(prev => ({ ...prev, [year]: !prev[year] }))}
                             style={{ 
@@ -742,9 +738,9 @@ export default function ChronologyJournal({ character, setCharacter }) {
                               background: 'none', 
                               border: 'none', 
                               color: 'var(--color-grey)', 
-                              fontSize: '0.72rem', 
+                              fontSize: '0.68rem', 
                               cursor: 'pointer',
-                              padding: '2px 0',
+                              padding: '1px 0',
                               width: 'fit-content'
                             }}
                           >
@@ -761,12 +757,12 @@ export default function ChronologyJournal({ character, setCharacter }) {
                           
                           {showRawLogs[year] && (
                             <pre style={{ 
-                              marginTop: '6px', 
-                              padding: '8px 12px', 
-                              backgroundColor: 'rgba(0,0,0,0.03)', 
+                              marginTop: '4px', 
+                              padding: '6px 10px', 
+                              backgroundColor: 'rgba(0,0,0,0.02)', 
                               border: '1px solid #ddd', 
-                              borderRadius: '4px', 
-                              fontSize: '0.74rem', 
+                              borderRadius: '2px', 
+                              fontSize: '0.72rem', 
                               fontFamily: 'monospace', 
                               color: '#666',
                               whiteSpace: 'pre-wrap',
