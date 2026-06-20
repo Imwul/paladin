@@ -37,6 +37,13 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [familyEventResult, setFamilyEventResult] = useState(null);
   const [familyApplied, setFamilyApplied] = useState(false);
 
+  // New state variables for rulebook alignments
+  const [marriageModifier, setMarriageModifier] = useState(0);
+  const [childbirthMother, setChildbirthMother] = useState('wife'); // 'wife' or 'lover'
+  const [familyEventChoice, setFamilyEventChoice] = useState(null); // 'a'/'b' or Battle result ('crit'/'success'/'failure'/'fumble') or Roll index (1-19)
+  const [familyEventD6Roll, setFamilyEventD6Roll] = useState(null); // for debt and ransom rolls
+  const [familyEventRoll20Selection, setFamilyEventRoll20Selection] = useState(null);
+
   const [experienceLogs, setExperienceLogs] = useState([]);
   const [experienceApplied, setExperienceApplied] = useState(false);
 
@@ -94,8 +101,11 @@ export default function FamilyWinter({ character, setCharacter }) {
   // ══════════════════════════════════════════════════
   const rollAging = () => {
     const age = character.personal.age || 0;
-    if (age < 30) {
-      addLog(`[노화]: ${age}세 (30세 미만). 노화 주사위를 생략합니다.`);
+    const hasEternalYouth = character.personal?.blessing?.includes("영원한 젊음") || character.personal?.blessing?.includes("Eternal Youth");
+    const agingStartAge = hasEternalYouth ? 35 : 30;
+    
+    if (age < agingStartAge) {
+      addLog(`[노화]: ${age}세 (${agingStartAge}세 미만${hasEternalYouth ? ' - 영원한 젊음 가호' : ''}). 노화 주사위를 생략합니다.`);
       setAgingD20(20);
       setAgingLosses([]);
       setAgingApplied(true);
@@ -166,7 +176,8 @@ export default function FamilyWinter({ character, setCharacter }) {
     const d20 = Math.floor(Math.random() * 20) + 1;
     setHarvestRoll(d20);
 
-    const stewardship = character.skills.stewardship || 3;
+    const hasProsperity = character.personal?.blessing?.includes("번영") || character.personal?.blessing?.includes("Prosperity");
+    const stewardship = (character.skills.stewardship || 3) + (hasProsperity ? 3 : 0);
     let mult = 1.0;
     let outcome = "성공";
 
@@ -210,20 +221,49 @@ export default function FamilyWinter({ character, setCharacter }) {
   // STEP 4: SURVIVAL LOGIC
   // ══════════════════════════════════════════════════
   const rollSurvival = () => {
-    // Squire
+    const maintenanceLevel = character.personal?.maintenance || 'ordinary';
+    
+    // Squire Age & Maintenance Modifiers
+    const squireAge = character.squire?.age || 14;
+    let squireAgeMod = 0;
+    if (squireAge <= 14) squireAgeMod = 1;
+    else if (squireAge >= 30) squireAgeMod = -1;
+
+    let squireMaintMod = 0;
+    if (maintenanceLevel === 'rich' || maintenanceLevel === 'superlative') squireMaintMod = 1;
+    else if (maintenanceLevel === 'poor') squireMaintMod = -1;
+    else if (maintenanceLevel === 'miserly') squireMaintMod = -2;
+
+    const squirePenalty = character.squire?.nextYearPenalty || 0;
     const sRoll = Math.floor(Math.random() * 20) + 1;
     setSquireSurvivalRoll(sRoll);
+
+    const finalSquireRoll = Math.min(20, Math.max(1, sRoll + squireAgeMod + squireMaintMod + squirePenalty));
     let sStatus = "건강함";
-    if (sRoll === 1) sStatus = "사망 위험!";
-    else if (sRoll === 2) sStatus = "질병 (내년 판정 -5)";
+    if (finalSquireRoll === 1) sStatus = "사망 위험!";
+    else if (finalSquireRoll === 2) sStatus = "질병 (내년 판정 -5)";
     setSquireStatus(sStatus);
 
-    // Horse
+    // Horse Age & Maintenance Modifiers
+    const horseAge = character.horses?.warhorse?.age || 5;
+    let horseAgeMod = 0;
+    if (horseAge <= 2) horseAgeMod = 0;
+    else if (horseAge <= 5) horseAgeMod = 1;
+    else if (horseAge >= 12) horseAgeMod = -1;
+
+    let horseMaintMod = 0;
+    if (maintenanceLevel === 'superlative') horseMaintMod = 1;
+    else if (maintenanceLevel === 'poor') horseMaintMod = -2;
+    else if (maintenanceLevel === 'miserly') horseMaintMod = -5;
+
+    const horsePenalty = character.horses?.warhorse?.nextYearPenalty || 0;
     const hRoll = Math.floor(Math.random() * 20) + 1;
     setHorseSurvivalRoll(hRoll);
+
+    const finalHorseRoll = Math.min(20, Math.max(1, hRoll + horseAgeMod + horseMaintMod + horsePenalty));
     let hStatus = "건강함";
-    if (hRoll === 1) hStatus = "사망 위험!";
-    else if (hRoll === 2) hStatus = "질병 (내년 판정 -5)";
+    if (finalHorseRoll === 1) hStatus = "사망 위험!";
+    else if (finalHorseRoll === 2) hStatus = "질병 (내년 판정 -5)";
     setHorseStatus(hStatus);
 
     setSurvivalApplied(false);
@@ -236,24 +276,62 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 종자/군마 생존 정산은 이미 반영되었습니다.");
       return;
     }
+
+    const maintenanceLevel = character.personal?.maintenance || 'ordinary';
+    const squireAge = character.squire?.age || 14;
+    let squireAgeMod = 0;
+    if (squireAge <= 14) squireAgeMod = 1;
+    else if (squireAge >= 30) squireAgeMod = -1;
+
+    let squireMaintMod = 0;
+    if (maintenanceLevel === 'rich' || maintenanceLevel === 'superlative') squireMaintMod = 1;
+    else if (maintenanceLevel === 'poor') squireMaintMod = -1;
+    else if (maintenanceLevel === 'miserly') squireMaintMod = -2;
+
+    const squirePenalty = character.squire?.nextYearPenalty || 0;
+    const finalSquireRoll = Math.min(20, Math.max(1, squireSurvivalRoll + squireAgeMod + squireMaintMod + squirePenalty));
+
+    const horseAge = character.horses?.warhorse?.age || 5;
+    let horseAgeMod = 0;
+    if (horseAge <= 2) horseAgeMod = 0;
+    else if (horseAge <= 5) horseAgeMod = 1;
+    else if (horseAge >= 12) horseAgeMod = -1;
+
+    let horseMaintMod = 0;
+    if (maintenanceLevel === 'superlative') horseMaintMod = 1;
+    else if (maintenanceLevel === 'poor') horseMaintMod = -2;
+    else if (maintenanceLevel === 'miserly') horseMaintMod = -5;
+
+    const horsePenalty = character.horses?.warhorse?.nextYearPenalty || 0;
+    const finalHorseRoll = Math.min(20, Math.max(1, horseSurvivalRoll + horseAgeMod + horseMaintMod + horsePenalty));
+
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
         if (squireStatus.includes('사망')) {
           updated.squire = { ...updated.squire, status: '사망' };
         } else if (squireStatus.includes('질병')) {
           updated.squire = { ...updated.squire, status: '질병', nextYearPenalty: -5 };
+        } else {
+          updated.squire = { ...updated.squire, status: '건강함', nextYearPenalty: 0 };
         }
+
         if (horseStatus.includes('사망')) {
           updated.horses.warhorse = { ...updated.horses.warhorse, status: '사망', hp: 0 };
         } else if (horseStatus.includes('질병')) {
           updated.horses.warhorse = { ...updated.horses.warhorse, status: '질병', nextYearPenalty: -5 };
+        } else {
+          if (updated.horses?.warhorse) {
+            updated.horses.warhorse.status = '건강함';
+            updated.horses.warhorse.nextYearPenalty = 0;
+          }
         }
         updated.campaign = markWinterStep(updated, 'survival');
         return updated;
       }, '종자/군마 생존 정산');
       return result.character;
     });
-    addLog(`[동료 생존]: 종자 d20 [${squireSurvivalRoll}] -> ${squireStatus}, 군마 d20 [${horseSurvivalRoll}] -> ${horseStatus}`);
+
+    addLog(`[동료 생존]: 종자 d20 [${squireSurvivalRoll}] (나이보정 [${squireAgeMod}], 유지비보정 [${squireMaintMod}], 디버프 [${squirePenalty}]) -> 최종 [${finalSquireRoll}]: ${squireStatus}, 군마 d20 [${horseSurvivalRoll}] (나이보정 [${horseAgeMod}], 유지비보정 [${horseMaintMod}], 디버프 [${horsePenalty}]) -> 최종 [${finalHorseRoll}]: ${hStatus}`);
     setSurvivalApplied(true);
   };
 
@@ -396,17 +474,18 @@ export default function FamilyWinter({ character, setCharacter }) {
       return;
     }
     const d20 = Math.floor(Math.random() * 20) + 1;
-    setMarriageRoll(d20);
+    const finalRoll = d20 + (parseInt(marriageModifier) || 0);
+    setMarriageRoll(finalRoll);
     let rank = "가신 기사의 딸";
     let dowry = 1;
     let glory = 50;
 
-    if (d20 <= 5) { rank = "부유한 평민 상인의 딸"; dowry = Math.floor(Math.random() * 18) + 9; glory = 0; }
-    else if (d20 <= 8) { rank = "수습 종자의 딸"; dowry = 3; glory = 10; }
-    else if (d20 <= 10) { rank = "가신 기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 50; }
-    else if (d20 === 11) { rank = "부유한 봉신기사의 맏딸"; dowry = Math.floor(Math.random() * 3) + 7; glory = 100; }
-    else if (d20 <= 20) { rank = "일반 봉신기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 100; }
-    else if (d20 <= 25) { rank = "봉신기사 가문 여상속인"; dowry = 15; glory = 100; } // 1 manor + 1d6+10 represented as £15
+    if (finalRoll <= 5) { rank = "부유한 평민 상인의 딸"; dowry = Math.floor(Math.random() * 18) + 9; glory = 0; }
+    else if (finalRoll <= 8) { rank = "수습 종자의 딸"; dowry = 3; glory = 10; }
+    else if (finalRoll <= 10) { rank = "가신 기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 50; }
+    else if (finalRoll === 11) { rank = "부유한 봉신기사의 맏딸"; dowry = Math.floor(Math.random() * 3) + 7; glory = 100; }
+    else if (finalRoll <= 20) { rank = "일반 봉신기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 100; }
+    else if (finalRoll <= 25) { rank = "봉신기사 가문 여상속인"; dowry = 15; glory = 100; } // 1 manor + 1d6+10 represented as £15
     else { rank = "남작 가문의 막내딸"; dowry = 20; glory = 250; }
 
     setMarriageResult({ rank, dowry, glory });
@@ -417,13 +496,30 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 가문 단계는 이미 정산되었습니다.");
       return;
     }
+    if (childbirthMother === 'lover' && (character.gear?.cash || 0) < 0.5) {
+      alert("소지금이 부족하여 연인/첩의 출산 테이블을 굴릴 수 없습니다. (유지비 £0.5 필요)");
+      return;
+    }
     const d20 = Math.floor(Math.random() * 20) + 1;
-    setChildbirthRoll(d20);
+    
+    // Blessings & Maintenance Modifiers
+    const maintenanceLevel = character.personal?.maintenance || 'ordinary';
+    let mChildbirthMod = 0;
+    if (maintenanceLevel === 'rich') mChildbirthMod = 1;
+    else if (maintenanceLevel === 'superlative') mChildbirthMod = 2;
+
+    const hasFertility = character.personal?.blessing?.includes("출산력") || character.personal?.blessing?.includes("Fertility");
+    const fertilityMod = hasFertility ? 5 : 0;
+
+    const finalRoll = Math.min(20, Math.max(1, d20 + mChildbirthMod + fertilityMod));
+    setChildbirthRoll(finalRoll);
+
     let outcome = "아무 일 없음";
-    if (d20 === 11) outcome = "비극: 산모와 아이 모두 출산 중 서거 😭";
-    else if (d20 === 12) outcome = "비극: 산모 서거, 아이 생존 (성별 1d6) 🕯️";
-    else if (d20 <= 19) outcome = "경사: 건강한 아이 출생! (성별 1d6) 👶";
-    else if (d20 === 20) outcome = "경사: 쌍둥이 아이 출생! 🎉👶👶";
+    if (finalRoll <= 10) outcome = "아무 일 없음";
+    else if (finalRoll === 11) outcome = "비극: 산모와 아이 모두 출산 중 서거 😭";
+    else if (finalRoll === 12) outcome = "비극: 산모 서거, 아이 생존 (성별 1d6) 🕯️";
+    else if (finalRoll <= 19) outcome = "경사: 건강한 아이 출생! (성별 1d6) 👶";
+    else if (finalRoll === 20) outcome = "경사: 쌍둥이 아이 출생! 🎉👶👶";
 
     setChildbirthResult(outcome);
   };
@@ -435,18 +531,57 @@ export default function FamilyWinter({ character, setCharacter }) {
     }
     const d20 = Math.floor(Math.random() * 20) + 1;
     setFamilyEventRoll(d20);
+    setFamilyEventChoice(null);
+
+    // Roll d6 immediately if debts or ransom are rolled
+    if (d20 === 7 || d20 === 14) {
+      const d6 = Math.floor(Math.random() * 6) + 1;
+      setFamilyEventD6Roll(d6);
+    } else {
+      setFamilyEventD6Roll(null);
+    }
+
     let outcome = "평온한 한 해";
-    if (d20 === 1) outcome = "가문의 비극: 친족이 시합 또는 불화 끝에 사망";
-    else if (d20 === 2) outcome = "가문의 영광: 귀인의 목숨을 구하고 서거. 친족 전원 +10 Glory";
-    else if (d20 === 3) outcome = "위대한 위업: 멧돼지 사냥에서 주군 구출. 친족 전원 +5 Glory";
-    else if (d20 === 4) outcome = "납치 사건: 친족이 강제 결혼이나 몸값을 노린 무리에 납치됨";
-    else if (d20 === 5) outcome = "실종 사건: 친족 한 명이 행방불명됨";
-    else if (d20 === 8) outcome = "뜻밖의 하사품: 가문의 선조 유물 선물 획득!";
-    else if (d20 === 10) outcome = "경사스런 혼사: 가문 일원이 엄청난 귀족가와 혼인. 명예 +1";
-    else if (d20 === 19) outcome = "벼락 영전: 친족이 궁성 백작이나 순찰사로 전격 임명! +10 Glory";
-    else outcome = "가문 평온: 가문 내에 무난하고 평화로운 기운이 돕니다.";
+    if (d20 === 1) outcome = "가문의 비극: 친족이 시합 또는 불화 끝에 사망 (Table 10-13 롤필요)";
+    else if (d20 === 2) outcome = "가문의 영광: 귀인의 목숨을 구하고 서거. 친족 전원 +10 Glory (Table 10-13 롤필요)";
+    else if (d20 === 3) outcome = "위대한 위업: 멧돼지 사냥에서 주군 구출. 친족 전원 +5 Glory (Table 10-13 롤필요)";
+    else if (d20 === 4) outcome = "납치 사건: 친족이 강제 결혼이나 몸값을 노린 무리에 납치됨 (Table 10-13 롤필요)";
+    else if (d20 === 5) outcome = "실종 사건: 친족 한 명이 행방불명됨 (Table 10-13 롤필요)";
+    else if (d20 === 6) outcome = "주군 모욕: 친족이 주군을 모욕함. 가문 옹호(a) 또는 책망(b) 선택 필요";
+    else if (d20 === 7) outcome = "가문의 채무: 친족의 빚 변제 도움 요청. 지불(a) 또는 거절(b) 선택 필요";
+    else if (d20 === 8) outcome = "뜻밖의 하사품: 가문의 선조 유물 선물 획득! (Table 1-15 롤필요)";
+    else if (d20 === 9) outcome = "혼사 파탄: 파혼 또는 arranged 거부 발생. 가문 결사 옹호(a) 또는 무시(b) 선택 필요";
+    else if (d20 === 10) outcome = "경사스런 혼사: 가문 일원이 고위 귀족가와 혼인. 명예 +1";
+    else if (d20 === 11) outcome = "사생아 출생: 가문 일원이 사생아를 낳았습니다.";
+    else if (d20 === 12) outcome = "피후견인 영입: 미성년 친족의 후견인이 됨. 영지 관리하여 성인 전까지 매년 £1 수급";
+    else if (d20 === 13) outcome = "도망자 보호 요청: 친족이 형벌을 피해 도망쳐옴. 수용(a) 또는 거절(b) 선택 필요";
+    else if (d20 === 14) outcome = "몸값 요구: 친족이 감금됨. 몸값 지불(a) 또는 거절(b) 선택 필요";
+    else if (d20 === 15) outcome = "경범죄 기소: 친족이 경범죄 기소됨. £1 벌금 지불(a) 또는 거부(b) 선택 필요";
+    else if (d20 === 16) outcome = "중범죄 기소: 친족이 중범죄 기소됨. £5 벌금 지불(a) 또는 거부(b) 선택 필요";
+    else if (d20 === 17) outcome = "간통 스캔들: 친족 간통 연루로 상대 가문과 피의 복수(Feud) 시작!";
+    else if (d20 === 18) outcome = "가문 Feud 격돌: 복수극 격화로 적 가문과 사투 격돌. Battle 체크 필요";
+    else if (d20 === 19) outcome = "벼락 영전: 친족이 궁성 백작이나 순찰사 임명. +10 Glory";
+    else if (d20 === 20) outcome = "기사의 결단 (Player's Choice): 가문 사건 결과(1-19) 선택 필요";
 
     setFamilyEventResult(outcome);
+  };
+
+  const skipChildbirth = () => {
+    setChildbirthRoll(null);
+    setChildbirthResult("출산 단계 건너뜀 (선택)");
+    setChildbirthMother('none');
+    setCharacter(prev => {
+      if (prev.campaign?.unresolvedChildbirthBlocked) {
+        return {
+          ...prev,
+          campaign: {
+            ...prev.campaign,
+            unresolvedChildbirthBlocked: false
+          }
+        };
+      }
+      return prev;
+    });
   };
 
   const applyFamilyPhase = () => {
@@ -455,6 +590,24 @@ export default function FamilyWinter({ character, setCharacter }) {
     if (hasAppliedEvent(character, eventId)) {
       alert("올해 가문 단계는 이미 정산되었습니다.");
       return;
+    }
+
+    let actualRoll = familyEventRoll;
+    if (familyEventRoll === 20) {
+      if (!familyEventRoll20Selection) {
+        alert("기사의 결단으로 선택할 사건을 먼저 지정해 주세요.");
+        return;
+      }
+      actualRoll = Number(familyEventRoll20Selection);
+    }
+
+    if (actualRoll === 6 || actualRoll === 7 || actualRoll === 9 || 
+        actualRoll === 13 || actualRoll === 14 || actualRoll === 15 || 
+        actualRoll === 16 || actualRoll === 18) {
+      if (!familyEventChoice) {
+        alert("가문 사건에 대한 선택이나 판정이 아직 내려지지 않았습니다!");
+        return;
+      }
     }
 
     setCharacter(prev => {
@@ -470,6 +623,13 @@ export default function FamilyWinter({ character, setCharacter }) {
         if (!existingLivingSpouse) {
           updated.gear.cash = (updated.gear?.cash || 0) + marriageResult.dowry;
           updated.gear.gloryThisGame = (updated.gear?.gloryThisGame || 0) + marriageResult.glory;
+
+          // Increment manors if marrying an heiress or baron's daughter
+          if (marriageResult.rank.includes("상속인")) {
+            updated.family.manors = (updated.family.manors || 0) + (marriageResult.rank.includes("부유한") ? 2 : 1);
+          } else if (marriageResult.rank.includes("남작")) {
+            updated.family.manors = (updated.family.manors || 0) + 1;
+          }
 
           // Add Spouse to Family Tree automatically
           const spouseId = 'spouse_' + Date.now();
@@ -493,13 +653,14 @@ export default function FamilyWinter({ character, setCharacter }) {
         }
       }
 
-      // 2. Childbirth Member Addition
+      // 2. Childbirth Member Addition & Upkeep Cost
       if (childbirthResult && updated.family) {
         if (!updated.family.members) updated.family.members = [];
-        const hasLivingSpouse = updated.family.members.some(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
-        if (!hasLivingSpouse) {
-          updated.campaign.unresolvedChildbirthBlocked = true;
-        } else {
+        
+        // Upkeep deduction for lover/concubine
+        if (childbirthMother === 'lover') {
+          updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 0.5);
+        }
 
         const spawnChild = (isSon) => {
           const childId = 'child_' + Math.random().toString(36).substr(2, 9);
@@ -508,11 +669,11 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (isSon) {
             const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
             childName = `${randMale.ko} 경 (Sir ${randMale.en})`;
-            childNote = `가문의 적통을 이어갈 아들.`;
+            childNote = childbirthMother === 'lover' ? `연인/첩 소생 아들(서자).` : `가문의 적통을 이어갈 아들.`;
           } else {
             const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Aude", ko: "오드" };
             childName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
-            childNote = `가문의 사랑받는 귀족 영애 딸.`;
+            childNote = childbirthMother === 'lover' ? `연인/첩 소생 딸.` : `가문의 사랑받는 귀족 영애 딸.`;
           }
           return {
             id: childId,
@@ -541,51 +702,156 @@ export default function FamilyWinter({ character, setCharacter }) {
           const son = Math.random() < 0.5;
           updated.family.members.push(spawnChild(son));
 
-          // Archive spouse
-          const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
-          if (spouseIndex !== -1) {
-            updated.family.members[spouseIndex].status = '사망';
-            updated.family.members[spouseIndex].deathCause = '출산 중 난산';
-            updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          // Only archive/kill spouse if rolled for Wife
+          if (childbirthMother === 'wife') {
+            const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+            if (spouseIndex !== -1) {
+              updated.family.members[spouseIndex].status = '사망';
+              updated.family.members[spouseIndex].deathCause = '출산 중 난산';
+              updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+            }
           }
         } else if (childbirthResult.includes("산모와 아이 모두 출산 중 서거")) {
-          // Archive spouse
-          const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
-          if (spouseIndex !== -1) {
-            updated.family.members[spouseIndex].status = '사망';
-            updated.family.members[spouseIndex].deathCause = '출산 중 사망';
-            updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+          // Only archive/kill spouse if rolled for Wife
+          if (childbirthMother === 'wife') {
+            const spouseIndex = updated.family.members.findIndex(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존');
+            if (spouseIndex !== -1) {
+              updated.family.members[spouseIndex].status = '사망';
+              updated.family.members[spouseIndex].deathCause = '출산 중 사망';
+              updated.family.members[spouseIndex].lifeYears = updated.family.members[spouseIndex].lifeYears.split('~')[0] + `~${currentYear}`;
+            }
           }
-        }
         }
       }
 
+      // 3. Family Event Resolution (Fully expanded Table 10-12)
       if (familyEventResult && updated.family?.members) {
         const candidates = updated.family.members.filter(m => m.relation !== '본인' && m.status === '생존');
         const target = candidates[Math.floor(Math.random() * candidates.length)];
-        if (familyEventRoll === 1 && target) {
+        
+        let actualRoll = familyEventRoll;
+        if (familyEventRoll === 20 && familyEventRoll20Selection) {
+          actualRoll = Number(familyEventRoll20Selection);
+        }
+
+        const checkTrait = (updatedChar, traitKey) => {
+          if (updatedChar.traits?.[traitKey] !== undefined) {
+            updatedChar.traitsChecked = { ...(updatedChar.traitsChecked || {}), [traitKey]: true };
+          } else if (updatedChar.passions?.[traitKey] !== undefined) {
+            updatedChar.passionsChecked = { ...(updatedChar.passionsChecked || {}), [traitKey]: true };
+          } else if (updatedChar.standings?.[traitKey] !== undefined) {
+            updatedChar.standings[traitKey] = Math.min(25, (updatedChar.standings[traitKey] || 0) + 1);
+          }
+        };
+
+        const checkSkill = (updatedChar, skillKey) => {
+          updatedChar.skillsChecked = { ...(updatedChar.skillsChecked || {}), [skillKey]: true };
+        };
+
+        if (actualRoll === 1 && target) {
           target.status = '사망';
-          target.deathCause = '가문 사건';
+          target.deathCause = '가문 비극 (토너먼트/불화)';
           target.lifeYears = (target.lifeYears || `${currentYear - 20}~`).split('~')[0] + `~${currentYear}`;
-        } else if (familyEventRoll === 2) {
+        } else if (actualRoll === 2) {
           updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
-        } else if (familyEventRoll === 3) {
+          if (target) {
+            target.status = '사망';
+            target.deathCause = '가문의 영광 (귀인 구출 중 전사)';
+            target.lifeYears = (target.lifeYears || `${currentYear - 20}~`).split('~')[0] + `~${currentYear}`;
+          }
+        } else if (actualRoll === 3) {
           updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 5;
-        } else if (familyEventRoll === 4 && target) {
+        } else if (actualRoll === 4 && target) {
           target.status = '실종';
           target.note = `${target.note || ''}\n${currentYear}년 납치됨.`;
-        } else if (familyEventRoll === 5 && target) {
+        } else if (actualRoll === 5 && target) {
           target.status = '실종';
           target.note = `${target.note || ''}\n${currentYear}년 행방불명.`;
-        } else if (familyEventRoll === 8) {
-          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 선조 유물`;
-        } else if (familyEventRoll === 10) {
+        } else if (actualRoll === 6) {
+          if (familyEventChoice === 'a') {
+            checkTrait(updated, 'loveFamily');
+          } else if (familyEventChoice === 'b') {
+            checkTrait(updated, 'honor');
+            updated.passions.loveFamily = Math.max(0, (updated.passions.loveFamily || 15) - 1);
+          }
+        } else if (actualRoll === 7) {
+          if (familyEventChoice === 'a') {
+            const cost = familyEventD6Roll || 3;
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - cost);
+            checkTrait(updated, 'standingFamily');
+          } else {
+            updated.standings.family = Math.max(0, (updated.standings.family || 16) - 1);
+          }
+        } else if (actualRoll === 8) {
+          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 가문 선조 유물`;
+          checkTrait(updated, 'loveFamily');
+        } else if (actualRoll === 9) {
+          if (familyEventChoice === 'a') {
+            checkTrait(updated, 'loveFamily');
+            checkTrait(updated, 'standingFamily');
+          }
+        } else if (actualRoll === 10) {
           updated.passions.honor = Math.min(25, (updated.passions.honor || 16) + 1);
-        } else if (familyEventRoll === 19) {
+        } else if (actualRoll === 11) {
+          if (target) {
+            target.note = `${target.note || ''}\n${currentYear}년 사생아 출생 기록 있음.`;
+          }
+        } else if (actualRoll === 12) {
+          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 피후견인 영지 관리 (+£1/년)`;
+          updated.gear.cash = (updated.gear.cash || 0) + 1;
+        } else if (actualRoll === 13) {
+          if (familyEventChoice === 'a') {
+            checkTrait(updated, 'standingFamily');
+            checkTrait(updated, 'honor');
+            updated.traits.just = Math.max(0, (updated.traits.just || 10) - 1);
+            updated.traits.arbitrary = 20 - updated.traits.just;
+          } else {
+            checkTrait(updated, 'just');
+            updated.standings.family = Math.max(0, (updated.standings.family || 16) - 1);
+          }
+        } else if (actualRoll === 14) {
+          if (familyEventChoice === 'a') {
+            const cost = familyEventD6Roll || 3;
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - cost);
+            checkTrait(updated, 'loveFamily');
+            checkTrait(updated, 'standingFamily');
+          }
+        } else if (actualRoll === 15) {
+          if (familyEventChoice === 'a') {
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 1);
+          } else {
+            updated.passions.honor = Math.max(0, (updated.passions.honor || 16) - 1);
+          }
+        } else if (actualRoll === 16) {
+          if (familyEventChoice === 'a') {
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 5);
+          } else {
+            updated.passions.honor = Math.max(0, (updated.passions.honor || 16) - 2);
+          }
+        } else if (actualRoll === 17) {
+          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 가문 피의 원한 (Feud)`;
+        } else if (actualRoll === 18) {
+          if (familyEventChoice === 'crit') {
+            checkSkill(updated, 'battle');
+            checkTrait(updated, 'honor');
+            checkTrait(updated, 'loveFamily');
+            checkTrait(updated, 'standingFamily');
+          } else if (familyEventChoice === 'success') {
+            checkTrait(updated, 'loveFamily');
+          } else if (familyEventChoice === 'fumble') {
+            updated.passions.loveFamily = Math.max(0, (updated.passions.loveFamily || 15) - 2);
+            updated.standings.family = Math.max(0, (updated.standings.family || 16) - 2);
+          }
+        } else if (actualRoll === 19) {
           updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
+          checkTrait(updated, 'honor');
+          checkTrait(updated, 'loveFamily');
         }
       }
 
+      if (updated.campaign) {
+        updated.campaign.unresolvedChildbirthBlocked = false;
+      }
       updated.campaign = markWinterStep(updated, 'familyEvent');
       return updated;
       }, '겨울 가문 단계 정산');
@@ -594,8 +860,13 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     let msg = `[가문 정산]: `;
     if (marriageResult) msg += `결혼 성공 (${marriageResult.rank}, dowry £${marriageResult.dowry}, +${marriageResult.glory} Glory) `;
-    if (childbirthResult) msg += `/ 출산 d20 [${childbirthRoll}] -> ${childbirthResult} `;
-    if (familyEventResult) msg += `/ 가문사건 d20 [${familyEventRoll}] -> ${familyEventResult}`;
+    if (childbirthResult) msg += `/ 출산 d20 [${childbirthRoll}] (대상: ${childbirthMother === 'wife' ? '배우자' : '연인/첩'}) -> ${childbirthResult} `;
+    if (familyEventResult) {
+      let extra = '';
+      if (familyEventRoll === 7 || familyEventRoll === 14) extra = `(비용 £${familyEventD6Roll})`;
+      else if (familyEventChoice) extra = `(선택/판정: ${familyEventChoice})`;
+      msg += `/ 가문사건 d20 [${familyEventRoll}] -> ${familyEventResult} ${extra}`;
+    }
 
     addLog(msg);
     setFamilyApplied(true);
@@ -616,34 +887,46 @@ export default function FamilyWinter({ character, setCharacter }) {
     const checkedPassions = Object.keys(character.passionsChecked).filter(k => character.passionsChecked[k]);
     const checkedTraits = Object.keys(character.traitsChecked || {}).filter(k => character.traitsChecked[k]);
 
+    // Auto-check skills & passions with value >= 20 as per rulebook
+    const allCheckedSkills = new Set([
+      ...checkedSkills,
+      ...Object.keys(character.skills).filter(k => (character.skills[k] || 0) >= 20)
+    ]);
+    const allCheckedPassions = new Set([
+      ...checkedPassions,
+      ...Object.keys(character.passions).filter(k => (character.passions[k] || 0) >= 20)
+    ]);
+
     const logs = [];
     const updatedSkills = { ...character.skills };
     const updatedPassions = { ...character.passions };
     const updatedTraits = { ...character.traits };
 
     // Roll for skills
-    checkedSkills.forEach(key => {
+    allCheckedSkills.forEach(key => {
       const val = character.skills[key] || 0;
       const d20 = Math.floor(Math.random() * 20) + 1;
-      const success = d20 >= val || d20 === 20;
-      if (success && val < 20) {
+      const target = Math.min(20, val);
+      const success = d20 >= target;
+      if (success) {
         updatedSkills[key] = val + 1;
-        logs.push(`[기술 ${key} 성장]: d20 [${d20}] vs [${val}]. 성공! → ${val + 1} 🎉`);
+        logs.push(`[기술 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! → ${val + 1} 🎉`);
       } else {
-        logs.push(`[기술 ${key} 유지]: d20 [${d20}] vs [${val}]. 실패.`);
+        logs.push(`[기술 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
       }
     });
 
     // Roll for passions
-    checkedPassions.forEach(key => {
+    allCheckedPassions.forEach(key => {
       const val = character.passions[key] || 0;
       const d20 = Math.floor(Math.random() * 20) + 1;
-      const success = d20 >= val || d20 === 20;
-      if (success && val < 20) {
+      const target = Math.min(20, val);
+      const success = d20 >= target;
+      if (success) {
         updatedPassions[key] = val + 1;
-        logs.push(`[열망 ${key} 성장]: d20 [${d20}] vs [${val}]. 성공! → ${val + 1} 🎉`);
+        logs.push(`[열망 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! → ${val + 1} 🎉`);
       } else {
-        logs.push(`[열망 ${key} 유지]: d20 [${d20}] vs [${val}]. 실패.`);
+        logs.push(`[열망 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
       }
     });
 
@@ -658,6 +941,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       const val = character.traits[key] || 0;
       const d20 = Math.floor(Math.random() * 20) + 1;
       const success = d20 >= val || d20 === 20;
+      // Traits cannot exceed 20 because they are paired
       if (success && val < 20) {
         updatedTraits[key] = val + 1;
         if (oppositeMap[key]) updatedTraits[oppositeMap[key]] = 20 - updatedTraits[key];
@@ -848,14 +1132,13 @@ export default function FamilyWinter({ character, setCharacter }) {
   // STEP 9: COMPUTE ANNUAL GLORY
   // ══════════════════════════════════════════════════
   const computeGlory = () => {
-    // 1. Manor: +6
+    // 1. Manor: +6 glory per manor
     const hasEstate = Boolean(
       character.family?.hasEstate ||
-      character.family?.manors > 0 ||
-      character.personal?.home ||
       String(character.gear?.homePossessions || '').includes('장원')
     );
-    let annual = hasEstate ? 6 : 0;
+    const manorsCount = character.family?.manors !== undefined ? character.family.manors : (hasEstate ? 1 : 0);
+    let annual = manorsCount * 6;
 
     // 2. Chivalrous Active: +100
     const chivalrousTraitsTotal =
@@ -895,7 +1178,13 @@ export default function FamilyWinter({ character, setCharacter }) {
     Object.keys(character.passions).forEach(k => { if (character.passions[k] > 15) passiveGlory += (character.passions[k] - 15); });
     Object.keys(character.standings || {}).forEach(k => { if (character.standings[k] > 15) passiveGlory += (character.standings[k] - 15); });
 
-    const totalCalculated = annual + passiveGlory;
+    // 6. Maintenance Glory
+    const maintenanceLevel = character.personal?.maintenance || 'ordinary';
+    let maintGlory = 0;
+    if (maintenanceLevel === 'rich') maintGlory = 12;
+    else if (maintenanceLevel === 'superlative') maintGlory = 15;
+
+    const totalCalculated = annual + passiveGlory + maintGlory;
     setCalculatedAnnualGlory(totalCalculated);
     setGloryApplied(false);
   };
@@ -939,7 +1228,17 @@ export default function FamilyWinter({ character, setCharacter }) {
       return updated;
     });
 
-    addLog(`[영예 정산]: 연간정산 +${calculatedAnnualGlory} Glory (장원 6점 + 활성 이상 보너스) 합산 완료. 누적 영예: ${newTotal}`);
+    const hasEstate = Boolean(
+      character.family?.hasEstate ||
+      String(character.gear?.homePossessions || '').includes('장원')
+    );
+    const manorsCount = character.family?.manors !== undefined ? character.family.manors : (hasEstate ? 1 : 0);
+    const maintenanceLevel = character.personal?.maintenance || 'ordinary';
+    let maintGlory = 0;
+    if (maintenanceLevel === 'rich') maintGlory = 12;
+    else if (maintenanceLevel === 'superlative') maintGlory = 15;
+
+    addLog(`[영예 정산]: 연간정산 +${calculatedAnnualGlory} Glory (장원 ${manorsCount}개: ${manorsCount * 6}점 + 유지비 보너스: ${maintGlory}점 + 활성 이상 보너스) 합산 완료. 누적 영예: ${newTotal}`);
     if (bonusEarned > 0) {
       addLog(`[축하합니다!]: 영예 1,000단위 돌파! 자유 능력치 +1 보너스 점수 [${bonusEarned}]점을 획득했습니다! (Step 10 위젯 사용)`);
       setGloryBonusPoints(bonusEarned);
@@ -1006,6 +1305,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const endWinterPhase = () => {
+    if (character.campaign?.unresolvedChildbirthBlocked) {
+      alert("배우자가 없어 해결되지 않은 출산 정산이 있습니다. 연인/첩을 고르거나 건너뛰기하여 해결해 주세요.");
+      return;
+    }
     const requiredSteps = [
       ['aging', '노화'],
       ['harvest', '수확'],
@@ -1659,7 +1962,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                   <td style={{ padding: '3px 2px' }}>일반 봉신기사의 딸</td>
                                   <td style={{ padding: '3px 2px' }}>1d6 (£1 ~ 6)</td>
                                   <td style={{ padding: '3px 2px' }}>100 Glory</td>
-                                </tr>
+</tr>
                                 <tr style={{ borderBottom: '1px dashed #eee' }}>
                                   <td style={{ padding: '3px 2px', fontWeight: 'bold' }}>21 ~ 25</td>
                                   <td style={{ padding: '3px 2px' }}>봉신기사 가문 여상속인 (Heir)</td>
@@ -1766,12 +2069,64 @@ export default function FamilyWinter({ character, setCharacter }) {
                         </div>
                       )}
                     </div>
-                    <p style={{ marginBottom: '10px' }}>기사의 대를 잇기 위한 <strong>결혼(Courtesy), 출산(Childbirth), 가문사건(Table 10-12)</strong>을 정산합니다.</p>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '12px' }}>
-                      <button className="btn-medieval" onClick={rollMarriage}><Dices size={12} /> 무작위 결혼 굴림 (Table 10-10)</button>
-                      <button className="btn-medieval" onClick={rollChildbirth}><Dices size={12} /> 출산 d20 (Table 10-11)</button>
-                      <button className="btn-medieval" onClick={rollFamilyEvent}><Dices size={12} /> 가문사건 d20 (Table 10-12)</button>
-                    </div>
+                    {(() => {
+                      const playerId = character.personal?.id || 'player';
+                      const hasLivingSpouse = Boolean(character.family?.members?.some(m => m.relation === '배우자' && m.spouseId === playerId && m.status === '생존'));
+                      
+                      return (
+                        <div style={{ background: 'rgba(255,255,255,0.6)', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '8px', padding: '12px', marginBottom: '12px' }}>
+                          {character.campaign?.unresolvedChildbirthBlocked && (
+                            <div style={{ color: 'var(--color-crimson)', border: '1px solid var(--color-crimson)', padding: '10px', background: '#ffe6e6', borderRadius: '4px', marginBottom: '12px', fontSize: '0.8rem' }}>
+                              <strong>경고:</strong> 배우자가 없어 정산이 중단된 과거 출산 판정이 있습니다. 아래에서 연인/첩을 고르고 출산을 굴리거나 건너뛰기하여 해결해 주세요.
+                              <button className="btn-medieval btn-medieval-secondary" style={{ marginLeft: '12px', padding: '3px 8px', fontSize: '0.75rem' }} onClick={() => {
+                                setCharacter(prev => ({
+                                  ...prev,
+                                  campaign: {
+                                    ...prev.campaign,
+                                    unresolvedChildbirthBlocked: false
+                                  }
+                                }));
+                              }}>정산 대기 해제 (강제 리셋)</button>
+                            </div>
+                          )}
+
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                            <div>
+                              <label style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>결혼 굴림 보정치 (수정값):</label>
+                              <input
+                                type="number"
+                                className="input-medieval"
+                                value={marriageModifier}
+                                onChange={(e) => setMarriageModifier(Number(e.target.value))}
+                                style={{ width: '100%', padding: '6px' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>출산 대상 선택:</label>
+                              <select
+                                className="input-medieval"
+                                value={childbirthMother}
+                                onChange={(e) => setChildbirthMother(e.target.value)}
+                                style={{ width: '100%', padding: '6px' }}
+                              >
+                                <option value="wife" disabled={!hasLivingSpouse}>배우자 (Wife) {!hasLivingSpouse ? '(배우자 없음)' : ''}</option>
+                                <option value="lover">연인/첩 (Lover/Concubine - £0.5)</option>
+                                <option value="none">없음/건너뛰기</option>
+                              </select>
+                            </div>
+                          </div>
+                          
+                          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                            <button className="btn-medieval" onClick={rollMarriage}><Dices size={12} /> 무작위 결혼 굴림 (Table 10-10)</button>
+                            <button className="btn-medieval" onClick={rollChildbirth} disabled={childbirthMother === 'none'}><Dices size={12} /> 출산 d20 (Table 10-11)</button>
+                            <button className="btn-medieval" onClick={rollFamilyEvent}><Dices size={12} /> 가문사건 d20 (Table 10-12)</button>
+                            {childbirthMother === 'none' && (
+                              <button className="btn-medieval btn-medieval-secondary" onClick={skipChildbirth}>출산 단계 건너뛰기</button>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       {marriageResult && (
@@ -1787,6 +2142,170 @@ export default function FamilyWinter({ character, setCharacter }) {
                       {familyEventResult && (
                         <div style={{ border: '1px solid var(--color-gold-light)', padding: '8px', background: '#fff', fontSize: '0.85rem' }}>
                           <strong>가문사건 d20 [{familyEventRoll}]:</strong> {familyEventResult}
+                          
+                          {/* Event 6 */}
+                          {familyEventRoll === 6 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>가문 옹호 여부 선택:</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>가문 옹호 (a: 가문 사랑 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>친족 책망 (b: 명예 체크, 가문 사랑 -1)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 7 */}
+                          {familyEventRoll === 7 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>채무 상환 결정 (필요 금액: £{familyEventD6Roll}):</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>상환하기 (a: £{familyEventD6Roll} 지불, 가문 입지 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거절하기 (b: 가문 입지 -1)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 9 */}
+                          {familyEventRoll === 9 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>혼사 파탄 대응:</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>가문 결사 옹호 (a: 가문 사랑 &amp; 입지 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>무시하기 (b: 변화 없음)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 13 */}
+                          {familyEventRoll === 13 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>도망자 보호 여부:</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>보호 수용 (a: 가문 입지 &amp; 명예 체크, 정의 -1)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거절 인도 (b: 정의 체크, 가문 입지 -1)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 14 */}
+                          {familyEventRoll === 14 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>몸값 지불 여부 (필요 금액: £{familyEventD6Roll}):</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>지불하기 (a: £{familyEventD6Roll} 지불, 가문 사랑 &amp; 입지 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>지불 거절 (b: 변화 없음)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 15 */}
+                          {familyEventRoll === 15 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>경범죄 벌금 납부 여부 (필요 금액: £1):</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>납부하기 (a: £1 지불)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>납부 거부 (b: 명예 -1)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 16 */}
+                          {familyEventRoll === 16 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>중범죄 벌금 납부 여부 (필요 금액: £5):</span>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>납부하기 (a: £5 지불)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>납부 거부 (b: 명예 -2)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 18 */}
+                          {familyEventRoll === 18 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>피의 원한 사투 - 전술(Battle) 판정 결과 선택:</span>
+                              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                <button className={`btn-medieval ${familyEventChoice === 'crit' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('crit')}>대성공 (Crit: 전술, 명예, 가문사랑, 가문입지 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'success' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('success')}>성공 (Success: 가문사랑 체크)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'failure' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('failure')}>실패 (Failure)</button>
+                                <button className={`btn-medieval ${familyEventChoice === 'fumble' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('fumble')}>대실패 (Fumble: 가문사랑 -2, 가문입지 -2)</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Event 20 */}
+                          {familyEventRoll === 20 && (
+                            <div style={{ marginTop: '8px', borderTop: '1px dashed #ddd', paddingTop: '6px' }}>
+                              <span style={{ display: 'block', fontSize: '0.8rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>기사의 결단 (1~19번 사건 선택):</span>
+                              <select className="input-medieval" style={{ width: '100%', padding: '4px', fontSize: '0.8rem' }}
+                                value={familyEventRoll20Selection || ''} onChange={(e) => {
+                                  setFamilyEventRoll20Selection(e.target.value);
+                                  setFamilyEventChoice(null); // Reset choice for the new event
+                                }}>
+                                <option value="">-- 사건 선택 --</option>
+                                {Array.from({ length: 19 }, (_, i) => i + 1).map(num => (
+                                  <option key={num} value={num}>{num}번 사건</option>
+                                ))}
+                              </select>
+                              
+                              {/* If selected event requires a choice */}
+                              {familyEventRoll20Selection && ['6', '7', '9', '13', '14', '15', '16', '18'].includes(String(familyEventRoll20Selection)) && (
+                                <div style={{ marginTop: '8px', borderTop: '1px dotted #ccc', paddingTop: '6px' }}>
+                                  <span style={{ display: 'block', fontSize: '0.78rem', marginBottom: '4px', color: 'var(--color-gold-dark)' }}>{familyEventRoll20Selection}번 사건의 세부 결정:</span>
+                                  {String(familyEventRoll20Selection) === '6' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>가문 옹호 (a)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>친족 책망 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '7' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>상환하기 (a: £{familyEventD6Roll || 3} 지불)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거절하기 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '9' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>결사 옹호 (a)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>무시하기 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '13' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>보호 수용 (a)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거절 인도 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '14' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>지불하기 (a: £{familyEventD6Roll || 3} 지불)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>지불 거절 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '15' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>납부하기 (a: £1)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거부하기 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '16' && (
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'a' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('a')}>납부하기 (a: £5)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'b' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.75rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('b')}>거부하기 (b)</button>
+                                    </div>
+                                  )}
+                                  {String(familyEventRoll20Selection) === '18' && (
+                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                                      <button className={`btn-medieval ${familyEventChoice === 'crit' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('crit')}>대성공 (Crit)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'success' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('success')}>성공 (Success)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'failure' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('failure')}>실패 (Failure)</button>
+                                      <button className={`btn-medieval ${familyEventChoice === 'fumble' ? 'btn-medieval-primary' : ''}`} style={{ fontSize: '0.72rem', padding: '4px 8px' }} onClick={() => setFamilyEventChoice('fumble')}>대실패 (Fumble)</button>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          )}
                           {familyEventNeedsManualResolution && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px', color: 'var(--color-crimson)', fontWeight: 'bold' }}>
                               <AlertTriangle size={14} /> manual resolution required: 인물 사망, 납치, 실종 등 선택 대상이 필요한 효과는 수동으로 확정하세요.

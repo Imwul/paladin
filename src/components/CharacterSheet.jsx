@@ -2,6 +2,36 @@ import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
 
+const oppositeMap = {
+  chaste: 'lustful', lustful: 'chaste',
+  energetic: 'lazy', lazy: 'energetic',
+  forgiving: 'vengeful', vengeful: 'forgiving',
+  generous: 'selfish', selfish: 'generous',
+  honest: 'deceitful', deceitful: 'honest',
+  just: 'arbitrary', arbitrary: 'just',
+  merciful: 'cruel', cruel: 'merciful',
+  modest: 'proud', proud: 'modest',
+  pious: 'worldly', worldly: 'pious',
+  prudent: 'reckless', reckless: 'prudent',
+  temperate: 'indulgent', indulgent: 'temperate',
+  trusting: 'suspicious', suspicious: 'trusting',
+  valorous: 'cowardly', cowardly: 'valorous'
+};
+
+const lordOfficerSubclasses = [
+  { key: 'Count', name: 'Count (백작)', type: 'lord', skills: { stewardship: 2, industry: 2 }, traits: {}, passions: {}, glory: 1000 },
+  { key: 'Duke', name: 'Duke (공작)', type: 'lord', skills: { eloquence: 2 }, traits: {}, passions: { honor: 1 }, glory: 1200 },
+  { key: 'Lay Bishop', name: 'Lay Bishop (속인 주교)', type: 'lord', skills: { religion: 3 }, traits: { just: 2 }, passions: {}, glory: 800 },
+  { key: 'Lay Abbot', name: 'Lay Abbot (속인 수도원장)', type: 'lord', skills: { religion: 2 }, traits: { temperate: 2 }, passions: {}, glory: 800 },
+  { key: 'Steward', name: 'Steward (집사/지방관)', type: 'officer', skills: { stewardship: 5 }, traits: { energetic: 2 }, passions: {}, glory: 300 },
+  { key: 'Butler', name: 'Butler (식탁관)', type: 'officer', skills: { intrigue: 3 }, traits: { generous: 2 }, passions: {}, glory: 200 },
+  { key: 'Chamberlain', name: 'Chamberlain (궁내관)', type: 'officer', skills: { courtesy: 3 }, traits: { modest: 2 }, passions: {}, glory: 200 },
+  { key: 'Marshal', name: 'Marshal (원수)', type: 'officer', skills: { battle: 5 }, traits: { valorous: 2 }, passions: {}, glory: 500 },
+  { key: 'Castellan', name: 'Castellan (성주)', type: 'officer', skills: { siege: 5 }, traits: { prudent: 2 }, passions: {}, glory: 300 },
+  { key: 'Forester', name: 'Forester (삼림관)', type: 'officer', skills: { hunting: 5 }, traits: { suspicious: 2 }, passions: {}, glory: 200 },
+  { key: 'Bailiff', name: 'Bailiff (집행관)', type: 'officer', skills: {}, traits: { just: 3, honest: 2 }, passions: {}, glory: 200 }
+];
+
 export const patronSaints = [
   { name: "성 암브로시오 (St. Ambrose)", patronage: "필기사", benefit: "+5 웅변 (Eloquence)", apply: (char) => { char.skills.eloquence = (char.skills.eloquence || 0) + 5; } },
   { name: "성 아나스타시아 (St. Anastasia)", patronage: "순교자", benefit: "+3 정숙 (Chaste)", apply: (char) => { char.traits.chaste = Math.min(20, (char.traits.chaste || 10) + 3); char.traits.lustful = 20 - char.traits.chaste; } },
@@ -1022,6 +1052,28 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customFatherIndex, setCustomFatherIndex] = useState(0); // Vassal Knight default
   const [customBlessing, setCustomBlessing] = useState('용맹의 징표');
 
+  const [customSubclass, setCustomSubclass] = useState('Steward');
+  const [customCharChoice19, setCustomCharChoice19] = useState('battle');
+  const [customCharChoice20, setCustomCharChoice20] = useState(0);
+
+  const [customBirthGiftReligiousTrait1, setCustomBirthGiftReligiousTrait1] = useState('pious');
+  const [customBirthGiftWeapon1, setCustomBirthGiftWeapon1] = useState('sword');
+  const [customBirthGiftChoice20_1, setCustomBirthGiftChoice20_1] = useState(1);
+  const [customBirthGiftRoll19_1a, setCustomBirthGiftRoll19_1a] = useState(4);
+  const [customBirthGiftRoll19_1b, setCustomBirthGiftRoll19_1b] = useState(10);
+
+  const [customBirthGiftReligiousTrait2, setCustomBirthGiftReligiousTrait2] = useState('pious');
+  const [customBirthGiftWeapon2, setCustomBirthGiftWeapon2] = useState('sword');
+  const [customBirthGiftChoice20_2, setCustomBirthGiftChoice20_2] = useState(1);
+  const [customBirthGiftRoll19_2a, setCustomBirthGiftRoll19_2a] = useState(4);
+  const [customBirthGiftRoll19_2b, setCustomBirthGiftRoll19_2b] = useState(10);
+
+  const [customBirthGiftReligiousTrait3, setCustomBirthGiftReligiousTrait3] = useState('pious');
+  const [customBirthGiftWeapon3, setCustomBirthGiftWeapon3] = useState('sword');
+  const [customBirthGiftChoice20_3, setCustomBirthGiftChoice20_3] = useState(1);
+  const [customBirthGiftRoll19_3a, setCustomBirthGiftRoll19_3a] = useState(4);
+  const [customBirthGiftRoll19_3b, setCustomBirthGiftRoll19_3b] = useState(10);
+
   const [customBirthGiftRoll1, setCustomBirthGiftRoll1] = useState(4);
   const [customBirthGiftRoll2, setCustomBirthGiftRoll2] = useState(10);
   const [customBirthGiftRoll3, setCustomBirthGiftRoll3] = useState(17);
@@ -1135,6 +1187,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           year: preset.stats.personal?.campaignYear || 768
         }
       };
+      if (base.horses?.warhorse) {
+        base.horses.warhorse.age = 5;
+      }
+
+      let presetManors = 1; // default Vassal
+      if (selectedPreset === 1) presetManors = 5; // Olivier (Lord/Officer Counselor)
+      else if (selectedPreset === 2) presetManors = 2; // Thierry (Banneret)
+      else if (selectedPreset === 3) presetManors = 0; // Guillaume (Mercenary)
+
       return {
         ...base,
         personal: {
@@ -1164,7 +1225,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         },
         family: {
           ...base.family,
-          characteristic: presetCharacteristics[selectedPreset] || null
+          characteristic: presetCharacteristics[selectedPreset] || null,
+          manors: presetManors
         }
       };
     });
@@ -1249,10 +1311,46 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     const saint = patronSaints[customSaintIndex];
     saint.apply(newChar);
 
-    const characteristic = familyCharacteristics[customCharIndex];
-    characteristic.apply(newChar);
+    // 1. Apply Subclass (Lord or Officer) or Standard Father Class
+    const father = fathersClasses[customFatherIndex];
+    let startingManors = 0;
+    
+    if (customFatherIndex === 4) {
+      const subclassData = lordOfficerSubclasses.find(sc => sc.key === customSubclass) || lordOfficerSubclasses[4];
+      newChar.personal.fathersClass = `${father.name} - ${subclassData.name}`;
+      newChar.gear.gloryTotal = 1000 + subclassData.glory;
+      startingManors = subclassData.type === 'lord' ? 5 : 0;
+      
+      // Apply subclass traits/skills/passions
+      if (subclassData.skills) {
+        Object.entries(subclassData.skills).forEach(([sKey, sVal]) => {
+          newChar.skills[sKey] = (newChar.skills[sKey] || 0) + sVal;
+        });
+      }
+      if (subclassData.passions) {
+        Object.entries(subclassData.passions).forEach(([pKey, pVal]) => {
+          newChar.passions[pKey] = (newChar.passions[pKey] || 0) + pVal;
+        });
+      }
+      if (subclassData.traits) {
+        Object.entries(subclassData.traits).forEach(([tKey, tVal]) => {
+          newChar.traits[tKey] = (newChar.traits[tKey] || 0) + tVal;
+          if (oppositeMap[tKey]) {
+            newChar.traits[oppositeMap[tKey]] = 20 - newChar.traits[tKey];
+          }
+        });
+      }
+    } else {
+      newChar.personal.fathersClass = father.name;
+      newChar.gear.gloryTotal = 1000 + father.glory;
+      startingManors = customFatherIndex === 0 ? 1 : (customFatherIndex === 1 ? 2 : 0);
+    }
+    
+    newChar.family.manors = startingManors;
+    newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
 
-    // Sync with FamilyWinter characteristic roll system
+    // 2. Apply Family Characteristic Choices (Master Tacticians or Player's Choice)
+    const characteristic = familyCharacteristics[customCharIndex];
     const indexToRoll = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
     const charRoll = indexToRoll[customCharIndex] || 1;
 
@@ -1271,49 +1369,89 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       { skills: { intrigue: 10 } },        // 11: 놀라운 통찰
       { skills: { playInstruments: 10 } }, // 12: 타고난 악사
       { skills: { singing: 10 } },         // 13: 축복받은 목소리
-      { skills: { battle: 5 } },           // 14: 전장의 지배자 (룰북: Battle or Siege 택1, 기본 Battle)
-      { skills: {} }                        // 15: 자유 선택 (Player's choice — 수동 적용)
+      { skills: { battle: 5 } },           // 14: 전장의 지배자
+      { skills: {} }                        // 15: 자유 선택
     ];
 
-    const effect = charIndexToEffect[customCharIndex] || { skills: {} };
+    let finalCharEffect = { skills: {} };
+    let finalCharDesc = "";
+    let finalCharBenefit = "";
+    
+    if (customCharIndex === 14) {
+      finalCharEffect.skills[customCharChoice19] = 5;
+      finalCharDesc = "전장의 지배자 (Master tacticians)";
+      finalCharBenefit = customCharChoice19 === 'battle' ? "+5 전술 (Battle)" : "+5 공성 (Siege)";
+    } else if (customCharIndex === 15) {
+      const chosenChar = familyCharacteristics[customCharChoice20];
+      finalCharEffect = charIndexToEffect[customCharChoice20] || { skills: {} };
+      finalCharDesc = `자유 선택 (${chosenChar.name})`;
+      finalCharBenefit = chosenChar.benefit;
+    } else {
+      finalCharEffect = charIndexToEffect[customCharIndex] || { skills: {} };
+      finalCharDesc = characteristic.name;
+      finalCharBenefit = characteristic.benefit;
+    }
+    
+    // Apply skills from characteristic
+    Object.entries(finalCharEffect.skills || {}).forEach(([sKey, sVal]) => {
+      newChar.skills[sKey] = (newChar.skills[sKey] || 0) + sVal;
+    });
 
     newChar.family.characteristic = {
       gender: 'male',
       roll: charRoll,
-      desc: characteristic.name,
-      bonusText: characteristic.benefit,
+      desc: finalCharDesc,
+      bonusText: finalCharBenefit,
       applied: true,
-      appliedBonus: effect
+      appliedBonus: finalCharEffect
     };
 
-    const father = fathersClasses[customFatherIndex];
-    newChar.personal.fathersClass = father.name;
-    newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
-    newChar.gear.gloryTotal = 1000 + father.glory;
-
-    // Apply Table 1-15: Frankish Birth Gifts
+    // 3. Apply Table 1-15: Frankish Birth Gifts
     const rollsCount = getBirthGiftRollCount(customFatherIndex);
     const appliedGifts = [];
-    if (rollsCount >= 1) {
-      const gift = birthGiftsTable[customBirthGiftRoll1 - 1];
-      if (gift) {
-        gift.apply(newChar);
-        appliedGifts.push(gift.benefit);
+
+    const applySingleGift = (rollNum, religiousTrait, weaponKey, choice20, roll19a, roll19b) => {
+      if (rollNum === 8 || rollNum === 9) {
+        newChar.traits[religiousTrait] = Math.min(20, (newChar.traits[religiousTrait] || 10) + 2);
+        if (oppositeMap[religiousTrait]) {
+          newChar.traits[oppositeMap[religiousTrait]] = 20 - newChar.traits[religiousTrait];
+        }
+        newChar.gear.personalGear = (newChar.gear.personalGear ? newChar.gear.personalGear + ", " : "") + `성골함 (성유물 보관 - ${religiousTrait} +2)`;
+        appliedGifts.push(`성유물 성골함 (${religiousTrait} +2)`);
+      } else if (rollNum === 17) {
+        const valAdd = weaponKey === 'sword' ? 1 : 3;
+        newChar.skills[weaponKey] = (newChar.skills[weaponKey] || 0) + valAdd;
+        newChar.gear.personalGear = (newChar.gear.personalGear ? newChar.gear.personalGear + ", " : "") + `명품 장인의 무기 (${weaponKey} +${valAdd})`;
+        appliedGifts.push(`명품 장인의 무기 (${weaponKey} +${valAdd})`);
+      } else if (rollNum === 20) {
+        const targetGift = birthGiftsTable[choice20 - 1];
+        if (targetGift && choice20 !== 20 && choice20 !== 19) {
+          targetGift.apply(newChar);
+          appliedGifts.push(`황제의 칙임 보물 (${targetGift.name})`);
+        }
+      } else if (rollNum === 19) {
+        const gA = birthGiftsTable[roll19a - 1];
+        const gB = birthGiftsTable[roll19b - 1];
+        if (gA && roll19a !== 19) gA.apply(newChar);
+        if (gB && roll19b !== 19) gB.apply(newChar);
+        appliedGifts.push(`가문의 특별한 은혜 (추가 2회 굴림: ${gA?.name || ''}, ${gB?.name || ''})`);
+      } else {
+        const gift = birthGiftsTable[rollNum - 1];
+        if (gift) {
+          gift.apply(newChar);
+          appliedGifts.push(gift.benefit);
+        }
       }
+    };
+
+    if (rollsCount >= 1) {
+      applySingleGift(customBirthGiftRoll1, customBirthGiftReligiousTrait1, customBirthGiftWeapon1, customBirthGiftChoice20_1, customBirthGiftRoll19_1a, customBirthGiftRoll19_1b);
     }
     if (rollsCount >= 2) {
-      const gift = birthGiftsTable[customBirthGiftRoll2 - 1];
-      if (gift) {
-        gift.apply(newChar);
-        appliedGifts.push(gift.benefit);
-      }
+      applySingleGift(customBirthGiftRoll2, customBirthGiftReligiousTrait2, customBirthGiftWeapon2, customBirthGiftChoice20_2, customBirthGiftRoll19_2a, customBirthGiftRoll19_2b);
     }
     if (rollsCount >= 3) {
-      const gift = birthGiftsTable[customBirthGiftRoll3 - 1];
-      if (gift) {
-        gift.apply(newChar);
-        appliedGifts.push(gift.benefit);
-      }
+      applySingleGift(customBirthGiftRoll3, customBirthGiftReligiousTrait3, customBirthGiftWeapon3, customBirthGiftChoice20_3, customBirthGiftRoll19_3a, customBirthGiftRoll19_3b);
     }
 
     newChar.attributes.currentHp = newChar.attributes.siz + newChar.attributes.con;
@@ -1667,6 +1805,29 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     </div>
                   </div>
 
+                  {customCharIndex === 14 && (
+                    <div className="ft-form-group" style={{ marginLeft: '78px', marginTop: '4px' }}>
+                      <label className="ft-label" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)' }}>전장의 지배자 스킬 선택 (+5):</label>
+                      <select className="cs-roll-select" style={{ padding: '4px', fontSize: '0.75rem' }}
+                        value={customCharChoice19} onChange={e => setCustomCharChoice19(e.target.value)}>
+                        <option value="battle">Battle (전술 +5)</option>
+                        <option value="siege">Siege (공성 +5)</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {customCharIndex === 15 && (
+                    <div className="ft-form-group" style={{ marginLeft: '78px', marginTop: '4px' }}>
+                      <label className="ft-label" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)' }}>자유 선택 가문 특성 (1~14번):</label>
+                      <select className="cs-roll-select" style={{ padding: '4px', fontSize: '0.75rem' }}
+                        value={customCharChoice20} onChange={e => setCustomCharChoice20(Number(e.target.value))}>
+                        {familyCharacteristics.slice(0, 14).map((char, idx) => (
+                          <option key={char.name} value={idx}>{char.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
                   <div className="ft-form-group">
                     <label className="ft-label">부친의 신분 (Table 1-4 d20 굴림 입력):</label>
                     <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
@@ -1695,6 +1856,34 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     </div>
                   </div>
 
+                  {customFatherIndex === 4 && (
+                    <div className="ft-form-group" style={{ marginLeft: '78px', marginTop: '4px', marginBottom: '12px' }}>
+                      <label className="ft-label" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)' }}>Lord/Officer 세부 직책 선택:</label>
+                      <select
+                        className="cs-roll-select"
+                        value={customSubclass}
+                        onChange={e => setCustomSubclass(e.target.value)}
+                        style={{ padding: '4px', fontSize: '0.75rem', width: '100%' }}
+                      >
+                        <optgroup label="Lord (영주 subclasses)">
+                          <option value="Count">Count (백작 - Stewardship +2, Industry +2, Glory +1000)</option>
+                          <option value="Duke">Duke (공작 - Eloquence +2, Honor +1, Glory +1200)</option>
+                          <option value="Lay Bishop">Lay Bishop (속인 주교 - Religion +3, Just +2, Glory +800)</option>
+                          <option value="Lay Abbot">Lay Abbot (속인 수도원장 - Religion +2, Temperate +2, Glory +800)</option>
+                        </optgroup>
+                        <optgroup label="Officer (지방관 subclasses)">
+                          <option value="Steward">Steward (집사 - Stewardship +5, Energetic +2, Glory +300)</option>
+                          <option value="Butler">Butler (식탁관 - Intrigue +3, Generous +2, Glory +200)</option>
+                          <option value="Chamberlain">Chamberlain (궁내관 - Courtesy +3, Modest +2, Glory +200)</option>
+                          <option value="Marshal">Marshal (원수 - Battle +5, Valorous +2, Glory +500)</option>
+                          <option value="Castellan">Castellan (성주 - Siege +5, Prudent +2, Glory +300)</option>
+                          <option value="Forester">Forester (삼림관 - Hunting +5, Suspicious +2, Glory +200)</option>
+                          <option value="Bailiff">Bailiff (집행관 - Just +3, Honest +2, Glory +200)</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                  )}
+
                   <div className="ft-form-group">
                     <label className="ft-label">시작 축복 이름:</label>
                     <input
@@ -1715,68 +1904,254 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     </span>
 
                     {getBirthGiftRollCount(customFatherIndex) >= 1 && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
-                        <input
-                          type="number"
-                          className="ft-input"
-                          min="1" max="20"
-                          value={customBirthGiftRoll1}
-                          onChange={e => setCustomBirthGiftRoll1(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
-                          style={{ textAlign: 'center', fontWeight: 'bold' }}
-                        />
-                        <select
-                          className="cs-roll-select"
-                          value={customBirthGiftRoll1}
-                          onChange={e => setCustomBirthGiftRoll1(Number(e.target.value))}
-                        >
-                          {birthGiftsTable.map((g) => (
-                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
-                          ))}
-                        </select>
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                          <input
+                            type="number"
+                            className="ft-input"
+                            min="1" max="20"
+                            value={customBirthGiftRoll1}
+                            onChange={e => setCustomBirthGiftRoll1(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                            style={{ textAlign: 'center', fontWeight: 'bold' }}
+                          />
+                          <select
+                            className="cs-roll-select"
+                            value={customBirthGiftRoll1}
+                            onChange={e => setCustomBirthGiftRoll1(Number(e.target.value))}
+                          >
+                            {birthGiftsTable.map((g) => (
+                              <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        {(customBirthGiftRoll1 === 8 || customBirthGiftRoll1 === 9) && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftReligiousTrait1} onChange={e => setCustomBirthGiftReligiousTrait1(e.target.value)}>
+                              <option value="pious">Pious (신앙심)</option>
+                              <option value="chaste">Chaste (순결)</option>
+                              <option value="forgiving">Forgiving (용서)</option>
+                              <option value="merciful">Merciful (자비)</option>
+                              <option value="modest">Modest (겸손)</option>
+                              <option value="temperate">Temperate (절제)</option>
+                              <option value="trusting">Trusting (신뢰)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll1 === 17 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>장인의 특수 무기 종류 선택: </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftWeapon1} onChange={e => setCustomBirthGiftWeapon1(e.target.value)}>
+                              <option value="sword">Sword (검 +1)</option>
+                              <option value="spear">Spear (창 +3)</option>
+                              <option value="axe">Axe (도끼 +3)</option>
+                              <option value="bludgeon">Bludgeon (곤봉 +3)</option>
+                              <option value="dagger">Dagger (단검 +3)</option>
+                              <option value="lance">Lance (마상창 +3)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll1 === 20 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>보물 선택 (1~18번): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftChoice20_1} onChange={e => setCustomBirthGiftChoice20_1(Number(e.target.value))}>
+                              {birthGiftsTable.slice(0, 18).map(g => (
+                                <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll1 === 19 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px', borderLeft: '2px solid var(--color-gold-light)', paddingLeft: '8px' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '4px' }}>추가 탄생 선물 2회 선택:</span>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_1a} onChange={e => setCustomBirthGiftRoll19_1a(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_1b} onChange={e => setCustomBirthGiftRoll19_1b(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
                     {getBirthGiftRollCount(customFatherIndex) >= 2 && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px', marginBottom: '6px' }}>
-                        <input
-                          type="number"
-                          className="ft-input"
-                          min="1" max="20"
-                          value={customBirthGiftRoll2}
-                          onChange={e => setCustomBirthGiftRoll2(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
-                          style={{ textAlign: 'center', fontWeight: 'bold' }}
-                        />
-                        <select
-                          className="cs-roll-select"
-                          value={customBirthGiftRoll2}
-                          onChange={e => setCustomBirthGiftRoll2(Number(e.target.value))}
-                        >
-                          {birthGiftsTable.map((g) => (
-                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
-                          ))}
-                        </select>
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                          <input
+                            type="number"
+                            className="ft-input"
+                            min="1" max="20"
+                            value={customBirthGiftRoll2}
+                            onChange={e => setCustomBirthGiftRoll2(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                            style={{ textAlign: 'center', fontWeight: 'bold' }}
+                          />
+                          <select
+                            className="cs-roll-select"
+                            value={customBirthGiftRoll2}
+                            onChange={e => setCustomBirthGiftRoll2(Number(e.target.value))}
+                          >
+                            {birthGiftsTable.map((g) => (
+                              <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        {(customBirthGiftRoll2 === 8 || customBirthGiftRoll2 === 9) && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftReligiousTrait2} onChange={e => setCustomBirthGiftReligiousTrait2(e.target.value)}>
+                              <option value="pious">Pious (신앙심)</option>
+                              <option value="chaste">Chaste (순결)</option>
+                              <option value="forgiving">Forgiving (용서)</option>
+                              <option value="merciful">Merciful (자비)</option>
+                              <option value="modest">Modest (겸손)</option>
+                              <option value="temperate">Temperate (절제)</option>
+                              <option value="trusting">Trusting (신뢰)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll2 === 17 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>장인의 특수 무기 종류 선택: </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftWeapon2} onChange={e => setCustomBirthGiftWeapon2(e.target.value)}>
+                              <option value="sword">Sword (검 +1)</option>
+                              <option value="spear">Spear (창 +3)</option>
+                              <option value="axe">Axe (도끼 +3)</option>
+                              <option value="bludgeon">Bludgeon (곤봉 +3)</option>
+                              <option value="dagger">Dagger (단검 +3)</option>
+                              <option value="lance">Lance (마상창 +3)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll2 === 20 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>보물 선택 (1~18번): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftChoice20_2} onChange={e => setCustomBirthGiftChoice20_2(Number(e.target.value))}>
+                              {birthGiftsTable.slice(0, 18).map(g => (
+                                <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll2 === 19 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px', borderLeft: '2px solid var(--color-gold-light)', paddingLeft: '8px' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '4px' }}>추가 탄생 선물 2회 선택:</span>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_2a} onChange={e => setCustomBirthGiftRoll19_2a(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_2b} onChange={e => setCustomBirthGiftRoll19_2b(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
                     {getBirthGiftRollCount(customFatherIndex) >= 3 && (
-                      <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
-                        <input
-                          type="number"
-                          className="ft-input"
-                          min="1" max="20"
-                          value={customBirthGiftRoll3}
-                          onChange={e => setCustomBirthGiftRoll3(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
-                          style={{ textAlign: 'center', fontWeight: 'bold' }}
-                        />
-                        <select
-                          className="cs-roll-select"
-                          value={customBirthGiftRoll3}
-                          onChange={e => setCustomBirthGiftRoll3(Number(e.target.value))}
-                        >
-                          {birthGiftsTable.map((g) => (
-                            <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
-                          ))}
-                        </select>
+                      <div style={{ marginBottom: '8px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
+                          <input
+                            type="number"
+                            className="ft-input"
+                            min="1" max="20"
+                            value={customBirthGiftRoll3}
+                            onChange={e => setCustomBirthGiftRoll3(Math.min(20, Math.max(1, Number(e.target.value) || 1)))}
+                            style={{ textAlign: 'center', fontWeight: 'bold' }}
+                          />
+                          <select
+                            className="cs-roll-select"
+                            value={customBirthGiftRoll3}
+                            onChange={e => setCustomBirthGiftRoll3(Number(e.target.value))}
+                          >
+                            {birthGiftsTable.map((g) => (
+                              <option key={g.roll + '-' + g.name} value={g.roll}>{g.roll}: {g.benefit}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        {(customBirthGiftRoll3 === 8 || customBirthGiftRoll3 === 9) && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftReligiousTrait3} onChange={e => setCustomBirthGiftReligiousTrait3(e.target.value)}>
+                              <option value="pious">Pious (신앙심)</option>
+                              <option value="chaste">Chaste (순결)</option>
+                              <option value="forgiving">Forgiving (용서)</option>
+                              <option value="merciful">Merciful (자비)</option>
+                              <option value="modest">Modest (겸손)</option>
+                              <option value="temperate">Temperate (절제)</option>
+                              <option value="trusting">Trusting (신뢰)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll3 === 17 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>장인의 특수 무기 종류 선택: </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftWeapon3} onChange={e => setCustomBirthGiftWeapon3(e.target.value)}>
+                              <option value="sword">Sword (검 +1)</option>
+                              <option value="spear">Spear (창 +3)</option>
+                              <option value="axe">Axe (도끼 +3)</option>
+                              <option value="bludgeon">Bludgeon (곤봉 +3)</option>
+                              <option value="dagger">Dagger (단검 +3)</option>
+                              <option value="lance">Lance (마상창 +3)</option>
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll3 === 20 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>보물 선택 (1~18번): </span>
+                            <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
+                              value={customBirthGiftChoice20_3} onChange={e => setCustomBirthGiftChoice20_3(Number(e.target.value))}>
+                              {birthGiftsTable.slice(0, 18).map(g => (
+                                <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        {customBirthGiftRoll3 === 19 && (
+                          <div style={{ marginLeft: '78px', marginTop: '4px', borderLeft: '2px solid var(--color-gold-light)', paddingLeft: '8px' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-dark)', display: 'block', marginBottom: '4px' }}>추가 탄생 선물 2회 선택:</span>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_3a} onChange={e => setCustomBirthGiftRoll19_3a(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                              <select className="cs-roll-select" style={{ padding: '2px', fontSize: '0.7rem' }}
+                                value={customBirthGiftRoll19_3b} onChange={e => setCustomBirthGiftRoll19_3b(Number(e.target.value))}>
+                                {birthGiftsTable.filter(g => g.roll !== 19).map(g => (
+                                  <option key={g.roll} value={g.roll}>{g.roll}: {g.name}</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

@@ -76,7 +76,8 @@ const initialCharacterState = {
       damage: "4d6",
       move: 8,
       armor: 5,
-      hp: 30
+      hp: 30,
+      age: 5
     },
     other2: "경량마 (Palfrey)",
     other3: "",

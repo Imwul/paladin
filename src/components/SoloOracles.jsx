@@ -1610,13 +1610,33 @@ export default function SoloOracles({ character, setCharacter }) {
       const result = applyOnce(prev, eventId, updated => {
         updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + battleGloryTotal;
         updated.gear.cash = Math.max(0, (updated.gear?.cash || 0) + battleLootTotal);
+        
+        // Apply battle follower fate roll <= 2 injuries/death to character sheet
+        if (followersFateResult && followersFateResult.roll <= 2) {
+          const currentCash = updated.gear?.cash || 0;
+          if (currentCash >= 2) {
+            updated.gear.cash = Math.max(0, currentCash - 2);
+          } else {
+            if (updated.squire) {
+              updated.squire.status = '부상';
+            }
+            if (updated.horses?.warhorse) {
+              updated.horses.warhorse.status = '사망';
+              updated.horses.warhorse.hp = 0;
+            }
+          }
+        }
         return updated;
       }, `전투 정산: Glory +${battleGloryTotal}, £${battleLootTotal}`);
       return result.character;
     });
 
     setBattleApplied(true);
-    alert(`[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`);
+    let alertMsg = `[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`;
+    if (followersFateResult && followersFateResult.roll <= 2) {
+      alertMsg += `\n• 종자/군마 피해 적용: 소지금 £2 감액 또는 종자 부상 및 군마 사망 처리 완료.`;
+    }
+    alert(alertMsg);
   };
 
   const resetBattleSimulator = () => {
@@ -1941,7 +1961,7 @@ export default function SoloOracles({ character, setCharacter }) {
   const applyMagicToSheet = () => {
     const eventId = `solo:magic_settlement:${character.personal?.campaignYear || 768}`;
     if (magicApplied || hasAppliedEvent(character, eventId)) {
-      alert("올해의 신앙과 기적 정산은 이미 시트에 반영되었습니다.");
+      alert("올해의 신앙 and 기적 정산은 이미 시트에 반영되었습니다.");
       return;
     }
 
@@ -1952,6 +1972,31 @@ export default function SoloOracles({ character, setCharacter }) {
           const currentAmor = updated.passions?.amor || 0;
           updated.passions.amor = Math.min(20, currentAmor + courtshipResult.amorIncrease);
         }
+
+        // Prayer Critical: heals the character to full HP
+        if (prayerResult?.outcome?.includes('Divine Miracle!') || prayerResult?.outcome?.includes('Critical')) {
+          updated.attributes.currentHp = (updated.attributes?.siz || 0) + (updated.attributes?.con || 0);
+        }
+
+        // Pagan Conversion Fumble: deducts 1 point of Honor
+        if (conversionResult?.outcome?.includes('대실패')) {
+          updated.passions.honor = Math.max(0, (updated.passions?.honor || 16) - 1);
+        }
+
+        // Judicial Trial Fumble: deducts £5; failure: deducts £3
+        if (trialResult) {
+          if (trialResult.outcome.includes('대실패')) {
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 5);
+          } else if (trialResult.outcome.includes('Failure')) {
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 3);
+          }
+        }
+
+        // Courtship Fumble: deducts 2 Amor
+        if (courtshipResult?.outcome?.includes('대실패')) {
+          updated.passions.amor = Math.max(0, (updated.passions?.amor || 0) - 2);
+        }
+
         return updated;
       }, `신앙과 기적 정산: Glory +${magicGloryTotal}`);
       return result.character;
@@ -1961,6 +2006,20 @@ export default function SoloOracles({ character, setCharacter }) {
     let alertMsg = `[신앙과 기적 정산 완료]: 성스러운 위업 및 모험에서 거둔 영예가 공식 적용되었습니다.\n• 획득 명예: +${magicGloryTotal} Glory`;
     if (courtshipResult?.amorIncrease) {
       alertMsg += `\n• 연망(Amor) 상승: +${courtshipResult.amorIncrease}`;
+    }
+    if (prayerResult?.outcome?.includes('Divine Miracle!') || prayerResult?.outcome?.includes('Critical')) {
+      alertMsg += `\n• 기도 기적: 최대 체력 회복 완료!`;
+    }
+    if (conversionResult?.outcome?.includes('대실패')) {
+      alertMsg += `\n• 개종 대실패: 명예 -1 페널티 적용`;
+    }
+    if (trialResult?.outcome?.includes('대실패')) {
+      alertMsg += `\n• 신명재판 대실패: £5 강제 벌금 징수`;
+    } else if (trialResult?.outcome?.includes('Failure')) {
+      alertMsg += `\n• 신명재판 실패: £3 강제 벌금 징수`;
+    }
+    if (courtshipResult?.outcome?.includes('대실패')) {
+      alertMsg += `\n• 구애 대실패: 연망(Amor) -2 하락`;
     }
     alert(alertMsg);
   };
