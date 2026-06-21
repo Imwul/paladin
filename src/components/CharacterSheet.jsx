@@ -178,7 +178,7 @@ const presets = [
         awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
         horsemanship: 17,
         hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
-        courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
+        courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, languages: 2, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
         battle: 12, siege: 5,
         axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 15, unarmed: 6,
         lance: 14, bow: 4, crossbow: 5, thrownWeapon: 4
@@ -224,7 +224,7 @@ const presets = [
       skills: {
         awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
         horsemanship: 12, hunting: 6, industry: 5, recognize: 8, religion: 6, stewardship: 3, swimming: 5,
-        courtesy: 14, dancing: 8, eloquence: 18, falconry: 6, gaming: 8, heraldry: 10, intrigue: 12, playInstruments: 6, readingWriting: 5, romance: 10, singing: 8,
+        courtesy: 14, dancing: 8, eloquence: 18, falconry: 6, gaming: 8, heraldry: 10, intrigue: 12, languages: 6, playInstruments: 6, readingWriting: 5, romance: 10, singing: 8,
         battle: 10, siege: 5,
         axe: 5, bludgeon: 5, dagger: 8, spear: 8, sword: 12, unarmed: 6,
         lance: 11, bow: 4, crossbow: 5, thrownWeapon: 4
@@ -269,7 +269,7 @@ const presets = [
       },
       skills: {
         awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 15, folkLore: 4, horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 14, stewardship: 3, swimming: 5,
-        courtesy: 10, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 8, intrigue: 3, playInstruments: 1, readingWriting: 4, romance: 4, singing: 6,
+        courtesy: 10, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 8, intrigue: 3, languages: 2, playInstruments: 1, readingWriting: 4, romance: 4, singing: 6,
         battle: 10, siege: 5,
         axe: 6, bludgeon: 8, dagger: 8, spear: 10, sword: 13, unarmed: 6,
         lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
@@ -314,7 +314,7 @@ const presets = [
       },
       skills: {
         awareness: 13, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4, horsemanship: 12, hunting: 10, industry: 5, recognize: 5, religion: 4, stewardship: 3, swimming: 5,
-        courtesy: 6, dancing: 2, eloquence: 6, falconry: 4, gaming: 6, heraldry: 4, intrigue: 6, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
+        courtesy: 6, dancing: 2, eloquence: 6, falconry: 4, gaming: 6, heraldry: 4, intrigue: 6, languages: 2, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
         battle: 12, siege: 5,
         axe: 9, bludgeon: 8, dagger: 8, spear: 10, sword: 16, unarmed: 8, lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
       },
@@ -354,7 +354,8 @@ const courtlySkills = [
   { key: "courtesy", label: "예의" }, { key: "dancing", label: "무용" },
   { key: "eloquence", label: "웅변" }, { key: "falconry", label: "매사냥" },
   { key: "gaming", label: "유희" }, { key: "heraldry", label: "문장학" },
-  { key: "intrigue", label: "음모" }, { key: "playInstruments", label: "악기 연주" },
+  { key: "intrigue", label: "음모" }, { key: "languages", label: "언어" },
+  { key: "playInstruments", label: "악기 연주" },
   { key: "readingWriting", label: "독서 및 집필" }, { key: "romance", label: "로맨스" },
   { key: "singing", label: "가창" }
 ];
@@ -1269,7 +1270,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     newChar.skills = {
       awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
       horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
-      courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
+      courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, languages: 2, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
       battle: 10, siege: 5,
       axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 13, unarmed: 6,
       lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4

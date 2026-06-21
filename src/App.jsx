@@ -56,7 +56,7 @@ const initialCharacterState = {
   skills: {
     awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
     horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
-    courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
+    courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, languages: 2, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
     battle: 10, siege: 5,
     axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 13, unarmed: 6,
     lance: 12,

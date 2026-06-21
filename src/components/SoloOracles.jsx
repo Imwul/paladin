@@ -34,7 +34,7 @@ const D20Face = ({ value, isRolling, color }) => {
       <svg viewBox="0 0 100 100" className="d20-svg">
         {/* 중앙 삼각형 */}
         <polygon points="50,25 24,70 76,70" className="d20-face-center" />
-        
+
         {/* 외곽 삼각형 3D 투영 면들 */}
         <polygon points="50,5 50,25 7,30" className="d20-face-outer" />
         <polygon points="50,5 93,30 50,25" className="d20-face-outer" />
@@ -45,7 +45,7 @@ const D20Face = ({ value, isRolling, color }) => {
         <polygon points="7,30 50,25 24,70" className="d20-face-outer" />
         <polygon points="93,30 50,25 76,70" className="d20-face-outer" />
         <polygon points="24,70 50,95 76,70" className="d20-face-outer" />
-        
+
         {/* 내부 와이어프레임 입체 구분선 */}
         <line x1="50" y1="5" x2="50" y2="25" className="d20-line" />
         <line x1="93" y1="30" x2="50" y2="25" className="d20-line" />
@@ -56,7 +56,7 @@ const D20Face = ({ value, isRolling, color }) => {
         <line x1="7" y1="75" x2="24" y2="70" className="d20-line" />
         <line x1="7" y1="30" x2="24" y2="70" className="d20-line" />
         <line x1="7" y1="30" x2="50" y2="25" className="d20-line" />
-        
+
         <polygon points="50,5 93,30 93,75 50,95 7,75 7,30" className="d20-outline" />
       </svg>
       <div className="d20-number" style={{ color: color || 'var(--color-crimson)' }}>
@@ -134,11 +134,11 @@ export default function SoloOracles({ character, setCharacter }) {
   const [critMiracle, setCritMiracle] = useState(false);
   const [magicEquipment, setMagicEquipment] = useState(false);
   const [fantasticItem, setFantasticItem] = useState(false);
-  
+
   const [spouseGlory, setSpouseGlory] = useState(500);
   const [spouseIsPagan, setSpouseIsPagan] = useState(false);
   const [spouseHonor, setSpouseHonor] = useState(15);
-  
+
   const [gloryActionApplied, setGloryActionApplied] = useState(false);
   const [marriageGloryActionApplied, setMarriageGloryActionApplied] = useState(false);
 
@@ -159,7 +159,7 @@ export default function SoloOracles({ character, setCharacter }) {
   const [opponentMounted, setOpponentMounted] = useState(false);
   const [opponentSkill, setOpponentSkill] = useState(11);
   const [isCharging, setIsCharging] = useState(true);
-  
+
   const [clashResult, setClashResult] = useState(null);
   const [isRollingClash, setIsRollingClash] = useState(false);
 
@@ -188,15 +188,32 @@ export default function SoloOracles({ character, setCharacter }) {
   const [battleLootTotal, setBattleLootTotal] = useState(0);
   const [enemyCommanderSkill, setEnemyCommanderSkill] = useState(12);
   const [playerBattleSkillOverride, setPlayerBattleSkillOverride] = useState(10);
+  const [battleScale, setBattleScale] = useState('large');
+  const [battleRounds, setBattleRounds] = useState(6);
+  const [battleCombatOutcome, setBattleCombatOutcome] = useState('success');
+  const [battleVictory, setBattleVictory] = useState('indecisive');
+  const [battleOdds, setBattleOdds] = useState('even');
+  const [battleCommanderRole, setBattleCommanderRole] = useState('none');
+  const [pursuitResult, setPursuitResult] = useState(null);
+  const [isRollingPursuit, setIsRollingPursuit] = useState(false);
+  const [pursuitEnemySkill, setPursuitEnemySkill] = useState(12);
 
   // 6. 성스러운 기적과 사법 신탁 및 연애 (Chapter 9 - Magic & Miracles) States
   const [prayerResult, setPrayerResult] = useState(null);
   const [isRollingPrayer, setIsRollingPrayer] = useState(false);
   const [selectedPrayerModifier, setSelectedPrayerModifier] = useState(0);
+  const [prayerForm, setPrayerForm] = useState('normal');
+  const [prayerPlace, setPrayerPlace] = useState('ordinary');
+  const [prayerDay, setPrayerDay] = useState('ordinary');
+  const [prayerFaithful, setPrayerFaithful] = useState('none');
+  const [prayerSacredItem, setPrayerSacredItem] = useState('none');
+  const [prayerFollowupOutcome, setPrayerFollowupOutcome] = useState('successful');
 
   const [conversionResult, setConversionResult] = useState(null);
   const [isRollingConversion, setIsRollingConversion] = useState(false);
   const [paganCommanderName, setPaganCommanderName] = useState('작센 귀족');
+  const [paganNeedsLanguage, setPaganNeedsLanguage] = useState(false);
+  const [paganHonor, setPaganHonor] = useState(15);
 
   const [trialResult, setTrialResult] = useState(null);
   const [isRollingTrial, setIsRollingTrial] = useState(false);
@@ -207,6 +224,8 @@ export default function SoloOracles({ character, setCharacter }) {
   const [selectedLadyAmorType, setSelectedLadyAmorType] = useState('passive'); // 'passive' | 'active_romance'
   const [targetLadyName, setTargetLadyName] = useState('로트링겐 영애');
   const [ladyLoveStat, setLadyLoveStat] = useState(12);
+  const [ladyHonor, setLadyHonor] = useState(15);
+  const [courtshipGiftValue, setCourtshipGiftValue] = useState(1);
 
   const [dreamResult, setDreamResult] = useState(null);
   const [isRollingDream, setIsRollingDream] = useState(false);
@@ -250,6 +269,7 @@ export default function SoloOracles({ character, setCharacter }) {
     { key: "gaming", label: "유희 (Gaming)", category: "courtly" },
     { key: "heraldry", label: "문장학 (Heraldry)", category: "courtly" },
     { key: "intrigue", label: "음모 (Intrigue)", category: "courtly" },
+    { key: "languages", label: "언어 (Languages)", category: "courtly" },
     { key: "playInstruments", label: "악기 연주 (Play Instruments)", category: "courtly" },
     { key: "readingWriting", label: "독서 및 집필 (Reading & Writing)", category: "courtly" },
     { key: "romance", label: "로맨스 (Romance)", category: "courtly" },
@@ -292,6 +312,67 @@ export default function SoloOracles({ character, setCharacter }) {
     hateSaxons: '작센인 증오 (Hate [Saxons])',
     hateMoors: '무어인 증오 (Hate [Moors])'
   };
+
+  const rollD20Check = (target) => {
+    const roll = Math.floor(Math.random() * 20) + 1;
+    const boundedTarget = Math.max(0, Math.min(25, Number(target) || 0));
+    const fumble = roll === 20 && boundedTarget < 20;
+    const critical = !fumble && (roll === 1 || roll === boundedTarget);
+    const success = !fumble && roll <= boundedTarget;
+    return { roll, target: boundedTarget, critical, success, fumble };
+  };
+
+  const compareOpposedRolls = (actor, opponent) => {
+    const actorScore = actor.fumble ? -2 : !actor.success ? -1 : actor.critical ? 100 + actor.roll : actor.roll;
+    const opponentScore = opponent.fumble ? -2 : !opponent.success ? -1 : opponent.critical ? 100 + opponent.roll : opponent.roll;
+    return actorScore > opponentScore ? 'actor' : opponentScore > actorScore ? 'opponent' : 'tie';
+  };
+
+  const battleBaseGloryByScale = { small: 15, medium: 30, large: 45, huge: 60 };
+  const battleOutcomeMultiplier = { critical: 2, success: 1, failure: 0.5, disengaged: 0.01 };
+  const battleVictoryMultiplier = { victory: 2, indecisive: 1, defeat: 0.5 };
+  const battleOddsMultiplier = { outnumbered5: 2, outnumbered2: 1.5, even: 1, outnumbering2: 0.75, outnumbering5: 0.5 };
+
+  const getBattleRulesGlory = () => {
+    const base = battleBaseGloryByScale[battleScale] || 45;
+    const rounds = Math.max(0, Math.min(12, parseInt(battleRounds) || 0));
+    const participantGlory = base * rounds
+      * (battleOutcomeMultiplier[battleCombatOutcome] || 1)
+      * (battleVictoryMultiplier[battleVictory] || 1)
+      * (battleOddsMultiplier[battleOdds] || 1);
+    let commanderGlory = 0;
+    if (battleCommanderRole === 'army') commanderGlory = base * rounds * (battleVictoryMultiplier[battleVictory] || 1);
+    if (battleCommanderRole === 'battalion') commanderGlory = Math.round((base * rounds * (battleVictoryMultiplier[battleVictory] || 1)) / 3);
+    return Math.max(0, Math.round(participantGlory + commanderGlory));
+  };
+
+  const getBattleSettlementGlory = () => Math.max(0, battleGloryTotal + (pursuitResult?.glory || 0) + getBattleRulesGlory());
+  const getBattleSettlementLoot = () => battleLootTotal + (pursuitResult?.loot || 0);
+
+  const getReligiousKnightBonus = () => {
+    const religiousTraitsTotal =
+      (character?.traits?.chaste || 0) + (character?.traits?.forgiving || 0) +
+      (character?.traits?.merciful || 0) + (character?.traits?.modest || 0) +
+      (character?.traits?.temperate || 0) + (character?.traits?.trusting || 0);
+    return religiousTraitsTotal >= 90 && (character?.passions?.loveGod || 0) >= 16 ? 5 : 0;
+  };
+
+  const getPrayerModifierTotal = () => {
+    const formMods = { mortal: -2, normal: -1, mass: 0, pilgrimage: 1 };
+    const placeMods = { ordinary: -1, church: 0, cathedral: 1 };
+    const dayMods = { ordinary: -1, sunday: 0, holy: 1 };
+    const faithfulMods = { none: 0, ten: 1, hundred: 2, thousand: 3 };
+    const sacredMods = { none: 0, blessed: 1, relic: 2 };
+    return (formMods[prayerForm] || 0)
+      + (placeMods[prayerPlace] || 0)
+      + (dayMods[prayerDay] || 0)
+      + (faithfulMods[prayerFaithful] || 0)
+      + (sacredMods[prayerSacredItem] || 0)
+      + getReligiousKnightBonus()
+      + (parseInt(selectedPrayerModifier) || 0);
+  };
+
+  const getPrayerTarget = () => Math.max(1, Math.min(25, (character?.passions?.loveGod || 10) + getPrayerModifierTotal()));
 
   const humanOpponents = {
     ordinary_knight: { label: '일반 기사 (Ordinary Knight)', baseGlory: 50, loveGlory: 5 },
@@ -476,6 +557,19 @@ export default function SoloOracles({ character, setCharacter }) {
     }));
   };
 
+  const appendJournalLine = (characterState, line) => {
+    const year = characterState.personal?.campaignYear || 768;
+    const currentText = characterState.journal?.[year]?.text || '';
+    const separator = currentText.trim() ? '\n\n' : '';
+    return {
+      ...(characterState.journal || {}),
+      [year]: {
+        text: `${currentText}${separator}${line}`,
+        updatedAt: new Date().toISOString()
+      }
+    };
+  };
+
   const getStandingValue = (key) => {
     return character?.standings?.[key] ?? 10;
   };
@@ -511,7 +605,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        
+
         let outcome = '';
         let desc = '';
         let color = '';
@@ -538,7 +632,7 @@ export default function SoloOracles({ character, setCharacter }) {
         } else {
           const opposedBase = getTraitValue(opposedKey);
           opposedRollVal = Math.floor(Math.random() * 20) + 1;
-          
+
           if (opposedRollVal === 20 || opposedRollVal < opposedBase) {
             outcome = '실패 -> 반대 성향 주도 ⚖️';
             desc = `본 성향 굴림 실패 후, 기사의 내면에 잠재된 반대 욕망 [${opposedKo}: 스탯 ${opposedBase}]이 주도권을 잡았습니다 (반대 d20 굴림: ${opposedRollVal}). 의지와 관계없이 [${opposedKo}]의 충동에 따라 이끌리듯 행동하게 됩니다.`;
@@ -747,7 +841,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        
+
         const finalRollA = Math.floor(Math.random() * 20) + 1;
         const finalRollB = Math.floor(Math.random() * 20) + 1;
         const valA = emotionA.value;
@@ -816,7 +910,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        
+
         const finalRoll = Math.floor(Math.random() * 20) + 1;
         let successesCount = 0;
         let fumblesCount = 0;
@@ -887,7 +981,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        
+
         const finalRoll = Math.floor(Math.random() * 20) + 1;
         let title = '평온함';
         let desc = '기사는 현실의 임무에 또렷이 집중하고 있습니다. 정상적인 모험 활동이 가능합니다.';
@@ -920,15 +1014,15 @@ export default function SoloOracles({ character, setCharacter }) {
   // ==========================================
   // REPUTATION & COMBAT LOGIC (Chapter 4 & 5)
   // ==========================================
-  
+
   // 1. Glory Value Calculators
   const getCalculatedGlory = () => {
     const opponent = humanOpponents[selectedOpponentType];
     if (!opponent) return 0;
-    
+
     let base = combatType === 'mortal' ? opponent.baseGlory : opponent.loveGlory;
     let add = 0;
-    
+
     if (damage6d6) add += 10;
     if (halfGiant) add += 20;
     if (passionInspiration) add += 10;
@@ -936,11 +1030,11 @@ export default function SoloOracles({ character, setCharacter }) {
     if (critMiracle) add += 50;
     if (magicEquipment) add += 25;
     if (fantasticItem) add += 50;
-    
+
     if (combatType === 'love') {
       add = Math.floor(add / 10);
     }
-    
+
     return base + add;
   };
 
@@ -1075,7 +1169,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        
+
         let outcome = '';
         let desc = '';
         let color = '';
@@ -1084,7 +1178,7 @@ export default function SoloOracles({ character, setCharacter }) {
           outcome = '대실패 (Fumble) ☠️';
           desc = `청탁 대참사! 오만방자하거나 예의를 지키지 못해 집단의 격한 분노를 샀습니다. Standing 수치가 즉각 1점 차감되며 상당한 배척을 받게 됩니다.`;
           color = 'var(--color-crimson)';
-          
+
           // Deduct standing on Fumble
           setCharacter(prev => ({
             ...prev,
@@ -1232,25 +1326,25 @@ export default function SoloOracles({ character, setCharacter }) {
           winner = 'Player';
           clashOutcome = '기사의 격돌 대승리! 🎉';
           color = 'var(--color-success)';
-          
+
           let dmg = '기본 무기 피해';
           if (playerWeapon === 'two_handed_sword' || playerWeapon === 'halberd') dmg = '무기 피해 + 1d6 추가 피해';
           else if (playerWeapon === 'lance' && playerMounted) dmg = '돌격 군마의 피해량 적용';
-          
+
           detailDesc += `🛡️ 기사가 주사위 차이로 방어를 뚫고 적을 격타하여 상해를 줍니다! (예상 피해: ${dmg})`;
         } else if (oScore > pScore) {
           winner = 'Opponent';
           clashOutcome = '상대방의 격돌 승리 ⚔️';
           color = 'var(--color-crimson)';
-          
+
           let dmg = '적 기본 피해';
           if (opponentWeapon === 'two_handed_sword' || opponentWeapon === 'halberd') dmg = '적 피해 + 1d6 추가 피해';
-          
+
           detailDesc += `⚠️ 상대방의 주사위가 더 강하여 기사의 방어를 뚫고 무거운 피해를 선사했습니다.`;
         } else {
           // TIE situation - Sword tie breaker rules!
           winner = 'None';
-          
+
           const pHasSword = playerWeapon === 'sword' || playerWeapon === 'two_handed_sword';
           const oHasSword = opponentWeapon === 'sword' || opponentWeapon === 'two_handed_sword';
 
@@ -1322,7 +1416,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        
+
         let outcome = '';
         let desc = '';
         let color = '';
@@ -1398,7 +1492,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
         const finalRoll = Math.floor(Math.random() * 20) + 1;
-        
+
         let outcome = '';
         let desc = '';
         let color = '';
@@ -1438,19 +1532,19 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const applyImprovementToSheet = () => {
     if (improveApplied) return;
-    
+
     setCharacter(prev => {
       const updatedSkillsChecked = prev.skillsChecked ? {
         ...prev.skillsChecked,
         [selectedImproveKey]: false
       } : {};
-      
+
       const updatedSkills = { ...prev.skills };
       if (improveRollResult?.isSuccess) {
         const currentVal = prev.skills?.[selectedImproveKey] || 0;
         updatedSkills[selectedImproveKey] = Math.min(20, currentVal + 1);
       }
-      
+
       return {
         ...prev,
         skillsChecked: updatedSkillsChecked,
@@ -1659,6 +1753,54 @@ export default function SoloOracles({ character, setCharacter }) {
     }, 800);
   };
 
+  const rollPursuitRound = () => {
+    if (isRollingPursuit) return;
+    setIsRollingPursuit(true);
+    setPursuitResult(null);
+
+    setTimeout(() => {
+      const hunting = rollD20Check(character?.skills?.hunting || 0);
+      const enemy = rollD20Check(pursuitEnemySkill);
+      const winner = compareOpposedRolls(hunting, enemy);
+      const base = battleBaseGloryByScale[battleScale] || 45;
+      let outcome = '';
+      let desc = '';
+      let glory = 0;
+      let loot = 0;
+      let damage = 0;
+
+      if (hunting.critical && winner === 'actor') {
+        const bootyRoll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+        outcome = '결정적 추격 성공: 적 야영지 발견';
+        desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 적 야영지를 찾아 전리품을 쓸어 담고 2라운드 분량의 추격 Glory를 얻습니다.`;
+        glory = base * 2;
+        loot = bootyRoll + 2;
+      } else if (hunting.success && winner === 'actor') {
+        const prudent = rollD20Check(character?.traits?.prudent || 10);
+        outcome = '추격 성공: 적 패잔병 격파';
+        desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 패주하는 적을 베어 1라운드 분량의 추격 Glory를 얻습니다.${prudent.success ? ' Prudent 판정에 성공해 포로 1명을 확보했습니다.' : ''}`;
+        glory = base;
+        loot = prudent.success ? 6 : 0;
+      } else if (hunting.success || winner === 'tie') {
+        outcome = '부분 추격 성공';
+        desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 일부 적을 따라잡아 1라운드 분량의 추격 Glory를 얻습니다.`;
+        glory = base;
+      } else if (hunting.fumble) {
+        outcome = '추격 대실패: 매복';
+        damage = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+        desc = `Hunting ${hunting.roll}/${hunting.target}. 매복에 걸려 ${damage} 피해를 받습니다. 추격 Glory는 없습니다.`;
+      } else {
+        outcome = '무리한 추격';
+        damage = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+        desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 적 하나를 쓰러뜨려 1라운드 Glory를 얻지만 ${damage} 피해를 받습니다.`;
+        glory = base;
+      }
+
+      setPursuitResult({ hunting, enemy, outcome, desc, glory, loot, damage });
+      setIsRollingPursuit(false);
+    }, 800);
+  };
+
   const applyBattleToSheet = () => {
     const eventId = `solo:battle_settlement:${character.personal?.campaignYear || 768}`;
     if (battleApplied || hasAppliedEvent(character, eventId)) {
@@ -1668,9 +1810,14 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
-        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + battleGloryTotal;
-        updated.gear.cash = Math.max(0, (updated.gear?.cash || 0) + battleLootTotal);
-        
+        const settlementGlory = getBattleSettlementGlory();
+        const settlementLoot = getBattleSettlementLoot();
+        updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + settlementGlory;
+        updated.gear.cash = Math.max(0, (updated.gear?.cash || 0) + settlementLoot);
+        if (pursuitResult?.damage) {
+          updated.attributes.currentHp = Math.max(0, (updated.attributes?.currentHp || 0) - pursuitResult.damage);
+        }
+
         // Apply battle follower fate roll <= 2 injuries/death to character sheet
         if (followersFateResult && followersFateResult.roll <= 2) {
           const currentCash = updated.gear?.cash || 0;
@@ -1686,13 +1833,17 @@ export default function SoloOracles({ character, setCharacter }) {
             }
           }
         }
+        updated.journal = appendJournalLine(
+          updated,
+          `[전투 정산] ${battleScale.toUpperCase()} 전투 ${battleRounds}라운드, 결과 ${battleVictory}. 전투 Glory +${settlementGlory}, 전리품 £${settlementLoot >= 0 ? '+' : ''}${settlementLoot}.${pursuitResult ? ` 추격: ${pursuitResult.outcome}.` : ''}`
+        );
         return updated;
-      }, `전투 정산: Glory +${battleGloryTotal}, £${battleLootTotal}`);
+      }, `전투 정산: Glory +${getBattleSettlementGlory()}, £${getBattleSettlementLoot()}`);
       return result.character;
     });
 
     setBattleApplied(true);
-    let alertMsg = `[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${battleGloryTotal} Glory\n• 소지금 변동: £${battleLootTotal >= 0 ? '+' : ''}${battleLootTotal}`;
+    let alertMsg = `[전투 전술 정산 완료]: 대규모 집단 전장에서 거둔 위업이 기사 시트에 연동되었습니다.\n• 획득 명예: +${getBattleSettlementGlory()} Glory\n• 소지금 변동: £${getBattleSettlementLoot() >= 0 ? '+' : ''}${getBattleSettlementLoot()}`;
     if (followersFateResult && followersFateResult.roll <= 2) {
       alertMsg += `\n• 종자/군마 피해 적용: 소지금 £2 감액 또는 종자 부상 및 군마 사망 처리 완료.`;
     }
@@ -1705,6 +1856,7 @@ export default function SoloOracles({ character, setCharacter }) {
     setFollowersFateResult(null);
     setBattleGloryTotal(0);
     setBattleLootTotal(0);
+    setPursuitResult(null);
     setBattleApplied(false);
   };
 
@@ -1718,40 +1870,39 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousGlory = prayerResult?.glory || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
-      const isReligious = character?.skills?.religion >= 16; 
-      const finalVal = 10 + selectedPrayerModifier + (isReligious ? 5 : 0);
-
-      const isSuccess = roll <= finalVal;
-      const isCrit = roll === 1 || roll === finalVal;
-      const isFumble = roll === 20 && finalVal < 20;
+      const check = rollD20Check(getPrayerTarget());
 
       let outcome = '';
       let desc = '';
       let color = '';
       let glory = 0;
+      let stateEffect = null;
 
-      if (isCrit) {
-        outcome = '성스러운 기적 발현 (Divine Miracle! - Critical)';
-        desc = `기사가 [${prayerIntention}]을(를) 바라고 무릎을 꿇자, 하늘의 장막이 걷히고 영광스러운 가호가 비추며 기사의 상처가 씻은 듯이 나았습니다! 다가올 전투 라운드에 +10 절대 가호를 입습니다.`;
+      if (check.critical) {
+        outcome = '성스러운 기적 발현 (Miracle - Critical)';
+        desc = `Love [God] ${character?.passions?.loveGod || 10}에 기도 보정 ${getPrayerModifierTotal() >= 0 ? '+' : ''}${getPrayerModifierTotal()}을 적용해 목표 ${check.target}. 성인이나 천사가 도와 이후 행동 전체에 +20 가호를 부여합니다.`;
         color = 'var(--color-success)';
         glory = 50;
-      } else if (isFumble) {
-        outcome = '신의 분노와 불경 (Divine Displeasure - 대실패)';
-        desc = `[${prayerIntention}]을(를) 부르짖었으나 기사의 불경스러운 마음이 탄로 나 하늘의 분노와 거절을 입었습니다. 다음 스킬 및 전투 판정에 -3 불이익이 주어집니다.`;
+        if (prayerFollowupOutcome === 'failed') stateEffect = { type: 'shock', loveGodDelta: 1, check: true };
+      } else if (check.fumble) {
+        outcome = '신에게 버림받은 광기 (Madness - Fumble)';
+        desc = `기도가 처참히 어긋나 기사는 신에게 버림받았다고 느낍니다. Love [God] -1 및 Madness 후유증을 기록합니다.`;
         color = 'var(--color-danger)';
-      } else if (isSuccess) {
-        outcome = '기도 성사 (Prayer Answered - Success)';
-        desc = `[${prayerIntention}]의 간절한 외침이 하늘에 닿았습니다. 기사의 마음에 영적 평화가 깃들며, 다음 판정에 +3 영적 보정을 부여받습니다.`;
+        stateEffect = { type: 'madness', loveGodDelta: -1 };
+      } else if (check.success) {
+        outcome = '기도 영감 (Inspired - Success)';
+        desc = `기도가 응답되어 이후 행동에 +10 영감을 얻습니다. 후속 행동 결과에 따라 Love [God] 체크 또는 Shock가 기록됩니다.`;
         color = 'var(--color-royal-blue)';
         glory = 10;
+        stateEffect = prayerFollowupOutcome === 'failed' ? { type: 'shock' } : { check: true };
       } else {
-        outcome = '침묵 (No Response - Failure)';
-        desc = `[${prayerIntention}]을(를) 향한 간구는 무거운 침묵 속에 가라앉았습니다. 더 헌신적인 참회와 고행의 행로가 요구됩니다.`;
+        outcome = '낙담 (Disheartened - Failure)';
+        desc = `기도가 침묵 속에 가라앉아 상황 동안 -5 낙담을 받습니다. 후속 행동이 실패하면 Love [God] -1 및 Melancholy, 성공하면 Love [God] +1을 기록합니다.`;
         color = 'var(--color-grey)';
+        stateEffect = prayerFollowupOutcome === 'failed' ? { type: 'melancholy', loveGodDelta: -1 } : { loveGodDelta: 1 };
       }
 
-      setPrayerResult({ roll, outcome, desc, color, glory });
+      setPrayerResult({ roll: check.roll, target: check.target, outcome, desc, color, glory, stateEffect });
       setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingPrayer(false);
 
@@ -1761,7 +1912,7 @@ export default function SoloOracles({ character, setCharacter }) {
           id: Date.now(),
           type: 'prayer',
           title: '🛐 성스러운 기도와 기적',
-          detail: `간구 지향: "${prayerIntention}" | 결과: d20: ${roll} -> ${outcome}`,
+          detail: `간구 지향: "${prayerIntention}" | 결과: d20: ${check.roll}/${check.target} -> ${outcome}`,
           narrative: desc,
           glory: glory,
           timestamp: new Date().toLocaleTimeString()
@@ -1778,34 +1929,77 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousGlory = conversionResult?.glory || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
-      const targetVal = character?.skills?.religion || 10;
-      const isSuccess = roll <= targetVal;
-      const isCrit = roll === 1 || roll === targetVal;
-      const isFumble = roll === 20 && targetVal < 20;
-
-      let outcome = '';
+      const steps = [];
+      let stepModifier = 0;
+      let stopped = false;
+      let outcome = '개종 실패';
       let desc = '';
       let glory = 0;
+      let converted = false;
+      let honorResult = null;
 
-      if (isCrit) {
-        outcome = '기적적인 개종 성사 (Miraculous Conversion - Critical)';
-        desc = `이교 장수 ${paganCommanderName}(이)가 기사의 흔들림 없는 숭고한 믿음과 십자가의 광채에 압도되어 무기를 내려놓고 즉시 개종하여 세례를 약속했습니다! 제국에 찬송이 울려 퍼집니다.`;
-        glory = 100;
-      } else if (isFumble) {
-        outcome = '기만적 배신 (Pagan Hostility - 대실패)';
-        desc = `개종을 권유받은 ${paganCommanderName}(이)가 위선적인 조롱으로 기사를 기만하며 기습 공격을 감행해 가문의 명예를 실추시키고 깊은 불명예를 안겼습니다.`;
-        glory = -20;
-      } else if (isSuccess) {
-        outcome = '진실한 개종 (True Conversion - Success)';
-        desc = `이교도 장수 ${paganCommanderName}(이)가 무릎을 꿇고 거짓된 우상을 버린 채 성부와 성자와 성령의 이름으로 개종을 서약했습니다.`;
-        glory = 50;
-      } else {
-        outcome = '완강한 거부 (Conversion Refused - Failure)';
-        desc = `${paganCommanderName}는 "나의 고결한 옛 선조들의 신을 배신할 수 없다"며 기사의 권고를 칼같이 거절했습니다.`;
+      if (paganNeedsLanguage) {
+        const language = rollD20Check(character?.skills?.languages || 0);
+        steps.push({ name: 'Languages', ...language });
+        if (!language.success) {
+          stopped = true;
+          outcome = language.fumble ? '언어 대실패: 모욕으로 번짐' : '언어 장벽';
+          desc = `${paganCommanderName}에게 말을 전달하지 못했습니다. Languages ${language.roll}/${language.target}.`;
+          if (language.fumble) glory = -10;
+        }
       }
 
-      setConversionResult({ roll, outcome, desc, glory });
+      if (!stopped) {
+        const eloquence = rollD20Check((character?.skills?.eloquence || 0) + stepModifier);
+        steps.push({ name: 'Eloquence', ...eloquence });
+        if (eloquence.critical) stepModifier += 5;
+        if (!eloquence.success) {
+          stopped = true;
+          outcome = eloquence.fumble ? '설파 대실패: 조롱과 반감' : '설파 실패';
+          desc = `${paganCommanderName}에게 개종 도전을 제대로 제시하지 못했습니다. Eloquence ${eloquence.roll}/${eloquence.target}.`;
+          if (eloquence.fumble) glory = -20;
+        }
+      }
+
+      if (!stopped) {
+        const religion = rollD20Check((character?.skills?.religion || 0) + stepModifier);
+        steps.push({ name: 'Religion', ...religion });
+        if (religion.critical) stepModifier += 5;
+        if (!religion.success) {
+          stopped = true;
+          outcome = religion.fumble ? '교리 논증 대실패' : '교리 논증 실패';
+          desc = `참된 신앙의 우월함을 설득하지 못했습니다. Religion ${religion.roll}/${religion.target}.`;
+          if (religion.fumble) glory = -20;
+        }
+      }
+
+      if (!stopped) {
+        const knightHonor = rollD20Check((character?.passions?.honor || 0) + stepModifier);
+        const opponentHonor = rollD20Check(paganHonor);
+        const winner = compareOpposedRolls(knightHonor, opponentHonor);
+        honorResult = { knightHonor, opponentHonor, winner };
+        if (knightHonor.success && opponentHonor.success && winner === 'actor') {
+          converted = true;
+          outcome = knightHonor.critical || opponentHonor.critical ? '기적적인 개종 성사' : '진실한 개종 성사';
+          desc = `${paganCommanderName}는 명예로운 논쟁 끝에 세례를 받아들이고 Love [God] 및 Love [Charlemagne] ${knightHonor.roll}점을 얻습니다.`;
+          glory = knightHonor.critical ? 100 : 50;
+        } else if (knightHonor.fumble) {
+          outcome = '명예 대실패: 증오 발생';
+          desc = `${paganCommanderName}는 기사의 위선을 비웃고 자신의 Honor ${paganHonor}만큼 Hate를 품습니다.`;
+          glory = -20;
+        } else if (opponentHonor.fumble) {
+          outcome = '기만적 세례 약속';
+          desc = `${paganCommanderName}는 세례를 받겠다고 속이나 첫 기회에 배신합니다.`;
+        } else if (opponentHonor.success && winner !== 'actor') {
+          outcome = '존중 어린 거부';
+          desc = `${paganCommanderName}는 기사를 존중하지만 개종은 거절합니다.`;
+        } else {
+          outcome = '거부와 결투 도전';
+          desc = `${paganCommanderName}는 신앙 설파를 모욕으로 받아들이고 결투를 청합니다.`;
+        }
+      }
+
+      setConversionResult({ roll: steps.at(-1)?.roll || 0, outcome, desc, glory, steps, converted, honorResult });
       setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingConversion(false);
 
@@ -1815,7 +2009,7 @@ export default function SoloOracles({ character, setCharacter }) {
           id: Date.now(),
           type: 'conversion',
           title: '⛪ 이교 장수 개종 판정',
-          detail: `대상: "${paganCommanderName}" | 결과: d20: ${roll} -> ${outcome}`,
+          detail: `대상: "${paganCommanderName}" | 결과: ${outcome}`,
           narrative: desc,
           glory: glory,
           timestamp: new Date().toLocaleTimeString()
@@ -1899,64 +2093,68 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousGlory = courtshipResult?.glory || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
-      let targetVal = 10;
-      if (selectedLadyAmorType === 'passive') {
-        targetVal = ladyLoveStat;
-      } else {
-        targetVal = character?.skills?.romance || 10;
-      }
-
-      const isSuccess = roll <= targetVal;
-      const isCrit = roll === 1 || roll === targetVal;
-      const isFumble = roll === 20 && targetVal < 20;
-
+      const knightApp = rollD20Check(character?.attributes?.app || 10);
+      const ladyResistance = rollD20Check(selectedLadyAmorType === 'passive' ? ladyLoveStat : ladyHonor);
+      const winner = compareOpposedRolls(knightApp, ladyResistance);
       let outcome = '';
       let desc = '';
       let glory = 0;
       let amorIncrease = 0;
+      let amorValue = 0;
+      const existingAmorTarget = character?.personal?.amorTarget;
+      const sameTarget = !existingAmorTarget || existingAmorTarget === targetLadyName;
 
       if (selectedLadyAmorType === 'passive') {
-        if (isCrit) {
+        if (knightApp.critical && winner === 'actor') {
           outcome = '낭만적인 넋을 잃음 (Fallen Madly in Love - Critical)';
-          desc = `고결하고 눈부신 ${targetLadyName}의 우아한 자태에 눈이 멀어 기사의 영혼이 마법처럼 격렬한 사랑(Amor)에 사로잡혔습니다. 사랑의 주술을 입어 그녀를 향한 Amor 성향이 폭등합니다!`;
+          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Chaste ${ladyResistance.roll}/${ladyResistance.target}. ${targetLadyName}가 기사에게 Amor를 품습니다. 생성 Amor 값: ${amorValue}.`;
           glory = 20;
-          amorIncrease = 5;
-        } else if (isFumble) {
+          amorIncrease = amorValue;
+        } else if (knightApp.fumble || winner === 'opponent') {
           outcome = '사랑의 저주와 불경 (Love Rejected - 대실패)';
-          desc = `${targetLadyName}에게 낭만을 구했으나, 어설픈 행동과 오만방자한 태도로 가문의 비웃음을 사고 구애의 기회가 영구히 가로막혔습니다.`;
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Chaste ${ladyResistance.roll}/${ladyResistance.target}. 숙녀는 마음을 닫고 구애의 기회가 멀어집니다.`;
           glory = -10;
-        } else if (isSuccess) {
+        } else if (knightApp.success || winner === 'tie') {
           outcome = '사랑의 감성 고양 (Infatuated - Success)';
-          desc = `${targetLadyName}의 순결하고 우아한 태도에 마음을 빼앗겨 기사로서 품을 수 있는 고귀한 열망과 Amor가 영혼 속에 진실하게 싹텄습니다.`;
+          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7);
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Chaste ${ladyResistance.roll}/${ladyResistance.target}. 수줍은 Amor가 생겨납니다. 생성 Amor 값: ${amorValue}.`;
           glory = 10;
-          amorIncrease = 2;
+          amorIncrease = amorValue;
         } else {
           outcome = '무덤덤함 (Indifference - Failure)';
           desc = `${targetLadyName}는 눈부신 미소만 스쳐 보냈을 뿐, 무덤덤하게 시선을 돌려 기사의 마음에 아무런 상흔을 남기지 않았습니다.`;
         }
       } else {
-        if (isCrit) {
+        if ((character?.gear?.cash || 0) < courtshipGiftValue) {
+          outcome = '예물 부족';
+          desc = `Amor 의무에 필요한 예물 £${courtshipGiftValue}를 마련하지 못했습니다.`;
+        } else if (!sameTarget) {
+          outcome = '기존 Amor 충돌';
+          desc = `기사는 이미 ${existingAmorTarget}에 대한 Amor를 품고 있습니다. 룰북상 한 번에 하나의 Amor만 가질 수 있습니다.`;
+        } else if (knightApp.critical && winner === 'actor') {
           outcome = '기사적 연애 대성공 (Deliberate Courtship - Critical)';
-          desc = `적절한 교양 서정시와 [${courtshipGift}]을(를) 선물로 바쳐 ${targetLadyName}의 영혼을 깊은 눈물의 감동으로 가득 채웠습니다! 그녀는 감사의 징표로 기사에게 향기로운 리본을 건넸습니다.`;
+          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 12 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Honor ${ladyResistance.roll}/${ladyResistance.target}. [${courtshipGift}] 예물로 상호 Amor가 생깁니다. 생성 Amor 값: ${amorValue}.`;
           glory = 50;
-          amorIncrease = 4;
-        } else if (isFumble) {
+          amorIncrease = amorValue;
+        } else if (knightApp.fumble || winner === 'opponent') {
           outcome = '사랑의 파멸 (Courtship Ruined - 대실패)';
-          desc = `[${courtshipGift}]을(를) 바치려다 처참한 궁정 예법 위반으로 ${targetLadyName}의 명예를 더럽히고 궁정에서 영구 퇴출당했습니다! 양가에 대대적인 원한이 서립니다.`;
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Honor ${ladyResistance.roll}/${ladyResistance.target}. 구애가 명예 훼손으로 받아들여져 양가에 원한이 서립니다.`;
           glory = -30;
-        } else if (isSuccess) {
+        } else if (knightApp.success || winner === 'tie') {
           outcome = '구애 성공 (Lady Courted - Success)';
-          desc = `기품 있는 예절과 헌신적인 Chanson을 지어 부르고 [${courtshipGift}]을(를) 건네어 ${targetLadyName}의 숭고한 호감과 연애 애정을 얻는 데 드디어 성공했습니다!`;
+          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7);
+          desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Honor ${ladyResistance.roll}/${ladyResistance.target}. [${courtshipGift}]을(를) 바쳐 상호 Amor가 시작됩니다. 생성 Amor 값: ${amorValue}.`;
           glory = 20;
-          amorIncrease = 1;
+          amorIncrease = amorValue;
         } else {
           outcome = '매력 발산 실패 (Courtship Rejected - Failure)';
           desc = `[${courtshipGift}]을(를) 건네었으나 ${targetLadyName}의 마음의 빗장을 열기에 기사로서의 무훈과 세련된 교양의 깊이가 여전히 못 미쳤습니다.`;
         }
       }
 
-      setCourtshipResult({ roll, outcome, desc, glory, amorIncrease });
+      setCourtshipResult({ roll: knightApp.roll, knightApp, ladyResistance, outcome, desc, glory, amorIncrease, amorValue, targetLadyName, giftValue: courtshipGiftValue });
       setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingCourtship(false);
 
@@ -2032,9 +2230,34 @@ export default function SoloOracles({ character, setCharacter }) {
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
         updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + magicGloryTotal;
-        if (courtshipResult?.amorIncrease) {
-          const currentAmor = updated.passions?.amor || 0;
-          updated.passions.amor = Math.min(20, currentAmor + courtshipResult.amorIncrease);
+        if (prayerResult?.stateEffect) {
+          const effect = prayerResult.stateEffect;
+          if (effect.loveGodDelta) {
+            updated.passions.loveGod = Math.max(0, Math.min(25, (updated.passions?.loveGod || 0) + effect.loveGodDelta));
+          }
+          if (effect.check) {
+            updated.passionsChecked = {
+              ...(updated.passionsChecked || {}),
+              loveGod: true
+            };
+          }
+          if (effect.type) {
+            updated.campaign = appendPassionState(updated.campaign, {
+              type: effect.type,
+              passionKey: 'loveGod',
+              passionLabel: '신에 대한 사랑 (Love [God])',
+              year: updated.personal?.campaignYear || 768,
+              note: `기도 결과: ${prayerResult.outcome}`
+            });
+          }
+        }
+
+        if (courtshipResult?.amorValue) {
+          updated.passions.amor = courtshipResult.amorValue;
+          updated.personal.amorTarget = courtshipResult.targetLadyName || targetLadyName;
+          if (selectedLadyAmorType === 'active_romance') {
+            updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - (courtshipResult.giftValue || 1));
+          }
         }
 
         // Prayer Critical: heals the character to full HP
@@ -2051,7 +2274,7 @@ export default function SoloOracles({ character, setCharacter }) {
         if (trialResult) {
           if (trialResult.outcome.includes('대실패')) {
             updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 5);
-          } else if (trialResult.outcome.includes('Failure')) {
+          } else if (trialResult.outcome.includes('의혹 미해소') || trialResult.outcome.includes('Failure')) {
             updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 3);
           }
         }
@@ -2059,7 +2282,13 @@ export default function SoloOracles({ character, setCharacter }) {
         // Courtship Fumble: deducts 2 Amor
         if (courtshipResult?.outcome?.includes('대실패')) {
           updated.passions.amor = Math.max(0, (updated.passions?.amor || 0) - 2);
+          if (updated.personal?.amorTarget === targetLadyName) delete updated.personal.amorTarget;
         }
+
+        const journalLines = magicLogs.length
+          ? magicLogs.map(log => `${log.title}: ${log.detail}`).reverse().join(' / ')
+          : '신앙과 연애 오라클 정산';
+        updated.journal = appendJournalLine(updated, `[신앙/Amor 정산] ${journalLines}. 총 Glory ${magicGloryTotal >= 0 ? '+' : ''}${magicGloryTotal}.`);
 
         return updated;
       }, `신앙과 기적 정산: Glory +${magicGloryTotal}`);
@@ -2068,8 +2297,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setMagicApplied(true);
     let alertMsg = `[신앙과 기적 정산 완료]: 성스러운 위업 및 모험에서 거둔 영예가 공식 적용되었습니다.\n• 획득 명예: +${magicGloryTotal} Glory`;
-    if (courtshipResult?.amorIncrease) {
-      alertMsg += `\n• 연망(Amor) 상승: +${courtshipResult.amorIncrease}`;
+    if (courtshipResult?.amorValue) {
+      alertMsg += `\n• Amor [${courtshipResult.targetLadyName || targetLadyName}] 설정: ${courtshipResult.amorValue}`;
     }
     if (prayerResult?.outcome?.includes('Divine Miracle!') || prayerResult?.outcome?.includes('Critical')) {
       alertMsg += `\n• 기도 기적: 최대 체력 회복 완료!`;
@@ -2167,7 +2396,7 @@ export default function SoloOracles({ character, setCharacter }) {
           cash: Math.max(0, (prev.gear?.cash || 0) - cost)
         }
       };
-      
+
       // Update inventory on sheet if matching category
       if (category === 'horse') {
         updated.horses = {
@@ -2190,7 +2419,7 @@ export default function SoloOracles({ character, setCharacter }) {
         const currentGear = prev.gear?.personalGear ? prev.gear.personalGear + ', ' : '';
         updated.gear.personalGear = currentGear + label;
       }
-      
+
       return updated;
     });
 
@@ -2221,7 +2450,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
-      
+
       let name = '';
       let value = 0;
       let desc = '';
@@ -2298,7 +2527,7 @@ export default function SoloOracles({ character, setCharacter }) {
         <Sparkles size={20} style={{ color: 'var(--color-gold-dark)' }} />
         운명의 신탁과 주사위
       </h2>
-      
+
       {/* Profile Header Banner */}
       <div className="tutorial-banner" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px 22px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', flexWrap: 'wrap', gap: '8px' }}>
@@ -2308,7 +2537,7 @@ export default function SoloOracles({ character, setCharacter }) {
             </p>
           </div>
         </div>
-        
+
         {/* Immersive Chapter 6 General Solo Rules Explanation */}
         <div style={{ borderTop: '1px solid rgba(201, 168, 76, 0.15)', paddingTop: '8px', marginTop: '4px', fontSize: '0.82rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
           📖 <strong>제너럴 솔로 모험 규칙 (General Rules)</strong>: 기사의 모든 운명 판정은 1인 플레이 기본 수칙을 따릅니다. 이 오라클 패널의 모든 굴림(일반 신탁, 성격 및 열정 시험, 전투 격돌)은 캐릭터 성장의 모태가 되며, 겨울 정산 단계(가문 역사 탭)의 수련 및 가문 계승과 유기적으로 긴밀히 연결됩니다.
@@ -2316,38 +2545,38 @@ export default function SoloOracles({ character, setCharacter }) {
 
         {/* Expanded sub-tabs with consistent premium pills */}
         <div className="sub-tab-navigation" style={{ margin: '8px 0 0 0' }}>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'general' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'general' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('general')}
           >
             <Dices size={14} /> 일반 판정 및 운명 신탁
           </button>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'personality' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'personality' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('personality')}
           >
             <Sparkles size={14} /> 성격 특성과 기사적 열정
           </button>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'reputation' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'reputation' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('reputation')}
           >
             <Award size={14} /> 명예 계산과 명망 알현
           </button>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'combat_skills' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'combat_skills' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('combat_skills')}
           >
             <Shield size={14} /> 1대1 무기 격돌 및 전투 기술
           </button>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'miracles_amor' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'miracles_amor' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('miracles_amor')}
           >
             <Heart size={14} /> 신앙 기적과 사법 재판 및 연애
           </button>
-          <button 
-            className={`sub-tab-btn ${activeSubTab === 'wealth_armory' ? 'active' : ''}`} 
+          <button
+            className={`sub-tab-btn ${activeSubTab === 'wealth_armory' ? 'active' : ''}`}
             onClick={() => setActiveSubTab('wealth_armory')}
           >
             <Coins size={14} /> 재정 생활 수준 및 무구 상점
@@ -2369,23 +2598,23 @@ export default function SoloOracles({ character, setCharacter }) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="cs-field" style={{ margin: 0 }}>
                     <span className="cs-field-label">기준값:</span>
-                    <input 
-                      type="number" 
-                      value={targetSkill} 
+                    <input
+                      type="number"
+                      value={targetSkill}
                       min={1} max={20}
-                      onChange={e => handleTargetSkillChange(e.target.value)} 
-                      style={{ width: '100%' }} 
+                      onChange={e => handleTargetSkillChange(e.target.value)}
+                      style={{ width: '100%' }}
                     />
                   </div>
                   <div className="cs-field" style={{ margin: 0 }}>
                     <span className="cs-field-label" style={{ color: 'var(--color-gold-dark)' }}>🎲 직접 입력 (d20):</span>
-                    <input 
-                      type="number" 
-                      value={d20Result || ''} 
+                    <input
+                      type="number"
+                      value={d20Result || ''}
                       min={1} max={20}
                       placeholder="눈 입력"
-                      onChange={e => handleManualD20Result(e.target.value)} 
-                      style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center' }} 
+                      onChange={e => handleManualD20Result(e.target.value)}
+                      style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center' }}
                     />
                   </div>
                 </div>
@@ -2450,13 +2679,13 @@ export default function SoloOracles({ character, setCharacter }) {
                   </button>
                   <div className="cs-field" style={{ margin: 0, height: '38px', padding: '0 8px', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
                     <span className="cs-field-label" style={{ fontSize: '0.72rem', whiteSpace: 'nowrap', color: 'var(--color-gold-dark)' }}>🎲 d20:</span>
-                    <input 
-                      type="number" 
-                      value={oracleAnswer?.roll || ''} 
+                    <input
+                      type="number"
+                      value={oracleAnswer?.roll || ''}
                       min={1} max={20}
                       placeholder="눈"
-                      onChange={e => handleManualOracleRoll(e.target.value)} 
-                      style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', padding: '4px' }} 
+                      onChange={e => handleManualOracleRoll(e.target.value)}
+                      style={{ width: '100%', fontWeight: 'bold', color: 'var(--color-crimson)', textAlign: 'center', padding: '4px' }}
                     />
                   </div>
                 </div>
@@ -2583,7 +2812,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
                 <div className="cs-field">
                   <span className="cs-field-label">성격 스펙트럼 선택:</span>
-                  <select 
+                  <select
                     value={selectedTraitPair}
                     onChange={e => {
                       setSelectedTraitPair(parseInt(e.target.value));
@@ -2633,12 +2862,12 @@ export default function SoloOracles({ character, setCharacter }) {
                   <div style={{ border: `2px solid ${traitRollResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 결과</span>
                     <D20Face value={traitRollResult.roll} isRolling={isRollingTrait} color={traitRollResult.color} />
-                    
+
                     {!traitRollResult.isRolling && (
                       <div style={{ marginTop: '10px', textAlign: 'center', width: '100%' }}>
                         <h4 style={{ color: traitRollResult.color, fontWeight: 'bold', fontSize: '1.1rem' }}>{traitRollResult.outcome}</h4>
                         <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '8px 0', whiteSpace: 'pre-line' }}>{traitRollResult.desc}</p>
-                        
+
                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: '12px' }}>
                           {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('checked')} style={{ fontSize: '0.75rem', padding: '4px 8px' }}>✓ 신조대로 행동</button>}
                           {traitRollResult.checkRequired && <button className="btn-medieval" onClick={() => applyTraitOutcome('act_opposite')} style={{ fontSize: '0.75rem', padding: '4px 8px', borderColor: 'var(--color-crimson)', color: 'var(--color-crimson)' }}>✗ 유혹 굴복 페널티</button>}
@@ -2699,12 +2928,12 @@ export default function SoloOracles({ character, setCharacter }) {
                   <div style={{ border: `2px solid ${passionRollResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '4px' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 결과</span>
                     <D20Face value={passionRollResult.roll} isRolling={isRollingPassion} color={passionRollResult.color} />
-                    
+
                     {!passionRollResult.isRolling && (
                       <div style={{ marginTop: '10px', textAlign: 'center', width: '100%' }}>
                         <h4 style={{ color: passionRollResult.color, fontWeight: 'bold', fontSize: '1.1rem' }}>{passionRollResult.outcome}</h4>
                         <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: '8px 0' }}>{passionRollResult.desc}</p>
-                        
+
                         <div style={{ marginTop: '12px', borderTop: '1px dashed var(--color-grey-light)', paddingTop: '10px' }}>
                           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
                             {passionRollResult.state === 'inspiration' && (
@@ -2873,7 +3102,7 @@ export default function SoloOracles({ character, setCharacter }) {
         <>
           {/* Section 1: Glory & Standing calculators */}
           <div className="cs-row">
-            
+
             {/* 1. 명예(Glory) 계산기 */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
               <div className="sheet-ribbon" style={{ background: 'var(--color-gold-dark)' }}>
@@ -2887,8 +3116,8 @@ export default function SoloOracles({ character, setCharacter }) {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div className="cs-field">
                     <span className="cs-field-label">물리친 적 유형 (Table 4-4):</span>
-                    <select 
-                      value={selectedOpponentType} 
+                    <select
+                      value={selectedOpponentType}
                       onChange={e => {
                         setSelectedOpponentType(e.target.value);
                         setGloryActionApplied(false);
@@ -2903,8 +3132,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
                   <div className="cs-field">
                     <span className="cs-field-label">결투 형태:</span>
-                    <select 
-                      value={combatType} 
+                    <select
+                      value={combatType}
                       onChange={e => {
                         setCombatType(e.target.value);
                         setGloryActionApplied(false);
@@ -2920,7 +3149,7 @@ export default function SoloOracles({ character, setCharacter }) {
                 {/* Additional Glory modifiers checklist */}
                 <div style={{ background: 'rgba(0,0,0,0.01)', border: '1px solid var(--color-grey-light)', padding: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}>추가 명예 획득 사유 (중복 선택 가능):</span>
-                  
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.78rem' }}>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
                       <input type="checkbox" checked={damage6d6} onChange={e => { setDamage6d6(e.target.checked); setGloryActionApplied(false); }} />
@@ -2960,8 +3189,8 @@ export default function SoloOracles({ character, setCharacter }) {
                       + {getCalculatedGlory()} <span style={{ fontSize: '0.9rem' }}>Glory</span>
                     </div>
                   </div>
-                  <button 
-                    className="btn-medieval btn-medieval-primary" 
+                  <button
+                    className="btn-medieval btn-medieval-primary"
                     onClick={applyGloryToSheet}
                     disabled={gloryActionApplied}
                     style={{ margin: 0, height: '42px' }}
@@ -2975,22 +3204,22 @@ export default function SoloOracles({ character, setCharacter }) {
                   <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-ink)', marginBottom: '8px' }}>
                     👰 영예로운 결혼 명예 (Marriage Glory)
                   </h4>
-                  
+
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', alignItems: 'center' }}>
                     <div className="cs-field" style={{ margin: 0 }}>
                       <span className="cs-field-label">배우자 명예량:</span>
-                      <input 
-                        type="number" 
-                        value={spouseGlory} 
-                        onChange={e => { setSpouseGlory(parseInt(e.target.value) || 0); setMarriageGloryActionApplied(false); }} 
+                      <input
+                        type="number"
+                        value={spouseGlory}
+                        onChange={e => { setSpouseGlory(parseInt(e.target.value) || 0); setMarriageGloryActionApplied(false); }}
                         style={{ width: '100%', fontSize: '0.8rem' }}
                       />
                     </div>
 
                     <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer', height: '36px', marginTop: '14px' }}>
-                      <input 
-                        type="checkbox" 
-                        checked={spouseIsPagan} 
+                      <input
+                        type="checkbox"
+                        checked={spouseIsPagan}
                         onChange={e => { setSpouseIsPagan(e.target.checked); setMarriageGloryActionApplied(false); }}
                       />
                       개종 이교도 배우자
@@ -2999,9 +3228,9 @@ export default function SoloOracles({ character, setCharacter }) {
                     {spouseIsPagan && (
                       <div className="cs-field" style={{ margin: 0 }}>
                         <span className="cs-field-label">배우자 존엄(Honor):</span>
-                        <input 
-                          type="number" 
-                          value={spouseHonor} 
+                        <input
+                          type="number"
+                          value={spouseHonor}
                           onChange={e => { setSpouseHonor(parseInt(e.target.value) || 0); setMarriageGloryActionApplied(false); }}
                           style={{ width: '100%', fontSize: '0.8rem' }}
                         />
@@ -3013,10 +3242,10 @@ export default function SoloOracles({ character, setCharacter }) {
                     <span style={{ fontSize: '0.75rem' }}>
                       결혼 획득 명예: <strong style={{ color: 'var(--color-crimson)' }}>+{getCalculatedMarriageGlory()} Glory</strong> (최대 1,000 제한)
                     </span>
-                    <button 
-                      className="btn-medieval" 
-                      onClick={applyMarriageGloryToSheet} 
-                      disabled={marriageGloryActionApplied} 
+                    <button
+                      className="btn-medieval"
+                      onClick={applyMarriageGloryToSheet}
+                      disabled={marriageGloryActionApplied}
                       style={{ padding: '3px 8px', fontSize: '0.75rem', height: '28px', margin: 0 }}
                     >
                       {marriageGloryActionApplied ? '적용 완료 ✓' : '결혼 명예 반영'}
@@ -3039,8 +3268,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
                 <div className="cs-field">
                   <span className="cs-field-label">상호작용할 명망 집단:</span>
-                  <select 
-                    value={selectedStandingKey} 
+                  <select
+                    value={selectedStandingKey}
                     onChange={e => {
                       setSelectedStandingKey(e.target.value);
                       setGiftRollResult(null);
@@ -3066,9 +3295,9 @@ export default function SoloOracles({ character, setCharacter }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px', gap: '8px', alignItems: 'center' }}>
                     <div className="cs-field" style={{ margin: 0, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '6px', padding: '0 8px' }}>
                       <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>헌납 금액:</span>
-                      <input 
-                        type="number" 
-                        value={giftAmount} 
+                      <input
+                        type="number"
+                        value={giftAmount}
                         min={1}
                         onChange={e => {
                           setGiftAmount(Math.max(1, parseInt(e.target.value) || 1));
@@ -3080,8 +3309,8 @@ export default function SoloOracles({ character, setCharacter }) {
                       <strong style={{ fontSize: '1rem' }}>£</strong>
                     </div>
 
-                    <button 
-                      className="btn-medieval btn-medieval-primary" 
+                    <button
+                      className="btn-medieval btn-medieval-primary"
                       onClick={handleGiftDonation}
                       disabled={standingActionApplied}
                       style={{ margin: 0, height: '36px', fontSize: '0.78rem', justifyContent: 'center' }}
@@ -3104,8 +3333,8 @@ export default function SoloOracles({ character, setCharacter }) {
                     👑 해당 평판으로 집단에 도움 청탁 굴림 (Standing vs d20)
                   </span>
 
-                  <button 
-                    className="btn-medieval" 
+                  <button
+                    className="btn-medieval"
                     onClick={executeStandingRoll}
                     style={{ width: '100%', justifyContent: 'center' }}
                     disabled={isRollingStanding}
@@ -3117,7 +3346,7 @@ export default function SoloOracles({ character, setCharacter }) {
                     <div style={{ border: `1px solid ${standingRollResult.color}`, padding: '12px', background: 'rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
                       <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>알현 주사위 굴림</span>
                       <D20Face value={standingRollResult.roll} isRolling={isRollingStanding} color={standingRollResult.color} />
-                      
+
                       {!standingRollResult.isRolling && (
                         <div style={{ marginTop: '8px', textAlign: 'center' }}>
                           <h4 style={{ color: standingRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
@@ -3152,13 +3381,13 @@ export default function SoloOracles({ character, setCharacter }) {
 
               {/* Selection board */}
               <div className="cs-row" style={{ gap: '16px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
-                
+
                 {/* User side */}
                 <div style={{ flex: '1 1 200px' }}>
                   <h4 style={{ color: 'var(--color-success)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-success)', paddingBottom: '4px', marginBottom: '8px' }}>
                     🛡️ 성기사 (기사단 플레이어)
                   </h4>
-                  
+
                   <div className="cs-field">
                     <span className="cs-field-label">선택한 주무기:</span>
                     <select value={playerWeapon} onChange={e => { setPlayerWeapon(e.target.value); setClashResult(null); }} style={{ width: '100%' }}>
@@ -3171,9 +3400,9 @@ export default function SoloOracles({ character, setCharacter }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                     <div className="cs-field" style={{ margin: 0 }}>
                       <span className="cs-field-label">기본 숙련 Level:</span>
-                      <input 
-                        type="number" 
-                        value={playerSkillOverride} 
+                      <input
+                        type="number"
+                        value={playerSkillOverride}
                         onChange={e => { setPlayerSkillOverride(parseInt(e.target.value) || 1); setClashResult(null); }}
                         style={{ width: '100%' }}
                       />
@@ -3189,14 +3418,14 @@ export default function SoloOracles({ character, setCharacter }) {
                 {/* Special Clash options */}
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', flex: '0 0 140px', gap: '6px' }}>
                   <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', textAlign: 'center' }}>전투 세팅</span>
-                  
+
                   {(playerMounted || opponentMounted) && (playerWeapon === 'lance' || opponentWeapon === 'lance') && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer', background: 'rgba(0,0,0,0.02)', padding: '4px 8px', border: '1px solid var(--color-gold-light)' }}>
                       <input type="checkbox" checked={isCharging} onChange={e => { setIsCharging(e.target.checked); setClashResult(null); }} />
                       ⚡ 랜스 돌격차징
                     </label>
                   )}
-                  
+
                   <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-gold-dark)', margin: '8px 0' }}>VS</div>
                 </div>
 
@@ -3205,7 +3434,7 @@ export default function SoloOracles({ character, setCharacter }) {
                   <h4 style={{ color: 'var(--color-crimson)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-crimson)', paddingBottom: '4px', marginBottom: '8px' }}>
                     👿 이교도 적수 / 야만인 족장
                   </h4>
-                  
+
                   <div className="cs-field">
                     <span className="cs-field-label">장착 무기:</span>
                     <select value={opponentWeapon} onChange={e => { setOpponentWeapon(e.target.value); setClashResult(null); }} style={{ width: '100%' }}>
@@ -3218,9 +3447,9 @@ export default function SoloOracles({ character, setCharacter }) {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                     <div className="cs-field" style={{ margin: 0 }}>
                       <span className="cs-field-label">적 무기 숙련도:</span>
-                      <input 
-                        type="number" 
-                        value={opponentSkill} 
+                      <input
+                        type="number"
+                        value={opponentSkill}
                         onChange={e => { setOpponentSkill(parseInt(e.target.value) || 1); setClashResult(null); }}
                         style={{ width: '100%' }}
                       />
@@ -3236,9 +3465,9 @@ export default function SoloOracles({ character, setCharacter }) {
               </div>
 
               {/* Clash button */}
-              <button 
-                className="btn-medieval btn-medieval-primary" 
-                onClick={executeClashMatch} 
+              <button
+                className="btn-medieval btn-medieval-primary"
+                onClick={executeClashMatch}
                 disabled={isRollingClash}
                 style={{ width: '100%', justifyContent: 'center', height: '44px', marginTop: '12px', fontSize: '0.95rem' }}
               >
@@ -3249,7 +3478,7 @@ export default function SoloOracles({ character, setCharacter }) {
               {clashResult && (
                 <div style={{ border: `2px solid ${clashResult.color}`, background: 'rgba(0,0,0,0.01)', padding: '16px', marginTop: '12px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', gap: '16px' }}>
-                    
+
                     {/* Player rolled */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--color-success)' }}>기사 굴림 ({clashResult.pTarget} 이하)</span>
@@ -3312,7 +3541,7 @@ export default function SoloOracles({ character, setCharacter }) {
               </p>
 
               <div className="cs-row" style={{ gap: '16px' }}>
-                
+
                 {/* 3-1. 일반 기사 스킬 d20 판정기 */}
                 <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
                   <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-royal-blue)', paddingBottom: '4px', marginBottom: '8px' }}>
@@ -3321,13 +3550,13 @@ export default function SoloOracles({ character, setCharacter }) {
 
                   <div className="cs-field">
                     <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>판정할 기술:</span>
-                    <select 
-                      value={selectedSkillKey} 
+                    <select
+                      value={selectedSkillKey}
                       onChange={e => {
                         setSelectedSkillKey(e.target.value);
                         setSkillRollResult(null);
                         setSkillCheckApplied(false);
-                      }} 
+                      }}
                       style={{ width: '100%', padding: '6px' }}
                     >
                       {allSkills.map(s => (
@@ -3340,20 +3569,20 @@ export default function SoloOracles({ character, setCharacter }) {
 
                   <div className="cs-field" style={{ marginTop: '8px' }}>
                     <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>상황 보정치:</span>
-                    <input 
-                      type="number" 
-                      value={skillMod} 
+                    <input
+                      type="number"
+                      value={skillMod}
                       onChange={e => {
                         setSkillMod(parseInt(e.target.value) || 0);
                         setSkillRollResult(null);
-                      }} 
-                      style={{ width: '100px' }} 
+                      }}
+                      style={{ width: '100px' }}
                     />
                   </div>
 
-                  <button 
-                    className="btn-medieval" 
-                    onClick={executeSkillRoll} 
+                  <button
+                    className="btn-medieval"
+                    onClick={executeSkillRoll}
                     style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
                     disabled={isRollingSkill}
                   >
@@ -3364,7 +3593,7 @@ export default function SoloOracles({ character, setCharacter }) {
                     <div style={{ border: `1px solid ${skillRollResult.color}`, padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
                       <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 판정 결과</span>
                       <D20Face value={skillRollResult.roll} isRolling={isRollingSkill} color={skillRollResult.color} />
-                      
+
                       {!skillRollResult.isRolling && (
                         <div style={{ marginTop: '8px', textAlign: 'center', width: '100%' }}>
                           <h4 style={{ color: skillRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
@@ -3375,14 +3604,14 @@ export default function SoloOracles({ character, setCharacter }) {
                           </p>
 
                           {skillRollResult.isSuccess && (
-                            <button 
-                              className="btn-medieval" 
-                              onClick={applySkillCheckToSheet} 
-                              disabled={skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false)} 
+                            <button
+                              className="btn-medieval"
+                              onClick={applySkillCheckToSheet}
+                              disabled={skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false)}
                               style={{ width: '100%', padding: '4px 8px', fontSize: '0.75rem', color: 'var(--color-success)', borderColor: 'var(--color-success)', justifyContent: 'center' }}
                             >
-                              {skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false) 
-                                ? '✓ 시트 경험치 마킹 완료' 
+                              {skillCheckApplied || (character?.skillsChecked?.[selectedSkillKey] || false)
+                                ? '✓ 시트 경험치 마킹 완료'
                                 : '📈 기사 시트에 경험치(✓) 기록하기'}
                             </button>
                           )}
@@ -3400,13 +3629,13 @@ export default function SoloOracles({ character, setCharacter }) {
 
                   <div className="cs-field">
                     <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>수련할 기술:</span>
-                    <select 
-                      value={selectedImproveKey} 
+                    <select
+                      value={selectedImproveKey}
                       onChange={e => {
                         setSelectedImproveKey(e.target.value);
                         setImproveRollResult(null);
                         setImproveApplied(false);
-                      }} 
+                      }}
                       style={{ width: '100%', padding: '6px' }}
                     >
                       {allSkills.map(s => {
@@ -3424,9 +3653,9 @@ export default function SoloOracles({ character, setCharacter }) {
                     * 수련 룰: d20 굴림이 <strong>현재 스킬 레벨을 초과</strong>하거나 <strong>20</strong>이 나오면 레벨이 +1 영구 상승합니다. (수련 완료 시 성공 여부와 상관없이 시트 체크는 소모 해제됩니다)
                   </p>
 
-                  <button 
-                    className="btn-medieval" 
-                    onClick={executeImprovementRoll} 
+                  <button
+                    className="btn-medieval"
+                    onClick={executeImprovementRoll}
                     style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
                     disabled={isRollingImprove}
                   >
@@ -3437,7 +3666,7 @@ export default function SoloOracles({ character, setCharacter }) {
                     <div style={{ border: `1px solid ${improveRollResult.color}`, padding: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '8px' }}>
                       <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginBottom: '4px' }}>d20 수련 굴림 결과</span>
                       <D20Face value={improveRollResult.roll} isRolling={isRollingImprove} color={improveRollResult.color} />
-                      
+
                       {!improveRollResult.isRolling && (
                         <div style={{ marginTop: '8px', textAlign: 'center', width: '100%' }}>
                           <h4 style={{ color: improveRollResult.color, fontWeight: 'bold', fontSize: '0.88rem', margin: '2px 0' }}>
@@ -3447,14 +3676,14 @@ export default function SoloOracles({ character, setCharacter }) {
                             {improveRollResult.desc}
                           </p>
 
-                          <button 
-                            className="btn-medieval" 
-                            onClick={applyImprovementToSheet} 
-                            disabled={improveApplied} 
+                          <button
+                            className="btn-medieval"
+                            onClick={applyImprovementToSheet}
+                            disabled={improveApplied}
                             style={{ width: '100%', padding: '4px 8px', fontSize: '0.75rem', color: 'var(--color-gold-dark)', borderColor: 'var(--color-gold-dark)', justifyContent: 'center' }}
                           >
-                            {improveApplied 
-                              ? '✓ 시트 반영 및 체크 초기화 완료' 
+                            {improveApplied
+                              ? '✓ 시트 반영 및 체크 초기화 완료'
                               : '📈 수련 성과 시트 데이터 연동 적용'}
                           </button>
                         </div>
@@ -3477,34 +3706,85 @@ export default function SoloOracles({ character, setCharacter }) {
                 제국의 거대한 군단들과 함께 전장에 나서는 집단 전투 상황(Mass Combat)을 모사합니다. 부대 전술 대결을 벌이고 전장 돌발 조우와 가신단의 운명을 결정하세요.
               </p>
 
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px', marginBottom: '12px', padding: '10px', border: '1px solid var(--color-grey-light)', background: 'rgba(255,255,255,0.55)' }}>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">전투 규모:</span>
+                  <select value={battleScale} onChange={e => setBattleScale(e.target.value)}>
+                    <option value="small">Small: 15 Glory/round</option>
+                    <option value="medium">Medium: 30 Glory/round</option>
+                    <option value="large">Large: 45 Glory/round</option>
+                    <option value="huge">Huge: 60 Glory/round</option>
+                  </select>
+                </div>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">참전 라운드:</span>
+                  <input type="number" min={0} max={12} value={battleRounds} onChange={e => setBattleRounds(parseInt(e.target.value) || 0)} />
+                </div>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">라운드 전투 결과:</span>
+                  <select value={battleCombatOutcome} onChange={e => setBattleCombatOutcome(e.target.value)}>
+                    <option value="critical">Critical x2</option>
+                    <option value="success">Success/Partial x1</option>
+                    <option value="failure">Failure/Fumble x0.5</option>
+                    <option value="disengaged">Disengaged x0.01</option>
+                  </select>
+                </div>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">전투 승패:</span>
+                  <select value={battleVictory} onChange={e => setBattleVictory(e.target.value)}>
+                    <option value="victory">Decisive victory x2</option>
+                    <option value="indecisive">Indecisive x1</option>
+                    <option value="defeat">Decisive defeat x0.5</option>
+                  </select>
+                </div>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">전력비:</span>
+                  <select value={battleOdds} onChange={e => setBattleOdds(e.target.value)}>
+                    <option value="outnumbered5">아군 5:1 이상 열세 x2</option>
+                    <option value="outnumbered2">아군 2:1 이상 열세 x1.5</option>
+                    <option value="even">대등 x1</option>
+                    <option value="outnumbering2">아군 2:1 이상 우세 x0.75</option>
+                    <option value="outnumbering5">아군 5:1 이상 우세 x0.5</option>
+                  </select>
+                </div>
+                <div className="cs-field" style={{ margin: 0 }}>
+                  <span className="cs-field-label">지휘 역할:</span>
+                  <select value={battleCommanderRole} onChange={e => setBattleCommanderRole(e.target.value)}>
+                    <option value="none">일반 참전 기사</option>
+                    <option value="battalion">Battalion commander</option>
+                    <option value="army">Army commander</option>
+                  </select>
+                </div>
+              </div>
+
               <div className="cs-row" style={{ gap: '16px' }}>
-                
+
                 {/* 4-1. 부대 전술 및 대지휘 대결 (Battle Tactics) */}
                 <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
                   <h4 style={{ color: 'var(--color-royal-blue)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-royal-blue)', paddingBottom: '4px', marginBottom: '8px' }}>
                     📊 부대 대열 전술 대결 (Tactics)
                   </h4>
-                  
+
                   <div className="cs-field" style={{ marginBottom: '8px' }}>
                     <span className="cs-field-label">기사의 전술 (Battle) 스킬 레벨:</span>
-                    <input 
-                      type="number" 
-                      value={playerBattleSkillOverride} 
+                    <input
+                      type="number"
+                      value={playerBattleSkillOverride}
                       onChange={e => { setPlayerBattleSkillOverride(parseInt(e.target.value) || 10); setBattleTacticsResult(null); }}
                     />
                   </div>
 
                   <div className="cs-field" style={{ marginBottom: '12px' }}>
                     <span className="cs-field-label">적장 지휘관의 전술 레벨:</span>
-                    <input 
-                      type="number" 
-                      value={enemyCommanderSkill} 
+                    <input
+                      type="number"
+                      value={enemyCommanderSkill}
                       onChange={e => { setEnemyCommanderSkill(parseInt(e.target.value) || 10); setBattleTacticsResult(null); }}
                     />
                   </div>
 
-                  <button 
-                    className="btn-medieval btn-medieval-primary" 
+                  <button
+                    className="btn-medieval btn-medieval-primary"
                     onClick={rollBattleTactics}
                     disabled={isRollingBattle}
                     style={{ width: '100%', justifyContent: 'center' }}
@@ -3532,8 +3812,8 @@ export default function SoloOracles({ character, setCharacter }) {
                   </h4>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                    <button 
-                      className="btn-medieval" 
+                    <button
+                      className="btn-medieval"
                       onClick={rollMeleeEvent}
                       disabled={isRollingMeleeEvent}
                       style={{ justifyContent: 'center', fontSize: '0.78rem', padding: '6px' }}
@@ -3541,8 +3821,8 @@ export default function SoloOracles({ character, setCharacter }) {
                       {isRollingMeleeEvent ? '조우 주입 중...' : '🎲 전장 상황 조우 (d20)'}
                     </button>
 
-                    <button 
-                      className="btn-medieval" 
+                    <button
+                      className="btn-medieval"
                       onClick={rollFollowersFate}
                       disabled={isRollingFollowersFate}
                       style={{ justifyContent: 'center', fontSize: '0.78rem', padding: '6px' }}
@@ -3568,7 +3848,7 @@ export default function SoloOracles({ character, setCharacter }) {
                       </div>
                     )}
 
-                    {followersFateResult && (
+                  {followersFateResult && (
                       <div style={{ border: '1px solid var(--color-grey)', padding: '8px', background: '#f5ecd5', borderRadius: '4px' }}>
                         <strong style={{ fontSize: '0.8rem', color: 'var(--color-ink)', display: 'block', marginBottom: '2px' }}>
                           🐴 종자 및 가신단 운명 (d20: {followersFateResult.roll}): {followersFateResult.outcome}
@@ -3577,7 +3857,23 @@ export default function SoloOracles({ character, setCharacter }) {
                           {followersFateResult.desc}
                         </p>
                       </div>
-                    )}
+                  )}
+
+                    <div style={{ borderTop: '1px dashed var(--color-grey-light)', paddingTop: '8px' }}>
+                      <div className="cs-field" style={{ marginBottom: '6px' }}>
+                        <span className="cs-field-label">추격 대상 무기/저항 스킬:</span>
+                        <input type="number" value={pursuitEnemySkill} onChange={e => setPursuitEnemySkill(parseInt(e.target.value) || 10)} />
+                      </div>
+                      <button className="btn-medieval" onClick={rollPursuitRound} disabled={isRollingPursuit} style={{ width: '100%', justifyContent: 'center', fontSize: '0.78rem', padding: '6px' }}>
+                        {isRollingPursuit ? '패잔병 추격 중...' : '🏇 2차 추격 라운드 (Hunting opposed)'}
+                      </button>
+                      {pursuitResult && (
+                        <div style={{ border: '1px solid var(--color-gold)', padding: '8px', background: '#fff', borderRadius: '4px', marginTop: '8px' }}>
+                          <strong style={{ fontSize: '0.8rem', color: 'var(--color-crimson)' }}>{pursuitResult.outcome}</strong>
+                          <p style={{ fontSize: '0.74rem', color: 'var(--color-ink-light)', margin: '3px 0 0 0', lineHeight: 1.4 }}>{pursuitResult.desc}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -3587,25 +3883,26 @@ export default function SoloOracles({ character, setCharacter }) {
                     <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-gold)', paddingBottom: '4px', marginBottom: '10px' }}>
                       🏆 전장 위업 정산 총계
                     </h4>
-                    
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.84rem', color: 'var(--color-ink)', margin: '8px 0' }}>
-                      <div>누적 획득 명예: <strong style={{ color: 'var(--color-success)', fontSize: '1.05rem' }}>+{battleGloryTotal} Glory</strong></div>
-                      <div>누적 소지금 변동: <strong style={{ color: battleLootTotal >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontSize: '1.05rem' }}>£{battleLootTotal >= 0 ? '+' : ''}{battleLootTotal}</strong></div>
+                      <div>룰북 전투 Glory: <strong style={{ color: 'var(--color-success)', fontSize: '1.05rem' }}>+{getBattleRulesGlory()} Glory</strong></div>
+                      <div>추가 조우/추격 Glory: <strong style={{ color: 'var(--color-success)' }}>+{battleGloryTotal + (pursuitResult?.glory || 0)}</strong></div>
+                      <div>총 소지금 변동: <strong style={{ color: getBattleSettlementLoot() >= 0 ? 'var(--color-success)' : 'var(--color-danger)', fontSize: '1.05rem' }}>£{getBattleSettlementLoot() >= 0 ? '+' : ''}{getBattleSettlementLoot()}</strong></div>
                     </div>
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '14px' }}>
-                    <button 
-                      className="btn-medieval btn-medieval-primary" 
-                      onClick={applyBattleToSheet} 
-                      disabled={battleApplied || (battleGloryTotal === 0 && battleLootTotal === 0)}
+                    <button
+                      className="btn-medieval btn-medieval-primary"
+                      onClick={applyBattleToSheet}
+                      disabled={battleApplied || (getBattleSettlementGlory() === 0 && getBattleSettlementLoot() === 0)}
                       style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem' }}
                     >
                       {battleApplied ? '✓ 시트 데이터 정산 완료' : '📈 전장 위업 시트 데이터 반영'}
                     </button>
-                    
-                    <button 
-                      className="btn-medieval" 
+
+                    <button
+                      className="btn-medieval"
                       onClick={resetBattleSimulator}
                       style={{ width: '100%', justifyContent: 'center', fontSize: '0.76rem', padding: '4px' }}
                     >
@@ -3637,22 +3934,71 @@ export default function SoloOracles({ character, setCharacter }) {
                 </p>
                 <div className="cs-field">
                   <span className="cs-field-label">기도의 세부 지향 (나만의 서사):</span>
-                  <input 
-                    type="text" 
-                    value={prayerIntention} 
+                  <input
+                    type="text"
+                    value={prayerIntention}
                     onChange={e => { setPrayerIntention(e.target.value); setPrayerResult(null); }}
                     placeholder="예: 가문의 가혹한 운명 극복과 전장 생존"
                     style={{ fontSize: '0.8rem' }}
                   />
                 </div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '8px' }}>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">기도 형식:</span>
+                    <select value={prayerForm} onChange={e => { setPrayerForm(e.target.value); setPrayerResult(null); }}>
+                      <option value="mortal">Mortal Peril -2</option>
+                      <option value="normal">Normal prayer -1</option>
+                      <option value="mass">Mass 0</option>
+                      <option value="pilgrimage">Pilgrimage +1</option>
+                    </select>
+                  </div>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">장소:</span>
+                    <select value={prayerPlace} onChange={e => { setPrayerPlace(e.target.value); setPrayerResult(null); }}>
+                      <option value="ordinary">Ordinary place -1</option>
+                      <option value="church">Church/chapel 0</option>
+                      <option value="cathedral">Cathedral/pilgrimage +1</option>
+                    </select>
+                  </div>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">날짜:</span>
+                    <select value={prayerDay} onChange={e => { setPrayerDay(e.target.value); setPrayerResult(null); }}>
+                      <option value="ordinary">Ordinary day -1</option>
+                      <option value="sunday">Sunday 0</option>
+                      <option value="holy">Holy day +1</option>
+                    </select>
+                  </div>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">함께 기도:</span>
+                    <select value={prayerFaithful} onChange={e => { setPrayerFaithful(e.target.value); setPrayerResult(null); }}>
+                      <option value="none">없음 0</option>
+                      <option value="ten">10명+ +1</option>
+                      <option value="hundred">100명+ +2</option>
+                      <option value="thousand">1000명+ +3</option>
+                    </select>
+                  </div>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">성물:</span>
+                    <select value={prayerSacredItem} onChange={e => { setPrayerSacredItem(e.target.value); setPrayerResult(null); }}>
+                      <option value="none">없음 0</option>
+                      <option value="blessed">Blessed item +1</option>
+                      <option value="relic">Relic +2</option>
+                    </select>
+                  </div>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">추가 GM 보정:</span>
+                    <input type="number" value={selectedPrayerModifier} onChange={e => { setSelectedPrayerModifier(parseInt(e.target.value) || 0); setPrayerResult(null); }} />
+                  </div>
+                </div>
                 <div className="cs-field">
-                  <span className="cs-field-label">기도의 환경적 보정:</span>
-                  <select value={selectedPrayerModifier} onChange={e => { setSelectedPrayerModifier(parseInt(e.target.value)); setPrayerResult(null); }}>
-                    <option value={0}>일반 야영지 기도 (보정 없음)</option>
-                    <option value={2}>장엄한 대성당 십자가 앞 기도 (+2)</option>
-                    <option value={5}>기적을 간직한 전설의 성유물 앞 기도 (+5)</option>
-                    <option value={-3}>화살이 빗발치는 긴박한 전장 한가운데 (-3)</option>
+                  <span className="cs-field-label">기도 후속 행동:</span>
+                  <select value={prayerFollowupOutcome} onChange={e => setPrayerFollowupOutcome(e.target.value)}>
+                    <option value="successful">성공한 행동으로 마무리</option>
+                    <option value="failed">실패한 행동으로 마무리</option>
                   </select>
+                </div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--color-gold-dark)', fontWeight: 'bold' }}>
+                  Prayer target: Love [God] {character?.passions?.loveGod || 10} + modifiers {getPrayerModifierTotal() >= 0 ? '+' : ''}{getPrayerModifierTotal()} = {getPrayerTarget()}
                 </div>
                 <button className="btn-medieval btn-medieval-primary" onClick={rollPrayerAndMiracle} disabled={isRollingPrayer} style={{ width: '100%', justifyContent: 'center' }}>
                   {isRollingPrayer ? '성령의 계시를 기다리는 중...' : '🛐 성스러운 기도 굴리기 (d20)'}
@@ -3660,7 +4006,7 @@ export default function SoloOracles({ character, setCharacter }) {
                 {prayerResult && (
                   <div style={{ border: '1.5px solid ' + prayerResult.color, padding: '10px', background: 'rgba(0,0,0,0.01)', marginTop: '8px', borderRadius: '4px' }}>
                     <strong style={{ color: prayerResult.color, fontSize: '0.86rem', display: 'block', marginBottom: '4px' }}>
-                      기도 결과 (d20: {prayerResult.roll}): {prayerResult.outcome}
+                      기도 결과 (d20: {prayerResult.roll}/{prayerResult.target}): {prayerResult.outcome}
                     </strong>
                     <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45 }}>
                       {prayerResult.desc}
@@ -3686,13 +4032,23 @@ export default function SoloOracles({ character, setCharacter }) {
                 </p>
                 <div className="cs-field">
                   <span className="cs-field-label">개종시킬 적장 이름:</span>
-                  <input 
-                    type="text" 
-                    value={paganCommanderName} 
+                  <input
+                    type="text"
+                    value={paganCommanderName}
                     onChange={e => { setPaganCommanderName(e.target.value); setConversionResult(null); }}
                     placeholder="예: 뷔두킨트 백작"
                     style={{ fontSize: '0.8rem' }}
                   />
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <label style={{ display: 'flex', gap: '6px', alignItems: 'center', fontSize: '0.8rem' }}>
+                    <input type="checkbox" checked={paganNeedsLanguage} onChange={e => { setPaganNeedsLanguage(e.target.checked); setConversionResult(null); }} />
+                    Saxon/Dane 외 언어 장벽 적용
+                  </label>
+                  <div className="cs-field" style={{ margin: 0 }}>
+                    <span className="cs-field-label">상대 Honor:</span>
+                    <input type="number" value={paganHonor} onChange={e => { setPaganHonor(parseInt(e.target.value) || 10); setConversionResult(null); }} />
+                  </div>
                 </div>
                 <button className="btn-medieval" onClick={rollPaganConversion} disabled={isRollingConversion} style={{ width: '100%', justifyContent: 'center' }}>
                   {isRollingConversion ? '참회와 교리를 해설하는 중...' : '✝️ 이교도 귀순/개종 판정 (d20 vs 종교 스킬)'}
@@ -3705,6 +4061,11 @@ export default function SoloOracles({ character, setCharacter }) {
                     <p style={{ fontSize: '0.76rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.45 }}>
                       {conversionResult.desc}
                     </p>
+                    {conversionResult.steps?.length > 0 && (
+                      <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)', marginTop: '4px' }}>
+                        {conversionResult.steps.map(step => `${step.name} ${step.roll}/${step.target}${step.critical ? ' Critical' : step.success ? ' Success' : step.fumble ? ' Fumble' : ' Failure'}`).join(' · ')}
+                      </div>
+                    )}
                     {conversionResult.glory !== 0 && (
                       <span style={{ fontSize: '0.72rem', color: conversionResult.glory > 0 ? 'var(--color-success)' : 'var(--color-danger)', fontWeight: 'bold', display: 'block', marginTop: '4px' }}>
                         • 명예 획득 변동: {conversionResult.glory > 0 ? '+' : ''}{conversionResult.glory} Glory
@@ -3728,9 +4089,9 @@ export default function SoloOracles({ character, setCharacter }) {
                 </p>
                 <div className="cs-field">
                   <span className="cs-field-label">피소 및 고소당한 혐의 사건명:</span>
-                  <input 
-                    type="text" 
-                    value={trialAccusation} 
+                  <input
+                    type="text"
+                    value={trialAccusation}
                     onChange={e => { setTrialAccusation(e.target.value); setTrialResult(null); }}
                     placeholder="예: 사라센 첩자와 내통했다는 간신들의 모략"
                     style={{ fontSize: '0.8rem' }}
@@ -3777,31 +4138,50 @@ export default function SoloOracles({ character, setCharacter }) {
                   <p style={{ fontSize: '0.75rem', color: 'var(--color-grey)', margin: '0 0 8px 0', lineHeight: 1.35 }}>
                     고귀한 혈통의 숙녀에게 Chanson(서정시)을 바치고 넋을 잃는 사랑의 포로가 되거나 헌신적인 사랑을 고백합니다.
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '6px', marginBottom: '6px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '6px', marginBottom: '6px' }}>
                     <div className="cs-field" style={{ margin: 0 }}>
                       <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>대상 숙녀 성함:</span>
-                      <input 
-                        type="text" 
-                        value={targetLadyName} 
+                      <input
+                        type="text"
+                        value={targetLadyName}
                         onChange={e => { setTargetLadyName(e.target.value); setCourtshipResult(null); }}
                         style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
                       />
                     </div>
                     <div className="cs-field" style={{ margin: 0 }}>
-                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>숙녀의 자태(수치):</span>
-                      <input 
-                        type="number" 
-                        value={ladyLoveStat} 
+                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>숙녀 Chaste:</span>
+                      <input
+                        type="number"
+                        value={ladyLoveStat}
                         onChange={e => { setLadyLoveStat(parseInt(e.target.value) || 12); setCourtshipResult(null); }}
+                        style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                      />
+                    </div>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>숙녀 Honor:</span>
+                      <input
+                        type="number"
+                        value={ladyHonor}
+                        onChange={e => { setLadyHonor(parseInt(e.target.value) || 15); setCourtshipResult(null); }}
+                        style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
+                      />
+                    </div>
+                    <div className="cs-field" style={{ margin: 0 }}>
+                      <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>예물 £:</span>
+                      <input
+                        type="number"
+                        min={1}
+                        value={courtshipGiftValue}
+                        onChange={e => { setCourtshipGiftValue(Math.max(1, parseInt(e.target.value) || 1)); setCourtshipResult(null); }}
                         style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
                       />
                     </div>
                   </div>
                   <div className="cs-field" style={{ marginBottom: '8px' }}>
                     <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>바치는 시와 고결한 예물:</span>
-                    <input 
-                      type="text" 
-                      value={courtshipGift} 
+                    <input
+                      type="text"
+                      value={courtshipGift}
                       onChange={e => { setCourtshipGift(e.target.value); setCourtshipResult(null); }}
                       placeholder="예: 붉은 리본 백합화와 헌신적인 사랑의 Chanson"
                       style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
@@ -3809,13 +4189,13 @@ export default function SoloOracles({ character, setCharacter }) {
                   </div>
                   <div className="cs-field" style={{ marginBottom: '8px' }}>
                     <span className="cs-field-label" style={{ fontSize: '0.74rem' }}>연애 구애의 형식:</span>
-                    <select 
-                      value={selectedLadyAmorType} 
+                    <select
+                      value={selectedLadyAmorType}
                       onChange={e => { setSelectedLadyAmorType(e.target.value); setCourtshipResult(null); }}
                       style={{ padding: '4px', minHeight: '30px', fontSize: '0.8rem' }}
                     >
-                      <option value="passive">넋을 잃음 (Amor 판정, 대상 자태 d20 이하 성공)</option>
-                      <option value="active_romance">적극적 구애 수련 (Romance 판정, 기사 스킬 이하 성공)</option>
+                      <option value="passive">Passive Infatuation: 기사 APP vs 숙녀 Chaste</option>
+                      <option value="active_romance">Deliberate Amor: 기사 APP vs 숙녀 Honor, £1+ 예물</option>
                     </select>
                   </div>
                   <button className="btn-medieval" onClick={rollLadyCourtship} disabled={isRollingCourtship} style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '6px' }}>
@@ -3825,9 +4205,9 @@ export default function SoloOracles({ character, setCharacter }) {
                     <div style={{ border: '1px solid var(--color-gold)', padding: '8px', background: '#faf6eb', marginTop: '6px', fontSize: '0.74rem', borderRadius: '4px' }}>
                       <strong>d20: {courtshipResult.roll} - {courtshipResult.outcome}</strong>
                       <p style={{ margin: '2px 0 0 0', lineHeight: 1.35 }}>{courtshipResult.desc}</p>
-                      {courtshipResult.amorIncrease > 0 && (
+                      {courtshipResult.amorValue > 0 && (
                         <span style={{ color: 'var(--color-crimson)', fontWeight: 'bold', display: 'block', marginTop: '2px' }}>
-                          💘 숙녀에 대한 가문적 애정도(Amor)가 즉시 +{courtshipResult.amorIncrease} 증가했습니다!
+                          💘 Amor [{courtshipResult.targetLadyName || targetLadyName}] {courtshipResult.amorValue} 생성.
                         </span>
                       )}
                       {courtshipResult.glory !== 0 && (
@@ -3863,7 +4243,7 @@ export default function SoloOracles({ character, setCharacter }) {
               <div style={{ fontSize: '0.84rem', marginTop: '4px' }}>누적 명예 획득: <strong style={{ color: 'var(--color-success)' }}>+{magicGloryTotal} Glory</strong></div>
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
-              <button className="btn-medieval btn-medieval-primary" onClick={applyMagicToSheet} disabled={magicApplied || (magicGloryTotal === 0 && !(courtshipResult?.amorIncrease > 0))} style={{ fontSize: '0.82rem' }}>
+              <button className="btn-medieval btn-medieval-primary" onClick={applyMagicToSheet} disabled={magicApplied || (magicGloryTotal === 0 && !(courtshipResult?.amorValue > 0) && !prayerResult?.stateEffect)} style={{ fontSize: '0.82rem' }}>
                 {magicApplied ? '✓ 시트 반영 완료' : '📈 영예 시트 데이터 반영'}
               </button>
               <button className="btn-medieval" onClick={resetMagicSimulator} style={{ fontSize: '0.78rem' }}>
@@ -3883,8 +4263,8 @@ export default function SoloOracles({ character, setCharacter }) {
                   기사의 모험 주사위 굴림을 통해 실시간으로 작성되는 서사적인 행적 연대기입니다.
                 </span>
                 {magicLogs.length > 0 && (
-                  <button 
-                    className="btn-medieval" 
+                  <button
+                    className="btn-medieval"
                     style={{ fontSize: '0.76rem', padding: '4px 8px' }}
                     onClick={() => {
                       const text = magicLogs.map(log => `[${log.timestamp}] ${log.title}\n- 요약: ${log.detail}\n- 묘사: ${log.narrative}\n- 명예 변동: ${log.glory >= 0 ? '+' : ''}${log.glory} Glory\n`).join('\n');
@@ -3905,12 +4285,12 @@ export default function SoloOracles({ character, setCharacter }) {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '400px', overflowY: 'auto', paddingRight: '4px' }}>
                   {magicLogs.map((log) => (
-                    <div 
-                      key={log.id} 
-                      style={{ 
-                        borderLeft: `3px solid ${log.type === 'prayer' ? 'var(--color-royal-blue)' : log.type === 'conversion' ? 'var(--color-gold)' : log.type === 'trial' ? 'var(--color-grey)' : 'var(--color-crimson)'}`, 
-                        padding: '10px 14px', 
-                        background: '#faf6eb', 
+                    <div
+                      key={log.id}
+                      style={{
+                        borderLeft: `3px solid ${log.type === 'prayer' ? 'var(--color-royal-blue)' : log.type === 'conversion' ? 'var(--color-gold)' : log.type === 'trial' ? 'var(--color-grey)' : 'var(--color-crimson)'}`,
+                        padding: '10px 14px',
+                        background: '#faf6eb',
                         borderRadius: '0 4px 4px 0',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                       }}
@@ -3968,11 +4348,11 @@ export default function SoloOracles({ character, setCharacter }) {
                 <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', margin: 0, lineHeight: 1.45 }}>
                   기사의 매년 생활 수준은 신체 건강, 종자 육성, 사회적 명예(Glory) 및 겨울철 회복 판정에 직접적인 가중치/패널티를 부여합니다.
                 </p>
-                
+
                 <div className="cs-field">
                   <span className="cs-field-label">생활 수준 선택 (Table 12-1):</span>
-                  <select 
-                    value={selectedLivingStandard} 
+                  <select
+                    value={selectedLivingStandard}
                     onChange={e => setSelectedLivingStandard(e.target.value)}
                     style={{ fontSize: '0.82rem' }}
                   >
@@ -3993,8 +4373,8 @@ export default function SoloOracles({ character, setCharacter }) {
                   {(selectedLivingStandard === 'impoverished' || selectedLivingStandard === 'miserly') && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>🚨 [궁핍한 삶]: 자녀/종자 생존 -2, 말 생존 -5를 적용합니다. 연간 유지비 영예는 없습니다.</div>}
                 </div>
 
-                <button 
-                  className="btn-medieval btn-medieval-primary" 
+                <button
+                  className="btn-medieval btn-medieval-primary"
                   onClick={payMaintenance}
                   style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
                 >
@@ -4013,10 +4393,10 @@ export default function SoloOracles({ character, setCharacter }) {
                   모험 도중이나 시나리오 클리어 후 획득한 이교도의 정밀 약탈물이나 가문의 수습 골동품들을 시장에서 정산하여 돈으로 즉시 치환합니다 (Table 12-4).
                 </p>
 
-                <button 
-                  className="btn-medieval" 
-                  onClick={rollAppraiseLoot} 
-                  disabled={isAppraising} 
+                <button
+                  className="btn-medieval"
+                  onClick={rollAppraiseLoot}
+                  disabled={isAppraising}
                   style={{ width: '100%', justifyContent: 'center', marginTop: '8px' }}
                 >
                   {isAppraising ? '보물의 금 함량과 가치를 저울질하는 중...' : '💎 미확인 보물 감정 굴리기 (d20)'}
@@ -4165,8 +4545,8 @@ export default function SoloOracles({ character, setCharacter }) {
                   기사의 상점 구입, 생활 유지비, 그리고 보화 감정 정산 결과가 실시간 기록되는 장부입니다.
                 </span>
                 {armoryLogs.length > 0 && (
-                  <button 
-                    className="btn-medieval" 
+                  <button
+                    className="btn-medieval"
                     style={{ fontSize: '0.76rem', padding: '4px 8px' }}
                     onClick={() => {
                       const text = armoryLogs.map(log => `[${log.timestamp}] ${log.title}\n- 내역: ${log.detail}\n- 경위: ${log.narrative}\n- 수지 변동: ${log.cost >= 0 ? '+' : ''}${log.cost} 파운드(£)\n`).join('\n');
@@ -4188,12 +4568,12 @@ export default function SoloOracles({ character, setCharacter }) {
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
                   {armoryLogs.map((log) => (
-                    <div 
-                      key={log.id} 
-                      style={{ 
-                        borderLeft: `3px solid ${log.type === 'maintenance' ? 'var(--color-royal-blue)' : log.type === 'purchase' ? 'var(--color-crimson)' : 'var(--color-success)'}`, 
-                        padding: '10px 14px', 
-                        background: '#faf6eb', 
+                    <div
+                      key={log.id}
+                      style={{
+                        borderLeft: `3px solid ${log.type === 'maintenance' ? 'var(--color-royal-blue)' : log.type === 'purchase' ? 'var(--color-crimson)' : 'var(--color-success)'}`,
+                        padding: '10px 14px',
+                        background: '#faf6eb',
                         borderRadius: '0 4px 4px 0',
                         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
                       }}
