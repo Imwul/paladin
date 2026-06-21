@@ -1416,6 +1416,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       return !['resolved', 'skipped'].includes(winterSteps[key]);
     });
     let skippedNow = [];
+    let skippedEventsNow = [];
     if (unresolved.length > 0 || unresolvedRequiredEvents.length > 0) {
       const names = [
         ...unresolved.map(([, label]) => label),
@@ -1424,6 +1425,10 @@ export default function FamilyWinter({ character, setCharacter }) {
       const confirmSkip = window.confirm(`아직 해결되지 않은 겨울 단계가 있습니다: ${names}\n명시적으로 건너뛰고 겨울을 종료하시겠습니까?`);
       if (!confirmSkip) return;
       skippedNow = unresolved.map(([key]) => key);
+      skippedEventsNow = unresolvedRequiredEvents.map(([key, event]) => ({
+        key,
+        label: event?.label || key
+      }));
     }
 
     // Check if there are unspent Glory Bonus points
@@ -1468,7 +1473,8 @@ export default function FamilyWinter({ character, setCharacter }) {
       // 3. Compile Winter Logs into Chronology Journal
       const persistedLogs = Array.isArray(prev.campaign?.winter?.logs) ? prev.campaign.winter.logs : [];
       const skipLogs = skippedNow.map(step => `[겨울 단계 스킵]: ${step} 단계가 사용자 확인으로 건너뛰어졌습니다.`);
-      const reverseLogs = [...persistedLogs, ...skipLogs];
+      const skipEventLogs = skippedEventsNow.map(event => `[겨울 사건 수동 스킵]: ${event.label} 항목이 사용자 확인으로 수동 처리/건너뛰기되었습니다.`);
+      const reverseLogs = [...persistedLogs, ...skipLogs, ...skipEventLogs];
       const logsCombined = [...reverseLogs.map(line => `• ${line}`)];
       if (squireStatusMsg) {
         logsCombined.push(squireStatusMsg);
@@ -1500,20 +1506,27 @@ export default function FamilyWinter({ character, setCharacter }) {
         annualGlory: 'pending',
         maintenance: 'pending'
       };
-      skippedNow.forEach(step => {
-        if (!updated.campaign) updated.campaign = {};
-        if (!updated.campaign.winter) updated.campaign.winter = {};
-        updated.campaign.winter.steps = {
-          ...(updated.campaign.winter.steps || {}),
-          [step]: 'skipped'
-        };
-      });
+      const manualSkipEventId = `winter:manual_skip:${endingYear}`;
+      const manualSkipLabels = [
+        ...skippedNow,
+        ...skippedEventsNow.map(event => event.label)
+      ];
       updated.campaign = {
         ...(updated.campaign || {}),
         schemaVersion: 2,
-        appliedEvents: updated.campaign?.appliedEvents || {},
+        appliedEvents: {
+          ...(updated.campaign?.appliedEvents || {}),
+          ...(manualSkipLabels.length > 0 ? {
+            [manualSkipEventId]: {
+              appliedAt: new Date().toISOString(),
+              year: endingYear,
+              label: `겨울 수동 스킵: ${manualSkipLabels.join(', ')}`
+            }
+          } : {})
+        },
+        passionStates: updated.campaign?.passionStates || [],
         winter: {
-        year: endingYear + 1,
+          year: endingYear + 1,
           steps: nextSteps,
           logs: [],
           unresolved: {},

@@ -5,6 +5,7 @@ import {
   sanitizeCampaignState,
   validateCampaignImport
 } from '../src/utils/campaignState.js';
+import { getFirebaseServices } from '../src/firebase.js';
 import { getFamilyCharacteristicIndexFromRoll } from '../src/utils/rulebookTables.js';
 
 const defaults = {
@@ -66,6 +67,9 @@ corrupt.family.members = [
 ];
 corrupt.campaign.winter.steps = { aging: 'bogus', harvest: 'resolved' };
 corrupt.campaign.winter.unresolved = { wound: { label: 'unresolved wound', required: true } };
+corrupt.campaign.winter.skippedWithConfirmation = {
+  familyEvent: { confirmedAt: '768-12-31T00:00:00.000Z', label: 'family event' }
+};
 corrupt.campaign.passionStates = [
   { id: '', type: 'dragon', status: 'cursed', passionKey: 7, year: 3000, note: 123 }
 ];
@@ -88,12 +92,14 @@ assert.equal(sanitized.campaign.winter.steps.harvest, 'resolved');
 assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'annualGlory'), true);
 assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'maintenance'), true);
 assert.equal(sanitized.campaign.winter.unresolved.wound.required, true);
+assert.equal(sanitized.campaign.winter.skippedWithConfirmation.familyEvent.label, 'family event');
 assert.equal(sanitized.campaign.passionStates.length, 1);
 assert.equal(sanitized.campaign.passionStates[0].type, 'shock');
 assert.equal(sanitized.campaign.passionStates[0].status, 'active');
 assert.equal(sanitized.campaign.passionStates[0].year, 1200);
 assert.equal(saveLoadRoundTrip.family.members.filter(m => m.relation === '본인' && m.status === '생존').length, 1);
 assert.equal(saveLoadRoundTrip.campaign.winter.unresolved.wound.required, true);
+assert.equal(saveLoadRoundTrip.campaign.winter.skippedWithConfirmation.familyEvent.label, 'family event');
 assert.equal(saveLoadRoundTrip.campaign.passionStates[0].type, 'shock');
 
 const legacyMaintenance = structuredClone(defaults);
@@ -160,5 +166,20 @@ assert.deepEqual(validateCampaignImport({ personal: {}, attributes: {}, skills: 
   ok: false,
   errors: ['traits', 'passions', 'gear', 'family', 'journal']
 });
+
+globalThis.localStorage = {
+  getItem: () => null
+};
+assert.equal(getFirebaseServices().isMock, true);
+
+globalThis.localStorage = {
+  getItem: () => JSON.stringify({
+    apiKey: 'YOUR_API_KEY',
+    authDomain: 'example.firebaseapp.com',
+    projectId: 'example',
+    appId: 'example'
+  })
+};
+assert.equal(getFirebaseServices().isMock, true);
 
 console.log('hostile regression passed');

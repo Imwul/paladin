@@ -55,6 +55,12 @@ Required smoke when config is available:
 
 The winter completion gate is an explicit manual skip gate, not a hard block. If required winter steps or required unresolved events remain, the app must present a confirmation listing the unresolved items. Choosing cancel must keep the winter phase open. Choosing confirm is treated as an intentional manual skip and should be logged/persisted as such.
 
+Confirmed manual skips are now written into the winter journal summary and tagged with a persistent `winter:manual_skip:<year>` applied event. This preserves the fact that the player intentionally bypassed a required unresolved item instead of silently completing the phase.
+
 ## Hostile Regression Guard
 
 Keep `scripts/hostile-regression.mjs` as a required guard. Any recurrence in save/load sanitization, succession event duplication, winter step schema, unresolved winter state, or family graph corruption must fail the script immediately.
+
+## Final Local Wrap-Up
+
+Local verification remains the release standard unless a real Firebase config is supplied. Browser click-through was partially verified on character and family views; a later in-app browser policy block prevented completing the winter tab click-through in that surface. Do not record Firebase remote save/load or full browser winter click-through as verified until those checks are rerun with an available browser session and real config.
