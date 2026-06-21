@@ -4,7 +4,7 @@ import { Heart, Plus, Trash2, Edit, Crown, UserPlus, X, RefreshCw, Info, Calenda
 import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes } from '../data/names';
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable, patronSaints } from './CharacterSheet';
-import { applyOnce, hasAppliedEvent } from '../utils/campaignState';
+import { applyOnce, hasAppliedEvent, sanitizeCampaignState } from '../utils/campaignState';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -45,6 +45,20 @@ const getGender = (member) => {
     return 'female';
   }
   return 'male';
+};
+
+const getBirthYearFromLifeYears = (lifeYears) => {
+  if (!lifeYears) return 9999;
+  const match = String(lifeYears).match(/^(\d+)/);
+  return match ? parseInt(match[1], 10) : 9999;
+};
+
+const areTreeLinesEqual = (prevLines, nextLines) => {
+  if (prevLines.length !== nextLines.length) return false;
+  return prevLines.every((line, index) => {
+    const next = nextLines[index];
+    return line.id === next.id && line.type === next.type && line.path === next.path;
+  });
 };
 
 const resolveMemberCharacteristic = (member, allMembers, globalFamilyChar) => {
@@ -168,26 +182,14 @@ const generateRandomName = (gender) => {
 };
 
 const getCalculatedRelation = (member, allMembers) => {
-  const me = allMembers.find(m => m.relation === '본인');
+  const me = allMembers.find(m => m.relation === '본인' && m.status !== '사망')
+    || allMembers.find(m => m.relation === '본인');
   if (!me) return member.relation;
   if (member.id === me.id) return '본인';
 
-  // 만약 사용자가 수동으로 특수한 관계 명칭을 기입했다면, 이를 존중하여 그대로 표시합니다.
-  const standardRelations = ['조부', '부친', '모친', '본인', '남동생', '자녀', '형제', '친족', '가문원', ''];
-  const hasCustomRelation = member.relation && !standardRelations.includes(member.relation.trim());
-  if (hasCustomRelation) {
-    return member.relation;
-  }
-
-  const getBirthYear = (ly) => {
-    if (!ly) return 9999;
-    const match = String(ly).match(/^(\d+)/);
-    return match ? parseInt(match[1], 10) : 9999;
-  };
-
   const memberGender = getGender(member);
-  const meBirth = getBirthYear(me.lifeYears);
-  const memberBirth = getBirthYear(member.lifeYears);
+  const meBirth = getBirthYearFromLifeYears(me.lifeYears);
+  const memberBirth = getBirthYearFromLifeYears(member.lifeYears);
 
   // 1. 본인의 배우자
   if (member.spouseId === me.id) {
@@ -235,7 +237,7 @@ const getCalculatedRelation = (member, allMembers) => {
       if (memberGender === 'female') {
         return '고모';
       } else {
-        const fatherBirth = getBirthYear(parentObj.lifeYears);
+        const fatherBirth = getBirthYearFromLifeYears(parentObj.lifeYears);
         if (memberBirth < fatherBirth) {
           return '큰아버지';
         } else {
@@ -252,8 +254,8 @@ const getCalculatedRelation = (member, allMembers) => {
       if (spouseGender === 'female') {
         return '고모부';
       } else {
-        const fatherBirth = getBirthYear(parentObj.lifeYears);
-        const siblingBirth = getBirthYear(parentSiblingSpouse.lifeYears);
+        const fatherBirth = getBirthYearFromLifeYears(parentObj.lifeYears);
+        const siblingBirth = getBirthYearFromLifeYears(parentSiblingSpouse.lifeYears);
         if (siblingBirth < fatherBirth) {
           return '큰어머니';
         } else {
@@ -287,6 +289,17 @@ const getCalculatedRelation = (member, allMembers) => {
   const myChildrenIds = myChildren.map(ch => ch.id);
   if (member.parentId && myChildrenIds.includes(member.parentId)) {
     return memberGender === 'female' ? '손녀' : '손자';
+  }
+
+  // 직접 연결이 없는 후원자/피후견인/의붓친족 같은 수동 관계명은 그대로 존중합니다.
+  const standardRelations = [
+    '조부', '조모', '부친', '모친', '본인', '부인', '남편',
+    '형', '누나', '남동생', '여동생', '아들', '딸',
+    '자녀', '형제', '친족', '가문원', ''
+  ];
+  const hasCustomRelation = member.relation && !standardRelations.includes(member.relation.trim());
+  if (hasCustomRelation) {
+    return member.relation;
   }
 
   if (!member.relation || member.relation.trim() === '') {
@@ -4098,6 +4111,7 @@ export default function FamilyTree({ character, setCharacter }) {
   const treeContainerRef = useRef(null);
   const hasCenteredRef = useRef(false);
   const [lines, setLines] = useState([]);
+  const [showRelationLines, setShowRelationLines] = useState(false);
   const dragRef = useRef({
     memberId: null,
     startX: 0,
@@ -4356,6 +4370,10 @@ export default function FamilyTree({ character, setCharacter }) {
   // SVG Lines Calculation
   // SVG Lines Calculation
   const calculateLines = useCallback(() => {
+    if (!showRelationLines) {
+      setLines(prevLines => (prevLines.length ? [] : prevLines));
+      return;
+    }
     if (!treeContainerRef.current) return;
     const containerRect = treeContainerRef.current.getBoundingClientRect();
     const computedLines = [];
@@ -4432,18 +4450,6 @@ export default function FamilyTree({ character, setCharacter }) {
         const childEl = findNodeEl(member.id);
         const parentNode = members.find(m => m.id === member.parentId);
         
-        if (member.name.includes("하르드랑") || member.name.includes("에르지지젤라") || (parentNode && parentNode.name.includes("하르드랑"))) {
-          console.log("LINE DBG:", {
-            memberName: member.name,
-            memberId: member.id,
-            parentId: member.parentId,
-            parentNodeFound: !!parentNode,
-            parentNodeName: parentNode?.name,
-            childElFound: !!childEl,
-            parentElFound: parentNode ? !!findNodeEl(parentNode.id) : false
-          });
-        }
-
         if (childEl && parentNode) {
           const childRect = childEl.getBoundingClientRect();
           const childX = (childRect.left + childRect.right) / 2 - containerRect.left;
@@ -4490,8 +4496,8 @@ export default function FamilyTree({ character, setCharacter }) {
       }
     });
 
-    setLines(computedLines);
-  }, [members]);
+    setLines(prevLines => (areTreeLinesEqual(prevLines, computedLines) ? prevLines : computedLines));
+  }, [members, showRelationLines]);
 
   useLayoutEffect(() => {
     // 1. Calculate lines immediately
@@ -4855,6 +4861,11 @@ export default function FamilyTree({ character, setCharacter }) {
         return;
       }
 
+      if (selectedSpouse && Number(selectedSpouse.generation) !== Number(formGeneration)) {
+        alert("배우자는 같은 세대의 인물만 연결할 수 있습니다.");
+        return;
+      }
+
       if (
         selectedSpouse
         && (selectedSpouse.parentId === targetId || formParentId === selectedSpouse.id || selectedSpouse.id === selectedParent?.id)
@@ -5003,7 +5014,7 @@ export default function FamilyTree({ character, setCharacter }) {
             nextChar.family.characteristic = null;
           }
         }
-        return nextChar;
+        return sanitizeCampaignState(nextChar, prev);
       });
 
       setIsModalOpen(false);
@@ -5395,11 +5406,32 @@ export default function FamilyTree({ character, setCharacter }) {
     const statusColor = getStatusColor(member.status);
     const isDeceased = member.status === '사망';
     const memberGender = getGender(member);
-    const calculatedRelation = getCalculatedRelation(member, members);
+    let calculatedRelation = getCalculatedRelation(member, members);
+    const selfMember = members.find(m => m.relation === '본인' && m.status !== '사망')
+      || members.find(m => m.relation === '본인');
+    const impossibleSameGenerationAncestor = selfMember
+      && member.id !== selfMember.id
+      && Number(member.generation) === Number(selfMember.generation)
+      && ['조부', '조모', '부친', '모친'].includes(calculatedRelation);
+    if (impossibleSameGenerationAncestor) {
+      const memberBirth = getBirthYearFromLifeYears(member.lifeYears);
+      const selfBirth = getBirthYearFromLifeYears(selfMember.lifeYears);
+      const older = memberBirth < selfBirth;
+      calculatedRelation = memberGender === 'female'
+        ? (older ? '누나' : '여동생')
+        : (older ? '형' : '남동생');
+    }
 
     const positions = character.family?.positions || {};
     const pos = positions[member.id] || { x: 0, y: 0 };
     const isGrabbing = dragRef.current.memberId === member.id;
+    const parent = member.parentId ? members.find(m => m.id === member.parentId) : null;
+    const spouse = member.spouseId
+      ? members.find(m => m.id === member.spouseId)
+      : members.find(m => m.spouseId === member.id);
+    const childNames = members
+      .filter(m => m.parentId === member.id || (member.spouseId && m.parentId === member.spouseId))
+      .map(c => splitName(c.name).ko);
  
     return (
       <div 
@@ -5418,17 +5450,17 @@ export default function FamilyTree({ character, setCharacter }) {
 
         
         {/* Name */}
-        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '2px 0 1px 0', lineHeight: 1.2 }}>
-          <span className="ft-name-ko" style={{ fontSize: '0.76rem', fontWeight: '700', color: 'var(--color-ink)' }}>{splitName(member.name).ko}</span>
+        <h4 className="ft-name" style={{ textDecoration: isDeceased ? 'line-through' : 'none', margin: '2px 0 4px 0', lineHeight: 1.2 }}>
+          <span className="ft-name-ko">{splitName(member.name).ko}</span>
           {splitName(member.name).en && (
-            <span className="ft-name-en" style={{ fontSize: '0.6rem', display: 'block', margin: 0, fontWeight: '300', color: 'var(--color-grey)' }}>
+            <span className="ft-name-en">
               ({splitName(member.name).en})
             </span>
           )}
         </h4>
 
         {/* Relation & Dates & Status */}
-        <div style={{ fontSize: '0.62rem', color: 'var(--color-grey)', margin: '1px 0 3px 0', lineHeight: '1.25' }}>
+        <div className="ft-card-meta">
           <span className="ft-relation" style={{ marginRight: '4px' }}>[{calculatedRelation}]</span>
           <span>{member.lifeYears || '연도 미상'}</span>
           <span style={{ marginLeft: '4px', color: statusColor, fontWeight: 'normal' }}>
@@ -5446,12 +5478,30 @@ export default function FamilyTree({ character, setCharacter }) {
         </div>
 
         {/* Divider */}
-        <div style={{ borderBottom: '1px solid rgba(201, 168, 76, 0.15)', margin: '3px 0' }}></div>
+        <div className="ft-card-divider"></div>
 
         {/* Estate, Muster, Heirs */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.62rem', textAlign: 'left', width: '100%', lineHeight: 1.3 }}>
+        <div className="ft-card-records">
           <div>
-            <span className="record-label">영지: </span>
+            <span className="record-label">부모: </span>
+            <span className="record-value">
+              {parent ? splitName(parent.name).ko : '없음'}
+            </span>
+          </div>
+          <div>
+            <span className="record-label">배우자: </span>
+            <span className="record-value">
+              {spouse ? splitName(spouse.name).ko : '없음'}
+            </span>
+          </div>
+          <div>
+            <span className="record-label">자녀: </span>
+            <span className="record-value">
+              {childNames.join(', ') || '없음'}
+            </span>
+          </div>
+          <div>
+            <span className="record-label">영지/거처: </span>
             <span className="record-value">
               {isKnight ? (character.personal?.home || '바스토뉴') : '아르덴'}
             </span>
@@ -5462,17 +5512,11 @@ export default function FamilyTree({ character, setCharacter }) {
               {isKnight ? `${character.family?.lineageMen || 20}명` : (member.gender === 'female' ? '면제' : (isDeceased ? '봉사 완료' : '의무 수임'))}
             </span>
           </div>
-          <div>
-            <span className="record-label">상속자: </span>
-            <span className="record-value">
-              {members.filter(m => m.parentId === member.id || (member.spouseId && m.parentId === member.spouseId)).map(c => splitName(c.name).ko).join(', ') || '없음'}
-            </span>
-          </div>
         </div>
 
         {/* Divider */}
         {(getChronicleMarginalia(member) || resolveMemberCharacteristic(member, members, character.family?.characteristic)) && (
-          <div style={{ borderBottom: '1px solid rgba(201, 168, 76, 0.15)', margin: '3px 0' }}></div>
+          <div className="ft-card-divider"></div>
         )}
 
         {/* Notes (Marginalia) */}
@@ -5480,7 +5524,7 @@ export default function FamilyTree({ character, setCharacter }) {
           const marginaliaText = getChronicleMarginalia(member);
           if (!marginaliaText) return null;
           return (
-            <div className="chronicle-marginalia" style={{ marginBottom: '3px', fontSize: '0.62rem', fontStyle: 'italic', color: 'var(--color-crimson)', opacity: 0.9 }}>
+            <div className="chronicle-marginalia ft-card-marginalia">
               {marginaliaText}
             </div>
           );
@@ -5493,7 +5537,7 @@ export default function FamilyTree({ character, setCharacter }) {
           const isInherited = !member.familyCharacteristic;
           
           return (
-            <div style={{ fontSize: '0.6rem', color: 'var(--color-grey)', width: '100%', textAlign: 'left', lineHeight: '1.2', opacity: 0.85 }}>
+            <div className="ft-card-characteristic">
               <span className="record-label">특성: </span>
               <span className="record-value" style={{ fontStyle: 'italic' }}>
                 {resolvedChar.desc} {isInherited && '(상속)'}
@@ -5505,8 +5549,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
 
 
-        {/* Hover overlay with action buttons */}
-        <div className="ft-card-overlay">
+        <div className="ft-card-actions">
           <button 
             className="ft-action-btn" 
             title="인물 정보 편집"
@@ -5570,6 +5613,13 @@ export default function FamilyTree({ character, setCharacter }) {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            className={`btn-medieval ${showRelationLines ? 'btn-medieval-primary' : ''}`}
+            onClick={() => setShowRelationLines(prev => !prev)}
+            title="부모/자녀 관계선을 보조 레이어로 표시합니다. 좁은 화면에서는 기록부 가독성을 위해 숨겨집니다."
+          >
+            {showRelationLines ? '관계선 숨김' : '관계선 보기'}
+          </button>
           <button className="btn-medieval btn-medieval-primary" onClick={() => handleOpenAdd()}>
             <Plus size={14} /> 새 가문원 영입
           </button>
@@ -6550,15 +6600,17 @@ export default function FamilyTree({ character, setCharacter }) {
         <div className="ft-canvas" ref={treeContainerRef}>
           
           {/* SVG Overlay layer for connection lines */}
-          <svg className="ft-svg-layer">
-            {lines.map((line) => (
-              <path
-                key={line.id}
-                d={line.path}
-                className={`ft-svg-path ${line.type === 'marriage' ? 'path-marriage' : 'path-lineage'}`}
-              />
-            ))}
-          </svg>
+          {showRelationLines && (
+            <svg className="ft-svg-layer">
+              {lines.map((line) => (
+                <path
+                  key={line.id}
+                  d={line.path}
+                  className={`ft-svg-path ${line.type === 'marriage' ? 'path-marriage' : 'path-lineage'}`}
+                />
+              ))}
+            </svg>
+          )}
 
           {/* Render Generations Row by Row */}
           <div className="ft-rows-container">
@@ -6567,21 +6619,6 @@ export default function FamilyTree({ character, setCharacter }) {
 
         </div>
       </div>
-
-      {/* Collapsible Debug Panel */}
-      <details style={{ margin: '20px 0', padding: '10px', border: '1px solid #ccc', backgroundColor: '#f9f9f9', fontSize: '0.8rem', borderRadius: '4px', zIndex: 10, position: 'relative' }}>
-        <summary style={{ cursor: 'pointer', fontWeight: 'bold', outline: 'none' }}>[디버그] 가계도 데이터 상태 점검 (Debug Family State)</summary>
-        <pre style={{ overflow: 'auto', maxHeight: '300px', margin: '10px 0 0 0', padding: '10px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '4px', textAlign: 'left' }}>
-          {JSON.stringify(members.map(m => ({ 
-            id: m.id, 
-            name: m.name, 
-            relation: m.relation, 
-            generation: m.generation, 
-            parentId: m.parentId || null,
-            spouseId: m.spouseId || null
-          })), null, 2)}
-        </pre>
-      </details>
 
       {/* Modal Dialog for Add/Edit Member */}
       {isModalOpen && createPortal(

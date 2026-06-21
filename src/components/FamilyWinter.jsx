@@ -2,7 +2,34 @@ import React, { useState, useEffect } from 'react';
 import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
 import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
+import { birthGiftsTable } from './CharacterSheet';
 import { applyOnce, appendWinterLog, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
+
+const winterCheckKeyMap = {
+  standingLord: 'liegeLord',
+  standingChurch: 'church',
+  standingCommoners: 'commoners',
+  standingFamily: 'family',
+  loveCharlemagne: 'charlemagne'
+};
+
+const resolveWinterCheckKey = (key) => winterCheckKeyMap[key] || key;
+
+const appendGearNote = (character, field, note) => {
+  character.gear = character.gear || {};
+  character.gear[field] = character.gear[field] ? `${character.gear[field]}, ${note}` : note;
+};
+
+const rollBirthGift = (character) => {
+  character.gear = character.gear || {};
+  character.skills = character.skills || {};
+  character.traits = character.traits || {};
+  character.horses = character.horses || {};
+  const roll = Math.floor(Math.random() * 20) + 1;
+  const gift = birthGiftsTable.find(item => item.roll === roll) || birthGiftsTable[roll - 1];
+  if (gift?.apply) gift.apply(character);
+  return { roll, gift };
+};
 
 export default function FamilyWinter({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('tree');
@@ -361,8 +388,8 @@ export default function FamilyWinter({ character, setCharacter }) {
     20: { name: "기사의 결단 (Player's Choice)", trait: "choice", crit: "기사가 원하는 성향 하나를 자유롭게 +1 올립니다.", succ: "원하는 성향이나 기술 하나에 자유롭게 체크를 남깁니다.", fail: "아무 일도 일어나지 않았습니다.", fumb: "사소한 수치로 무작위 명망 하나가 1점 하락합니다." }
   };
 
-  const fullyAutomatedPersonalEvents = new Set([12, 14, 16]);
-  const automatedFamilyEvents = new Set([2, 3, 8, 10, 19]);
+  const fullyAutomatedPersonalEvents = new Set([12, 14, 16, 17, 18, 19]);
+  const automatedFamilyEvents = new Set([1, 2, 3, 4, 5, 8, 10, 11, 12, 17, 19]);
   const personalEventNeedsManualResolution = personalEventRoll && !fullyAutomatedPersonalEvents.has(Number(personalEventRoll));
   const familyEventNeedsManualResolution = familyEventRoll
     && familyEventResult
@@ -389,7 +416,8 @@ export default function FamilyWinter({ character, setCharacter }) {
     }
     if (!personalEventText) return;
     const key = personalEventText.trait;
-    const testValue = character.traits?.[key] ?? character.passions?.[key] ?? character.standings?.[key] ?? 10;
+    const resolvedKey = resolveWinterCheckKey(key);
+    const testValue = character.traits?.[key] ?? character.passions?.[key] ?? character.standings?.[resolvedKey] ?? 10;
     const testRoll = Math.floor(Math.random() * 20) + 1;
     let outcome = 'Failure';
     if (testRoll === 20) outcome = 'Fumble';
@@ -398,14 +426,28 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
+        updated.gear = updated.gear || {};
+        updated.skills = updated.skills || {};
+        updated.traits = updated.traits || {};
+        updated.passions = updated.passions || {};
+        updated.standings = updated.standings || {};
+        updated.derived = updated.derived || {};
+        updated.campaign = updated.campaign || {};
+        updated.campaign.winter = updated.campaign.winter || {};
+        updated.campaign.winter.steps = updated.campaign.winter.steps || {};
+
         const checkTrait = (traitKey) => {
+          const mappedKey = resolveWinterCheckKey(traitKey);
           if (updated.traits?.[traitKey] !== undefined) {
             updated.traitsChecked = { ...(updated.traitsChecked || {}), [traitKey]: true };
           } else if (updated.passions?.[traitKey] !== undefined) {
             updated.passionsChecked = { ...(updated.passionsChecked || {}), [traitKey]: true };
-          } else if (updated.standings?.[traitKey] !== undefined) {
-            updated.standings[traitKey] = Math.min(25, (updated.standings[traitKey] || 0) + 1);
+          } else if (updated.standings?.[mappedKey] !== undefined) {
+            updated.standings[mappedKey] = Math.min(25, (updated.standings[mappedKey] || 0) + 1);
           }
+        };
+        const checkSkill = (skillKey) => {
+          updated.skillsChecked = { ...(updated.skillsChecked || {}), [skillKey]: true };
         };
         const addTrait = (traitKey, amount) => {
           const opposites = {
@@ -423,7 +465,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           updated.passions[passionKey] = Math.min(25, Math.max(0, (updated.passions[passionKey] || 0) + amount));
         };
         const addStanding = (standingKey, amount) => {
-          updated.standings[standingKey] = Math.min(25, Math.max(0, (updated.standings[standingKey] || 0) + amount));
+          const mappedKey = resolveWinterCheckKey(standingKey);
+          updated.standings[mappedKey] = Math.min(25, Math.max(0, (updated.standings[mappedKey] || 0) + amount));
         };
 
         if (outcome === 'Critical') {
@@ -438,21 +481,56 @@ export default function FamilyWinter({ character, setCharacter }) {
             addStanding('church', 1);
             updated.campaign.winter.steps.training = 'skipped';
           }
+          if (key === 'standingLord') {
+            appendGearNote(updated, 'personalGear', '주군이 하사한 최고급 장비');
+            updated.horses = { ...(updated.horses || {}), warhorse: '최고급 돌격마 (Charger, 주군 하사)' };
+          }
+          if (key === 'standingChurch') {
+            updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 25;
+            addStanding('charlemagne', 1);
+          }
+          if (key === 'standingCommoners') {
+            updated.horses = { ...(updated.horses || {}), other3: '상인 길드가 기부한 최고급 경량마 (Courser)' };
+            addStanding('commoners', 1);
+          }
+          if (key === 'loveCharlemagne') {
+            updated.campaign.winter.unresolved = {
+              ...(updated.campaign.winter.unresolved || {}),
+              charlemagneReroll: {
+                label: `${currentYear + 1}년 전투나 모험 중 무작위 1회 재굴림 기회`,
+                required: false
+              }
+            };
+          }
         } else if (outcome === 'Success') {
           checkTrait(key);
           if (key === 'valorous') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 10;
           if (key === 'honor') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 20;
+          if (key === 'standingLord') {
+            const { roll, gift } = rollBirthGift(updated);
+            appendGearNote(updated, 'personalGear', `주군 하사품 d20 ${roll}: ${gift?.benefit || '탄생 기프트'}`);
+          }
+          if (key === 'standingChurch') checkSkill('hunting');
+          if (key === 'standingCommoners') {
+            checkSkill('folkLore');
+            checkTrait('standingCommoners');
+          }
+          if (key === 'loveCharlemagne') checkTrait('loveCharlemagne');
         } else if (outcome === 'Failure') {
           if (key === 'loveFamily') addPassion('loveFamily', -1);
           if (key === 'loveGod') addStanding('church', -1);
           if (key === 'generous') updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 1);
+          if (key === 'standingChurch') addStanding('commoners', -1);
+          if (key === 'standingCommoners') checkTrait('pious');
           if (updated.traits?.[key] !== undefined) checkTrait(key);
         } else if (outcome === 'Fumble') {
           if (key === 'honor') addPassion('honor', -1);
           if (key === 'loveFamily') addPassion('loveFamily', -2);
           if (key === 'loveGod') addPassion('loveGod', -1);
+          if (key === 'standingLord') addPassion('honor', -1);
           if (key === 'standingChurch') addStanding('church', -1);
-          if (key === 'standingCommoners') addStanding('commoners', -1);
+          if (key === 'standingCommoners') updated.derived.currentHp = Math.max(0, (updated.derived?.currentHp || updated.derived?.maxHp || 0) - (Math.floor(Math.random() * 6) + 1) - (Math.floor(Math.random() * 6) + 1) - (Math.floor(Math.random() * 6) + 1));
+          if (key === 'loveCharlemagne') addStanding('charlemagne', -1);
           if (key === 'energetic') updated.campaign.winter.steps.training = 'skipped';
         }
 
@@ -734,13 +812,21 @@ export default function FamilyWinter({ character, setCharacter }) {
           actualRoll = Number(familyEventRoll20Selection);
         }
 
+        updated.gear = updated.gear || {};
+        updated.skills = updated.skills || {};
+        updated.traits = updated.traits || {};
+        updated.passions = updated.passions || {};
+        updated.standings = updated.standings || {};
+        updated.horses = updated.horses || {};
+
         const checkTrait = (updatedChar, traitKey) => {
+          const mappedKey = resolveWinterCheckKey(traitKey);
           if (updatedChar.traits?.[traitKey] !== undefined) {
             updatedChar.traitsChecked = { ...(updatedChar.traitsChecked || {}), [traitKey]: true };
           } else if (updatedChar.passions?.[traitKey] !== undefined) {
             updatedChar.passionsChecked = { ...(updatedChar.passionsChecked || {}), [traitKey]: true };
-          } else if (updatedChar.standings?.[traitKey] !== undefined) {
-            updatedChar.standings[traitKey] = Math.min(25, (updatedChar.standings[traitKey] || 0) + 1);
+          } else if (updatedChar.standings?.[mappedKey] !== undefined) {
+            updatedChar.standings[mappedKey] = Math.min(25, (updatedChar.standings[mappedKey] || 0) + 1);
           }
         };
 
@@ -783,7 +869,8 @@ export default function FamilyWinter({ character, setCharacter }) {
             updated.standings.family = Math.max(0, (updated.standings.family || 16) - 1);
           }
         } else if (actualRoll === 8) {
-          updated.gear.homePossessions = `${updated.gear.homePossessions || ''}, 가문 선조 유물`;
+          const { roll, gift } = rollBirthGift(updated);
+          appendGearNote(updated, 'homePossessions', `가문 선조 유물 d20 ${roll}: ${gift?.benefit || '탄생 기프트'}`);
           checkTrait(updated, 'loveFamily');
         } else if (actualRoll === 9) {
           if (familyEventChoice === 'a') {

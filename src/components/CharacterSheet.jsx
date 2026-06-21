@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
+import { getFamilyCharacteristicIndexFromRoll } from '../utils/rulebookTables';
 
 const oppositeMap = {
   chaste: 'lustful', lustful: 'chaste',
@@ -52,8 +53,20 @@ export const patronSaints = [
   { name: "성모 마리아 (St. Mary)", patronage: "어머니", benefit: "+2 신에 대한 사랑 (Love God)", apply: (char) => { char.passions.loveGod = (char.passions.loveGod || 15) + 2; } },
   { name: "성 미카엘 (St. Michael)", patronage: "전사", benefit: "+3 용맹 (Valorous)", apply: (char) => { char.traits.valorous = Math.min(20, (char.traits.valorous || 10) + 3); char.traits.cowardly = 20 - char.traits.valorous; } },
   { name: "성 오메르 (St. Omer)", patronage: "병자 및 빈민", benefit: "+3 관대 (Generous)", apply: (char) => { char.traits.generous = Math.min(20, (char.traits.generous || 10) + 3); char.traits.selfish = 20 - char.traits.generous; } },
-  { name: "자유 선택 (Player's Choice)", patronage: "자유 선택", benefit: "원하는 성인의 효과를 수동 적용", apply: () => { /* 룰북 Table 1-3 Roll 20: Player's choice. 캐릭터 시트에서 수동으로 원하는 성인 보너스를 적용하세요. */ } }
+  { name: "자유 선택 (Player's Choice)", patronage: "자유 선택", benefit: "원하는 수호 성인 선택", apply: () => {} }
 ];
+
+const makePatronSaintChoice = (baseIndex, choice20 = 17) => {
+  if (baseIndex !== 19) return patronSaints[baseIndex];
+  const chosenIndex = Math.min(18, Math.max(0, Number(choice20) || 0));
+  const chosen = patronSaints[chosenIndex];
+  return {
+    ...chosen,
+    name: `자유 선택 (${chosen.name})`,
+    patronage: chosen.patronage,
+    benefit: chosen.benefit
+  };
+};
 
 const familyCharacteristics = [
   { name: "예리한 감각 (Keen of eye and ear)", benefit: "+5 경계 (Awareness)", apply: (char) => { char.skills.awareness = (char.skills.awareness || 0) + 5; } },
@@ -70,9 +83,8 @@ const familyCharacteristics = [
   { name: "놀라운 통찰과 귀띔 (Surprisingly deductive)", benefit: "+10 음모 (Intrigue)", apply: (char) => { char.skills.intrigue = (char.skills.intrigue || 0) + 10; } },
   { name: "타고난 악사 (Gifted musicians)", benefit: "+10 악기 연주 (Play Instruments)", apply: (char) => { char.skills.playInstruments = (char.skills.playInstruments || 0) + 10; } },
   { name: "축복받은 목소리 (Excellent voice)", benefit: "+10 가창 (Singing)", apply: (char) => { char.skills.singing = (char.skills.singing || 0) + 10; } },
-  // 룰북 Table 1-1 Roll 19: "+5 Battle or Siege" (택1). 기본값은 Battle. 공성 선택 시 수동 조정 필요.
   { name: "전장의 지배자 (Master tacticians)", benefit: "+5 전술 또는 공성 (택1, 기본: 전술)", apply: (char) => { char.skills.battle = (char.skills.battle || 0) + 5; } },
-  { name: "자유 선택 (Player's choice)", benefit: "원하는 가문 특성을 수동 적용", apply: () => { /* 룰북 Table 1-1 Roll 20: Player's choice */ } }
+  { name: "자유 선택 (Player's choice)", benefit: "원하는 가문 특성 선택", apply: () => {} }
 ];
 
 const fathersClasses = [
@@ -80,8 +92,7 @@ const fathersClasses = [
   { name: "기치 기사 (Banneret Knight)", benefit: "+16 기술 포인트, 영광 300", skillsAdd: 16, glory: 300 },
   { name: "독신 기사 (Bachelor Knight)", benefit: "+12 기술 포인트, 영광 200", skillsAdd: 12, glory: 200 },
   { name: "용병 기사 (Mercenary Knight)", benefit: "+10 기술, 검 +3, 근접무기(택1) +3, Cruel +3, 영광 100", skillsAdd: 10, bonusWeapon: 3, glory: 100 },
-  // 룰북 Table 1-5: Lord(1-5) / Officer(6-20) 세부 직책별 보너스가 상이. 현재는 간소화 구현.
-  { name: "영주/지방관 기사 (Lord or Officer)", benefit: "+18 기술 포인트, 영광 500 (간소화)", skillsAdd: 18, glory: 500 }
+  { name: "영주/지방관 기사 (Lord or Officer)", benefit: "세부 Lord/Officer 직책 선택 후 Table 1-5 보너스 적용", skillsAdd: 0, glory: 0 }
 ];
 
 export const birthGiftsTable = [
@@ -396,23 +407,7 @@ const getSaintIndexFromRoll = (roll) => {
 };
 
 const getCharIndexFromRoll = (roll) => {
-  const r = Math.min(20, Math.max(1, parseInt(roll) || 1));
-  if (r <= 2) return 0; // 1-2: Keen of eye
-  if (r === 3) return 1; // 3: Healers
-  if (r === 4) return 2; // 4: Never forget
-  if (r <= 6) return 3; // 5-6: Born in saddle
-  if (r <= 8) return 4; // 7-8: Nature
-  if (r <= 10) return 5; // 9-10: Otters
-  if (r === 11) return 6; // 11: Courtesy
-  if (r === 12) return 7; // 12: Dancing
-  if (r === 13) return 8; // 13: Eloquence
-  if (r === 14) return 9; // 14: Falconry
-  if (r === 15) return 10; // 15: Gaming
-  if (r === 16) return 11; // 16: Intrigue
-  if (r === 17) return 12; // 17: Instruments
-  if (r === 18) return 13; // 18: Singing
-  if (r === 19) return 14; // 19: Tacticians
-  return 15; // 20: Player's choice
+  return getFamilyCharacteristicIndexFromRoll(roll);
 };
 
 const getFatherIndexFromRoll = (roll) => {
@@ -422,6 +417,31 @@ const getFatherIndexFromRoll = (roll) => {
   if (r <= 8) return 0; // 4-8: Vassal Knight
   if (r <= 15) return 2; // 9-15: Bachelor Knight
   return 3; // 16-20: Mercenary Knight
+};
+
+const makeFamilyCharacteristicChoice = (baseIndex, choice19 = 'battle', choice20 = 0) => {
+  if (baseIndex === 14) {
+    const skillKey = choice19 === 'siege' ? 'siege' : 'battle';
+    return {
+      name: `전장의 지배자 (Master tacticians: ${skillKey === 'siege' ? 'Siege' : 'Battle'})`,
+      benefit: skillKey === 'siege' ? '+5 공성 (Siege)' : '+5 전술 (Battle)',
+      apply: (char) => {
+        char.skills[skillKey] = (char.skills[skillKey] || 0) + 5;
+      }
+    };
+  }
+
+  if (baseIndex === 15) {
+    const chosenIndex = Math.min(14, Math.max(0, Number(choice20) || 0));
+    const chosen = makeFamilyCharacteristicChoice(chosenIndex, choice19, 0);
+    return {
+      ...chosen,
+      name: `자유 선택 (${chosen.name})`,
+      benefit: chosen.benefit
+    };
+  }
+
+  return familyCharacteristics[baseIndex];
 };
 
 const parseName = (fullName) => {
@@ -594,8 +614,11 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const [sheetSaintRoll, setSheetSaintRoll] = useState('');
   const [sheetSaintResult, setSheetSaintResult] = useState(null);
+  const [sheetSaintChoice20, setSheetSaintChoice20] = useState(17);
   const [sheetCharRoll, setSheetCharRoll] = useState('');
   const [sheetCharResult, setSheetCharResult] = useState(null);
+  const [sheetCharChoice19, setSheetCharChoice19] = useState('battle');
+  const [sheetCharChoice20, setSheetCharChoice20] = useState(0);
 
   const [sheetMusterRollResults, setSheetMusterRollResults] = useState(null);
   const [sheetStandingsRollResults, setSheetStandingsRollResults] = useState(null);
@@ -1054,6 +1077,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customBlessing, setCustomBlessing] = useState('용맹의 징표');
 
   const [customSubclass, setCustomSubclass] = useState('Steward');
+  const [customSaintChoice20, setCustomSaintChoice20] = useState(17);
   const [customCharChoice19, setCustomCharChoice19] = useState('battle');
   const [customCharChoice20, setCustomCharChoice20] = useState(0);
 
@@ -1310,8 +1334,13 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       commoners: 11
     };
 
-    const saint = patronSaints[customSaintIndex];
+    const saint = makePatronSaintChoice(customSaintIndex, customSaintChoice20);
     saint.apply(newChar);
+    newChar.family = newChar.family || {};
+    newChar.family.patronSaint = saint.name;
+    newChar.family.patronSaintRoll = customSaintRoll;
+    newChar.family.patronSaintBenefit = saint.benefit;
+    newChar.family.patronSaintApplied = true;
 
     // 1. Apply Subclass (Lord or Officer) or Standard Father Class
     const father = fathersClasses[customFatherIndex];
@@ -1777,6 +1806,17 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                         ))}
                       </select>
                     </div>
+                    {customSaintIndex === 19 && (
+                      <div className="ft-form-group" style={{ marginLeft: '78px', marginTop: '4px' }}>
+                        <label className="ft-label" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)' }}>자유 선택 수호 성인:</label>
+                        <select className="cs-roll-select" style={{ padding: '4px', fontSize: '0.75rem' }}
+                          value={customSaintChoice20} onChange={e => setCustomSaintChoice20(Number(e.target.value))}>
+                          {patronSaints.slice(0, 19).map((saint, idx) => (
+                            <option key={saint.name} value={idx}>{saint.name} (효과: {saint.benefit})</option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
 
                   <div className="ft-form-group">
@@ -3217,7 +3257,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     onChange={e => {
                       const idx = parseInt(e.target.value);
                       if (idx >= 0 && idx < patronSaints.length) {
-                        applySheetSaint(patronSaints[idx]);
+                        applySheetSaint(makePatronSaintChoice(idx, sheetSaintChoice20), idx + 1);
                       }
                     }}
                   >
@@ -3234,10 +3274,29 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   <button type="button" className="btn-medieval" onClick={() => {
                     let d20 = parseInt(sheetSaintRoll);
                     if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = Math.floor(Math.random() * 20) + 1;
-                    applySheetSaint(patronSaints[d20 - 1], d20);
+                    setSheetSaintRoll(String(d20));
+                    applySheetSaint(makePatronSaintChoice(d20 - 1, sheetSaintChoice20), d20);
                   }}>🎲 d20 굴림</button>
                 </div>
               )}
+              {(() => {
+                const roll = parseInt(sheetSaintRoll);
+                const selectedIndex = patronSaints.findIndex(s => s.name === character?.family?.patronSaint);
+                const shouldShowChoice = sheetSaintMode === 'roll'
+                  ? roll === 20
+                  : selectedIndex === 19;
+                if (!shouldShowChoice) return null;
+                return (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', fontSize: '0.78rem', color: 'var(--color-gold-dark)' }}>
+                    20 자유 선택:
+                    <select value={sheetSaintChoice20} onChange={e => setSheetSaintChoice20(Number(e.target.value))} style={{ padding: '4px 6px', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }}>
+                      {patronSaints.slice(0, 19).map((saint, idx) => (
+                        <option key={saint.name} value={idx}>{saint.name}</option>
+                      ))}
+                    </select>
+                  </label>
+                );
+              })()}
 
               {character?.family?.patronSaint && (
                 <div style={{ marginTop: '10px', backgroundColor: '#faf6eb', border: '1px dashed var(--color-gold)', padding: '8px 12px', borderRadius: '6px', fontSize: '0.8rem' }}>
@@ -3247,11 +3306,11 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   </div>
                   {(() => {
                     const saint = patronSaints.find(s => s.name === character.family?.patronSaint);
-                    if (!saint) return null;
+                    if (!saint && !character.family?.patronSaintBenefit) return null;
                     return (
                       <div style={{ marginTop: '4px', lineHeight: '1.4' }}>
-                        <div><strong>수호 분야:</strong> {saint.patronage}</div>
-                        <div style={{ color: 'var(--color-royal-blue)' }}><strong>가호 효과:</strong> {saint.benefit}</div>
+                        {saint && <div><strong>수호 분야:</strong> {saint.patronage}</div>}
+                        <div style={{ color: 'var(--color-royal-blue)' }}><strong>가호 효과:</strong> {saint?.benefit || character.family?.patronSaintBenefit}</div>
                       </div>
                     );
                   })()}
@@ -3303,7 +3362,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     onChange={e => {
                       const idx = parseInt(e.target.value);
                       if (idx >= 0 && idx < familyCharacteristics.length) {
-                        applySheetChar(familyCharacteristics[idx]);
+                        const tableRollByIndex = [1, 3, 4, 5, 7, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+                        applySheetChar(makeFamilyCharacteristicChoice(idx, sheetCharChoice19, sheetCharChoice20), tableRollByIndex[idx] || idx + 1);
                       }
                     }}
                   >
@@ -3314,14 +3374,46 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   </select>
                 </div>
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input type="number" min={1} max={20} placeholder="d20" value={sheetCharRoll} onChange={e => setSheetCharRoll(e.target.value)}
-                    style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }} />
-                  <button type="button" className="btn-medieval" onClick={() => {
-                    let d20 = parseInt(sheetCharRoll);
-                    if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = Math.floor(Math.random() * 20) + 1;
-                    applySheetChar(familyCharacteristics[d20 - 1], d20);
-                  }}>🎲 d20 굴림</button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input type="number" min={1} max={20} placeholder="d20" value={sheetCharRoll} onChange={e => setSheetCharRoll(e.target.value)}
+                      style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }} />
+                    <button type="button" className="btn-medieval" onClick={() => {
+                      let d20 = parseInt(sheetCharRoll);
+                      if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = Math.floor(Math.random() * 20) + 1;
+                      const charIndex = getCharIndexFromRoll(d20);
+                      setSheetCharRoll(String(d20));
+                      applySheetChar(makeFamilyCharacteristicChoice(charIndex, sheetCharChoice19, sheetCharChoice20), d20);
+                    }}>🎲 d20 굴림</button>
+                  </div>
+                  {(() => {
+                    const parsedRoll = parseInt(sheetCharRoll);
+                    const rollIndex = Number.isFinite(parsedRoll) ? getCharIndexFromRoll(parsedRoll) : -1;
+                    if (rollIndex === 14) {
+                      return (
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--color-gold-dark)' }}>
+                          19 결과 선택:
+                          <select value={sheetCharChoice19} onChange={e => setSheetCharChoice19(e.target.value)} style={{ padding: '4px 6px', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }}>
+                            <option value="battle">Battle +5</option>
+                            <option value="siege">Siege +5</option>
+                          </select>
+                        </label>
+                      );
+                    }
+                    if (rollIndex === 15) {
+                      return (
+                        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.78rem', color: 'var(--color-gold-dark)' }}>
+                          20 자유 선택:
+                          <select value={sheetCharChoice20} onChange={e => setSheetCharChoice20(Number(e.target.value))} style={{ padding: '4px 6px', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }}>
+                            {familyCharacteristics.slice(0, 15).map((char, idx) => (
+                              <option key={char.name} value={idx}>{char.name}</option>
+                            ))}
+                          </select>
+                        </label>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
               )}
 

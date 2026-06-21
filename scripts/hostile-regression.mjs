@@ -5,6 +5,7 @@ import {
   sanitizeCampaignState,
   validateCampaignImport
 } from '../src/utils/campaignState.js';
+import { getFamilyCharacteristicIndexFromRoll } from '../src/utils/rulebookTables.js';
 
 const defaults = {
   personal: { name: '롤랑 경', age: 18, campaignYear: 768, maintenance: 'ordinary', features: [] },
@@ -128,6 +129,32 @@ const duplicateSuccessionGuard = applyOnce(successionGuard.character, 'successio
 assert.equal(successionGuard.applied, true);
 assert.equal(duplicateSuccessionGuard.applied, false);
 assert.equal(duplicateSuccessionGuard.character.gear.gloryTotal, successionGuard.character.gear.gloryTotal);
+
+const familyCharacteristicRollMap = {
+  1: 0,
+  2: 0,
+  3: 1,
+  4: 2,
+  5: 3,
+  6: 3,
+  7: 4,
+  8: 4,
+  9: 5,
+  10: 5,
+  11: 6,
+  12: 7,
+  13: 8,
+  14: 9,
+  15: 10,
+  16: 11,
+  17: 12,
+  18: 13,
+  19: 14,
+  20: 15
+};
+Object.entries(familyCharacteristicRollMap).forEach(([roll, expectedIndex]) => {
+  assert.equal(getFamilyCharacteristicIndexFromRoll(Number(roll)), expectedIndex);
+});
 
 assert.deepEqual(validateCampaignImport({ personal: {}, attributes: {}, skills: {} }), {
   ok: false,
