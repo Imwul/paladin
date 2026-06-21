@@ -1252,6 +1252,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       liegeLord: "티에리 공작 (Duke Thierry)",
       fathersClass: fathersClasses[customFatherIndex].name,
       personalClass: "종자 (Squire)",
+      maintenance: "ordinary",
       features: ["외마디 흉터", "다부진 근육", "예리한 시선"]
     };
 

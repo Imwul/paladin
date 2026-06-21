@@ -232,7 +232,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let squireMaintMod = 0;
     if (maintenanceLevel === 'rich' || maintenanceLevel === 'superlative') squireMaintMod = 1;
     else if (maintenanceLevel === 'poor') squireMaintMod = -1;
-    else if (maintenanceLevel === 'miserly') squireMaintMod = -2;
+    else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') squireMaintMod = -2;
 
     const squirePenalty = character.squire?.nextYearPenalty || 0;
     const sRoll = Math.floor(Math.random() * 20) + 1;
@@ -254,7 +254,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let horseMaintMod = 0;
     if (maintenanceLevel === 'superlative') horseMaintMod = 1;
     else if (maintenanceLevel === 'poor') horseMaintMod = -2;
-    else if (maintenanceLevel === 'miserly') horseMaintMod = -5;
+    else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') horseMaintMod = -5;
 
     const horsePenalty = character.horses?.warhorse?.nextYearPenalty || 0;
     const hRoll = Math.floor(Math.random() * 20) + 1;
@@ -286,7 +286,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let squireMaintMod = 0;
     if (maintenanceLevel === 'rich' || maintenanceLevel === 'superlative') squireMaintMod = 1;
     else if (maintenanceLevel === 'poor') squireMaintMod = -1;
-    else if (maintenanceLevel === 'miserly') squireMaintMod = -2;
+    else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') squireMaintMod = -2;
 
     const squirePenalty = character.squire?.nextYearPenalty || 0;
     const finalSquireRoll = Math.min(20, Math.max(1, squireSurvivalRoll + squireAgeMod + squireMaintMod + squirePenalty));
@@ -300,7 +300,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     let horseMaintMod = 0;
     if (maintenanceLevel === 'superlative') horseMaintMod = 1;
     else if (maintenanceLevel === 'poor') horseMaintMod = -2;
-    else if (maintenanceLevel === 'miserly') horseMaintMod = -5;
+    else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') horseMaintMod = -5;
 
     const horsePenalty = character.horses?.warhorse?.nextYearPenalty || 0;
     const finalHorseRoll = Math.min(20, Math.max(1, horseSurvivalRoll + horseAgeMod + horseMaintMod + horsePenalty));
@@ -1181,7 +1181,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     // 6. Maintenance Glory
     const maintenanceLevel = character.personal?.maintenance || 'ordinary';
     let maintGlory = 0;
-    if (maintenanceLevel === 'rich') maintGlory = 12;
+    if (maintenanceLevel === 'rich') maintGlory = 10;
     else if (maintenanceLevel === 'superlative') maintGlory = 15;
 
     const totalCalculated = annual + passiveGlory + maintGlory;
@@ -1235,7 +1235,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const manorsCount = character.family?.manors !== undefined ? character.family.manors : (hasEstate ? 1 : 0);
     const maintenanceLevel = character.personal?.maintenance || 'ordinary';
     let maintGlory = 0;
-    if (maintenanceLevel === 'rich') maintGlory = 12;
+    if (maintenanceLevel === 'rich') maintGlory = 10;
     else if (maintenanceLevel === 'superlative') maintGlory = 15;
 
     addLog(`[영예 정산]: 연간정산 +${calculatedAnnualGlory} Glory (장원 ${manorsCount}개: ${manorsCount * 6}점 + 유지비 보너스: ${maintGlory}점 + 활성 이상 보너스) 합산 완료. 누적 영예: ${newTotal}`);

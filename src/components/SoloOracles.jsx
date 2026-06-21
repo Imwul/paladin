@@ -68,6 +68,7 @@ const D20Face = ({ value, isRolling, color }) => {
 
 export default function SoloOracles({ character, setCharacter }) {
   const [activeSubTab, setActiveSubTab] = useState('general'); // 'general' | 'personality' | 'reputation' | 'combat_skills'
+  const activePassionStates = (character?.campaign?.passionStates || []).filter(state => state.status === 'active');
 
   // ==========================================
   // GENERAL SUB-TAB STATES
@@ -220,7 +221,7 @@ export default function SoloOracles({ character, setCharacter }) {
   const [courtshipGift, setCourtshipGift] = useState('비단 스카프와 향기로운 장미 백합');
 
   // 7. 재정 생활 수준 및 무구 상점 (Chapter 12 - Wealth & Treasure) States
-  const [selectedLivingStandard, setSelectedLivingStandard] = useState('ordinary'); // 'rich' | 'ordinary' | 'poor' | 'miserly'
+  const [selectedLivingStandard, setSelectedLivingStandard] = useState('ordinary'); // 'superlative' | 'rich' | 'ordinary' | 'poor' | 'impoverished'
   const [appraisedTreasure, setAppraisedTreasure] = useState(null);
   const [isAppraising, setIsAppraising] = useState(false);
   const [armoryLogs, setArmoryLogs] = useState([]);
@@ -443,6 +444,38 @@ export default function SoloOracles({ character, setCharacter }) {
     return character?.passions?.[key] ?? 10;
   };
 
+  const appendPassionState = (campaign, entry) => ({
+    ...(campaign || {}),
+    schemaVersion: 2,
+    appliedEvents: campaign?.appliedEvents || {},
+    winter: campaign?.winter,
+    passionStates: [
+      ...(Array.isArray(campaign?.passionStates) ? campaign.passionStates : []),
+      {
+        id: `${entry.type}:${entry.passionKey}:${Date.now()}`,
+        status: 'active',
+        year: entry.year || character?.personal?.campaignYear || 768,
+        createdAt: new Date().toISOString(),
+        ...entry
+      }
+    ].slice(-50)
+  });
+
+  const resolvePassionState = (stateId) => {
+    setCharacter(prev => ({
+      ...prev,
+      campaign: {
+        ...(prev.campaign || {}),
+        schemaVersion: 2,
+        appliedEvents: prev.campaign?.appliedEvents || {},
+        winter: prev.campaign?.winter,
+        passionStates: (prev.campaign?.passionStates || []).map(state => (
+          state.id === stateId ? { ...state, status: 'resolved' } : state
+        ))
+      }
+    }));
+  };
+
   const getStandingValue = (key) => {
     return character?.standings?.[key] ?? 10;
   };
@@ -639,6 +672,7 @@ export default function SoloOracles({ character, setCharacter }) {
     setCharacter(prev => {
       const updatedPassions = { ...prev.passions };
       const updatedPassionsChecked = { ...prev.passionsChecked };
+      let updatedCampaign = prev.campaign;
 
       if (passionRollResult.state === 'inspiration') {
         if (successType === 'success') {
@@ -650,6 +684,13 @@ export default function SoloOracles({ character, setCharacter }) {
             alert(`[경험 체크 완료]: 전공 완수! ${ko}에 겨울 성장용 경험 체크를 누적했습니다.`);
           }
         } else if (successType === 'fail') {
+          updatedCampaign = appendPassionState(prev.campaign, {
+            type: 'shock',
+            passionKey: key,
+            passionLabel: ko,
+            year: prev.personal?.campaignYear || 768,
+            note: `${ko} 영감 후 임무 실패: 즉시 Aging Table 1회 판정 필요`
+          });
           alert(`[기사의 쇼크 충격!]: 열정 영감으로도 극복하지 못해 정신적 쇼크(Shock)가 닥칩니다! 가문&겨울 탭의 노화 d20 판정(Aging Table)을 즉각 1회 실행하세요.`);
         }
       } else if (passionRollResult.state === 'disheartened') {
@@ -658,17 +699,32 @@ export default function SoloOracles({ character, setCharacter }) {
           alert(`[역경 극복]: 극적인 사투 끝에 낙담을 물리쳤습니다! ${ko} 수치가 +1 상승했습니다!`);
         } else {
           updatedPassions[key] = Math.max(1, (updatedPassions[key] || 10) - 1);
+          updatedCampaign = appendPassionState(prev.campaign, {
+            type: 'melancholy',
+            passionKey: key,
+            passionLabel: ko,
+            year: prev.personal?.campaignYear || 768,
+            note: `${ko} 낙담 극복 실패: 우울증 상태로 기록됨`
+          });
           alert(`[우울증 봉착]: 깊은 슬픔(Melancholy) 속에 기사는 침잠합니다. ${ko} 수치가 -1 하락하는 참담한 상처를 받았습니다.`);
         }
       } else if (passionRollResult.state === 'madness') {
         updatedPassions[key] = Math.max(1, (updatedPassions[key] || 10) - 1);
+        updatedCampaign = appendPassionState(prev.campaign, {
+          type: 'madness',
+          passionKey: key,
+          passionLabel: ko,
+          year: prev.personal?.campaignYear || 768,
+          note: `${ko} 대실패: 광기 시나리오 및 능력치 감퇴 수동 처리 필요`
+        });
         alert(`[광기 적용]: 기사는 이성을 잃고 야만인처럼 울부짖으며 들판으로 사라집니다! ${ko} 수치가 -1 하락했습니다.`);
       }
 
       return {
         ...prev,
         passions: updatedPassions,
-        passionsChecked: updatedPassionsChecked
+        passionsChecked: updatedPassionsChecked,
+        campaign: updatedCampaign
       };
     });
     setPassionActionApplied(true);
@@ -1424,11 +1480,11 @@ export default function SoloOracles({ character, setCharacter }) {
       const eVal = enemyCommanderSkill;
 
       const pSuccess = pRoll <= pVal;
-      const pCrit = pRoll === pVal;
+      const pCrit = pRoll === 1 || pRoll === pVal;
       const pFumble = pRoll === 20 && pVal < 20;
 
       const eSuccess = eRoll <= eVal;
-      const eCrit = eRoll === eVal;
+      const eCrit = eRoll === 1 || eRoll === eVal;
       const eFumble = eRoll === 20 && eVal < 20;
 
       let pOutcome = '';
@@ -1496,6 +1552,8 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingMeleeEvent) return;
     setIsRollingMeleeEvent(true);
     setMeleeEventResult(null);
+    const previousGlory = meleeEventResult?.gloryAward || 0;
+    const previousLoot = meleeEventResult?.lootAward || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
@@ -1544,9 +1602,8 @@ export default function SoloOracles({ character, setCharacter }) {
         lootAward: loot
       });
 
-      // 즉각 누적 가산
-      setBattleGloryTotal(prev => prev + glory);
-      setBattleLootTotal(prev => prev + loot);
+      setBattleGloryTotal(prev => prev - previousGlory + glory);
+      setBattleLootTotal(prev => prev - previousLoot + loot);
 
       setIsRollingMeleeEvent(false);
     }, 800);
@@ -1556,6 +1613,8 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingFollowersFate) return;
     setIsRollingFollowersFate(true);
     setFollowersFateResult(null);
+    const previousGlory = followersFateResult?.gloryAward || 0;
+    const previousLoot = followersFateResult?.lootAward || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
@@ -1588,12 +1647,13 @@ export default function SoloOracles({ character, setCharacter }) {
       setFollowersFateResult({
         roll,
         outcome,
-        desc
+        desc,
+        gloryAward: glory,
+        lootAward: loot
       });
 
-      // 누적 가산
-      setBattleGloryTotal(prev => Math.max(0, prev + glory));
-      setBattleLootTotal(prev => prev + loot);
+      setBattleGloryTotal(prev => prev - previousGlory + glory);
+      setBattleLootTotal(prev => prev - previousLoot + loot);
 
       setIsRollingFollowersFate(false);
     }, 800);
@@ -1655,6 +1715,7 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingPrayer) return;
     setIsRollingPrayer(true);
     setPrayerResult(null);
+    const previousGlory = prayerResult?.glory || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
@@ -1662,7 +1723,7 @@ export default function SoloOracles({ character, setCharacter }) {
       const finalVal = 10 + selectedPrayerModifier + (isReligious ? 5 : 0);
 
       const isSuccess = roll <= finalVal;
-      const isCrit = roll === finalVal;
+      const isCrit = roll === 1 || roll === finalVal;
       const isFumble = roll === 20 && finalVal < 20;
 
       let outcome = '';
@@ -1691,7 +1752,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       setPrayerResult({ roll, outcome, desc, color, glory });
-      setMagicGloryTotal(prev => prev + glory);
+      setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingPrayer(false);
 
       // Add to narrative chronicle
@@ -1714,12 +1775,13 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingConversion) return;
     setIsRollingConversion(true);
     setConversionResult(null);
+    const previousGlory = conversionResult?.glory || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
       const targetVal = character?.skills?.religion || 10;
       const isSuccess = roll <= targetVal;
-      const isCrit = roll === targetVal;
+      const isCrit = roll === 1 || roll === targetVal;
       const isFumble = roll === 20 && targetVal < 20;
 
       let outcome = '';
@@ -1744,7 +1806,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       setConversionResult({ roll, outcome, desc, glory });
-      setMagicGloryTotal(prev => prev + glory);
+      setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingConversion(false);
 
       // Add to narrative chronicle
@@ -1767,6 +1829,7 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingTrial) return;
     setIsRollingTrial(true);
     setTrialResult(null);
+    const previousGlory = trialResult?.glory || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
@@ -1785,7 +1848,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       const isSuccess = roll <= targetVal;
-      const isCrit = roll === targetVal;
+      const isCrit = roll === 1 || roll === targetVal;
       const isFumble = roll === 20 && targetVal < 20;
 
       let outcome = '';
@@ -1810,7 +1873,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       setTrialResult({ roll, outcome, desc, glory });
-      setMagicGloryTotal(prev => prev + glory);
+      setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingTrial(false);
 
       // Add to narrative chronicle
@@ -1833,6 +1896,7 @@ export default function SoloOracles({ character, setCharacter }) {
     if (isRollingCourtship) return;
     setIsRollingCourtship(true);
     setCourtshipResult(null);
+    const previousGlory = courtshipResult?.glory || 0;
 
     setTimeout(() => {
       const roll = Math.floor(Math.random() * 20) + 1;
@@ -1844,7 +1908,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       const isSuccess = roll <= targetVal;
-      const isCrit = roll === targetVal;
+      const isCrit = roll === 1 || roll === targetVal;
       const isFumble = roll === 20 && targetVal < 20;
 
       let outcome = '';
@@ -1893,7 +1957,7 @@ export default function SoloOracles({ character, setCharacter }) {
       }
 
       setCourtshipResult({ roll, outcome, desc, glory, amorIncrease });
-      setMagicGloryTotal(prev => prev + glory);
+      setMagicGloryTotal(prev => prev - previousGlory + glory);
       setIsRollingCourtship(false);
 
       // Add to narrative chronicle
@@ -2044,12 +2108,14 @@ export default function SoloOracles({ character, setCharacter }) {
       alert("올해의 생활 수준 유지비는 이미 지불되었습니다.");
       return;
     }
-    const costMap = { rich: 12, ordinary: 6, poor: 3, miserly: 1.5 };
-    const cost = costMap[selectedLivingStandard];
+    const requestedStandard = selectedLivingStandard === 'miserly' ? 'impoverished' : selectedLivingStandard;
+    const costMap = { superlative: 15, rich: 10, ordinary: 6, poor: 3, impoverished: 1.5 };
+    const normalizedStandard = Object.prototype.hasOwnProperty.call(costMap, requestedStandard) ? requestedStandard : 'ordinary';
+    const cost = costMap[normalizedStandard];
     const currentCash = character?.gear?.cash || 0;
 
     if (currentCash < cost) {
-      alert(`[재정 지불 실패]: 현재 기사단 소지금(£${currentCash})이 ${selectedLivingStandard === 'rich' ? '풍족함' : selectedLivingStandard === 'ordinary' ? '보통' : selectedLivingStandard === 'poor' ? '빈곤함' : '인색함'} 유지비 £${cost}보다 부족합니다!`);
+      alert(`[재정 지불 실패]: 현재 기사단 소지금(£${currentCash})이 ${normalizedStandard === 'superlative' ? '최상급' : normalizedStandard === 'rich' ? '풍족함' : normalizedStandard === 'ordinary' ? '보통' : normalizedStandard === 'poor' ? '빈곤함' : '궁핍함'} 유지비 £${cost}보다 부족합니다!`);
       return;
     }
 
@@ -2059,6 +2125,10 @@ export default function SoloOracles({ character, setCharacter }) {
         gear: {
           ...prev.gear,
           cash: Math.max(0, (prev.gear?.cash || 0) - cost)
+        },
+        personal: {
+          ...prev.personal,
+          maintenance: normalizedStandard
         }
       };
       updated.campaign = markWinterStep(updated, 'maintenance');
@@ -2071,8 +2141,8 @@ export default function SoloOracles({ character, setCharacter }) {
         id: Date.now(),
         type: 'maintenance',
         title: '💼 생활 수준 유지비 지불',
-        detail: `생활 수준: ${selectedLivingStandard.toUpperCase()} | 지출: £${cost}`,
-        narrative: `올해 겨울 정산을 위해 기사의 기품 있는 신분을 상징하는 ${selectedLivingStandard === 'rich' ? '풍족한(Rich)' : selectedLivingStandard === 'ordinary' ? '보통의(Ordinary)' : selectedLivingStandard === 'poor' ? '빈곤한(Poor)' : '인색한(Miserly)'} 가문 생활 수준 유지비 £${cost}를 금고에서 기꺼이 지불했습니다.`,
+        detail: `생활 수준: ${normalizedStandard.toUpperCase()} | 지출: £${cost}`,
+        narrative: `올해 겨울 정산을 위해 기사의 기품 있는 신분을 상징하는 ${normalizedStandard === 'superlative' ? '최상급의(Superlative)' : normalizedStandard === 'rich' ? '풍족한(Rich)' : normalizedStandard === 'ordinary' ? '보통의(Ordinary)' : normalizedStandard === 'poor' ? '빈곤한(Poor)' : '궁핍한(Impoverished)'} 가문 생활 수준 유지비 £${cost}를 금고에서 지불했습니다.`,
         cost: -cost,
         timestamp: new Date().toLocaleTimeString()
       }
@@ -2473,6 +2543,33 @@ export default function SoloOracles({ character, setCharacter }) {
           ======================================================== */}
       {activeSubTab === 'personality' && (
         <>
+          {activePassionStates.length > 0 && (
+            <section className="cs-section" style={{ marginBottom: '14px' }}>
+              <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
+                <h3><AlertCircle size={16} style={{ marginRight: '6px' }} />열정 후유증 상태</h3>
+              </div>
+              <div className="cs-section-inner" style={{ display: 'grid', gap: '8px' }}>
+                {activePassionStates.map(state => (
+                  <div key={state.id} style={{ border: '1px solid var(--color-gold)', background: 'rgba(179,143,67,0.06)', padding: '10px', fontSize: '0.82rem', lineHeight: 1.45 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                      <div>
+                        <strong style={{ color: 'var(--color-crimson)' }}>
+                          {state.type === 'shock' ? 'Shock' : state.type === 'melancholy' ? 'Melancholy' : 'Madness'}
+                        </strong>
+                        <span> · {state.passionLabel || state.passionKey || 'Passion'} · {state.year}년</span>
+                        <div style={{ color: 'var(--color-ink-light)', marginTop: '3px' }}>
+                          {state.note || 'Manual resolution required: 규칙서 절차에 따라 후속 판정을 처리하세요.'}
+                        </div>
+                      </div>
+                      <button className="btn-medieval" onClick={() => resolvePassionState(state.id)} style={{ fontSize: '0.72rem', padding: '4px 8px' }}>
+                        해소 처리
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
           <div className="cs-row">
             {/* 1. Trait Roller */}
             <section className="cs-section" style={{ flex: '1 1 450px' }}>
@@ -3879,19 +3976,21 @@ export default function SoloOracles({ character, setCharacter }) {
                     onChange={e => setSelectedLivingStandard(e.target.value)}
                     style={{ fontSize: '0.82rem' }}
                   >
-                    <option value="rich">풍족함 (Rich - £12/년) &bull; 연간 Glory +10, 치료 판정 +1 보정</option>
+                    <option value="superlative">최상급 (Superlative - £15/년) &bull; 연간 Glory +15, 출산/말 생존 +1</option>
+                    <option value="rich">풍족함 (Rich - £10/년) &bull; 연간 Glory +10, 출산/종자 생존 +1</option>
                     <option value="ordinary">보통 (Ordinary - £6/년) &bull; 기본 생활 (보정 없음)</option>
-                    <option value="poor">빈곤함 (Poor - £3/년) &bull; 연간 Glory -10, 종자 사망 판정 -2 불이익</option>
-                    <option value="miserly">인색함 (Miserly - £1.5/년) &bull; 연간 Glory -20, 치료 판정 -2 불이익</option>
+                    <option value="poor">빈곤함 (Poor - £3/년) &bull; 자녀/종자/말 생존 불이익</option>
+                    <option value="impoverished">궁핍함 (Impoverished - £1.5/년) &bull; 심각한 자녀/말 생존 불이익</option>
                   </select>
                 </div>
 
                 <div style={{ padding: '10px', background: 'rgba(0,0,0,0.01)', border: '1px dashed var(--color-grey-light)', fontSize: '0.78rem', lineHeight: 1.4 }}>
                   <strong>선택된 생활 수준 효과:</strong>
-                  {selectedLivingStandard === 'rich' && <div style={{ color: 'var(--color-success)', marginTop: '4px' }}>✨ [풍족한 삶]: 매년 겨울 정산 시 **영예 +10 Glory** 자동 획득 및 부상 치료 판정에 **+1 절대 유리함**을 얻습니다.</div>}
+                  {selectedLivingStandard === 'superlative' && <div style={{ color: 'var(--color-success)', marginTop: '4px' }}>✨ [최상급의 삶]: 겨울 정산 시 영예 +15 Glory, 출산 +2, 자녀/종자 생존 +1, 말 생존 +1을 적용합니다.</div>}
+                  {selectedLivingStandard === 'rich' && <div style={{ color: 'var(--color-success)', marginTop: '4px' }}>✨ [풍족한 삶]: 겨울 정산 시 영예 +10 Glory, 출산 +1, 자녀/종자 생존 +1을 적용합니다.</div>}
                   {selectedLivingStandard === 'ordinary' && <div style={{ color: 'var(--color-ink-light)', marginTop: '4px' }}>🛡️ [보통의 삶]: 기사의 품위를 해치지 않는 일반적인 상태로 특별한 패널티나 버프가 없습니다.</div>}
-                  {selectedLivingStandard === 'poor' && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>⚠️ [빈곤한 삶]: 매년 겨울 정산 시 **영예 -10 Glory**를 잃으며, 겨울 혹한기 종자 생존 판정에 **-2 치명적인 감점**이 주어집니다.</div>}
-                  {selectedLivingStandard === 'miserly' && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>🚨 [인색한 삶]: 매년 겨울 정산 시 **영예 -20 Glory**를 잃고, 치료 판정에 **-2 불이익**을 얻으며 가신들이 파업 위기에 처합니다.</div>}
+                  {selectedLivingStandard === 'poor' && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>⚠️ [빈곤한 삶]: 자녀/종자 생존 -1, 말 생존 -2를 적용합니다. 연간 유지비 영예는 없습니다.</div>}
+                  {(selectedLivingStandard === 'impoverished' || selectedLivingStandard === 'miserly') && <div style={{ color: 'var(--color-danger)', marginTop: '4px' }}>🚨 [궁핍한 삶]: 자녀/종자 생존 -2, 말 생존 -5를 적용합니다. 연간 유지비 영예는 없습니다.</div>}
                 </div>
 
                 <button 
@@ -3963,30 +4062,30 @@ export default function SoloOracles({ character, setCharacter }) {
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
                           <strong>전투 기동마 (Charger) &bull; £10</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>최고급 군속마 (체력 HP: 24, 아머: 5, 피해: 3d6+3)</div>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>전장용 돌격마 (STR 30, CON 12, 아머 5, 피해 6d6)</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('전투 기동마 (Charger)', 10, 'horse', { hp: 24, armor: 5, damage: '3d6+3' })}>
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('전투 기동마 (Charger)', 10, 'horse', { hp: 42, armor: 5, damage: '6d6' })}>
                           구입 £10
                         </button>
                       </div>
                       {/* Palfrey */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>우아한 승용마 (Palfrey) &bull; £5</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>장거리 승마용 준마 (체력 HP: 16, 아머: 2, 피해: 1d6)</div>
+                          <strong>우아한 승용마 (Palfrey) &bull; £4</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>장거리 승마용 준마 (STR 16, CON 8, 아머 3, 피해 3d6)</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('우아한 승용마 (Palfrey)', 5, 'horse', { hp: 16, armor: 2, damage: '1d6' })}>
-                          구입 £5
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('우아한 승용마 (Palfrey)', 4, 'horse', { hp: 24, armor: 3, damage: '3d6' })}>
+                          구입 £4
                         </button>
                       </div>
                       {/* Rouncy */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>일반 기동마 (Rouncy) &bull; £2</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>일반 승마 및 다목적마 (체력 HP: 12, 아머: 1, 피해: 1d6-1)</div>
+                          <strong>일반 기동마 (Rouncy) &bull; £1</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>일반 승마 및 다목적마 (STR 18, CON 14, 아머 4, 피해 4d6)</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('일반 기동마 (Rouncy)', 2, 'horse', { hp: 12, armor: 1, damage: '1d6-1' })}>
-                          구입 £2
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('일반 기동마 (Rouncy)', 1, 'horse', { hp: 32, armor: 4, damage: '4d6' })}>
+                          구입 £1
                         </button>
                       </div>
                       {/* Pack horse */}
@@ -4011,41 +4110,41 @@ export default function SoloOracles({ character, setCharacter }) {
                       {/* Reinforced Mail */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>강화형 명인 사슬갑옷 &bull; £10</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>기사의 방어력 등급 대폭 상승 (소장용)</div>
+                          <strong>강화 사슬갑옷 (Reinforced Chain Mail) &bull; £4</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>보호 12, DEX -5</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('강화형 명인 사슬갑옷', 10, 'armor', {})}>
-                          구입 £10
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('강화 사슬갑옷 (12점)', 4, 'armor', {})}>
+                          구입 £4
                         </button>
                       </div>
                       {/* Standard Mail */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>기사용 표준 사슬갑옷 &bull; £5</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>기본 기사 임관용 표준 아머 복구</div>
+                          <strong>사슬갑옷 (Chain Mail) &bull; £2</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>보호 10, DEX -5</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('기사용 표준 사슬갑옷', 5, 'armor', {})}>
-                          구입 £5
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('사슬갑옷 (10점)', 2, 'armor', {})}>
+                          구입 £2
                         </button>
                       </div>
                       {/* Two handed sword */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>양손 대검 (Two-handed Sword) &bull; £3</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>격돌 승리 시 +1d6 추가 타격 옵션</div>
+                          <strong>양손 대검 (Two-handed Sword) &bull; 100d</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>+1d6 피해, 동률 시 비-검 파괴</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('양손 대검', 3, 'weapon', {})}>
-                          구입 £3
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('양손 대검', 0.42, 'weapon', {})}>
+                          구입 100d
                         </button>
                       </div>
                       {/* Great Knight Shield */}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.82rem', padding: '6px', background: '#fff', border: '1px solid #eee' }}>
                         <div>
-                          <strong>기사단 정예 대형방패 &bull; £1</strong>
-                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>대실패(Fumble) 시 무기 파손을 엄격 방어하는 쉴드</div>
+                          <strong>대형 방패 (Large Shield) &bull; 5d</strong>
+                          <div style={{ fontSize: '0.74rem', color: 'var(--color-grey)' }}>보호 9, DEX -5</div>
                         </div>
-                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('기사단 정예 대형방패', 1, 'shield', {})}>
-                          구입 £1
+                        <button className="btn-medieval" style={{ padding: '4px 8px', fontSize: '0.74rem' }} onClick={() => buyArmoryItem('대형 방패 (+9)', 0.02, 'shield', {})}>
+                          구입 5d
                         </button>
                       </div>
                     </div>

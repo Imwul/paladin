@@ -27,6 +27,7 @@ const initialCharacterState = {
     liegeLord: "티에리 공작 (Duke Thierry)",
     fathersClass: "봉신 기사 (Vassal Knight)",
     personalClass: "종자 (Squire)",
+    maintenance: "ordinary",
     features: ["왼쪽 뺨의 흉터", "날카로운 벽안", "크고 날씬한 체형"]
   },
   attributes: {
@@ -73,10 +74,10 @@ const initialCharacterState = {
     warhorse: {
       type: "돌격마 (Charger)",
       breed: "프랑크 (Frankish)",
-      damage: "4d6",
+      damage: "6d6",
       move: 8,
       armor: 5,
-      hp: 30,
+      hp: 42,
       age: 5
     },
     other2: "경량마 (Palfrey)",
@@ -139,6 +140,7 @@ const initialCharacterState = {
   campaign: {
     schemaVersion: 2,
     appliedEvents: {},
+    passionStates: [],
     winter: {
       year: 768,
       steps: {

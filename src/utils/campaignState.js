@@ -201,6 +201,25 @@ const sanitizeWinter = (value, campaignYear) => {
   };
 };
 
+const sanitizePassionStates = (value) => {
+  if (!Array.isArray(value)) return [];
+  const validTypes = new Set(['shock', 'melancholy', 'madness']);
+  const validStatuses = new Set(['active', 'resolved']);
+  return value
+    .filter(isPlainObject)
+    .map((entry, index) => ({
+      id: sanitizeString(entry.id, `passion_state_${index + 1}`),
+      type: validTypes.has(entry.type) ? entry.type : 'shock',
+      status: validStatuses.has(entry.status) ? entry.status : 'active',
+      passionKey: typeof entry.passionKey === 'string' ? entry.passionKey : '',
+      passionLabel: typeof entry.passionLabel === 'string' ? entry.passionLabel : '',
+      year: clampInt(entry.year, 700, 1200, 768),
+      note: typeof entry.note === 'string' ? entry.note : '',
+      createdAt: typeof entry.createdAt === 'string' ? entry.createdAt : new Date().toISOString()
+    }))
+    .slice(-50);
+};
+
 export const validateCampaignImport = (data) => {
   const errors = [];
   if (!isPlainObject(data)) errors.push('root');
@@ -236,6 +255,10 @@ export const sanitizeCampaignState = (data, defaults) => {
   personal.name = sanitizeString(personal.name, defaults.personal.name);
   personal.age = clampInt(personal.age, 0, 120, defaults.personal.age);
   personal.campaignYear = clampInt(personal.campaignYear, 700, 1200, defaults.personal.campaignYear);
+  if (personal.maintenance === 'miserly') personal.maintenance = 'impoverished';
+  if (!['impoverished', 'poor', 'ordinary', 'rich', 'superlative'].includes(personal.maintenance)) {
+    personal.maintenance = defaults.personal.maintenance || 'ordinary';
+  }
   personal.features = sanitizeStringArray(personal.features, defaults.personal.features);
 
   const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 3, 20);
@@ -304,6 +327,7 @@ export const sanitizeCampaignState = (data, defaults) => {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
       schemaVersion: 2,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
+      passionStates: sanitizePassionStates(source.campaign?.passionStates),
       winter: sanitizeWinter(source.campaign?.winter, personal.campaignYear)
     }
   };
@@ -322,6 +346,7 @@ export const markAppliedEvent = (character, eventId, label) => ({
       label: label || eventId
     }
   },
+  passionStates: character.campaign?.passionStates || [],
   winter: character.campaign?.winter
 });
 
@@ -341,6 +366,7 @@ export const appendWinterLog = (character, message) => {
     ...(character.campaign || {}),
     schemaVersion: 2,
     appliedEvents: character.campaign?.appliedEvents || {},
+    passionStates: character.campaign?.passionStates || [],
     winter: {
       ...winter,
       year,
@@ -356,6 +382,7 @@ export const markWinterStep = (character, step, status = 'resolved') => {
     ...(character.campaign || {}),
     schemaVersion: 2,
     appliedEvents: character.campaign?.appliedEvents || {},
+    passionStates: character.campaign?.passionStates || [],
     winter: {
       ...winter,
       year,
