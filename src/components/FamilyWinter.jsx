@@ -235,6 +235,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       const result = applyOnce(prev, eventId, updated => {
         updated.gear.cash = (updated.gear.cash || 0) + harvestRevenue;
         updated.campaign = markWinterStep(updated, 'harvest');
+        updated.campaign.winter.steps.maintenance = 'resolved';
         return updated;
       }, `겨울 수확 £${harvestRevenue}`);
       return result.character;
@@ -358,7 +359,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       return result.character;
     });
 
-    addLog(`[동료 생존]: 종자 d20 [${squireSurvivalRoll}] (나이보정 [${squireAgeMod}], 유지비보정 [${squireMaintMod}], 디버프 [${squirePenalty}]) -> 최종 [${finalSquireRoll}]: ${squireStatus}, 군마 d20 [${horseSurvivalRoll}] (나이보정 [${horseAgeMod}], 유지비보정 [${horseMaintMod}], 디버프 [${horsePenalty}]) -> 최종 [${finalHorseRoll}]: ${hStatus}`);
+    addLog(`[동료 생존]: 종자 d20 [${squireSurvivalRoll}] (나이보정 [${squireAgeMod}], 유지비보정 [${squireMaintMod}], 디버프 [${squirePenalty}]) -> 최종 [${finalSquireRoll}]: ${squireStatus}, 군마 d20 [${horseSurvivalRoll}] (나이보정 [${horseAgeMod}], 유지비보정 [${horseMaintMod}], 디버프 [${horsePenalty}]) -> 최종 [${finalHorseRoll}]: ${horseStatus}`);
     setSurvivalApplied(true);
   };
 
@@ -443,7 +444,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           } else if (updated.passions?.[traitKey] !== undefined) {
             updated.passionsChecked = { ...(updated.passionsChecked || {}), [traitKey]: true };
           } else if (updated.standings?.[mappedKey] !== undefined) {
-            updated.standings[mappedKey] = Math.min(25, (updated.standings[mappedKey] || 0) + 1);
+            updated.standingsChecked = { ...(updated.standingsChecked || {}), [mappedKey]: true };
           }
         };
         const checkSkill = (skillKey) => {
@@ -557,16 +558,18 @@ export default function FamilyWinter({ character, setCharacter }) {
     let rank = "가신 기사의 딸";
     let dowry = 1;
     let glory = 50;
+    let manors = 0;
 
     if (finalRoll <= 5) { rank = "부유한 평민 상인의 딸"; dowry = Math.floor(Math.random() * 18) + 9; glory = 0; }
     else if (finalRoll <= 8) { rank = "수습 종자의 딸"; dowry = 3; glory = 10; }
     else if (finalRoll <= 10) { rank = "가신 기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 50; }
     else if (finalRoll === 11) { rank = "부유한 봉신기사의 맏딸"; dowry = Math.floor(Math.random() * 3) + 7; glory = 100; }
     else if (finalRoll <= 20) { rank = "일반 봉신기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 100; }
-    else if (finalRoll <= 25) { rank = "봉신기사 가문 여상속인"; dowry = 15; glory = 100; } // 1 manor + 1d6+10 represented as £15
-    else { rank = "남작 가문의 막내딸"; dowry = 20; glory = 250; }
+    else if (finalRoll <= 25) { rank = "봉신기사 가문 여상속인"; dowry = Math.floor(Math.random() * 6) + 11; glory = 100; manors = 1; }
+    else if (finalRoll <= 27) { rank = "부유한 봉신기사 가문 여상속인"; dowry = Math.floor(Math.random() * 6) + 1; glory = 300; manors = 2; }
+    else { rank = "남작 가문의 막내딸"; dowry = Math.floor(Math.random() * 6) + 11; glory = 250; manors = 1; }
 
-    setMarriageResult({ rank, dowry, glory });
+    setMarriageResult({ rank, dowry, glory, manors });
   };
 
   const rollChildbirth = () => {
@@ -702,11 +705,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           updated.gear.cash = (updated.gear?.cash || 0) + marriageResult.dowry;
           updated.gear.gloryThisGame = (updated.gear?.gloryThisGame || 0) + marriageResult.glory;
 
-          // Increment manors if marrying an heiress or baron's daughter
-          if (marriageResult.rank.includes("상속인")) {
-            updated.family.manors = (updated.family.manors || 0) + (marriageResult.rank.includes("부유한") ? 2 : 1);
-          } else if (marriageResult.rank.includes("남작")) {
-            updated.family.manors = (updated.family.manors || 0) + 1;
+          if (marriageResult.manors) {
+            updated.family.manors = (updated.family.manors || 0) + marriageResult.manors;
           }
 
           // Add Spouse to Family Tree automatically
@@ -826,7 +826,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           } else if (updatedChar.passions?.[traitKey] !== undefined) {
             updatedChar.passionsChecked = { ...(updatedChar.passionsChecked || {}), [traitKey]: true };
           } else if (updatedChar.standings?.[mappedKey] !== undefined) {
-            updatedChar.standings[mappedKey] = Math.min(25, (updatedChar.standings[mappedKey] || 0) + 1);
+            updatedChar.standingsChecked = { ...(updatedChar.standingsChecked || {}), [mappedKey]: true };
           }
         };
 
@@ -973,6 +973,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const checkedSkills = Object.keys(character.skillsChecked).filter(k => character.skillsChecked[k]);
     const checkedPassions = Object.keys(character.passionsChecked).filter(k => character.passionsChecked[k]);
     const checkedTraits = Object.keys(character.traitsChecked || {}).filter(k => character.traitsChecked[k]);
+    const checkedStandings = Object.keys(character.standingsChecked || {}).filter(k => character.standingsChecked[k]);
 
     // Auto-check skills & passions with value >= 20 as per rulebook
     const allCheckedSkills = new Set([
@@ -983,11 +984,16 @@ export default function FamilyWinter({ character, setCharacter }) {
       ...checkedPassions,
       ...Object.keys(character.passions).filter(k => (character.passions[k] || 0) >= 20)
     ]);
+    const allCheckedStandings = new Set([
+      ...checkedStandings,
+      ...Object.keys(character.standings || {}).filter(k => (character.standings[k] || 0) >= 20)
+    ]);
 
     const logs = [];
     const updatedSkills = { ...character.skills };
     const updatedPassions = { ...character.passions };
     const updatedTraits = { ...character.traits };
+    const updatedStandings = { ...(character.standings || {}) };
 
     // Roll for skills
     allCheckedSkills.forEach(key => {
@@ -1014,6 +1020,19 @@ export default function FamilyWinter({ character, setCharacter }) {
         logs.push(`[열망 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! → ${val + 1} 🎉`);
       } else {
         logs.push(`[열망 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
+      }
+    });
+
+    allCheckedStandings.forEach(key => {
+      const val = character.standings?.[key] || 0;
+      const d20 = Math.floor(Math.random() * 20) + 1;
+      const target = Math.min(20, val);
+      const success = d20 >= target;
+      if (success) {
+        updatedStandings[key] = val + 1;
+        logs.push(`[명망 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! -> ${val + 1}`);
+      } else {
+        logs.push(`[명망 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
       }
     });
 
@@ -1046,7 +1065,9 @@ export default function FamilyWinter({ character, setCharacter }) {
         traits: updatedTraits,
         traitsChecked: {},
         passions: updatedPassions,
-        passionsChecked: {}
+        passionsChecked: {},
+        standings: updatedStandings,
+        standingsChecked: {}
       };
       updated.campaign = markAppliedEvent(updated, eventId, '겨울 경험 판정');
       updated.campaign = markWinterStep(updated, 'experience');
@@ -1260,10 +1281,13 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     // 5. Passive Glory: stats > 15
     let passiveGlory = 0;
-    Object.keys(character.skills).forEach(k => { if (character.skills[k] > 15) passiveGlory += (character.skills[k] - 15); });
-    Object.keys(character.traits).forEach(k => { if (character.traits[k] > 15) passiveGlory += (character.traits[k] - 15); });
-    Object.keys(character.passions).forEach(k => { if (character.passions[k] > 15) passiveGlory += (character.passions[k] - 15); });
-    Object.keys(character.standings || {}).forEach(k => { if (character.standings[k] > 15) passiveGlory += (character.standings[k] - 15); });
+    Object.keys(character.attributes || {}).forEach(k => {
+      if (k !== 'currentHp' && character.attributes[k] > 15) passiveGlory += character.attributes[k];
+    });
+    Object.keys(character.skills).forEach(k => { if (character.skills[k] > 15) passiveGlory += character.skills[k]; });
+    Object.keys(character.traits).forEach(k => { if (character.traits[k] > 15) passiveGlory += character.traits[k]; });
+    Object.keys(character.passions).forEach(k => { if (character.passions[k] > 15) passiveGlory += character.passions[k]; });
+    Object.keys(character.standings || {}).forEach(k => { if (character.standings[k] > 15) passiveGlory += character.standings[k]; });
 
     // 6. Maintenance Glory
     const maintenanceLevel = character.personal?.maintenance || 'ordinary';
@@ -1348,13 +1372,13 @@ export default function FamilyWinter({ character, setCharacter }) {
       const nextTraits = { ...prev.traits };
 
       if (statType === 'attribute') {
-        nextAttributes[key] = Math.min(20, (prev.attributes[key] || 0) + 1);
+        nextAttributes[key] = (prev.attributes[key] || 0) + 1;
       } else if (statType === 'skill') {
-        nextSkills[key] = Math.min(20, (prev.skills[key] || 0) + 1);
+        nextSkills[key] = (prev.skills[key] || 0) + 1;
       } else if (statType === 'passion') {
-        nextPassions[key] = Math.min(20, (prev.passions[key] || 0) + 1);
+        nextPassions[key] = (prev.passions[key] || 0) + 1;
       } else if (statType === 'standing') {
-        nextStandings[key] = Math.min(20, (prev.standings[key] || 0) + 1);
+        nextStandings[key] = (prev.standings[key] || 0) + 1;
       } else if (statType === 'trait') {
         const oppositeMap = {
           chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
@@ -1364,7 +1388,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           valorous: "cowardly"
         };
         const opp = oppositeMap[key];
-        nextTraits[key] = Math.min(20, (prev.traits[key] || 0) + 1);
+        nextTraits[key] = (prev.traits[key] || 0) + 1;
         nextTraits[opp] = Math.max(0, (prev.traits[opp] || 0) - 1);
       }
 
@@ -1446,15 +1470,15 @@ export default function FamilyWinter({ character, setCharacter }) {
       updated.personal.age = (prev.personal?.age || 0) + 1;
       updated.personal.campaignYear = endingYear + 1;
 
-      // 2. Increment Squire's age and replace if age >= 21
+      // 2. Increment squire's age and replace when he reaches knighting age.
       let squireStatusMsg = '';
       if (updated.squire) {
-        const nextSquireAge = (prev.squire?.age || 14) + 1;
-        if (nextSquireAge >= 21) {
+        const nextSquireAge = (prev.squire?.age || 15) + 1;
+        if (nextSquireAge >= 18) {
           const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
           updated.squire = {
             name: `${randMale.ko} (Squire ${randMale.en})`,
-            age: 14,
+            age: 15,
             siz: 10,
             dex: 10,
             str: 10,
@@ -1463,10 +1487,10 @@ export default function FamilyWinter({ character, setCharacter }) {
             horsemanship: 9,
             weapon: 8
           };
-          squireStatusMsg = `• [종자 독립] 기존 종자가 21세가 되어 독립하고, 새 14세 종자 [${updated.squire.name}]를 영입했습니다.`;
+          squireStatusMsg = `• [종자 독립] 기존 종자가 18세가 되어 독립하고, 새 15세 종자 [${updated.squire.name}]를 영입했습니다.`;
         } else {
           updated.squire.age = nextSquireAge;
-          squireStatusMsg = `• [종자 성장] 종자 ${prev.squire?.name || '종자'}의 나이가 ${prev.squire?.age || 14}세 -> ${nextSquireAge}세로 성장했습니다.`;
+          squireStatusMsg = `• [종자 성장] 종자 ${prev.squire?.name || '종자'}의 나이가 ${prev.squire?.age || 15}세 -> ${nextSquireAge}세로 성장했습니다.`;
         }
       }
 
@@ -1540,8 +1564,8 @@ export default function FamilyWinter({ character, setCharacter }) {
     });
 
     // Check if squire was replaced to output a log
-    if (character.squire?.age >= 20) {
-      alert(`[종자 자립 및 영입]: 기존 종자가 21세가 되어 성인 기사로 독립했습니다! 새로운 14세 기망 종자가 가신단에 배치되었습니다.`);
+    if (character.squire?.age >= 17) {
+      alert(`[종자 자립 및 영입]: 기존 종자가 18세가 되어 기사로 독립했습니다! 새로운 15세 종자가 가신단에 배치되었습니다.`);
     }
 
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);
@@ -1801,7 +1825,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                               <tr style={{ borderBottom: '1px dashed #eee' }}>
                                 <td style={{ padding: '4px', fontWeight: 'bold' }}>실패 (Failure) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(d20 결과가 Stewardship 수치 초과)</span></td>
                                 <td style={{ padding: '4px' }}><strong>x0.75</strong></td>
-                                <td style={{ padding: '4px' }}>£4 (반올림)</td>
+                                <td style={{ padding: '4px' }}>£5</td>
                               </tr>
                               <tr style={{ borderBottom: '1px dashed #eee' }}>
                                 <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>대실패 (Fumble) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(d20 결과가 20)</span></td>

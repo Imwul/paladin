@@ -24,7 +24,8 @@ const defaults = {
   passions: { honor: 16, loveGod: 15, loveFamily: 15 },
   passionsChecked: {},
   standings: { family: 16, church: 15, commoners: 11 },
-  squire: { name: '피에르', age: 14 },
+  standingsChecked: {},
+  squire: { name: '피에르', age: 15 },
   horses: { warhorse: { hp: 42, armor: 5, damage: '6d6' } },
   gear: { cash: 5, gloryThisGame: 100, gloryTotal: 1200 },
   family: {
@@ -79,10 +80,28 @@ const saveLoadRoundTrip = sanitizeCampaignState(JSON.parse(JSON.stringify(corrup
 
 assert.equal(sanitized.gear.cash, 0);
 assert.equal(sanitized.gear.gloryTotal, 0);
-assert.equal(sanitized.attributes.siz, 20);
+assert.equal(sanitized.attributes.siz, 30);
 assert.equal(sanitized.attributes.currentHp <= sanitized.attributes.siz + sanitized.attributes.con, true);
 assert.equal(sanitized.personal.maintenance, 'ordinary');
 assert.equal(sanitized.traits.chaste + sanitized.traits.lustful, 20);
+assert.equal(sanitizeCampaignState({
+  ...defaults,
+  traits: { ...defaults.traits, valorous: 21, cowardly: 0 },
+  attributes: { ...defaults.attributes, str: 21 },
+  skills: { ...defaults.skills, sword: 21 },
+  passions: { ...defaults.passions, honor: 21 },
+  standings: { ...defaults.standings, family: 21 },
+  standingsChecked: { family: true }
+}, defaults).traits.valorous, 21);
+assert.equal(sanitizeCampaignState({
+  ...defaults,
+  traits: { ...defaults.traits, valorous: 21, cowardly: 0 },
+  attributes: { ...defaults.attributes, str: 21 },
+  skills: { ...defaults.skills, sword: 21 },
+  passions: { ...defaults.passions, honor: 21 },
+  standings: { ...defaults.standings, family: 21 },
+  standingsChecked: { family: true }
+}, defaults).standingsChecked.family, true);
 assert.equal(sanitized.family.members.filter(m => m.relation === '본인' && m.status === '생존').length, 1);
 assert.equal(sanitized.family.members.some(m => m.parentId === m.id || m.spouseId === m.id), false);
 assert.equal(sanitized.family.members.some(m => m.status === '불가능'), false);

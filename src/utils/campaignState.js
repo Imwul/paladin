@@ -16,6 +16,7 @@ const TRAIT_PAIRS = [
 
 const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병']);
 const VALID_GENDERS = new Set(['male', 'female', 'unknown']);
+const HEROIC_SCORE_MAX = 30;
 
 export const deepClone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -261,16 +262,16 @@ export const sanitizeCampaignState = (data, defaults) => {
   }
   personal.features = sanitizeStringArray(personal.features, defaults.personal.features);
 
-  const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 3, 20);
+  const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 3, HEROIC_SCORE_MAX);
   attributes.currentHp = clampInt(source.attributes?.currentHp, 0, attributes.siz + attributes.con, attributes.siz + attributes.con);
 
-  const traits = sanitizeNumberMap(source.traits, defaults.traits, 0, 20);
+  const traits = sanitizeNumberMap(source.traits, defaults.traits, 0, HEROIC_SCORE_MAX);
   TRAIT_PAIRS.forEach(([primary, opposite]) => {
-    const primaryVal = clampInt(traits[primary], 0, 20, defaults.traits[primary] ?? 10);
-    const oppositeVal = clampInt(traits[opposite], 0, 20, 20 - primaryVal);
+    const primaryVal = clampInt(traits[primary], 0, HEROIC_SCORE_MAX, defaults.traits[primary] ?? 10);
+    const oppositeVal = clampInt(traits[opposite], 0, HEROIC_SCORE_MAX, Math.max(0, 20 - primaryVal));
     if (primaryVal + oppositeVal !== 20) {
       traits[primary] = primaryVal;
-      traits[opposite] = 20 - primaryVal;
+      traits[opposite] = Math.max(0, 20 - primaryVal);
     } else {
       traits[primary] = primaryVal;
       traits[opposite] = oppositeVal;
@@ -299,12 +300,13 @@ export const sanitizeCampaignState = (data, defaults) => {
     personal,
     attributes,
     traits,
-    skills: sanitizeNumberMap(source.skills, defaults.skills, 0, 25),
+    skills: sanitizeNumberMap(source.skills, defaults.skills, 0, HEROIC_SCORE_MAX),
     skillsChecked: sanitizeCheckedMap(source.skillsChecked, defaults.skillsChecked),
     traitsChecked: sanitizeCheckedMap(source.traitsChecked, defaults.traitsChecked || {}),
-    passions: sanitizeNumberMap(source.passions, defaults.passions, 0, 25),
+    passions: sanitizeNumberMap(source.passions, defaults.passions, 0, HEROIC_SCORE_MAX),
     passionsChecked: sanitizeCheckedMap(source.passionsChecked, defaults.passionsChecked),
-    standings: sanitizeNumberMap(source.standings, defaults.standings, 0, 25),
+    standings: sanitizeNumberMap(source.standings, defaults.standings, 0, HEROIC_SCORE_MAX),
+    standingsChecked: sanitizeCheckedMap(source.standingsChecked, defaults.standingsChecked || {}),
     squire: {
       ...defaults.squire,
       ...(isPlainObject(source.squire) ? source.squire : {}),

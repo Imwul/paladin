@@ -66,7 +66,7 @@ const initialCharacterState = {
   traitsChecked: {},
   squire: {
     name: "피에르 (Pierre)",
-    age: 14,
+    age: 15,
     siz: 10, dex: 10, str: 10, con: 10,
     firstAid: 8, horsemanship: 9, weapon: 8
   },
@@ -137,6 +137,7 @@ const initialCharacterState = {
     church: 15,
     commoners: 11
   },
+  standingsChecked: {},
   campaign: {
     schemaVersion: 2,
     appliedEvents: {},

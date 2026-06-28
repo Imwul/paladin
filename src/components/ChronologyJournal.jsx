@@ -315,7 +315,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
       }
       // Squire independence
       else if (l.includes('종자 독립')) {
-        annals.push("종자 독립: 기존 종자가 성인 기사로 사임 자립하고 새 14세 종자를 배치함.");
+        annals.push("종자 독립: 기존 종자가 성인 기사로 사임 자립하고 새 15세 종자를 배치함.");
       }
       // Succession log
       else if (l.includes('[계승]')) {
