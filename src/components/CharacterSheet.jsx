@@ -95,6 +95,172 @@ const fathersClasses = [
   { name: "영주/지방관 기사 (Lord or Officer)", benefit: "세부 Lord/Officer 직책 선택 후 Table 1-5 보너스 적용", skillsAdd: 0, glory: 0 }
 ];
 
+const trainingFocusOptions = [
+  { key: 'balanced', name: '균형 훈련', desc: '전투, 궁정, 생존 기술을 고르게 올립니다.' },
+  { key: 'combat', name: '전투 훈련', desc: '검, 마상창, 전술, 승마를 먼저 올립니다.' },
+  { key: 'court', name: '궁정 훈련', desc: '예의, 문장학, 음모, 영지 운영을 먼저 올립니다.' },
+  { key: 'estate', name: '영지 훈련', desc: '영지 운영, 음모, 인식, 사냥을 먼저 올립니다.' }
+];
+
+const trainingFocusPriorities = {
+  balanced: ['sword', 'lance', 'horsemanship', 'battle', 'courtesy', 'firstAid', 'awareness', 'heraldry', 'hunting', 'spear', 'intrigue', 'stewardship'],
+  combat: ['sword', 'lance', 'battle', 'horsemanship', 'spear', 'axe', 'dagger', 'awareness', 'firstAid', 'hunting', 'courtesy'],
+  court: ['courtesy', 'heraldry', 'intrigue', 'stewardship', 'eloquence', 'recognize', 'languages', 'romance', 'falconry', 'gaming', 'battle', 'sword'],
+  estate: ['stewardship', 'intrigue', 'courtesy', 'heraldry', 'recognize', 'industry', 'hunting', 'awareness', 'battle', 'sword', 'horsemanship']
+};
+
+const mercenaryMeleeOptions = [
+  { key: 'axe', name: 'Axe (도끼)' },
+  { key: 'bludgeon', name: 'Bludgeon (둔기)' },
+  { key: 'dagger', name: 'Dagger (단검)' },
+  { key: 'spear', name: 'Spear (창)' },
+  { key: 'lance', name: 'Lance (마상창)' }
+];
+
+const customAttributeBonusDefaults = { str: 2, siz: 1, dex: 1, con: 1, app: 0 };
+
+const addGearNote = (gear, field, note) => {
+  gear[field] = gear[field] ? `${gear[field]}, ${note}` : note;
+};
+
+const clampStartingOutfitRank = (rank) => Math.min(6, Math.max(1, Number(rank) || 1));
+
+const getStartingOutfitPackage = (rank) => {
+  const safeRank = clampStartingOutfitRank(rank);
+  const commonIronWeapons = "1 iron sword, 1 spear, 1 dagger, 1 axe/flail/hammer, 1 bow & 12 arrows, 3 lances";
+  const commonSteelWeapons = "1 steel sword, 2 spears, 2 daggers, 1 axe/flail/hammer, light crossbow & 12 bolts, 5 lances";
+  const packages = {
+    1: {
+      rank: 1,
+      desc: "Outfit 1: Rouncy; No squire. 90d clothing; no coin.",
+      armor: "Cuirbouilli/Chainmail; 1 shield",
+      clothing: "90d 상당의 기본 의상",
+      weapons: commonIronWeapons,
+      cash: 0,
+      horses: { warhorse: "승용마 (Rouncy)", other2: "", other3: "", other4: "", other5: "" }
+    },
+    2: {
+      rank: 2,
+      desc: "Outfit 2: 2 rouncies; 1 squire. 120d clothing; no coin.",
+      armor: "Cuirbouilli/Chainmail; 2 shields",
+      clothing: "120d 상당의 의상",
+      weapons: commonIronWeapons,
+      cash: 0,
+      horses: { warhorse: "승용마 (Rouncy)", other2: "승용마 (Rouncy)", other3: "", other4: "", other5: "" }
+    },
+    3: {
+      rank: 3,
+      desc: "Outfit 3: 1 charger, 1 rouncy; 1 squire. £1 clothing; no coin.",
+      armor: "Ring mail/Chain mail; 2 shields",
+      clothing: "£1 상당의 의상",
+      weapons: commonIronWeapons,
+      cash: 0,
+      horses: { warhorse: "돌격마 (Charger)", other2: "승용마 (Rouncy)", other3: "", other4: "", other5: "" }
+    },
+    4: {
+      rank: 4,
+      desc: "Outfit 4: 1 charger, 1 rouncy, 1 sumpter, 1 palfrey; 1 squire. £4 clothing; £2 in coin.",
+      armor: "Reinforced chain mail/Partial plate; 3 shields",
+      clothing: "£4 상당의 귀한 의상",
+      weapons: commonSteelWeapons,
+      cash: 2,
+      horses: { warhorse: "돌격마 (Charger)", other2: "승용마 (Rouncy)", other3: "짐말 (Sumpter)", other4: "경량마 (Palfrey)", other5: "" }
+    },
+    5: {
+      rank: 5,
+      desc: "Outfit 5: 2 chargers, 1 courser, 2 rouncies, 1 sumpter, 1 palfrey; 2 squires. £6 clothing; £3 in coin.",
+      armor: "Partial plate/Full plate; 3 shields",
+      clothing: "£6 상당의 궁정 의상",
+      weapons: commonSteelWeapons,
+      cash: 3,
+      horses: { warhorse: "돌격마 (Charger)", other2: "돌격마 (Charger), 준마 (Courser)", other3: "승용마 2필 (Rouncies)", other4: "짐말 (Sumpter)", other5: "경량마 (Palfrey)" }
+    },
+    6: {
+      rank: 6,
+      desc: "Outfit 6: 2 chargers, 1 courser, 2 rouncies, 1 sumpter, 1 palfrey, 1 destrier; 4 squires.",
+      armor: "Full plate; 3 shields",
+      clothing: "£8 상당의 최고급 비단/모피 의상",
+      weapons: commonSteelWeapons,
+      cash: 0,
+      horses: { warhorse: "군마 (Destrier)", other2: "돌격마 2필 (Chargers)", other3: "준마 (Courser), 승용마 2필 (Rouncies)", other4: "짐말 (Sumpter)", other5: "경량마 (Palfrey)" }
+    }
+  };
+  return packages[safeRank];
+};
+
+const applyStartingOutfitToCharacter = (char, outfit, options = {}) => {
+  char.gear = char.gear || {};
+  char.horses = char.horses || {};
+  char.gear.cash = options.addCash ? (char.gear.cash || 0) + outfit.cash : outfit.cash;
+  char.gear.armorShield = outfit.armor;
+  char.gear.clothing = outfit.clothing;
+  addGearNote(char.gear, 'personalGear', outfit.weapons);
+  char.gear.startingOutfit = `Outfit ${outfit.rank}`;
+  char.gear.startingOutfitDesc = outfit.desc;
+  char.horses.warhorse = {
+    ...(char.horses.warhorse || {}),
+    type: outfit.horses.warhorse
+  };
+  char.horses.other2 = outfit.horses.other2;
+  char.horses.other3 = outfit.horses.other3;
+  char.horses.other4 = outfit.horses.other4;
+  char.horses.other5 = outfit.horses.other5;
+};
+
+const getFatherSkillPointCount = (fatherIndex, subclassKey) => {
+  if (fatherIndex === 4) {
+    const subclassData = lordOfficerSubclasses.find(sc => sc.key === subclassKey);
+    return subclassData?.type === 'lord' ? 14 : 10;
+  }
+  return fathersClasses[fatherIndex]?.skillsAdd || 0;
+};
+
+const getBaseStartingOutfitRank = (fatherIndex, subclassKey, officerPatronRank = 'banneret') => {
+  if (fatherIndex === 1) return 3;
+  if (fatherIndex === 0) return 3;
+  if (fatherIndex === 2) return 2;
+  if (fatherIndex === 3) return 2;
+  if (fatherIndex === 4) {
+    const subclassData = lordOfficerSubclasses.find(sc => sc.key === subclassKey);
+    if (subclassData?.type === 'lord') return 4;
+    return officerPatronRank === 'lord' ? 3 : 2;
+  }
+  return 2;
+};
+
+const getAdjustedStartingOutfitRank = (fatherIndex, subclassKey, sonNumber, officerPatronRank, upgrades = 0) => {
+  const baseRank = getBaseStartingOutfitRank(fatherIndex, subclassKey, officerPatronRank);
+  const sonPenalty = Number(sonNumber) > 1 ? 1 : 0;
+  return clampStartingOutfitRank(baseRank - sonPenalty + upgrades);
+};
+
+const addCappedSkill = (skills, key, amount, cap = 15) => {
+  const current = skills[key] || 0;
+  skills[key] = Math.min(cap, current + amount);
+};
+
+const applySkillTrainingPlan = (skills, points, focusKey) => {
+  const priority = trainingFocusPriorities[focusKey] || trainingFocusPriorities.balanced;
+  const allocations = {};
+  let remaining = points;
+  let cursor = 0;
+  let guard = 0;
+  const maxGuard = Math.max(1, points) * priority.length * 4;
+
+  while (remaining > 0 && guard < maxGuard) {
+    const skillKey = priority[cursor % priority.length];
+    if ((skills[skillKey] || 0) > 0 && (skills[skillKey] || 0) < 15) {
+      skills[skillKey] += 1;
+      allocations[skillKey] = (allocations[skillKey] || 0) + 1;
+      remaining -= 1;
+    }
+    cursor += 1;
+    guard += 1;
+  }
+
+  return { allocations, spent: points - remaining, lost: remaining };
+};
+
 export const birthGiftsTable = [
   { roll: 1, name: "Decorated Saddle", benefit: "장식된 말 안장 (가치 120d)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "장식된 말 안장 (가치 120d)"; } },
   { roll: 2, name: "Magnificent Cloak", benefit: "화려한 가문 망토 (가치 £1)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "화려한 가문 망토 (가치 £1)"; } },
@@ -110,7 +276,14 @@ export const birthGiftsTable = [
   { roll: 12, name: "Money £3", benefit: "동전 £3 (£3 in coin)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 3; } },
   { roll: 13, name: "Extra Charger", benefit: "여분의 돌격마 (Charger) 1필 추가", apply: (char) => { char.horses.other4 = "여분 돌격마 (Charger)"; } },
   { roll: 14, name: "Extra Charger", benefit: "여분의 돌격마 (Charger) 1필 추가", apply: (char) => { char.horses.other4 = "여분 돌격마 (Charger)"; } },
-  { roll: 15, name: "Upgrade Outfit", benefit: "시작 복장 패키지 1단계 업그레이드 (+£1 가치 추가)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 1; } },
+  { roll: 15, name: "Upgrade Outfit", benefit: "시작 복장 패키지 1단계 업그레이드", apply: (char) => {
+    const currentRank = Number(String(char.gear?.startingOutfit || '').match(/\d+/)?.[0] || 1);
+    const currentOutfitCash = getStartingOutfitPackage(currentRank).cash;
+    const nonOutfitCash = Math.max(0, (char.gear?.cash || 0) - currentOutfitCash);
+    const nextOutfit = getStartingOutfitPackage(currentRank + 1);
+    applyStartingOutfitToCharacter(char, nextOutfit);
+    char.gear.cash = nonOutfitCash + nextOutfit.cash;
+  } },
   { roll: 16, name: "Annual Stipend £1", benefit: "평생 매년 연금 £1 영구 수급권", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "평생 연간 영지 영수증 (£1/년)"; } },
   { roll: 17, name: "Exceptional Weapon", benefit: "장인의 특수 무기 (검 선택 시 기술 +1, 다른 무기 선택 시 기술 +3)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "명품 장인의 철검 (기술 +1)"; } },
   { roll: 18, name: "Healing Potion", benefit: "신비한 치유 물약 (사용 시 1d6 체력 즉시 회복)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "신비한 치유 물약 (1d6 HP 회복)"; } },
@@ -962,65 +1135,17 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const rollStartingOutfit = () => {
     const roll = Math.floor(Math.random() * 6) + 1;
-    let outfitDesc = '';
-    let cashVal = 0;
-    let armorText = '';
-    let clothingText = '';
-    let weaponsText = '';
-
-    if (roll === 1) {
-      armorText = "Cuirbouilli/Chainmail; 1 shield";
-      clothingText = "90d 상당의 기본 의상";
-      weaponsText = "1 iron sword, 1 spear, 1 dagger, 1 axe/flail/hammer, 1 bow & 12 arrows, 3 lances";
-      cashVal = 90;
-      outfitDesc = "Outfit 1: Rouncy; No squire. 90d; no coin.";
-    } else if (roll === 2) {
-      armorText = "Cuirbouilli/Chainmail; 2 shields";
-      clothingText = "120d 상당의 의상";
-      weaponsText = "1 iron sword, 1 spear, 1 dagger, 1 axe/flail/hammer, 1 bow & 12 arrows, 3 lances";
-      cashVal = 120;
-      outfitDesc = "Outfit 2: 2 rouncies; 1 squire. 120d; no coin.";
-    } else if (roll === 3) {
-      armorText = "Ring mail/Chain mail; 2 shields";
-      clothingText = "£1 상당의 의상";
-      weaponsText = "1 iron sword, 1 spear, 1 dagger, 1 axe/flail/hammer, 1 bow & 12 arrows, 3 lances";
-      cashVal = 240;
-      outfitDesc = "Outfit 3: 1 charger, 1 rouncy; 1 squire. £1; no coin.";
-    } else if (roll === 4) {
-      armorText = "Reinforced chain mail/Partial plate; 3 shields";
-      clothingText = "£4 상당의 귀한 의상";
-      weaponsText = "1 steel sword, 2 spears, 2 daggers, 1 axe/flail/hammer, light crossbow & 12 bolts, 5 lances";
-      cashVal = 960;
-      outfitDesc = "Outfit 4: 1 charger, 1 rouncy, 1 sumpter, 1 palfrey; 1 squire. £4; £2 in coin.";
-    } else if (roll === 5) {
-      armorText = "Partial plate/Full plate; 3 shields";
-      clothingText = "£6 상당의 궁정 의상";
-      weaponsText = "1 steel sword, 2 spears, 2 daggers, 1 axe/flail/hammer, light crossbow & 12 bolts, 5 lances";
-      cashVal = 1440;
-      outfitDesc = "Outfit 5: 2 chargers, 1 courser, 2 rouncies, 1 sumpter, 1 palfrey; 2 squires. £6; £3 in coin.";
-    } else {
-      armorText = "Full plate; 3 shields";
-      clothingText = "£8 상당의 최고급 비단/모피 의상";
-      weaponsText = "1 steel sword, 2 spears, 2 daggers, 1 axe/flail/hammer, light crossbow & 12 bolts, 5 lances";
-      cashVal = 1920;
-      outfitDesc = "Outfit 6: 2 chargers, 1 courser, 2 rouncies, 1 sumpter, 1 palfrey, 1 destrier; 4 squires.";
-    }
-
-    setGearOutfitRollResult({ roll, desc: outfitDesc, armor: armorText, clothing: clothingText, weapons: weaponsText, cash: cashVal });
+    setGearOutfitRollResult(getStartingOutfitPackage(roll));
   };
 
   const applyGearOutfit = () => {
     if (!gearOutfitRollResult) return;
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
-      updated.gear = updated.gear || {};
-      updated.gear.cash = gearOutfitRollResult.cash;
-      updated.gear.armorShield = gearOutfitRollResult.armor;
-      updated.gear.clothing = gearOutfitRollResult.clothing;
-      updated.gear.personalGear = (updated.gear.personalGear ? updated.gear.personalGear + ", " : "") + gearOutfitRollResult.weapons;
+      applyStartingOutfitToCharacter(updated, gearOutfitRollResult);
       return updated;
     });
-    alert(`시작 복장 패키지 [Outfit ${gearOutfitRollResult.roll}]이(가) 성공적으로 적용되었습니다!`);
+    alert(`시작 복장 패키지 [Outfit ${gearOutfitRollResult.rank}]이(가) 성공적으로 적용되었습니다!`);
   };
 
   const rollGearBirthGift = () => {
@@ -1065,6 +1190,12 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customStr, setCustomStr] = useState(13);
   const [customCon, setCustomCon] = useState(12);
   const [customApp, setCustomApp] = useState(11);
+  const [customAttrBonuses, setCustomAttrBonuses] = useState(customAttributeBonusDefaults);
+  const [customTrainingFocus, setCustomTrainingFocus] = useState('balanced');
+  const [customMercenaryWeapon, setCustomMercenaryWeapon] = useState('axe');
+  const [customSonNumber, setCustomSonNumber] = useState(1);
+  const [customLoveFamilyDie, setCustomLoveFamilyDie] = useState(6);
+  const [customOfficerPatronRank, setCustomOfficerPatronRank] = useState('banneret');
 
   // 🎲 주사위 롤링 연동 상태 (d20 눈 입력바)
   const [customSaintRoll, setCustomSaintRoll] = useState(18); // St. Michael default
@@ -1102,6 +1233,24 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customBirthGiftRoll1, setCustomBirthGiftRoll1] = useState(4);
   const [customBirthGiftRoll2, setCustomBirthGiftRoll2] = useState(10);
   const [customBirthGiftRoll3, setCustomBirthGiftRoll3] = useState(17);
+
+  const selectedCustomSubclass = lordOfficerSubclasses.find(sc => sc.key === customSubclass);
+  const customAttributeBonusTotal = Object.values(customAttrBonuses).reduce((sum, val) => sum + (Number(val) || 0), 0);
+  const customFatherSkillPoints = getFatherSkillPointCount(customFatherIndex, customSubclass);
+  const customPreviewOutfitRank = getAdjustedStartingOutfitRank(customFatherIndex, customSubclass, customSonNumber, customOfficerPatronRank);
+
+  const handleCustomAttrBonusChange = (key, rawValue) => {
+    const nextRequested = Math.min(3, Math.max(0, Number(rawValue) || 0));
+    setCustomAttrBonuses(prev => {
+      const otherTotal = Object.entries(prev).reduce((sum, [attrKey, val]) => (
+        attrKey === key ? sum : sum + (Number(val) || 0)
+      ), 0);
+      return {
+        ...prev,
+        [key]: Math.min(nextRequested, Math.max(0, 5 - otherTotal))
+      };
+    });
+  };
 
   const getBirthGiftRollCount = (fatherIndex, subclassKey = customSubclass) => {
     if (fatherIndex === 0) return 2; // Vassal
@@ -1160,6 +1309,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     setCustomBirthGiftRoll1(rollD20());
     setCustomBirthGiftRoll2(rollD20());
     setCustomBirthGiftRoll3(rollD20());
+    setCustomSonNumber(Math.floor(Math.random() * 3) + 1);
+    setCustomLoveFamilyDie(Math.floor(Math.random() * 6) + 1);
   };
 
   const handleApplyPreset = () => {
@@ -1263,15 +1414,26 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const handleApplyCustom = () => {
+    if (customAttributeBonusTotal !== 5) {
+      alert("Table 1-8 능력치 추가 배분은 총 5점을 모두 사용해야 합니다.");
+      return;
+    }
+
     const newChar = deepClone(initialCharacterState || character || {});
     const finalCustomName = getTitleByNameAndClass(customNameKo, customNameEn, "종자 (Squire)");
+    const finalSiz = customSiz + (customAttrBonuses.siz || 0);
+    const finalDex = customDex + (customAttrBonuses.dex || 0);
+    const finalStr = customStr + (customAttrBonuses.str || 0);
+    const finalCon = customCon + (customAttrBonuses.con || 0);
+    const finalApp = customApp + (customAttrBonuses.app || 0);
+    const sonNumberLabel = customSonNumber === 1 ? "첫째 (Eldest)" : (customSonNumber === 2 ? "둘째 (Second)" : "셋째 (Third)");
 
     newChar.personal = {
       ...newChar.personal,
       name: finalCustomName,
       age: 18,
       campaignYear: 768,
-      sonNumber: "첫째",
+      sonNumber: sonNumberLabel,
       blessing: customBlessing || "가문의 축복",
       homeland: "아르덴 (Ardennes)",
       home: "바스토뉴 (Bastogne)",
@@ -1286,12 +1448,12 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
     newChar.attributes = {
       ...newChar.attributes,
-      siz: customSiz,
-      dex: customDex,
-      str: customStr,
-      con: customCon,
-      app: customApp,
-      currentHp: customSiz + customCon
+      siz: finalSiz,
+      dex: finalDex,
+      str: finalStr,
+      con: finalCon,
+      app: finalApp,
+      currentHp: finalSiz + finalCon
     };
 
     newChar.skills = {
@@ -1321,7 +1483,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
     newChar.passions = {
       loyaltyLiege: 15,
-      loveFamily: 15,
+      loveFamily: Math.max(0, customLoveFamilyDie + 10 - customSonNumber),
       hospitality: 15,
       honor: 16,
       hateSaracens: 12,
@@ -1337,6 +1499,32 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       commoners: 11
     };
 
+    newChar.horses = {
+      warhorse: {
+        type: "",
+        breed: "프랑크 (Frankish)",
+        damage: "6d6",
+        move: 8,
+        armor: 5,
+        hp: 42,
+        age: 5
+      },
+      other2: "",
+      other3: "",
+      other4: "",
+      other5: ""
+    };
+
+    newChar.gear = {
+      armorShield: "",
+      clothing: "",
+      personalGear: "",
+      homePossessions: "",
+      cash: 0,
+      gloryThisGame: 0,
+      gloryTotal: 0
+    };
+
     const saint = makePatronSaintChoice(customSaintIndex, customSaintChoice20);
     saint.apply(newChar);
     newChar.family = newChar.family || {};
@@ -1348,6 +1536,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     // 1. Apply Subclass (Lord or Officer) or Standard Father Class
     const father = fathersClasses[customFatherIndex];
     let startingManors = 0;
+    let fatherSkillPoints = getFatherSkillPointCount(customFatherIndex, customSubclass);
+    let trainingResult = { allocations: {}, spent: 0, lost: 0 };
     
     if (customFatherIndex === 4) {
       const subclassData = lordOfficerSubclasses.find(sc => sc.key === customSubclass) || lordOfficerSubclasses[4];
@@ -1358,7 +1548,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       // Apply subclass traits/skills/passions
       if (subclassData.skills) {
         Object.entries(subclassData.skills).forEach(([sKey, sVal]) => {
-          newChar.skills[sKey] = (newChar.skills[sKey] || 0) + sVal;
+          addCappedSkill(newChar.skills, sKey, sVal);
         });
       }
       if (subclassData.passions) {
@@ -1378,7 +1568,16 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       newChar.personal.fathersClass = father.name;
       newChar.gear.gloryTotal = 1000 + father.glory;
       startingManors = customFatherIndex === 0 ? 1 : (customFatherIndex === 1 ? 2 : 0);
+
+      if (customFatherIndex === 3) {
+        addCappedSkill(newChar.skills, 'sword', 3);
+        addCappedSkill(newChar.skills, customMercenaryWeapon, 3);
+        newChar.traits.cruel = Math.min(20, (newChar.traits.cruel || 10) + 3);
+        newChar.traits.merciful = 20 - newChar.traits.cruel;
+      }
     }
+
+    trainingResult = applySkillTrainingPlan(newChar.skills, fatherSkillPoints, customTrainingFocus);
     
     newChar.family.manors = startingManors;
     newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
@@ -1428,7 +1627,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     
     // Apply skills from characteristic
     Object.entries(finalCharEffect.skills || {}).forEach(([sKey, sVal]) => {
-      newChar.skills[sKey] = (newChar.skills[sKey] || 0) + sVal;
+      newChar.skills[sKey] = Math.min(20, (newChar.skills[sKey] || 0) + sVal);
     });
 
     newChar.family.characteristic = {
@@ -1443,6 +1642,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     // 3. Apply Table 1-15: Frankish Birth Gifts
     const rollsCount = getBirthGiftRollCount(customFatherIndex, customSubclass);
     const appliedGifts = [];
+    const extraHorseGifts = [];
+    let outfitUpgradeCount = 0;
 
     const applySingleGift = (rollNum, religiousTrait, weaponKey, choice20, roll19a, roll19b) => {
       if (rollNum === 8 || rollNum === 9) {
@@ -1457,17 +1658,41 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         newChar.skills[weaponKey] = (newChar.skills[weaponKey] || 0) + valAdd;
         newChar.gear.personalGear = (newChar.gear.personalGear ? newChar.gear.personalGear + ", " : "") + `명품 장인의 무기 (${weaponKey} +${valAdd})`;
         appliedGifts.push(`명품 장인의 무기 (${weaponKey} +${valAdd})`);
+      } else if (rollNum === 10 || rollNum === 11) {
+        extraHorseGifts.push("여분 경량마 (Palfrey)");
+        appliedGifts.push("여분의 경량마 (Palfrey) 1필 추가");
+      } else if (rollNum === 13 || rollNum === 14) {
+        extraHorseGifts.push("여분 돌격마 (Charger)");
+        appliedGifts.push("여분의 돌격마 (Charger) 1필 추가");
+      } else if (rollNum === 15) {
+        outfitUpgradeCount += 1;
+        appliedGifts.push("시작 복장 패키지 1단계 업그레이드");
       } else if (rollNum === 20) {
         const targetGift = birthGiftsTable[choice20 - 1];
-        if (targetGift && choice20 !== 20 && choice20 !== 19) {
+        if (choice20 === 15) {
+          outfitUpgradeCount += 1;
+          appliedGifts.push("황제의 칙임 보물 (시작 복장 1단계 업그레이드)");
+        } else if (choice20 === 10 || choice20 === 11) {
+          extraHorseGifts.push("여분 경량마 (Palfrey)");
+          appliedGifts.push("황제의 칙임 보물 (여분 경량마)");
+        } else if (choice20 === 13 || choice20 === 14) {
+          extraHorseGifts.push("여분 돌격마 (Charger)");
+          appliedGifts.push("황제의 칙임 보물 (여분 돌격마)");
+        } else if (targetGift && choice20 !== 20 && choice20 !== 19) {
           targetGift.apply(newChar);
           appliedGifts.push(`황제의 칙임 보물 (${targetGift.name})`);
         }
       } else if (rollNum === 19) {
         const gA = birthGiftsTable[roll19a - 1];
         const gB = birthGiftsTable[roll19b - 1];
-        if (gA && roll19a !== 19) gA.apply(newChar);
-        if (gB && roll19b !== 19) gB.apply(newChar);
+        if (roll19a === 15) outfitUpgradeCount += 1;
+        else if (roll19a === 10 || roll19a === 11) extraHorseGifts.push("여분 경량마 (Palfrey)");
+        else if (roll19a === 13 || roll19a === 14) extraHorseGifts.push("여분 돌격마 (Charger)");
+        else if (gA && roll19a !== 19) gA.apply(newChar);
+        if (roll19b === 15) outfitUpgradeCount += 1;
+        else if (roll19b === 10 || roll19b === 11) extraHorseGifts.push("여분 경량마 (Palfrey)");
+        else if (roll19b === 13 || roll19b === 14) extraHorseGifts.push("여분 돌격마 (Charger)");
+        else if (gB && roll19b !== 19) gB.apply(newChar);
         appliedGifts.push(`가문의 특별한 은혜 (추가 2회 굴림: ${gA?.name || ''}, ${gB?.name || ''})`);
       } else {
         const gift = birthGiftsTable[rollNum - 1];
@@ -1488,6 +1713,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       applySingleGift(customBirthGiftRoll3, customBirthGiftReligiousTrait3, customBirthGiftWeapon3, customBirthGiftChoice20_3, customBirthGiftRoll19_3a, customBirthGiftRoll19_3b);
     }
 
+    const outfitRank = getAdjustedStartingOutfitRank(customFatherIndex, customSubclass, customSonNumber, customOfficerPatronRank, outfitUpgradeCount);
+    const startingOutfit = getStartingOutfitPackage(outfitRank);
+    applyStartingOutfitToCharacter(newChar, startingOutfit, { addCash: true });
+    extraHorseGifts.forEach((horse) => {
+      const slot = ['other2', 'other3', 'other4', 'other5'].find(key => !newChar.horses[key]);
+      if (slot) newChar.horses[slot] = horse;
+      else addGearNote(newChar.gear, 'personalGear', horse);
+    });
+
     newChar.attributes.currentHp = newChar.attributes.siz + newChar.attributes.con;
     newChar.campaign = {
       schemaVersion: 2,
@@ -1506,6 +1740,21 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           appliedAt: new Date().toISOString(),
           year: 768,
           label: `가문 특성: ${characteristic.name}`
+        },
+        'character_creation:attribute_bonus': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `능력치 추가 5점: STR +${customAttrBonuses.str || 0}, SIZ +${customAttrBonuses.siz || 0}, DEX +${customAttrBonuses.dex || 0}, CON +${customAttrBonuses.con || 0}, APP +${customAttrBonuses.app || 0}`
+        },
+        'character_creation:father_skill_training': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `부친 신분 기술 포인트 ${trainingResult.spent}/${fatherSkillPoints}점 자동 배분`
+        },
+        'character_creation:starting_outfit': {
+          appliedAt: new Date().toISOString(),
+          year: 768,
+          label: `시작 복장: Outfit ${startingOutfit.rank}${outfitUpgradeCount ? ` (탄생 선물 업그레이드 +${outfitUpgradeCount})` : ''}`
         },
         ...appliedGifts.reduce((acc, gift, index) => {
           acc[`character_creation:birth_gift:${index + 1}`] = {
@@ -1539,7 +1788,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
     setCharacter(newChar);
     setIsGenOpen(false);
-    alert(`커스텀 기사 [${finalCustomName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(적용된 수호 성인: ${saint.name}, 가문 특성: ${characteristic.name}${appliedGifts.length > 0 ? `, 탄생 선물: ${appliedGifts.join(', ')}` : ''})`);
+    alert(`커스텀 기사 [${finalCustomName}]이(가) 성공적으로 생성되어 캐릭터 시트에 적용되었습니다!\n(수호 성인: ${saint.name}, 가문 특성: ${characteristic.name}, 기술 훈련: ${trainingResult.spent}/${fatherSkillPoints}점, 시작 복장: Outfit ${startingOutfit.rank}${appliedGifts.length > 0 ? `, 탄생 선물: ${appliedGifts.join(', ')}` : ''})`);
   };
 
   const handleInputChange = (category, field, value) => {
@@ -1929,6 +2178,63 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     </div>
                   )}
 
+                  {customFatherIndex === 4 && selectedCustomSubclass?.type === 'officer' && (
+                    <div className="ft-form-group" style={{ marginLeft: '78px', marginTop: '4px' }}>
+                      <label className="ft-label" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)' }}>Officer 근무 대상:</label>
+                      <select className="cs-roll-select" style={{ padding: '4px', fontSize: '0.75rem' }}
+                        value={customOfficerPatronRank} onChange={e => setCustomOfficerPatronRank(e.target.value)}>
+                        <option value="banneret">Knight Banneret (시작 복장 2)</option>
+                        <option value="lord">Count/Duke/Lay Bishop/Lay Abbot (시작 복장 3)</option>
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="ft-form-group" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div>
+                      <label className="ft-label">아들 순번:</label>
+                      <select className="cs-roll-select" value={customSonNumber} onChange={e => setCustomSonNumber(Number(e.target.value))}>
+                        <option value={1}>첫째 (복장 감소 없음)</option>
+                        <option value={2}>둘째 (시작 복장 -1)</option>
+                        <option value={3}>셋째 (시작 복장 -1)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="ft-label">Love [Family] d6:</label>
+                      <input
+                        type="number"
+                        className="ft-input"
+                        min="1" max="6"
+                        value={customLoveFamilyDie}
+                        onChange={e => setCustomLoveFamilyDie(Math.min(6, Math.max(1, Number(e.target.value) || 1)))}
+                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ft-form-group">
+                    <label className="ft-label">부친 신분 기술 포인트 자동 배분:</label>
+                    <select className="cs-roll-select" value={customTrainingFocus} onChange={e => setCustomTrainingFocus(e.target.value)}>
+                      {trainingFocusOptions.map(option => (
+                        <option key={option.key} value={option.key}>{option.name} - {option.desc}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {customFatherIndex === 3 && (
+                    <div className="ft-form-group">
+                      <label className="ft-label">용병 기사 추가 근접무기 +3:</label>
+                      <select className="cs-roll-select" value={customMercenaryWeapon} onChange={e => setCustomMercenaryWeapon(e.target.value)}>
+                        {mercenaryMeleeOptions.map(option => (
+                          <option key={option.key} value={option.key}>{option.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  <div className="ft-form-group" style={{ backgroundColor: 'rgba(255,255,255,0.45)', padding: '8px 10px', borderRadius: '4px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.76rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
+                    자동 계산: 기술 포인트 <strong>{customFatherSkillPoints}</strong>점, 시작 복장 <strong>Outfit {customPreviewOutfitRank}</strong>, Love [Family] <strong>{Math.max(0, customLoveFamilyDie + 10 - customSonNumber)}</strong>
+                  </div>
+
                   <div className="ft-form-group">
                     <label className="ft-label">시작 축복 이름:</label>
                     <input
@@ -2241,10 +2547,41 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
+                  <div style={{ backgroundColor: 'rgba(255,255,255,0.45)', padding: '10px 12px', borderRadius: '6px', border: '1px solid rgba(201,168,76,0.15)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+                      <span style={{ fontWeight: 'bold', fontSize: '0.78rem', color: 'var(--color-gold-dark)' }}>능력치 추가 5점 배분</span>
+                      <span style={{ fontSize: '0.72rem', color: customAttributeBonusTotal === 5 ? 'var(--color-grey)' : 'var(--color-danger)' }}>
+                        {customAttributeBonusTotal}/5점
+                      </span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, minmax(48px, 1fr))', gap: '6px' }}>
+                      {[
+                        ['str', 'STR', customStr],
+                        ['siz', 'SIZ', customSiz],
+                        ['dex', 'DEX', customDex],
+                        ['con', 'CON', customCon],
+                        ['app', 'APP', customApp]
+                      ].map(([key, label, baseValue]) => (
+                        <label key={key} style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.7rem', color: 'var(--color-grey)' }}>
+                          <span>{label}</span>
+                          <input
+                            type="number"
+                            className="ft-input"
+                            min="0" max="3"
+                            value={customAttrBonuses[key] || 0}
+                            onChange={e => handleCustomAttrBonusChange(key, e.target.value)}
+                            style={{ textAlign: 'center', padding: '4px', fontWeight: 'bold' }}
+                          />
+                          <span style={{ color: 'var(--color-royal-blue)' }}>{baseValue + (customAttrBonuses[key] || 0)}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
                   <div style={{ backgroundColor: 'rgba(255,255,255,0.4)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.74rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
                     💡 <strong>성인/가문 특성 반영 규칙:</strong><br />
-                    • 선택하신 수호 성인과 가문 특성의 추가 보너스 능력치가 생성 시 자동으로 더해집니다.<br />
-                    • 부친의 신분에 따라 시작 명예(Glory)가 가산되며(+1000 기본), 추가 기술 보너스가 검/마창/둔기 기술에 자동 투자됩니다.
+                    • Table 1-8의 추가 5점은 한 능력치에 최대 +3까지만 배분됩니다.<br />
+                    • 부친의 신분에 따른 기술 포인트, 시작 복장, 비장남 복장 감소가 생성 시 자동 적용됩니다.
                   </div>
                 </div>
               </div>
@@ -3027,7 +3364,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                 <div style={{ fontSize: '0.8rem', backgroundColor: '#fff', border: '1px dotted var(--color-gold-light)', borderRadius: '4px', padding: '8px', marginTop: '4px' }}>
                   <strong>결과:</strong> {gearOutfitRollResult.desc}<br/>
                   <div style={{ fontSize: '0.74rem', color: 'var(--color-royal-blue)', marginTop: '4px' }}>
-                    • 소지금: {gearOutfitRollResult.cash}d<br/>
+                    • 소지금: £{gearOutfitRollResult.cash}<br/>
                     • 갑옷: {gearOutfitRollResult.armor}<br/>
                     • 의상: {gearOutfitRollResult.clothing}
                   </div>
