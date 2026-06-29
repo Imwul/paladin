@@ -20,17 +20,17 @@ const oppositeMap = {
 };
 
 const lordOfficerSubclasses = [
-  { key: 'Count', name: 'Count (백작)', type: 'lord', skills: { stewardship: 2, industry: 2 }, traits: {}, passions: {}, glory: 1000 },
-  { key: 'Duke', name: 'Duke (공작)', type: 'lord', skills: { eloquence: 2 }, traits: {}, passions: { honor: 1 }, glory: 1200 },
-  { key: 'Lay Bishop', name: 'Lay Bishop (속인 주교)', type: 'lord', skills: { religion: 3 }, traits: { just: 2 }, passions: {}, glory: 800 },
-  { key: 'Lay Abbot', name: 'Lay Abbot (속인 수도원장)', type: 'lord', skills: { religion: 2 }, traits: { temperate: 2 }, passions: {}, glory: 800 },
-  { key: 'Steward', name: 'Steward (집사/지방관)', type: 'officer', skills: { stewardship: 5 }, traits: { energetic: 2 }, passions: {}, glory: 300 },
-  { key: 'Butler', name: 'Butler (식탁관)', type: 'officer', skills: { intrigue: 3 }, traits: { generous: 2 }, passions: {}, glory: 200 },
-  { key: 'Chamberlain', name: 'Chamberlain (궁내관)', type: 'officer', skills: { courtesy: 3 }, traits: { modest: 2 }, passions: {}, glory: 200 },
-  { key: 'Marshal', name: 'Marshal (원수)', type: 'officer', skills: { battle: 5 }, traits: { valorous: 2 }, passions: {}, glory: 500 },
-  { key: 'Castellan', name: 'Castellan (성주)', type: 'officer', skills: { siege: 5 }, traits: { prudent: 2 }, passions: {}, glory: 300 },
-  { key: 'Forester', name: 'Forester (삼림관)', type: 'officer', skills: { hunting: 5 }, traits: { suspicious: 2 }, passions: {}, glory: 200 },
-  { key: 'Bailiff', name: 'Bailiff (집행관)', type: 'officer', skills: {}, traits: { just: 3, honest: 2 }, passions: {}, glory: 200 }
+  { key: 'Count', name: 'Count (백작)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
+  { key: 'Duke', name: 'Duke (공작)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
+  { key: 'Lay Bishop', name: 'Lay Bishop (속인 주교)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
+  { key: 'Lay Abbot', name: 'Lay Abbot (속인 수도원장)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
+  { key: 'Steward', name: 'Steward or Seneschal (집사/재상)', type: 'officer', skills: { stewardship: 5, intrigue: 3 }, traits: { valorous: 1, energetic: 2 }, passions: {}, glory: 300 },
+  { key: 'Butler', name: 'Butler (식탁관)', type: 'officer', skills: { stewardship: 2, courtesy: 2 }, traits: { valorous: 1, generous: 1 }, passions: {}, glory: 300 },
+  { key: 'Chamberlain', name: 'Chamberlain (궁내관)', type: 'officer', skills: { languages: 2, readingWriting: 2, heraldry: 3 }, traits: { valorous: 1 }, passions: {}, glory: 300 },
+  { key: 'Marshal', name: 'Marshal (원수)', type: 'officer', skills: { siege: 5, heraldry: 3 }, traits: { valorous: 2 }, passions: {}, glory: 300 },
+  { key: 'Castellan', name: 'Castellan (성주)', type: 'officer', skills: { siege: 2, courtesy: 3, stewardship: 3 }, traits: { valorous: 1 }, passions: {}, glory: 300 },
+  { key: 'Forester', name: 'Forester (삼림관)', type: 'officer', skills: { hunting: 3, awareness: 2, falconry: 2, faerieLore: 1 }, traits: { valorous: 1 }, passions: {}, glory: 300 },
+  { key: 'Bailiff', name: 'Bailiff (집행관)', type: 'officer', skills: { horsemanship: 2 }, traits: { valorous: 1, just: 2, honest: 1 }, passions: {}, glory: 300 }
 ];
 
 export const patronSaints = [
@@ -1103,12 +1103,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customBirthGiftRoll2, setCustomBirthGiftRoll2] = useState(10);
   const [customBirthGiftRoll3, setCustomBirthGiftRoll3] = useState(17);
 
-  const getBirthGiftRollCount = (fatherIndex) => {
+  const getBirthGiftRollCount = (fatherIndex, subclassKey = customSubclass) => {
     if (fatherIndex === 0) return 2; // Vassal
     if (fatherIndex === 1) return 3; // Banneret
     if (fatherIndex === 2) return 1; // Bachelor
     if (fatherIndex === 3) return 1; // Mercenary
-    if (fatherIndex === 4) return 3; // Lord or Officer
+    if (fatherIndex === 4) {
+      const subclassData = lordOfficerSubclasses.find(sc => sc.key === subclassKey);
+      return subclassData?.type === 'officer' ? 2 : 3;
+    }
     return 2;
   };
 
@@ -1438,7 +1441,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     };
 
     // 3. Apply Table 1-15: Frankish Birth Gifts
-    const rollsCount = getBirthGiftRollCount(customFatherIndex);
+    const rollsCount = getBirthGiftRollCount(customFatherIndex, customSubclass);
     const appliedGifts = [];
 
     const applySingleGift = (rollNum, religiousTrait, weaponKey, choice20, roll19a, roll19b) => {
@@ -1908,19 +1911,19 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                         style={{ padding: '4px', fontSize: '0.75rem', width: '100%' }}
                       >
                         <optgroup label="Lord (영주 subclasses)">
-                          <option value="Count">Count (백작 - Stewardship +2, Industry +2, Glory +1000)</option>
-                          <option value="Duke">Duke (공작 - Eloquence +2, Honor +1, Glory +1200)</option>
-                          <option value="Lay Bishop">Lay Bishop (속인 주교 - Religion +3, Just +2, Glory +800)</option>
-                          <option value="Lay Abbot">Lay Abbot (속인 수도원장 - Religion +2, Temperate +2, Glory +800)</option>
+                          <option value="Count">Count (백작 - Lord 공통 보너스, Glory +400, 탄생 선물 3회)</option>
+                          <option value="Duke">Duke (공작 - Lord 공통 보너스, Glory +400, 탄생 선물 3회)</option>
+                          <option value="Lay Bishop">Lay Bishop (속인 주교 - Lord 공통 보너스, Glory +400, 탄생 선물 3회)</option>
+                          <option value="Lay Abbot">Lay Abbot (속인 수도원장 - Lord 공통 보너스, Glory +400, 탄생 선물 3회)</option>
                         </optgroup>
                         <optgroup label="Officer (지방관 subclasses)">
-                          <option value="Steward">Steward (집사 - Stewardship +5, Energetic +2, Glory +300)</option>
-                          <option value="Butler">Butler (식탁관 - Intrigue +3, Generous +2, Glory +200)</option>
-                          <option value="Chamberlain">Chamberlain (궁내관 - Courtesy +3, Modest +2, Glory +200)</option>
-                          <option value="Marshal">Marshal (원수 - Battle +5, Valorous +2, Glory +500)</option>
-                          <option value="Castellan">Castellan (성주 - Siege +5, Prudent +2, Glory +300)</option>
-                          <option value="Forester">Forester (삼림관 - Hunting +5, Suspicious +2, Glory +200)</option>
-                          <option value="Bailiff">Bailiff (집행관 - Just +3, Honest +2, Glory +200)</option>
+                          <option value="Steward">Steward/Seneschal (Stewardship +5, Intrigue +3, Energetic +2, Glory +300, 선물 2회)</option>
+                          <option value="Butler">Butler (Stewardship +2, Courtesy +2, Generous +1, Glory +300, 선물 2회)</option>
+                          <option value="Chamberlain">Chamberlain (Languages +2, Reading/Writing +2, Heraldry +3, Glory +300, 선물 2회)</option>
+                          <option value="Marshal">Marshal (Siege +5, Heraldry +3, Valorous 총 +2, Glory +300, 선물 2회)</option>
+                          <option value="Castellan">Castellan (Siege +2, Courtesy +3, Stewardship +3, Glory +300, 선물 2회)</option>
+                          <option value="Forester">Forester (Hunting +3, Awareness +2, Falconry +2, Faerie Lore +1, Glory +300, 선물 2회)</option>
+                          <option value="Bailiff">Bailiff (Horsemanship +2, Just +2, Honest +1, Glory +300, 선물 2회)</option>
                         </optgroup>
                       </select>
                     </div>
@@ -2211,31 +2214,31 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   <div className="cs-roll-stat-row">
                     <span className="cs-roll-stat-label">근력 (STR):</span>
                     <span className="cs-roll-stat-val">{customStr}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>3d6 굴림</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
                   <div className="cs-roll-stat-row">
                     <span className="cs-roll-stat-label">체구 (SIZ):</span>
                     <span className="cs-roll-stat-val">{customSiz}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+6 굴림</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
                   <div className="cs-roll-stat-row">
                     <span className="cs-roll-stat-label">민첩 (DEX):</span>
                     <span className="cs-roll-stat-val">{customDex}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>3d6 굴림</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
                   <div className="cs-roll-stat-row">
                     <span className="cs-roll-stat-label">체질 (CON):</span>
                     <span className="cs-roll-stat-val">{customCon}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+6 굴림</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
                   <div className="cs-roll-stat-row">
                     <span className="cs-roll-stat-label">외모 (APP):</span>
                     <span className="cs-roll-stat-val">{customApp}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>3d6 굴림</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>2d6+3 굴림</span>
                   </div>
 
                   <div style={{ backgroundColor: 'rgba(255,255,255,0.4)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.74rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
