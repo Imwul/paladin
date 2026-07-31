@@ -47,8 +47,7 @@ const ANCESTOR_EVENTS = {
   763: "쾰른 라 로슈(La Roche) 성곽 결사 사수: 배반자 토밀(Tomile)과 말랭그(Malingre)가 이끄는 대반란군의 삼중 포위망 속에 갇혀, 본대 지원군이 도착하기 전까지 밤낮으로 성곽에서 저항하며 요새를 지켰습니다.",
   764: "라 로슈(La Roche) 탈환 공성전 및 툴루즈 함락: 오베리(Auberi) 주교의 복수군에 참전해 라 로슈 성을 맹렬히 격파해 탈환하고 쾰른(Cologne)을 수복하였으며, 아키텐 와이페르 공작의 수도 툴루즈(Toulouse)를 최종 점령했습니다.",
   765: "오트페이유(Hautefeuille) 포위 공성전 및 작센 족장 브로히막스 격파: 쾰른의 평화를 위협하는 작센 군대를 요격하기 위해 오트페이유 공성전에서 목숨을 건 격전을 벌였으며, 국왕 피핀을 납치하려는 작센의 악랄한 족장 브로히막스(Brohimax) 세력을 참수 토벌했습니다.",
-  766: "몽펠리에(Montpellier) 및 에그르몽(Aigremont) 최후 대공성전: 부친 제라르 경의 영광스러운 현역 마지막 해로, 후계자 샤를마뉴 왕자 및 위비앙(Vivien)의 프랑크 성전 연합군에 합류해 몽펠리에와 이교도의 요새 에그르몽 성벽을 격파하여 최후의 기사도 불꽃을 피워냈습니다.",
-  767: "평화적인 기성직 과도기: 국왕 피핀의 병환이 위독해지자 제국 영토가 잠시 정비되며 가문 영지에 안정과 수확의 평화가 지속되었습니다."
+  766: "몽펠리에(Montpellier) 및 에그르몽(Aigremont) 최후 대공성전: 부친 제라르 경의 영광스러운 현역 마지막 해로, 후계자 샤를마뉴 왕자 및 위비앙(Vivien)의 프랑크 성전 연합군에 합류해 몽펠리에와 이교도의 요새 에그르몽 성벽을 격파하여 최후의 기사도 불꽃을 피워냈습니다."
 };
 
 const medievalKeyMap = {
@@ -102,7 +101,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showRawLogs, setShowRawLogs] = useState({}); // mapping: year -> bool
 
-  const campaignYear = parseInt(character.personal?.campaignYear) || 768;
+  const campaignYear = parseInt(character.personal?.campaignYear) || 767;
   const ancestorRollLog = character?.family?.ancestorRollLog || [];
 
   const patronSaint =
@@ -355,13 +354,6 @@ export default function ChronologyJournal({ character, setCharacter }) {
       }
     });
 
-    // Inheritance in initial year 768
-    if (currentYear === 768) {
-      const selfMember = members.find(m => m && m.relation === '본인') || { name: '롤랑 경' };
-      const selfName = (selfMember.name || '롤랑 경').split(' (')[0] || '롤랑 경';
-      annals.push(`가업 상속: 부친 제라르 경의 파비아 원정 전사로 인해 [${selfName}]이 아르덴 가문을 정식 계승함.`);
-    }
-
     // Dynamic Glory thresholds crossed
     const getGlory = (y) => {
       const entry = character.journal?.[y];
@@ -407,14 +399,14 @@ export default function ChronologyJournal({ character, setCharacter }) {
       end: 744
     },
     father: {
-      title: "부친 제라르의 연대 (745 ~ 767 AD)",
+      title: "부친 제라르의 연대 (745 ~ 766 AD)",
       start: 745,
-      end: 767
+      end: 766
     },
     player: {
-      title: `기사 ${(character.personal?.name || '롤랑 경').split(' (')[0]}의 연대 (768 AD ~ 현재)`,
-      start: 768,
-      end: Math.max(768, campaignYear)
+      title: `기사 ${(character.personal?.name || '롤랑 경').split(' (')[0]}의 연대 (767 AD ~ 현재)`,
+      start: 767,
+      end: Math.max(767, campaignYear)
     }
   };
 
@@ -532,14 +524,14 @@ export default function ChronologyJournal({ character, setCharacter }) {
                 className={`tab-btn btn-medieval ${activeEra === 'father' ? 'active' : ''}`}
                 style={{ padding: '6px 12px', borderBottom: '1px solid var(--color-gold)', borderRadius: '4px 4px 0 0' }}
               >
-                부친의 연대 (745~767)
+                부친의 연대 (745~766)
               </button>
               <button 
                 onClick={() => setActiveEra('player')}
                 className={`tab-btn btn-medieval ${activeEra === 'player' ? 'active' : ''}`}
                 style={{ padding: '6px 12px', borderBottom: '1px solid var(--color-gold)', borderRadius: '4px 4px 0 0' }}
               >
-                나의 대서사 (768~현재)
+                나의 대서사 (767~현재)
               </button>
             </div>
 
@@ -575,7 +567,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
                 const { manual, winter } = splitJournalText(journalEntry?.text || '');
                 const annals = getAnnalsForYear(year);
 
-                const isInteractiveAncestor = (year < 768);
+                const isInteractiveAncestor = (year < 767);
                 const isCurrentYear = (year === campaignYear);
 
                 return (
@@ -796,7 +788,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
               ) : (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '10px' }}>
                   {livingMembers.map(m => {
-                    const birthYear = parseInt(m.lifeYears?.split('~')?.[0]) || 768;
+                    const birthYear = parseInt(m.lifeYears?.split('~')?.[0]) || 767;
                     const age = Math.max(0, campaignYear - birthYear);
 
                     return (

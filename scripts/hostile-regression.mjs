@@ -1,3 +1,4 @@
+/* global console, structuredClone */
 import assert from 'node:assert/strict';
 import {
   applyOnce,

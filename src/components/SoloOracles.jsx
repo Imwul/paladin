@@ -4,6 +4,7 @@ import { maleNames, femaleNames, surnames, locations, titles } from '../data/nam
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
 import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
+import { compareOpposedD20, resolveD20Roll } from '../utils/paladinRules';
 
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
@@ -295,7 +296,6 @@ export default function SoloOracles({ character, setCharacter }) {
     { left: 'just', leftKo: '정의 (Just)', right: 'arbitrary', rightKo: '독단 (Arbitrary)' },
     { left: 'merciful', leftKo: '자비 (Merciful)', right: 'cruel', rightKo: '잔혹 (Cruel)' },
     { left: 'modest', leftKo: '겸손 (Modest)', right: 'proud', rightKo: '오만 (Proud)' },
-    { left: 'pious', leftKo: '신앙 (Pious)', right: 'worldly', rightKo: '세속 (Worldly)' },
     { left: 'prudent', leftKo: '신중 (Prudent)', right: 'reckless', rightKo: '무모 (Reckless)' },
     { left: 'temperate', leftKo: '절제 (Temperate)', right: 'indulgent', rightKo: '방종 (Indulgent)' },
     { left: 'trusting', leftKo: '신뢰 (Trusting)', right: 'suspicious', rightKo: '의심 (Suspicious)' },
@@ -315,17 +315,16 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const rollD20Check = (target) => {
     const roll = Math.floor(Math.random() * 20) + 1;
-    const boundedTarget = Math.max(0, Math.min(25, Number(target) || 0));
-    const fumble = roll === 20 && boundedTarget < 20;
-    const critical = !fumble && (roll === 1 || roll === boundedTarget);
-    const success = !fumble && roll <= boundedTarget;
-    return { roll, target: boundedTarget, critical, success, fumble };
+    return resolveD20Roll(roll, target);
   };
 
   const compareOpposedRolls = (actor, opponent) => {
-    const actorScore = actor.fumble ? -2 : !actor.success ? -1 : actor.critical ? 100 + actor.roll : actor.roll;
-    const opponentScore = opponent.fumble ? -2 : !opponent.success ? -1 : opponent.critical ? 100 + opponent.roll : opponent.roll;
-    return actorScore > opponentScore ? 'actor' : opponentScore > actorScore ? 'opponent' : 'tie';
+    return compareOpposedD20(actor, opponent);
+  };
+
+  const resolveD20 = (roll, target) => {
+    const check = resolveD20Roll(roll, target);
+    return { ...rollGrades[check.outcome.toUpperCase()], ...check };
   };
 
   const battleBaseGloryByScale = { small: 15, medium: 30, large: 45, huge: 60 };
@@ -614,17 +613,18 @@ export default function SoloOracles({ character, setCharacter }) {
         let opposedRollVal = null;
         let opposedOutcome = '';
 
-        if (finalRoll === 20) {
+        const check = resolveD20Roll(finalRoll, modifiedTarget);
+        if (check.fumble) {
           outcome = '대실패 (Fumble) ⚠️';
           desc = `최악의 성향 무너짐! 즉시 반대 성향 [${opposedKo}]에 경험치 성장 체크를 기록하며, 본래 의지와 달리 반대 성향의 충동에 완전히 휩쓸려 충동적으로 행동해야 합니다.`;
           color = 'var(--color-crimson)';
           oppositeCheckRequired = true;
-        } else if (finalRoll === 1 || finalRoll === modifiedTarget) {
+        } else if (check.critical) {
           outcome = '결정적 성공 (Critical Success) 🌟';
           desc = `완벽한 도덕성 증명! 본 성향 [${rolledKo}]에 즉각 경험치 체크(Checked)가 주어집니다. 기사는 명예롭고 overt하며 타인이 즉각 알아챌 수준의 성스러운 성격 묘사 위업을 직접 대변합니다!`;
           color = 'var(--color-success)';
           checkRequired = true;
-        } else if (finalRoll < modifiedTarget) {
+        } else if (check.success) {
           outcome = '성공 (Success) ✓';
           desc = `마음이 성향에 맞춰 동요합니다. 기사는 [${rolledKo}] 규칙에 맞춰 행동해야 합니다. 플레이어는 이를 성실히 받아들이면 경험치 체크를 획득할 수 있습니다.\n\n*만약 플레이어가 이를 거역하고 반대로 억지 행동을 취할 경우, 반대 성향 [${opposedKo}]에 체크 패널티가 기록됩니다.`;
           color = 'var(--color-royal-blue)';
@@ -633,7 +633,8 @@ export default function SoloOracles({ character, setCharacter }) {
           const opposedBase = getTraitValue(opposedKey);
           opposedRollVal = Math.floor(Math.random() * 20) + 1;
 
-          if (opposedRollVal === 20 || opposedRollVal < opposedBase) {
+          const opposedCheck = resolveD20Roll(opposedRollVal, opposedBase);
+          if (opposedCheck.success) {
             outcome = '실패 -> 반대 성향 주도 ⚖️';
             desc = `본 성향 굴림 실패 후, 기사의 내면에 잠재된 반대 욕망 [${opposedKo}: 스탯 ${opposedBase}]이 주도권을 잡았습니다 (반대 d20 굴림: ${opposedRollVal}). 의지와 관계없이 [${opposedKo}]의 충동에 따라 이끌리듯 행동하게 됩니다.`;
             color = 'var(--color-gold-dark)';
@@ -716,18 +717,19 @@ export default function SoloOracles({ character, setCharacter }) {
         let desc = '';
         let color = '';
 
-        if (finalRoll === 20) {
+        const check = resolveD20Roll(finalRoll, modifiedTarget);
+        if (check.fumble) {
           outcome = '대실패 (Fumble) 💀';
           state = 'madness';
           desc = `광란(Madness) 대폭발! 주군의 명령이나 연인의 사랑을 저버리는 끔찍한 절망 속에 기사는 온 정신이 무너져 즉각 '광기 상태'에 돌입합니다. 신체적 능력치가 일시 감퇴하며 광기 전용 솔로 시나리오(p.431)로 돌입해야 합니다. 열정 수치 -1 하락 페널티가 부여됩니다.`;
           color = 'var(--color-crimson)';
-        } else if (finalRoll === 1 || finalRoll === modifiedTarget) {
+        } else if (check.critical) {
           outcome = '결정적 성공 (Critical Success) 👑';
           state = 'inspiration';
           skillBonus = isChivalryActive ? 20 : 10;
           desc = `위대한 팔라딘의 현현! 성스러운 힘이 뼈마디를 채우며 '초극의 영감 고취(Inspired)' 상태가 됩니다. 하루 동안 모든 기사 기술(Skills) 판정에 [ +${skillBonus} ] 보정치를 일괄 가산합니다! 전투/모험 임무를 찬란하게 극복 시 열정 수치 +1이 상승합니다.`;
           color = 'var(--color-success)';
-        } else if (finalRoll < modifiedTarget) {
+        } else if (check.success) {
           outcome = '성공 (Success) 🛡️';
           state = 'inspiration';
           skillBonus = isChivalryActive ? 10 : 5;
@@ -770,7 +772,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
       if (passionRollResult.state === 'inspiration') {
         if (successType === 'success') {
-          if (passionRollResult.roll === 1 || passionRollResult.roll === passionRollResult.modifiedTarget) {
+          if (resolveD20Roll(passionRollResult.roll, passionRollResult.modifiedTarget).critical) {
             updatedPassions[key] = Math.min(20, (updatedPassions[key] || 10) + 1);
             alert(`[열망 상승 완료]: 전공 완수! ${ko} 수치가 +1 상승하였습니다!`);
           } else {
@@ -917,13 +919,14 @@ export default function SoloOracles({ character, setCharacter }) {
 
         const details = groupKnights.map(k => {
           let indRes = '';
-          if (finalRoll === 20) {
+          const check = resolveD20Roll(finalRoll, k.passionScore);
+          if (check.fumble) {
             indRes = '대실패 (광기 위험)';
             fumblesCount++;
-          } else if (finalRoll === 1 || finalRoll === k.passionScore) {
+          } else if (check.critical) {
             indRes = '결정적 성공 ( Inspired +10 )';
             successesCount++;
-          } else if (finalRoll < k.passionScore) {
+          } else if (check.success) {
             indRes = '성공 ( Inspired +5 )';
             successesCount++;
           } else {
@@ -1174,7 +1177,8 @@ export default function SoloOracles({ character, setCharacter }) {
         let desc = '';
         let color = '';
 
-        if (finalRoll === 20) {
+        const check = resolveD20Roll(finalRoll, baseVal);
+        if (check.fumble) {
           outcome = '대실패 (Fumble) ☠️';
           desc = `청탁 대참사! 오만방자하거나 예의를 지키지 못해 집단의 격한 분노를 샀습니다. Standing 수치가 즉각 1점 차감되며 상당한 배척을 받게 됩니다.`;
           color = 'var(--color-crimson)';
@@ -1187,11 +1191,11 @@ export default function SoloOracles({ character, setCharacter }) {
               [selectedStandingKey]: Math.max(1, (prev.standings?.[selectedStandingKey] || 10) - 1)
             }
           }));
-        } else if (finalRoll === 1 || finalRoll === baseVal) {
+        } else if (check.critical) {
           outcome = '결정적 성공 (Critical Success) 🌟';
           desc = `감동적인 대환대! 국왕 혹은 집단이 눈물을 흘릴 정도의 숭고한 헌신을 느끼고 기사의 부탁을 최고의 권한으로 승인하며, 가문 및 추종 기사단 전체에 대한 총애를 하사합니다.`;
           color = 'var(--color-success)';
-        } else if (finalRoll < baseVal) {
+        } else if (check.success) {
           outcome = '성공 (Success) ✓';
           desc = `호의적 협조! 기사의 예의를 갖춘 요청을 흔쾌히 수락하여 아군으로 기꺼이 조력하거나 청탁한 favor를 승인해 줍니다.`;
           color = 'var(--color-royal-blue)';
@@ -1279,14 +1283,14 @@ export default function SoloOracles({ character, setCharacter }) {
         const finalRollP = Math.floor(Math.random() * 20) + 1;
         const finalRollO = Math.floor(Math.random() * 20) + 1;
 
-        // Success Grades
-        const successP = finalRollP <= pTarget && finalRollP !== 20;
-        const critP = finalRollP === 1 || finalRollP === pTarget;
-        const fumbleP = finalRollP === 20;
-
-        const successO = finalRollO <= oTarget && finalRollO !== 20;
-        const critO = finalRollO === 1 || finalRollO === oTarget;
-        const fumbleO = finalRollO === 20;
+        const playerCheck = resolveD20Roll(finalRollP, pTarget);
+        const opponentCheck = resolveD20Roll(finalRollO, oTarget);
+        const successP = playerCheck.success;
+        const critP = playerCheck.critical;
+        const fumbleP = playerCheck.fumble;
+        const successO = opponentCheck.success;
+        const critO = opponentCheck.critical;
+        const fumbleO = opponentCheck.fumble;
 
         let pGrade = fumbleP ? 'Fumble' : critP ? 'Critical' : successP ? 'Success' : 'Failure';
         let oGrade = fumbleO ? 'Fumble' : critO ? 'Critical' : successO ? 'Success' : 'Failure';
@@ -1318,11 +1322,9 @@ export default function SoloOracles({ character, setCharacter }) {
           }
         }
 
-        // Opposed resolution checks
-        const pScore = fumbleP ? -2 : !successP ? -1 : critP ? 100 + finalRollP : finalRollP;
-        const oScore = fumbleO ? -2 : !successO ? -1 : critO ? 100 + finalRollO : finalRollO;
+        const opposedWinner = compareOpposedD20(playerCheck, opponentCheck);
 
-        if (pScore > oScore) {
+        if (opposedWinner === 'actor') {
           winner = 'Player';
           clashOutcome = '기사의 격돌 대승리! 🎉';
           color = 'var(--color-success)';
@@ -1332,7 +1334,7 @@ export default function SoloOracles({ character, setCharacter }) {
           else if (playerWeapon === 'lance' && playerMounted) dmg = '돌격 군마의 피해량 적용';
 
           detailDesc += `🛡️ 기사가 주사위 차이로 방어를 뚫고 적을 격타하여 상해를 줍니다! (예상 피해: ${dmg})`;
-        } else if (oScore > pScore) {
+        } else if (opposedWinner === 'opponent') {
           winner = 'Opponent';
           clashOutcome = '상대방의 격돌 승리 ⚔️';
           color = 'var(--color-crimson)';
@@ -1422,16 +1424,17 @@ export default function SoloOracles({ character, setCharacter }) {
         let color = '';
         let isSuccess = false;
 
-        if (finalRoll === 20) {
+        const check = resolveD20Roll(finalRoll, finalTarget);
+        if (check.fumble) {
           outcome = '대실패 (Fumble) ☠️';
           desc = '최악의 참패! 기술적 실수나 예상치 못한 변수로 임무에 치명적인 곤경을 겪습니다.';
           color = 'var(--color-crimson)';
-        } else if (finalRoll === 1 || finalRoll === finalTarget) {
+        } else if (check.critical) {
           outcome = '결정적 성공 (Critical Success) 🌟';
           desc = '기적적인 완성도! 완벽한 조화와 실력으로 모두를 경탄시키며, 즉각 스킬 체크를 획득합니다.';
           color = 'var(--color-success)';
           isSuccess = true;
-        } else if (finalRoll < finalTarget) {
+        } else if (check.success) {
           outcome = '성공 (Success) ✓';
           desc = '능숙한 실행! 목적한 바를 원활하게 수행하고 가치 있는 스킬 체크를 얻습니다.';
           color = 'var(--color-royal-blue)';
@@ -1573,13 +1576,14 @@ export default function SoloOracles({ character, setCharacter }) {
       const pVal = playerBattleSkillOverride;
       const eVal = enemyCommanderSkill;
 
-      const pSuccess = pRoll <= pVal;
-      const pCrit = pRoll === 1 || pRoll === pVal;
-      const pFumble = pRoll === 20 && pVal < 20;
-
-      const eSuccess = eRoll <= eVal;
-      const eCrit = eRoll === 1 || eRoll === eVal;
-      const eFumble = eRoll === 20 && eVal < 20;
+      const playerCheck = resolveD20Roll(pRoll, pVal);
+      const enemyCheck = resolveD20Roll(eRoll, eVal);
+      const pSuccess = playerCheck.success;
+      const pCrit = playerCheck.critical;
+      const pFumble = playerCheck.fumble;
+      const eSuccess = enemyCheck.success;
+      const eCrit = enemyCheck.critical;
+      const eFumble = enemyCheck.fumble;
 
       let pOutcome = '';
       let eOutcome = '';
@@ -2041,9 +2045,10 @@ export default function SoloOracles({ character, setCharacter }) {
         typeLabel = '끓는 물 시련 (Trial by Hot Water)';
       }
 
-      const isSuccess = roll <= targetVal;
-      const isCrit = roll === 1 || roll === targetVal;
-      const isFumble = roll === 20 && targetVal < 20;
+      const check = resolveD20Roll(roll, targetVal);
+      const isSuccess = check.success;
+      const isCrit = check.critical;
+      const isFumble = check.fumble;
 
       let outcome = '';
       let desc = '';

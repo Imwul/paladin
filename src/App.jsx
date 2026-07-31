@@ -17,9 +17,9 @@ const initialCharacterState = {
   personal: {
     name: "롤랑 경 (Sir Roland)",
     age: 18,
-    campaignYear: 768,
+    campaignYear: 767,
     sonNumber: "첫째",
-    blessing: "성스러운 아우라 (Holy Aura)",
+    blessing: "",
     homeland: "아르덴 (Ardennes)",
     home: "바스토뉴 (Bastogne)",
     culture: "프랑크 (Frankish)",
@@ -47,7 +47,6 @@ const initialCharacterState = {
     just: 10, arbitrary: 10,
     merciful: 11, cruel: 9,
     modest: 10, proud: 10,
-    pious: 12, worldly: 8,
     prudent: 10, reckless: 10,
     temperate: 10, indulgent: 10,
     trusting: 11, suspicious: 9,
@@ -105,27 +104,20 @@ const initialCharacterState = {
     allies: "몽글란 가문 (House of Monglane)",
     enemies: "마옌스 가문 (반역자 무리)",
     members: [
-      { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.', gender: 'male' },
-      { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor', gender: 'male' },
+      { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~744', note: '가문 조부 연대의 기사.', gender: 'male' },
+      { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '생존', lifeYears: '724~', note: '가문 부친 연대의 기사.', spouseId: 'eleanor', gender: 'male' },
       { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard', gender: 'female' },
-      { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard', gender: 'male' },
-      { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard', gender: 'male' }
+      { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '749~', note: '767년 플레이어 캐릭터.', parentId: 'gerard', gender: 'male' },
+      { id: 'pierre', name: '피에르 (Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '752~', note: '플레이어의 남동생.', parentId: 'gerard', gender: 'male' }
     ],
     ancestorRollLog: [],
     ancestorApplied: false
   },
-  journal: {
-    768: {
-      text: "올해 페팽 왕께서 서거하시고 제국이 분할되었습니다. 나는 네모 공작 앞에서 기사 서약을 맺고 젊은 샤를마뉴 대제께 충성을 맹세했습니다. 다가오는 봄의 원정을 준비합니다.",
-      updatedAt: new Date().toISOString()
-    }
-  },
+  journal: {},
   passions: {
-    loyaltyLiege: 15,
+    loveCharlemagne: 15,
     loveFamily: 15,
-    hospitality: 15,
     honor: 16,
-    hateSaracens: 12,
     loveGod: 15
   },
   passionsChecked: {},
@@ -139,11 +131,16 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 2,
+    schemaVersion: 3,
     appliedEvents: {},
     passionStates: [],
+    lifecycle: {
+      careerStatus: 'active',
+      activeCharacterId: 'roland',
+      pendingSuccession: false
+    },
     winter: {
-      year: 768,
+      year: 767,
       steps: {
         aging: 'pending',
         harvest: 'pending',

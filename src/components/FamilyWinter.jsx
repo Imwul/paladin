@@ -4,13 +4,13 @@ import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
 import { birthGiftsTable } from './CharacterSheet';
 import { applyOnce, appendWinterLog, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
+import { getAgingRollCount, getAttributeCareerStatus, getHarvestModifier, resolveD20Roll, resolveHarvest } from '../utils/paladinRules';
 
 const winterCheckKeyMap = {
   standingLord: 'liegeLord',
   standingChurch: 'church',
   standingCommoners: 'commoners',
-  standingFamily: 'family',
-  loveCharlemagne: 'charlemagne'
+  standingFamily: 'family'
 };
 
 const resolveWinterCheckKey = (key) => winterCheckKeyMap[key] || key;
@@ -44,6 +44,8 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [harvestRoll, setHarvestRoll] = useState(null);
   const [harvestMult, setHarvestMult] = useState(null);
   const [harvestRevenue, setHarvestRevenue] = useState(null);
+  const [harvestTarget, setHarvestTarget] = useState(null);
+  const [harvestModifier, setHarvestModifier] = useState(0);
   const [harvestApplied, setHarvestApplied] = useState(false);
 
   const [squireSurvivalRoll, setSquireSurvivalRoll] = useState(null);
@@ -97,7 +99,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     }));
   };
 
-  const currentYear = character.personal?.campaignYear || 768;
+  const currentYear = character.personal?.campaignYear || 767;
   const currentWinter = character.campaign?.winter || {};
   const [calculatedAnnualGlory, setCalculatedAnnualGlory] = useState(null);
   const [gloryApplied, setGloryApplied] = useState(hasAppliedEvent(character, `winter:annual_glory:${currentYear}`));
@@ -127,28 +129,61 @@ export default function FamilyWinter({ character, setCharacter }) {
   // STEP 2: AGING LOGIC
   // ══════════════════════════════════════════════════
   const rollAging = () => {
-    const age = character.personal.age || 0;
+    if (['deceased', 'pending_succession'].includes(character.campaign?.lifecycle?.careerStatus)) {
+      alert('현재 기사의 생애가 이미 끝났습니다. 구원과 다음 캐릭터 절차를 먼저 해결해 주세요.');
+      return;
+    }
+
+    const ageEventId = `winter:age_advance:${currentYear}`;
+    const ageAlreadyAdvanced = hasAppliedEvent(character, ageEventId);
+    const age = (character.personal.age || 0) + (ageAlreadyAdvanced ? 0 : 1);
     const hasEternalYouth = character.personal?.blessing?.includes("영원한 젊음") || character.personal?.blessing?.includes("Eternal Youth");
     const agingStartAge = hasEternalYouth ? 35 : 30;
+
+    setCharacter(prev => {
+      const result = applyOnce(prev, ageEventId, updated => {
+        updated.personal.age = (updated.personal?.age || 0) + 1;
+        if (updated.squire) {
+          const nextSquireAge = (updated.squire.age || 14) + 1;
+          if (nextSquireAge >= 18) {
+            const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: 'Pierre', ko: '피에르' };
+            updated.squire = {
+              name: `${randMale.ko} (Squire ${randMale.en})`,
+              age: 14,
+              siz: 10,
+              dex: 10,
+              str: 10,
+              con: 10,
+              firstAid: 8,
+              horsemanship: 9,
+              weapon: 8,
+              status: '건강함'
+            };
+          } else {
+            updated.squire.age = nextSquireAge;
+          }
+        }
+        if (Number.isFinite(Number(updated.horses?.warhorse?.age))) {
+          updated.horses.warhorse.age = Number(updated.horses.warhorse.age) + 1;
+        }
+        if (age < agingStartAge) updated.campaign = markWinterStep(updated, 'aging');
+        return updated;
+      }, '겨울 2단계: 기사·종자·군마 나이 증가');
+      return result.character;
+    });
     
     if (age < agingStartAge) {
       addLog(`[노화]: ${age}세 (${agingStartAge}세 미만${hasEternalYouth ? ' - 영원한 젊음 가호' : ''}). 노화 주사위를 생략합니다.`);
-      setAgingD20(20);
+      setAgingD20(null);
       setAgingLosses([]);
       setAgingApplied(true);
-      resolveWinterStep('aging');
       return;
     }
 
     const d20 = Math.floor(Math.random() * 20) + 1;
     setAgingD20(d20);
 
-    let numRolls = 0;
-    if (d20 === 1) numRolls = 5;
-    else if (d20 <= 3) numRolls = 4;
-    else if (d20 <= 6) numRolls = 3;
-    else if (d20 <= 10) numRolls = 2;
-    else if (d20 <= 15) numRolls = 1;
+    const numRolls = getAgingRollCount(d20);
 
     const losses = [];
     const stats = ["SIZ", "DEX", "STR", "CON", "APP"];
@@ -178,9 +213,32 @@ export default function FamilyWinter({ character, setCharacter }) {
       const result = applyOnce(prev, eventId, updated => {
         resolvedLosses.forEach(stat => {
           const key = stat.toLowerCase();
-          updated.attributes[key] = Math.max(3, (updated.attributes[key] || 0) - 1);
+          updated.attributes[key] = Math.max(0, (updated.attributes[key] || 0) - 1);
         });
         updated.attributes.currentHp = Math.min(updated.attributes.currentHp || 0, updated.attributes.siz + updated.attributes.con);
+        const careerStatus = getAttributeCareerStatus(updated.attributes);
+        updated.campaign = {
+          ...(updated.campaign || {}),
+          lifecycle: {
+            ...(updated.campaign?.lifecycle || {}),
+            careerStatus,
+            endedAtYear: careerStatus === 'deceased' ? currentYear : updated.campaign?.lifecycle?.endedAtYear,
+            endReason: careerStatus === 'deceased' ? '노화로 능력치가 0에 도달' : careerStatus === 'incapacitated' ? '능력치가 3 이하라 병상 생활' : undefined,
+            pendingSuccession: careerStatus === 'deceased'
+          }
+        };
+        if (careerStatus === 'deceased') {
+          const self = updated.family?.members?.find(member => member.relation === '본인');
+          if (self) {
+            self.status = '사망';
+            self.deathCause = '노화';
+            self.lifeYears = `${String(self.lifeYears || '').split('~')[0] || currentYear - (updated.personal?.age || 0)}~${currentYear}`;
+          }
+          updated.campaign.winter.unresolved = {
+            ...(updated.campaign.winter.unresolved || {}),
+            careerEnd: { label: '기사 사망 후 구원 및 다음 캐릭터 선택', required: true }
+          };
+        }
         updated.campaign = markWinterStep(updated, 'aging');
         return updated;
       }, '겨울 노화 정산');
@@ -204,23 +262,19 @@ export default function FamilyWinter({ character, setCharacter }) {
     setHarvestRoll(d20);
 
     const hasProsperity = character.personal?.blessing?.includes("번영") || character.personal?.blessing?.includes("Prosperity");
-    const stewardship = (character.skills.stewardship || 3) + (hasProsperity ? 3 : 0);
-    let mult = 1.0;
-    let outcome = "성공";
-
-    if (d20 === 20) {
-      mult = 0.5; outcome = "대실패";
-    } else if (d20 === 1 || d20 === stewardship) {
-      mult = 1.5; outcome = "대성공";
-    } else if (d20 < stewardship) {
-      mult = 1.0; outcome = "성공";
-    } else {
-      mult = 0.75; outcome = "실패";
-    }
-
-    const revenue = Math.round(6 * mult);
-    setHarvestMult(mult);
-    setHarvestRevenue(revenue);
+    const modifier = getHarvestModifier({
+      year: currentYear,
+      standings: character.standings,
+      prosperity: hasProsperity,
+      situationalModifier: character.campaign?.winter?.harvestModifier || 0
+    });
+    const hasEstate = Boolean(character.family?.hasEstate || String(character.gear?.homePossessions || '').includes('장원'));
+    const manors = character.family?.manors !== undefined ? character.family.manors : (hasEstate ? 1 : 0);
+    const result = resolveHarvest({ roll: d20, stewardship: character.skills.stewardship || 0, modifier, manors });
+    setHarvestTarget(result.target);
+    setHarvestModifier(modifier);
+    setHarvestMult(result.multiplier);
+    setHarvestRevenue(result.income);
     setHarvestApplied(false);
   };
 
@@ -233,16 +287,74 @@ export default function FamilyWinter({ character, setCharacter }) {
     }
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
-        updated.gear.cash = (updated.gear.cash || 0) + harvestRevenue;
+        updated.campaign = {
+          ...(updated.campaign || {}),
+          winter: {
+            ...(updated.campaign?.winter || {}),
+            economy: {
+              ...(updated.campaign?.winter?.economy || {}),
+              grossIncome: harvestRevenue,
+              stewardshipTarget: harvestTarget,
+              stewardshipModifier: harvestModifier,
+              maintenancePending: true
+            },
+            unresolved: {
+              ...(updated.campaign?.winter?.unresolved || {}),
+              maintenance: { label: `총수입 £${harvestRevenue}의 생활 유지비·잉여금 정산`, required: true }
+            }
+          }
+        };
         updated.campaign = markWinterStep(updated, 'harvest');
-        updated.campaign.winter.steps.maintenance = 'resolved';
         return updated;
       }, `겨울 수확 £${harvestRevenue}`);
       return result.character;
     });
 
-    addLog(`[영지 수확]: 영지관리 d20 [${harvestRoll}] vs [${character.skills.stewardship}]. 배율 x${harvestMult} -> £${harvestRevenue} 획득!`);
+    addLog(`[영지 수확]: 영지관리 d20 [${harvestRoll}] vs 수정 수치 [${harvestTarget}] (보정 ${harvestModifier >= 0 ? '+' : ''}${harvestModifier}). 배율 x${harvestMult} -> 총수입 £${harvestRevenue}. 유지비와 잉여금은 별도 정산 필요.`);
     setHarvestApplied(true);
+  };
+
+  const resolveMaintenanceManually = () => {
+    const eventId = `economy:maintenance:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) return;
+    const rawDelta = window.prompt(
+      `올해 총수입은 £${harvestRevenue ?? character.campaign?.winter?.economy?.grossIncome ?? 0}입니다.\n` +
+      '가족·종자·말·생활 수준 지출과 매매를 모두 계산한 뒤, 보물고에 남길 순증감액을 £ 단위로 입력하세요. (예: 1 또는 -2)'
+    );
+    if (rawDelta === null) return;
+    const delta = Number(rawDelta);
+    if (!Number.isFinite(delta)) {
+      alert('유효한 숫자를 입력해 주세요.');
+      return;
+    }
+    if ((character.gear?.cash || 0) + delta < 0) {
+      alert('정산 후 보물고가 0보다 작아질 수 없습니다. 생활 수준 조정이나 매매를 먼저 반영해 주세요.');
+      return;
+    }
+
+    setCharacter(prev => {
+      const result = applyOnce(prev, eventId, updated => {
+        updated.gear.cash = (updated.gear?.cash || 0) + delta;
+        const unresolved = { ...(updated.campaign?.winter?.unresolved || {}) };
+        delete unresolved.maintenance;
+        updated.campaign = {
+          ...(updated.campaign || {}),
+          winter: {
+            ...(updated.campaign?.winter || {}),
+            unresolved,
+            economy: {
+              ...(updated.campaign?.winter?.economy || {}),
+              treasuryDelta: delta,
+              maintenancePending: false
+            }
+          }
+        };
+        updated.campaign = markWinterStep(updated, 'maintenance');
+        return updated;
+      }, `겨울 생활 유지비 정산 ${delta >= 0 ? '+' : ''}£${delta}`);
+      return result.character;
+    });
+    addLog(`[생활 유지비]: 총수입과 지출을 대조해 보물고 순증감 ${delta >= 0 ? '+' : ''}£${delta}로 정산했습니다.`);
   };
 
   // ══════════════════════════════════════════════════
@@ -421,9 +533,10 @@ export default function FamilyWinter({ character, setCharacter }) {
     const testValue = character.traits?.[key] ?? character.passions?.[key] ?? character.standings?.[resolvedKey] ?? 10;
     const testRoll = Math.floor(Math.random() * 20) + 1;
     let outcome = 'Failure';
-    if (testRoll === 20) outcome = 'Fumble';
-    else if (testRoll === 1 || testRoll === testValue) outcome = 'Critical';
-    else if (testRoll < testValue) outcome = 'Success';
+    const check = resolveD20Roll(testRoll, testValue);
+    if (check.fumble) outcome = 'Fumble';
+    else if (check.critical) outcome = 'Critical';
+    else if (check.success) outcome = 'Success';
 
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
@@ -693,7 +806,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     setCharacter(prev => {
       const result = applyOnce(prev, eventId, updated => {
-      const currentYear = prev.personal?.campaignYear || 768;
+      const currentYear = prev.personal?.campaignYear || 767;
       const selfMember = updated.family?.members?.find(m => m.relation === '본인');
       const playerGen = selfMember?.generation ?? 3;
       const playerId = selfMember?.id ?? 'roland';
@@ -1416,6 +1529,10 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const endWinterPhase = () => {
+    if (['deceased', 'pending_succession'].includes(character.campaign?.lifecycle?.careerStatus)) {
+      alert('사망한 기사의 겨울 정산을 계속할 수 없습니다. 구원 판정과 다음 캐릭터 선택을 먼저 해결해 주세요.');
+      return;
+    }
     if (character.campaign?.unresolvedChildbirthBlocked) {
       alert("배우자가 없어 해결되지 않은 출산 정산이 있습니다. 연인/첩을 고르거나 건너뛰기하여 해결해 주세요.");
       return;
@@ -1461,40 +1578,47 @@ export default function FamilyWinter({ character, setCharacter }) {
       if (!confirmEnd) return;
     }
 
-    const endingYear = character.personal?.campaignYear || 768;
+    const endingYear = character.personal?.campaignYear || 767;
 
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
 
-      // 1. Increment player's age and campaign year
-      updated.personal.age = (prev.personal?.age || 0) + 1;
-      updated.personal.campaignYear = endingYear + 1;
-
-      // 2. Increment squire's age and replace when he reaches knighting age.
+      // Age belongs to Step 2. If that screen was explicitly skipped, still apply the mandatory age transition once.
+      const ageEventId = `winter:age_advance:${endingYear}`;
       let squireStatusMsg = '';
-      if (updated.squire) {
-        const nextSquireAge = (prev.squire?.age || 15) + 1;
-        if (nextSquireAge >= 18) {
-          const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
-          updated.squire = {
-            name: `${randMale.ko} (Squire ${randMale.en})`,
-            age: 15,
-            siz: 10,
-            dex: 10,
-            str: 10,
-            con: 10,
-            firstAid: 8,
-            horsemanship: 9,
-            weapon: 8
-          };
-          squireStatusMsg = `• [종자 독립] 기존 종자가 18세가 되어 독립하고, 새 15세 종자 [${updated.squire.name}]를 영입했습니다.`;
-        } else {
-          updated.squire.age = nextSquireAge;
-          squireStatusMsg = `• [종자 성장] 종자 ${prev.squire?.name || '종자'}의 나이가 ${prev.squire?.age || 15}세 -> ${nextSquireAge}세로 성장했습니다.`;
+      if (!hasAppliedEvent(prev, ageEventId)) {
+        updated.personal.age = (prev.personal?.age || 0) + 1;
+        if (updated.squire) {
+          const nextSquireAge = (prev.squire?.age || 14) + 1;
+          if (nextSquireAge >= 18) {
+            const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: 'Pierre', ko: '피에르' };
+            updated.squire = {
+              name: `${randMale.ko} (Squire ${randMale.en})`,
+              age: 14,
+              siz: 10,
+              dex: 10,
+              str: 10,
+              con: 10,
+              firstAid: 8,
+              horsemanship: 9,
+              weapon: 8,
+              status: '건강함'
+            };
+            squireStatusMsg = `• [종자 독립] 기존 종자가 18세가 되어 독립하고, 새 14세 종자 [${updated.squire.name}]를 영입했습니다.`;
+          } else {
+            updated.squire.age = nextSquireAge;
+            squireStatusMsg = `• [종자 성장] 종자 ${prev.squire?.name || '종자'}의 나이가 ${prev.squire?.age || 14}세 -> ${nextSquireAge}세로 성장했습니다.`;
+          }
         }
+        if (Number.isFinite(Number(updated.horses?.warhorse?.age))) {
+          updated.horses.warhorse.age = Number(updated.horses.warhorse.age) + 1;
+        }
+        updated.campaign = markAppliedEvent(updated, ageEventId, '겨울 2단계: 기사·종자·군마 나이 증가');
       }
 
-      // 3. Compile Winter Logs into Chronology Journal
+      updated.personal.campaignYear = endingYear + 1;
+
+      // Compile Winter Logs into Chronology Journal
       const persistedLogs = Array.isArray(prev.campaign?.winter?.logs) ? prev.campaign.winter.logs : [];
       const skipLogs = skippedNow.map(step => `[겨울 단계 스킵]: ${step} 단계가 사용자 확인으로 건너뛰어졌습니다.`);
       const skipEventLogs = skippedEventsNow.map(event => `[겨울 사건 수동 스킵]: ${event.label} 항목이 사용자 확인으로 수동 처리/건너뛰기되었습니다.`);
@@ -1562,11 +1686,6 @@ export default function FamilyWinter({ character, setCharacter }) {
 
       return updated;
     });
-
-    // Check if squire was replaced to output a log
-    if (character.squire?.age >= 17) {
-      alert(`[종자 자립 및 영입]: 기존 종자가 18세가 되어 기사로 독립했습니다! 새로운 15세 종자가 가신단에 배치되었습니다.`);
-    }
 
     addLog(`⚔️ 겨울 정산 완료: 기사의 나이 +1세! 따스한 햇빛과 함께 새 봄이 찾아옵니다! ⚔️`);
     setWinterStep(1);
@@ -1813,7 +1932,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                             </thead>
                             <tbody>
                               <tr style={{ borderBottom: '1px dashed #eee' }}>
-                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>대성공 (Critical) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(d20 결과가 1 또는 Stewardship 수치와 동일)</span></td>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'green' }}>대성공 (Critical) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(d20 결과가 수정된 Stewardship 수치와 동일)</span></td>
                                 <td style={{ padding: '4px' }}><strong>x1.5</strong></td>
                                 <td style={{ padding: '4px' }}>£9</td>
                               </tr>
@@ -1828,7 +1947,7 @@ export default function FamilyWinter({ character, setCharacter }) {
                                 <td style={{ padding: '4px' }}>£5</td>
                               </tr>
                               <tr style={{ borderBottom: '1px dashed #eee' }}>
-                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>대실패 (Fumble) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(d20 결과가 20)</span></td>
+                                <td style={{ padding: '4px', fontWeight: 'bold', color: 'var(--color-crimson)' }}>대실패 (Fumble) <span style={{ fontWeight: 'normal', fontSize: '0.7rem', color: 'var(--color-grey)' }}>(수정 수치가 20 미만일 때 d20 결과가 20)</span></td>
                                 <td style={{ padding: '4px' }}><strong>x0.5</strong></td>
                                 <td style={{ padding: '4px' }}>£3</td>
                               </tr>
@@ -1849,20 +1968,25 @@ export default function FamilyWinter({ character, setCharacter }) {
                         </button>
                       ) : (
                         <div style={{ color: 'green', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <Check size={16} /> 소지금 합산 완료!
+                          <Check size={16} /> 총수입 기록 완료
                         </div>
                       )}
                     </div>
 
                     {harvestRoll && (
                       <div style={{ marginTop: '16px', border: '1px solid var(--color-gold-light)', padding: '12px', background: 'rgba(179,143,67,0.04)' }}>
-                        <div>d20 결과: <strong>{harvestRoll}</strong> (Stewardship 이하 성공)</div>
+                        <div>d20 결과: <strong>{harvestRoll}</strong> / 수정 Stewardship: <strong>{harvestTarget}</strong> ({harvestModifier >= 0 ? '+' : ''}{harvestModifier})</div>
                         <div style={{ marginTop: '6px', fontSize: '1rem' }}>
                           수확 결과 배율: <strong style={{ color: 'var(--color-crimson)' }}>x{harvestMult}</strong> (매출: <strong>£{harvestRevenue}</strong> 상당)
                         </div>
                         {!harvestApplied && (
                           <button className="btn-medieval" onClick={applyHarvest} style={{ marginTop: '12px', justifyContent: 'center', width: '100%' }}>
-                            £{harvestRevenue} 소지금에 합산하기
+                            총수입 £{harvestRevenue} 기록하기
+                          </button>
+                        )}
+                        {harvestApplied && !hasAppliedEvent(character, `economy:maintenance:${currentYear}`) && (
+                          <button className="btn-medieval" onClick={resolveMaintenanceManually} style={{ marginTop: '8px', justifyContent: 'center', width: '100%' }}>
+                            생활 유지비와 보물고 잉여금 정산하기
                           </button>
                         )}
                       </div>

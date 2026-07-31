@@ -1,6 +1,5 @@
-import React from 'react';
 import ProperNoun from './ProperNoun';
-import { BookOpen, Award, Compass } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 export default function Dashboard({ setActiveTab }) {
   return (
@@ -38,7 +37,7 @@ export default function Dashboard({ setActiveTab }) {
 
         {/* Chivalric Code Card */}
         <section className="cs-section">
-          <div className="sheet-ribbon"><h3>기사도 십계명</h3></div>
+          <div className="sheet-ribbon"><h3>핵심 대립 성향</h3></div>
           <div className="cs-section-inner">
             <p style={{ fontStyle: 'italic', color: 'var(--color-ink-light)', marginBottom: '12px', fontSize: '0.9rem' }}>
               고결한 성기사는 명예와 신앙을 평생 수호해야 합니다. 다음 대립 성향들을 단련하여 하늘의 권능을 얻으십시오:
@@ -52,7 +51,6 @@ export default function Dashboard({ setActiveTab }) {
               <li><strong>정의</strong> / 독단</li>
               <li><strong>자비</strong> / 잔혹</li>
               <li><strong>겸손</strong> / 오만</li>
-              <li><strong>경건</strong> / 세속</li>
               <li><strong>신중</strong> / 무모</li>
               <li><strong>절제</strong> / 방종</li>
               <li><strong>신뢰</strong> / 의심</li>
@@ -75,13 +73,14 @@ export default function Dashboard({ setActiveTab }) {
                 <li><strong>기술 수치와 일치:</strong> 대성공 (Critical)</li>
                 <li><strong>기술 수치 미만:</strong> 성공 (Success)</li>
                 <li><strong>기술 수치 초과:</strong> 실패 (Failure)</li>
-                <li><strong>자연수 20:</strong> 대실패 (Fumble)</li>
+                <li><strong>주사위 20:</strong> 수정 수치가 20 미만이면 대실패, 20이면 대성공</li>
+                <li><strong>수정 수치 20 초과:</strong> 초과분을 주사위에 더하고 결과 20 이상은 대성공</li>
               </ul>
             </div>
             <div style={{ flex: '1 1 250px', minWidth: 0 }}>
               <h4 style={{ color: 'var(--color-ink-light)', marginBottom: '6px', fontWeight: 700, fontSize: '0.95rem' }}>대립 성향</h4>
               <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
-                대립 성향 두 쌍의 합은 <strong>언제나 20</strong>입니다. 예컨대 정숙이 12가 되면 음탕은 자동으로 8이 됩니다.
+                각 대립 성향 쌍의 합은 <strong>언제나 20</strong>입니다. 예컨대 정숙이 12가 되면 음탕은 자동으로 8이 됩니다.
               </p>
             </div>
             <div style={{ flex: '1 1 250px', minWidth: 0 }}>

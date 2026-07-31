@@ -5,6 +5,7 @@ import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, fra
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable, patronSaints } from './CharacterSheet';
 import { applyOnce, hasAppliedEvent, sanitizeCampaignState } from '../utils/campaignState';
+import { getSuccessorEligibility, resolveD20Roll, roundPaladin } from '../utils/paladinRules';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -2740,7 +2741,7 @@ export default function FamilyTree({ character, setCharacter }) {
     setCurrentYearResultText('');
     setChronicleManualD20('');
 
-    const inheritedGlory = Math.floor(grandfatherGlory / 10);
+    const inheritedGlory = roundPaladin(grandfatherGlory / 10);
     const startGlory = 2500 + inheritedGlory;
     setFatherGlory(startGlory);
 
@@ -2776,7 +2777,7 @@ export default function FamilyTree({ character, setCharacter }) {
       `• 조부 최종 영광: ${grandfatherGlory} Glory (생존기간: 702~${grandfatherDeathYear || 744}, Odin/영면: ${grandfatherDeathCause || '평화로운 영면'})`,
       `• 부친 최종 영광: ${finalFGlory} Glory (생존기간: 724~${finalFDeathYear}, 사인: ${finalFDeathCause})`,
       `• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`,
-      `  - 계승 영광: +${Math.floor(finalFGlory / 10)} Glory (부친 영광의 1/10)`,
+      `  - 계승 영광: +${roundPaladin(finalFGlory / 10)} Glory (부친 영광의 1/10)`,
       fatherHates.saxons > 10 ? `  - 계승 증오: 작센인에 대한 증오 Passion [${fatherHates.saxons}]` : null,
       fatherHates.moors > 10 ? `  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fatherHates.moors}]` : null,
       fatherHates.danes > 10 ? `  - 계승 증오: 덴마크인에 대한 증오 Passion [${fatherHates.danes}]` : null,
@@ -3319,7 +3320,7 @@ export default function FamilyTree({ character, setCharacter }) {
     // 👨 [부친의 연대기 (745~766)]
     logs.push("");
     logs.push("📜 [부친의 생애: 연대기 시작 745년]");
-    let fGlory = 2500 + Math.floor(gfGlory / 10);
+    let fGlory = 2500 + roundPaladin(gfGlory / 10);
     logs.push(`🎁 745년: 부친(724년생)께서 성인식을 마치고 조부의 위대한 유산 1/10을 물려받아 ${fGlory} Glory로 당당히 기사 서임을 받으셨습니다.`);
     if (inheritedCruel > 0) {
       logs.push(`  └ [기질 상속] 조부로부터 무자비함(Cruel) 기질 +${inheritedCruel}을 물려받았습니다.`);
@@ -3707,7 +3708,7 @@ export default function FamilyTree({ character, setCharacter }) {
     logs.push(`• 조부 최종 영광: ${gfGlory} Glory (생존기간: 702~${gfDeathYr}, 사인: ${gfCause})`);
     logs.push(`• 부친 최종 영광: ${fGlory} Glory (생존기간: 724~${fDeathYr}, 사인: ${fCause})`);
     logs.push(`• 조상으로부터 플레이어 캐릭터(당신)에게 계승될 유산:`);
-    logs.push(`  - 계승 영광: +${Math.floor(fGlory / 10)} Glory (부친 영광의 1/10)`);
+    logs.push(`  - 계승 영광: +${roundPaladin(fGlory / 10)} Glory (부친 영광의 1/10)`);
     if (fHateSaxons > 10) logs.push(`  - 계승 증오: 작센인에 대한 증오 Passion [${fHateSaxons}]`);
     if (fHateMoors > 10) logs.push(`  - 계승 증오: 이교도(무어인)에 대한 증오 Passion [${fHateMoors}]`);
     if (fHateDanes > 10) logs.push(`  - 계승 증오: 덴마크인에 대한 증오 Passion [${fHateDanes}]`);
@@ -3747,7 +3748,7 @@ export default function FamilyTree({ character, setCharacter }) {
 	    setCharacter(prev => {
         const result = applyOnce(prev, 'ancestor:legacy', updated => {
 
-	      const inheritedGlory = Math.floor(fatherGlory / 10);
+	      const inheritedGlory = roundPaladin(fatherGlory / 10);
       updated.gear.gloryTotal = (updated.gear.gloryTotal || 1000) + inheritedGlory;
 
       if (fatherHates.saxons > 10) {
@@ -3837,7 +3838,7 @@ export default function FamilyTree({ character, setCharacter }) {
 	    });
 
     setAncestorApplied(true);
-    const inheritedGloryMsg = `\n(계승 영광: +${Math.floor(fatherGlory / 10)} Glory)`;
+    const inheritedGloryMsg = `\n(계승 영광: +${roundPaladin(fatherGlory / 10)} Glory)`;
     const inheritedHonorMsg = fatherHonorModifier !== 0 
       ? `\n(계승 명예 보정: ${fatherHonorModifier >= 0 ? '+' : ''}${fatherHonorModifier} Honor)`
       : '';
@@ -3922,7 +3923,15 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // --- Salvation Roll handlers ---
   const rollSalvation = () => {
-    // Calculate lowest religious trait
+    const careerStatus = character.campaign?.lifecycle?.careerStatus;
+    const currentSelf = character.family?.members?.find(member => member.relation === '본인');
+    const careerEnded = ['deceased', 'retired', 'pending_succession'].includes(careerStatus)
+      || ['사망', '은퇴'].includes(currentSelf?.status);
+    if (!careerEnded) {
+      alert('구원 판정은 기사가 사망하거나 확정적으로 은퇴한 뒤에만 할 수 있습니다.');
+      return;
+    }
+
     const chaste = character.traits.chaste || 10;
     const forgiving = character.traits.forgiving || 10;
     const merciful = character.traits.merciful || 10;
@@ -3932,15 +3941,14 @@ export default function FamilyTree({ character, setCharacter }) {
 
     const lowestReligiousTrait = Math.min(chaste, forgiving, merciful, modest, temperate, trusting);
 
-    // Passion bonuses
     const amorVal = character.passions.amor || 0;
     const honorVal = character.passions.honor || 0;
-    const loyaltyLiege = character.passions.loyaltyLiege || 0;
+    const loveCharlemagne = character.passions.loveCharlemagne ?? character.passions.loyaltyLiege ?? 0;
     const loveGodVal = character.passions.loveGod || 0;
 
     const amorBonus = Math.min(5, Math.max(0, amorVal - 15));
     const honorBonus = Math.min(5, Math.max(0, honorVal - 15));
-    const liegeBonus = Math.min(5, Math.max(0, loyaltyLiege - 15));
+    const charlemagneBonus = Math.min(5, Math.max(0, loveCharlemagne - 15));
     const godBonus = Math.min(5, Math.max(0, loveGodVal - 15));
 
     const deedsBonus = (salvationDeedsPaladin ? 5 : 0) +
@@ -3948,133 +3956,122 @@ export default function FamilyTree({ character, setCharacter }) {
       Math.min(5, Math.max(0, parseInt(salvationPagans) || 0)) +
       (parseInt(salvationCustomDeeds) || 0);
 
-    const totalSalvationScore = lowestReligiousTrait + amorBonus + honorBonus + liegeBonus + godBonus + deedsBonus;
+    const bonusPoints = amorBonus + honorBonus + charlemagneBonus + godBonus + deedsBonus;
+    const totalSalvationScore = lowestReligiousTrait + bonusPoints;
 
     let d20 = parseInt(salvationManualD20);
     if (isNaN(d20) || d20 < 1 || d20 > 20) {
       d20 = Math.floor(Math.random() * 20) + 1;
     }
 
-    let outcome = "";
-    let destination = "";
-    let saintEligible = false;
-    let isSaint = false;
+    const check = resolveD20Roll(d20, totalSalvationScore);
+    const outcome = check.critical ? '대성공 (Critical)' : check.fumble ? '대실패 (Fumble)' : check.success ? '성공 (Success)' : '실패 (Failure)';
+    const destination = check.fumble && totalSalvationScore <= 5
+      ? '지옥 (Hell)'
+      : check.success ? '천국 (Heaven)' : '연옥 (Purgatory)';
+    const saintEligible = bonusPoints >= 15 && totalSalvationScore >= 20 && check.critical;
 
-    // Critical
-    if (d20 === 1) {
-      outcome = "⭐ 임계 성공 (Critical Success!)";
-      destination = "👼 천국 직행 (Immediate Heaven!)";
-      if (deedsBonus >= 15) {
-        saintEligible = true;
-      }
-    }
-    // Fumble
-    else if (d20 === 20) {
-      outcome = "💀 임계 실패 (Fumble!)";
-      if (totalSalvationScore <= 5) {
-        destination = "🔥 지옥 낙하 (Damned to Hell!)";
-      } else {
-        destination = "⛪ 연옥 (Purgatory)";
-      }
-    }
-    // Success
-    else if (d20 <= totalSalvationScore) {
-      outcome = "✅ 성공 (Success)";
-      destination = "👼 천국 (Heaven)";
-    }
-    // Failure
-    else {
-      outcome = "❌ 실패 (Failure)";
-      destination = "⛪ 연옥 (Purgatory)";
-    }
-
-    // If saint eligible, check church standing
     const churchStanding = character.standings.church || 15;
-    const churchRoll = Math.floor(Math.random() * 20) + 1;
-    if (saintEligible && churchRoll <= churchStanding) {
-      isSaint = true;
-    }
+    const churchRoll = saintEligible ? Math.floor(Math.random() * 20) + 1 : null;
+    const churchCheck = saintEligible ? resolveD20Roll(churchRoll, churchStanding) : null;
+    const isSaint = Boolean(churchCheck?.success);
 
     setSalvationRollResult({
       roll: d20,
       total: totalSalvationScore,
       outcome,
       destination,
+      check,
+      bonusPoints,
+      saintEligible,
       isSaint,
       churchRoll,
-      churchStanding
+      churchStanding,
+      churchOutcome: churchCheck?.outcome || null
     });
   };
 
   const applySalvationLegacy = () => {
     if (!salvationRollResult) return;
-    const { isSaint } = salvationRollResult;
+    const { isSaint, check, total, bonusPoints } = salvationRollResult;
+    const currentYear = character.personal?.campaignYear || 767;
+    const sourceId = character.campaign?.lifecycle?.activeCharacterId
+      || character.family?.members?.find(member => member.relation === '본인')?.id
+      || character.personal?.name
+      || 'character';
+    const eventId = `salvation:${sourceId}:${currentYear}`;
+    if (hasAppliedEvent(character, eventId)) {
+      alert('이 캐릭터의 구원 판정은 이미 기록되었습니다.');
+      return;
+    }
 
     setCharacter(prev => {
-      const updated = JSON.parse(JSON.stringify(prev));
-      
-      const oldName = prev.personal.name || "롤랑 경";
-      const currentYear = prev.personal.campaignYear || 768;
-      const newName = "계승자 " + oldName.replace(" 경", "").replace("Sir ", "");
-      
-      // Find old self in family tree
-      const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
-      let oldSelfId = 'roland';
-      let oldSelfGen = 3;
-      
-      if (oldSelfIndex !== -1 && updated.family && updated.family.members) {
-        const oldSelf = updated.family.members[oldSelfIndex];
-        oldSelfId = oldSelf.id;
-        oldSelfGen = oldSelf.generation;
-        
-        // Transition previous self to be "부친" and set as "사망"
-        oldSelf.relation = '부친';
-        oldSelf.status = '사망';
-        const birthYear = currentYear - (prev.personal.age || 18);
-        oldSelf.lifeYears = `${birthYear}~${currentYear}`;
-        oldSelf.note = `대대적인 무공을 세우고 영면을 맞이한 선조. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
-      }
-      
-      // Create new heir member
-      const heirId = 'heir_' + Date.now();
-      const newHeirMember = {
-        id: heirId,
-        name: newName,
-        relation: '본인',
-        generation: oldSelfGen + 1,
-        status: '생존',
-        lifeYears: `${currentYear}~`,
-        note: `위대한 가문의 법통을 계승하는 새로운 후계 성기사 종자.`,
-        parentId: oldSelfId
-      };
-      
-      if (updated.family && updated.family.members) {
-        updated.family.members.push(newHeirMember);
-      }
-
-      // Heirloom / legacy bonuses
-      updated.gear.gloryTotal = Math.floor((updated.gear.gloryTotal || 1000) * 1.1); // Inherit 1.1x total glory in next generation
-      updated.personal.age = 18;
-      updated.personal.personalClass = "종자 (Squire)";
-      updated.personal.name = newName;
-
-      if (isSaint) {
-        updated.personal.blessing = "가문의 수호 성인 축복 (Saintly Lineage)";
-      }
-
-      // Record succession in campaign year journal
-      if (!updated.journal) updated.journal = {};
-      const msg = `[계승] 기사 ${oldName} 은퇴/사망 및 후계자 ${newName} 가업 승계.`;
-      const currentEntry = updated.journal[currentYear]?.text || '';
-      updated.journal[currentYear] = {
-        text: currentEntry ? `${currentEntry}\n\n• ${msg}` : `• ${msg}`,
-        updatedAt: new Date().toISOString()
-      };
-
-      return updated;
+      const result = applyOnce(prev, eventId, updated => {
+        const oldName = updated.personal?.name || '현재 기사';
+        const sourceCharacterId = updated.campaign?.lifecycle?.activeCharacterId
+          || updated.family?.members?.find(member => member.relation === '본인')?.id
+          || null;
+        const successful = Boolean(check?.success);
+        updated.campaign = {
+          ...(updated.campaign || {}),
+          salvation: {
+            sourceCharacterId,
+            sourceCharacterName: oldName,
+            year: currentYear,
+            score: total,
+            bonusPoints,
+            sourceGlory: updated.gear?.gloryTotal || 0,
+            sourceValorous: updated.traits?.valorous || 0,
+            outcome: check?.outcome,
+            destination: salvationRollResult.destination,
+            canonized: isSaint
+          },
+          legacy: successful ? {
+            sourceCharacterId,
+            sourceCharacterName: oldName,
+            salvationScore: total,
+            transferSlots: isSaint ? 2 : 1,
+            birthGiftRolls: 1,
+            blessingRolls: isSaint ? 1 : 0,
+            sourceScores: {
+              attributes: updated.attributes,
+              traits: updated.traits,
+              passions: updated.passions,
+              standings: updated.standings,
+              skills: updated.skills
+            },
+            sourceGear: updated.gear,
+            sourceManors: updated.family?.manors || 0,
+            status: 'pending'
+          } : null,
+          lifecycle: {
+            ...(updated.campaign?.lifecycle || {}),
+            careerStatus: 'pending_succession',
+            activeCharacterId: null,
+            pendingSuccession: true
+          }
+        };
+        updated.campaign.winter = {
+          ...(updated.campaign?.winter || {}),
+          unresolved: {
+            ...(updated.campaign?.winter?.unresolved || {}),
+            succession: { label: '다음 캐릭터 선택 및 생성', required: true },
+            ...(successful ? { legacy: { label: `구원 계승 혜택: 수치 ${isSaint ? 2 : 1}개 이전, 탄생 선물 1회${isSaint ? ', 축복 1회' : ''}`, required: true } } : {})
+          }
+        };
+        updated.journal = updated.journal || {};
+        const message = `[구원] ${oldName}: ${salvationRollResult.destination}${isSaint ? ', 성인 추대' : ''}. 다음 캐릭터 절차 대기.`;
+        const existing = updated.journal[currentYear]?.text || '';
+        updated.journal[currentYear] = {
+          text: existing ? `${existing}\n\n• ${message}` : `• ${message}`,
+          updatedAt: new Date().toISOString()
+        };
+        return updated;
+      }, '구원 판정 및 계승 혜택 기록');
+      return result.character;
     });
 
-    alert("기사의 은퇴 판정 유산이 성기사 캐릭터 시트에 영구히 반영되었습니다!\n(다음 세대 계승자 종자가 가계도와 시트에 추가되었습니다!)");
+    alert('구원 결과와 원작의 계승 혜택을 기록했습니다. 다음 캐릭터를 선택해 생성 절차를 진행하세요.');
   };
   const [editingMember, setEditingMember] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -4234,119 +4231,110 @@ export default function FamilyTree({ character, setCharacter }) {
 
 	  const handleInheritCharacter = () => {
 	    if (!editingMember) return;
-      const eventId = `succession:${editingMember.id}`;
-      if (hasAppliedEvent(character, eventId)) {
-        alert("이 후계자로의 승계는 이미 처리되었습니다.");
-        return;
-      }
-	    const confirmInherit = window.confirm(`정말로 이 인물(${editingMember.name})로 대를 이어 플레이를 계속하시겠습니까?\n• 기사 시트의 실명, 나이(가계도 기반 자동 계산)가 동적 전환됩니다.\n• 가계도 내 기존 '본인'은 은퇴/사망 처리되고 이 인물이 새로운 '본인'이 됩니다.`);
-	    if (!confirmInherit) return;
-
-    const birthYearStr = editingMember.lifeYears?.split('~')?.[0]?.trim() || '';
-    const birthYear = parseInt(birthYearStr) || 768;
-    const currentYear = character.personal?.campaignYear || 768;
-	    const calculatedAge = currentYear - birthYear;
-      if (!Number.isFinite(calculatedAge) || calculatedAge < 18) {
-        alert("18세 미만 후계자는 플레이 가능한 기사로 승계할 수 없습니다.");
+      const birthYearStr = editingMember.lifeYears?.split('~')?.[0]?.trim() || '';
+      const birthYear = parseInt(birthYearStr);
+      const currentYear = character.personal?.campaignYear || 767;
+	    const eligibility = getSuccessorEligibility({ birthYear, currentYear });
+      const calculatedAge = eligibility.age;
+      if (!eligibility.eligible) {
+        alert('후계자는 출생 연도가 확인되고 15세 이상이어야 종자 생성 절차를 시작할 수 있습니다.');
         return;
       }
 
-	    setCharacter(prev => {
-        const result = applyOnce(prev, eventId, updated => {
+      const currentSelf = character.family?.members?.find(member => member.relation === '본인');
+      const careerEnded = ['사망', '은퇴'].includes(currentSelf?.status)
+        || ['deceased', 'retired', 'pending_succession'].includes(character.campaign?.lifecycle?.careerStatus);
 
-      const oldName = prev.personal?.name || "롤랑 경";
-      const newName = editingMember.name;
-
-      // 1. Find and update the old "본인"
-      const oldSelfIndex = updated.family?.members?.findIndex(m => m.relation === '본인') ?? -1;
-      let oldSelfId = 'roland';
-      if (oldSelfIndex !== -1 && updated.family && updated.family.members) {
-        const oldSelf = updated.family.members[oldSelfIndex];
-        oldSelfId = oldSelf.id;
-        const isChildOfOldSelf = editingMember.parentId === oldSelf.id;
-	        oldSelf.relation = isChildOfOldSelf ? '부친' : '친족';
-	        oldSelf.status = '은퇴';
-	        oldSelf.lifeYears = oldSelf.lifeYears.split('~')[0] + `~${currentYear}`;
-	        oldSelf.note = `위대한 모험을 마치고 명예롭게 은퇴한 선조 기사. 최종 영광 ${prev.gear?.gloryTotal || 1000} Glory.`;
-	      }
-
-      // 2. Find and update the new "본인" in members array
-      if (updated.family && updated.family.members) {
-        updated.family.members = updated.family.members.map(m => {
-          if (m.id === editingMember.id) {
-            return {
-              ...m,
-              relation: '본인',
-              status: '생존',
-              note: `가문의 영광스러운 기사직을 새로이 계승한 플레이어 캐릭터.`
-            };
+      if (!careerEnded) {
+        const confirmRetirement = window.confirm(
+          `${character.personal?.name || '현재 기사'}의 활동을 확정적으로 끝내고 ${editingMember.name}을(를) 다음 캐릭터 후보로 지정하시겠습니까?\n` +
+          '먼저 현재 기사가 은퇴 처리되며, 구원 판정을 마친 뒤 후보의 캐릭터 생성 절차를 진행합니다.'
+        );
+        if (!confirmRetirement) return;
+        setCharacter(prev => {
+          const updated = JSON.parse(JSON.stringify(prev));
+          const self = updated.family?.members?.find(member => member.relation === '본인');
+          if (self) {
+            self.status = '은퇴';
+            const startYear = String(self.lifeYears || '').split('~')[0] || currentYear - (updated.personal?.age || 0);
+            self.lifeYears = `${startYear}~${currentYear}`;
           }
-          return m;
+          updated.campaign = {
+            ...(updated.campaign || {}),
+            lifecycle: {
+              ...(updated.campaign?.lifecycle || {}),
+              careerStatus: 'retired',
+              activeCharacterId: null,
+              endedAtYear: currentYear,
+              endReason: '확정 은퇴',
+              pendingSuccession: true
+            },
+            successorCandidate: {
+              memberId: editingMember.id,
+              name: editingMember.name,
+              birthYear,
+              age: calculatedAge,
+              parentId: editingMember.parentId || null
+            }
+          };
+          return updated;
         });
+        setIsModalOpen(false);
+        setEditingMember(null);
+        alert('현재 기사를 확정 은퇴로 기록했습니다. 구원 판정을 마친 뒤 후계자 생성을 진행하세요.');
+        return;
       }
 
-      // 3. Update character sheet profile
-	      updated.personal = {
-          ...updated.personal,
-          name: editingMember.name,
-          age: calculatedAge,
-          personalClass: "기사 (Knight)"
-        };
-        updated.attributes = {
-          siz: 14, dex: 12, str: 13, con: 12, app: 11, currentHp: 26
-        };
-        updated.skills = {
-          awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
-          horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
-          courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
-          battle: 10, siege: 5, axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 13, unarmed: 6,
-          lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
-        };
-        updated.traits = {
-          chaste: 10, lustful: 10, energetic: 12, lazy: 8, forgiving: 11, vengeful: 9,
-          generous: 13, selfish: 7, honest: 12, deceitful: 8, just: 10, arbitrary: 10,
-          merciful: 11, cruel: 9, modest: 10, proud: 10, pious: 12, worldly: 8,
-          prudent: 10, reckless: 10, temperate: 10, indulgent: 10, trusting: 11, suspicious: 9,
-          valorous: 15, cowardly: 5
-        };
-        updated.passions = {
-          loyaltyLiege: 15,
-          loveFamily: 15,
-          hospitality: 15,
-          honor: 16,
-          hateSaracens: 12,
-          loveGod: 15
-        };
-        updated.skillsChecked = {};
-        updated.traitsChecked = {};
-        updated.passionsChecked = {};
-        updated.gear = {
-          armorShield: "사슬갑옷 (10점) + 방패 (+3)",
-          clothing: "£2 상당의 궁정 튜닉",
-          personalGear: "나무 십자가, 숫돌, 리넨 천 뭉치",
-          homePossessions: "가문 상속 장비",
-          cash: 5,
-          gloryThisGame: 0,
-          gloryTotal: 1000 + Math.floor((prev.gear?.gloryTotal || 0) / 10)
-        };
+      if (!character.campaign?.salvation) {
+        setCharacter(prev => ({
+          ...prev,
+          campaign: {
+            ...(prev.campaign || {}),
+            successorCandidate: {
+              memberId: editingMember.id,
+              name: editingMember.name,
+              birthYear,
+              age: calculatedAge,
+              parentId: editingMember.parentId || null
+            }
+          }
+        }));
+        alert('후계자 후보를 기록했습니다. 현재 기사의 구원 판정을 먼저 완료하세요.');
+        return;
+      }
 
-      // 4. Record succession in campaign year journal
-      if (!updated.journal) updated.journal = {};
-      const msg = `[계승] 기사 ${oldName} 은퇴/사망 및 후계자 ${newName} 가업 승계.`;
-      const currentEntry = updated.journal[currentYear]?.text || '';
-      updated.journal[currentYear] = {
-        text: currentEntry ? `${currentEntry}\n\n• ${msg}` : `• ${msg}`,
-        updatedAt: new Date().toISOString()
-      };
+      setCharacter(prev => {
+        const unresolved = { ...(prev.campaign?.winter?.unresolved || {}) };
+        unresolved.successorCreation = { label: `${editingMember.name}의 룰북 캐릭터 생성`, required: true };
+        return {
+          ...prev,
+          campaign: {
+            ...(prev.campaign || {}),
+            successorCandidate: {
+              memberId: editingMember.id,
+              name: editingMember.name,
+              birthYear,
+              age: calculatedAge,
+              parentId: editingMember.parentId || null,
+              selectedAt: new Date().toISOString()
+            },
+            lifecycle: {
+              ...(prev.campaign?.lifecycle || {}),
+              careerStatus: 'pending_succession',
+              activeCharacterId: null,
+              pendingSuccession: true
+            },
+            winter: {
+              ...(prev.campaign?.winter || {}),
+              unresolved
+            }
+          }
+        };
+      });
 
-	      return updated;
-        }, `가문 승계: ${editingMember.name}`);
-        return result.character;
-	    });
-
-    setIsModalOpen(false);
-    setEditingMember(null);
-    alert(`[가문 상속 완료]: 새로운 계승자 기사(${editingMember.name}, ${calculatedAge}세)로의 전환이 시트와 가계도에 공식 적용되었습니다!`);
+      setIsModalOpen(false);
+      setEditingMember(null);
+      alert(`${editingMember.name}을(를) 다음 캐릭터 후보로 지정했습니다. 캐릭터 시트의 생성 절차를 완료하세요.`);
   };
 
   const members = useMemo(() => {
@@ -4360,11 +4348,11 @@ export default function FamilyTree({ character, setCharacter }) {
 
   // Default Template for reset
   const defaultMembers = [
-    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~770', deathCause: '영지 분쟁', note: '샤를마뉴 대제 초기의 백작 기사이자 전설적인 용사.', gender: 'male' },
-    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '사망', lifeYears: '724~768', deathCause: '파비아 공성전', note: '작센 원정에서 주군을 구하고 명예롭게 전사.', spouseId: 'eleanor', gender: 'male' },
+    { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~744', deathCause: '은퇴 후 사망', note: '가문 조부 연대의 기사.', gender: 'male' },
+    { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '생존', lifeYears: '724~', note: '가문 부친 연대의 기사.', spouseId: 'eleanor', gender: 'male' },
     { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard', gender: 'female' },
-    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '768~', note: '플레이어 캐릭터. 샤를마뉴 대제의 젊은 성기사.', parentId: 'gerard', gender: 'male' },
-    { id: 'pierre', name: '피에르 경 (Sir Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '772~', note: '형의 뒤를 이어 성기사가 되기 위해 맹훈련 중인 종자.', parentId: 'gerard', gender: 'male' }
+    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '749~', note: '767년 플레이어 캐릭터.', parentId: 'gerard', gender: 'male' },
+    { id: 'pierre', name: '피에르 (Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '752~', note: '플레이어의 남동생.', parentId: 'gerard', gender: 'male' }
   ];
 
   // SVG Lines Calculation
@@ -5099,7 +5087,7 @@ export default function FamilyTree({ character, setCharacter }) {
       const match = me.lifeYears.match(/^(\d+)/);
       if (match) return parseInt(match[1], 10);
     }
-    return 768; // Default fallback
+    return 749; // Default player birth year for an 18-year-old in 767
   };
 
   const handleAddRandomMember = (gen) => {
@@ -5117,7 +5105,7 @@ export default function FamilyTree({ character, setCharacter }) {
     const birthYear = baseBirth + Math.floor(Math.random() * 11) - 5; // ±5 years
 
     // Status and Death
-    const currentYear = character.personal?.campaignYear || 768;
+    const currentYear = character.personal?.campaignYear || 767;
     let status = '생존';
     let lifeYears = `${birthYear}~`;
     let deathCause = undefined;
@@ -6388,12 +6376,12 @@ export default function FamilyTree({ character, setCharacter }) {
 
             const amorVal = character.passions.amor || 0;
             const honorVal = character.passions.honor || 0;
-            const loyaltyLiege = character.passions.loyaltyLiege || 0;
+            const loveCharlemagne = character.passions.loveCharlemagne ?? character.passions.loyaltyLiege ?? 0;
             const loveGodVal = character.passions.loveGod || 0;
 
             const amorBonus = Math.min(5, Math.max(0, amorVal - 15));
             const honorBonus = Math.min(5, Math.max(0, honorVal - 15));
-            const liegeBonus = Math.min(5, Math.max(0, loyaltyLiege - 15));
+            const charlemagneBonus = Math.min(5, Math.max(0, loveCharlemagne - 15));
             const godBonus = Math.min(5, Math.max(0, loveGodVal - 15));
 
             const deedsBonus = (salvationDeedsPaladin ? 5 : 0) +
@@ -6401,7 +6389,8 @@ export default function FamilyTree({ character, setCharacter }) {
               Math.min(5, Math.max(0, parseInt(salvationPagans) || 0)) +
               (parseInt(salvationCustomDeeds) || 0);
 
-            const totalSalvationScore = lowestReligiousTrait + amorBonus + honorBonus + liegeBonus + godBonus + deedsBonus;
+            const salvationBonusPoints = amorBonus + honorBonus + charlemagneBonus + godBonus + deedsBonus;
+            const totalSalvationScore = lowestReligiousTrait + salvationBonusPoints;
 
             return (
             <div className="view-animate" style={{ padding: '16px', backgroundColor: 'rgba(255, 255, 255, 0.65)', borderTop: '1px solid var(--color-gold-light)' }}>
@@ -6447,8 +6436,8 @@ export default function FamilyTree({ character, setCharacter }) {
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
-                      <span>👑 주군 충성 보너스 (Loyalty &gt; 15):</span>
-                      <span>+{liegeBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loyaltyLiege}점)</span></span>
+                      <span>샤를마뉴 사랑 보너스 (Love Charlemagne &gt; 15):</span>
+                      <span>+{charlemagneBonus} 점 <span style={{ color: 'var(--color-grey)' }}>({loveCharlemagne}점)</span></span>
                     </div>
 
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed #eee', paddingBottom: '4px' }}>
@@ -6526,7 +6515,7 @@ export default function FamilyTree({ character, setCharacter }) {
                           </div>
                         ) : (
                           <div style={{ marginTop: '4px', fontSize: '0.74rem', color: 'var(--color-grey)' }}>
-                            * 성인(Sainthood) 조건: 구원 공적 보너스 15점 이상 확보, 주사위 임계 성공(1), 교단 소속 Standing 판정 패스
+                            * 성인 조건: 전체 가산점 15점 이상, 구원 수치 20 이상, 구원 대성공, 교회 Standing 성공
                           </div>
                         )}
                       </div>
@@ -6541,7 +6530,7 @@ export default function FamilyTree({ character, setCharacter }) {
                         style={{ flex: 1, padding: '8px', fontSize: '0.85rem' }}
                         onClick={applySalvationLegacy}
                       >
-                        🌟 영면 및 가문 계승 시트 적용
+                        구원 결과와 계승 혜택 기록
                       </button>
                     </div>
                   )}
@@ -6768,6 +6757,7 @@ export default function FamilyTree({ character, setCharacter }) {
                   >
                     <option value="생존">생존 (Healthy)</option>
                     <option value="사망">사망 (Deceased)</option>
+                    <option value="은퇴">확정 은퇴 (Retired)</option>
                     <option value="질병">질병 (Illness)</option>
                     <option value="실종">실종 (Missing)</option>
                     <option value="포로">포로 (Captive)</option>
@@ -6781,7 +6771,7 @@ export default function FamilyTree({ character, setCharacter }) {
                     className="ft-input" 
                     value={formLifeYears} 
                     onChange={e => setFormLifeYears(e.target.value)}
-                    placeholder="예: 768~ 또는 725~770"
+                    placeholder="예: 749~ 또는 725~770"
                   />
                 </div>
               </div>

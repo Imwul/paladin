@@ -1,8 +1,20 @@
 /**
- * Chronology data for the Paladin Companion (768 AD - 814 AD).
+ * Chronology data for the Paladin Companion (767 AD - 814 AD).
  * Fully localized in Korean for immersive storytelling.
  */
 export const chronologyData = [
+  {
+    "year": 767,
+    "title": "로마 전투 (Battle of Rome)",
+    "summary": "핵심 캠페인이 시작됩니다. 첫 플레이어 캐릭터들은 겸손한 종자들의 모험과 로마 전투를 겪습니다.",
+    "details": "피핀 시대의 마지막 해이자 플레이어 연대의 첫해입니다. 이 해는 742-767년의 0단계에 속하며, 핵심 모험 'The Adventure of the Humble Squires'의 출발점입니다.",
+    "events": [
+      {
+        "type": "War",
+        "text": "로마 전투와 겸손한 종자들의 모험이 시작됩니다."
+      }
+    ]
+  },
   {
     "year": 768,
     "title": "제국의 탄생 (The Birth of a Reign)",

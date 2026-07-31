@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
+import { createFrankishArdennesTraits, createFrankishMaleBaseSkills, deriveStartingPassions, deriveStartingStandings, rollDie, roundPaladin } from '../utils/paladinRules';
 import { getFamilyCharacteristicIndexFromRoll } from '../utils/rulebookTables';
 
 const oppositeMap = {
@@ -38,7 +39,7 @@ export const patronSaints = [
   { name: "성 아나스타시아 (St. Anastasia)", patronage: "순교자", benefit: "+3 정숙 (Chaste)", apply: (char) => { char.traits.chaste = Math.min(20, (char.traits.chaste || 10) + 3); char.traits.lustful = 20 - char.traits.chaste; } },
   { name: "성 보니파시오 (St. Boniface)", patronage: "청년", benefit: "+3 자비 (Merciful)", apply: (char) => { char.traits.merciful = Math.min(20, (char.traits.merciful || 10) + 3); char.traits.cruel = 20 - char.traits.merciful; } },
   { name: "성 크리스토포로 (St. Christopher)", patronage: "여행자", benefit: "+3 겸손 (Modest)", apply: (char) => { char.traits.modest = Math.min(20, (char.traits.modest || 10) + 3); char.traits.proud = 20 - char.traits.modest; } },
-  { name: "성 데니스 (St. Denis)", patronage: "프랑크인", benefit: "+2 샤를마뉴 충성 (Love Charlemagne)", apply: (char) => { char.standings.charlemagne = (char.standings.charlemagne || 10) + 2; } },
+  { name: "성 데니스 (St. Denis)", patronage: "프랑크인", benefit: "+2 샤를마뉴 사랑 (Love Charlemagne)", apply: (char) => { char.passions.loveCharlemagne = (char.passions.loveCharlemagne || 0) + 2; } },
   { name: "성 엘리기오 (St. Eligius)", patronage: "치유자", benefit: "+5 응급처치 (First Aid)", apply: (char) => { char.skills.firstAid = (char.skills.firstAid || 0) + 5; } },
   { name: "성 가브리엘 (St. Gabriel)", patronage: "전령", benefit: "+3 관용 (Forgiving)", apply: (char) => { char.traits.forgiving = Math.min(20, (char.traits.forgiving || 10) + 3); char.traits.vengeful = 20 - char.traits.forgiving; } },
   { name: "성 헬레나 (St. Helena)", patronage: "미망인", benefit: "+2 가족에 대한 사랑 (Love Family)", apply: (char) => { char.passions.loveFamily = (char.passions.loveFamily || 15) + 2; } },
@@ -264,13 +265,13 @@ const applySkillTrainingPlan = (skills, points, focusKey) => {
 export const birthGiftsTable = [
   { roll: 1, name: "Decorated Saddle", benefit: "장식된 말 안장 (가치 120d)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "장식된 말 안장 (가치 120d)"; } },
   { roll: 2, name: "Magnificent Cloak", benefit: "화려한 가문 망토 (가치 £1)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "화려한 가문 망토 (가치 £1)"; } },
-  { roll: 3, name: "Blessed Spear", benefit: "축복받은 창 (Spear 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.spear = (char.skills.spear || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 창 (이교도 상대 +1)"; } },
+  { roll: 3, name: "Blessed Spear", benefit: "축복받은 창 (Spear 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 창 (이교도 상대 Spear 판정 +1)"; } },
   { roll: 4, name: "Money £1", benefit: "동전 £1 (£1 in coin)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 1; } },
-  { roll: 5, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 +1)"; } },
-  { roll: 6, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.skills.sword = (char.skills.sword || 0) + 1; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 +1)"; } },
+  { roll: 5, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 Sword 판정 +1)"; } },
+  { roll: 6, name: "Blessed Iron Sword", benefit: "축복받은 철검 (Sword 기술 판정 시 이교도 상대 +1 보정)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "축복받은 철검 (이교도 상대 Sword 판정 +1)"; } },
   { roll: 7, name: "Golden Ring", benefit: "금반지 (가치 £2)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "금반지 (가치 £2)"; } },
-  { roll: 8, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.traits.pious = Math.min(20, (char.traits.pious || 10) + 2); char.traits.worldly = 20 - char.traits.pious; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (성유물 보관)"; } },
-  { roll: 9, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.traits.pious = Math.min(20, (char.traits.pious || 10) + 2); char.traits.worldly = 20 - char.traits.pious; char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (성유물 보관)"; } },
+  { roll: 8, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (종교 성향 +2 선택 필요)"; } },
+  { roll: 9, name: "Sacred Relic", benefit: "성유물 성골함 (선택한 종교 Traits +2)", apply: (char) => { char.gear.personalGear = (char.gear.personalGear ? char.gear.personalGear + ", " : "") + "성골함 (종교 성향 +2 선택 필요)"; } },
   { roll: 10, name: "Extra Palfrey", benefit: "여분의 경량마 (Palfrey) 1필 추가", apply: (char) => { char.horses.other3 = "여분 경량마 (Palfrey)"; } },
   { roll: 11, name: "Extra Palfrey", benefit: "여분의 경량마 (Palfrey) 1필 추가", apply: (char) => { char.horses.other3 = "여분 경량마 (Palfrey)"; } },
   { roll: 12, name: "Money £3", benefit: "동전 £3 (£3 in coin)", apply: (char) => { char.gear.cash = (char.gear.cash || 0) + 3; } },
@@ -518,7 +519,6 @@ const traitList = [
   { key1: "just", label1: "정의", key2: "arbitrary", label2: "독단", sym: "⦿" },
   { key1: "merciful", label1: "자비", key2: "cruel", label2: "잔혹", sym: "⦿✝" },
   { key1: "modest", label1: "겸손", key2: "proud", label2: "오만", sym: "⦿✝" },
-  { key1: "pious", label1: "경건", key2: "worldly", label2: "세속", sym: "✝⦿" },
   { key1: "prudent", label1: "신중", key2: "reckless", label2: "무모", sym: "♥" },
   { key1: "temperate", label1: "절제", key2: "indulgent", label2: "방종", sym: "✝" },
   { key1: "trusting", label1: "신뢰", key2: "suspicious", label2: "의심", sym: "✝♥" },
@@ -564,12 +564,13 @@ const personalFields = [
 ];
 
 const passions = [
-  { key: "loyaltyLiege", label: "주군에 대한 충성 (Loyalty)", defaultVal: 15 },
-  { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
-  { key: "hospitality", label: "손대접 및 환대 (Hospitality)", defaultVal: 15 },
   { key: "honor", label: "기사의 명예 (Honor)", defaultVal: 16 },
-  { key: "hateSaracens", label: "이교도에 대한 증오 (Hate Saracens)", defaultVal: 12 },
+  { key: "loveCharlemagne", label: "샤를마뉴 사랑 (Love Charlemagne)", defaultVal: 10 },
+  { key: "loveFamily", label: "가족에 대한 사랑 (Love Family)", defaultVal: 15 },
   { key: "loveGod", label: "신에 대한 사랑 (Love God)", defaultVal: 15 },
+  { key: "loyaltyLiege", label: "주군 충성 (추가 열정)", defaultVal: 0 },
+  { key: "hospitality", label: "환대 (추가 열정)", defaultVal: 0 },
+  { key: "hateSaracens", label: "사라센 증오 (추가 열정)", defaultVal: 0 },
   { key: "amor", label: "연인에 대한 로맨스 (Amor)", defaultVal: 0 }
 ];
 
@@ -776,7 +777,7 @@ const revertCharacteristic = (char, charName) => {
 
 export default function CharacterSheet({ character, setCharacter, initialCharacterState }) {
   const [isGenOpen, setIsGenOpen] = useState(false);
-  const [genActiveTab, setGenActiveTab] = useState('preset'); // 'preset' or 'custom'
+  const [genActiveTab, setGenActiveTab] = useState('custom'); // 'preset' or 'custom'
   const [selectedPreset, setSelectedPreset] = useState(0);
 
   // 가문 캐릭터 시트 로컬 상태들
@@ -998,10 +999,27 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightBlessing = () => {
+    if ((character?.campaign?.legacy?.blessingRolls || 0) < 1) {
+      alert("성인으로 추대된 선대가 남긴 축복 굴림이 없습니다.");
+      return;
+    }
     const r = Math.floor(Math.random() * 20) + 1;
     const blessing = frankishBlessings.find(b => r >= b.rollRange[0] && r <= b.rollRange[1]);
     const desc = blessing ? `${blessing.name}: ${blessing.desc}` : "성스러운 가호";
-    handleInputChange('personal', 'blessing', desc);
+    setCharacter(prev => ({
+      ...prev,
+      personal: {
+        ...(prev.personal || {}),
+        blessing: desc
+      },
+      campaign: {
+        ...(prev.campaign || {}),
+        legacy: {
+          ...(prev.campaign?.legacy || {}),
+          blessingRolls: Math.max(0, (prev.campaign?.legacy?.blessingRolls || 0) - 1)
+        }
+      }
+    }));
     setKnightBlessingRollResult({ roll: r, blessing: desc });
   };
 
@@ -1195,6 +1213,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customMercenaryWeapon, setCustomMercenaryWeapon] = useState('axe');
   const [customSonNumber, setCustomSonNumber] = useState(1);
   const [customLoveFamilyDie, setCustomLoveFamilyDie] = useState(6);
+  const [customLoveCharlemagneRoll, setCustomLoveCharlemagneRoll] = useState(10);
   const [customOfficerPatronRank, setCustomOfficerPatronRank] = useState('banneret');
 
   // 🎲 주사위 롤링 연동 상태 (d20 눈 입력바)
@@ -1205,26 +1224,24 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [customSaintIndex, setCustomSaintIndex] = useState(17); // St. Michael default
   const [customCharIndex, setCustomCharIndex] = useState(3); // Born in the saddle default
   const [customFatherIndex, setCustomFatherIndex] = useState(0); // Vassal Knight default
-  const [customBlessing, setCustomBlessing] = useState('용맹의 징표');
-
   const [customSubclass, setCustomSubclass] = useState('Steward');
   const [customSaintChoice20, setCustomSaintChoice20] = useState(17);
   const [customCharChoice19, setCustomCharChoice19] = useState('battle');
   const [customCharChoice20, setCustomCharChoice20] = useState(0);
 
-  const [customBirthGiftReligiousTrait1, setCustomBirthGiftReligiousTrait1] = useState('pious');
+  const [customBirthGiftReligiousTrait1, setCustomBirthGiftReligiousTrait1] = useState('chaste');
   const [customBirthGiftWeapon1, setCustomBirthGiftWeapon1] = useState('sword');
   const [customBirthGiftChoice20_1, setCustomBirthGiftChoice20_1] = useState(1);
   const [customBirthGiftRoll19_1a, setCustomBirthGiftRoll19_1a] = useState(4);
   const [customBirthGiftRoll19_1b, setCustomBirthGiftRoll19_1b] = useState(10);
 
-  const [customBirthGiftReligiousTrait2, setCustomBirthGiftReligiousTrait2] = useState('pious');
+  const [customBirthGiftReligiousTrait2, setCustomBirthGiftReligiousTrait2] = useState('chaste');
   const [customBirthGiftWeapon2, setCustomBirthGiftWeapon2] = useState('sword');
   const [customBirthGiftChoice20_2, setCustomBirthGiftChoice20_2] = useState(1);
   const [customBirthGiftRoll19_2a, setCustomBirthGiftRoll19_2a] = useState(4);
   const [customBirthGiftRoll19_2b, setCustomBirthGiftRoll19_2b] = useState(10);
 
-  const [customBirthGiftReligiousTrait3, setCustomBirthGiftReligiousTrait3] = useState('pious');
+  const [customBirthGiftReligiousTrait3, setCustomBirthGiftReligiousTrait3] = useState('chaste');
   const [customBirthGiftWeapon3, setCustomBirthGiftWeapon3] = useState('sword');
   const [customBirthGiftChoice20_3, setCustomBirthGiftChoice20_3] = useState(1);
   const [customBirthGiftRoll19_3a, setCustomBirthGiftRoll19_3a] = useState(4);
@@ -1309,8 +1326,9 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     setCustomBirthGiftRoll1(rollD20());
     setCustomBirthGiftRoll2(rollD20());
     setCustomBirthGiftRoll3(rollD20());
-    setCustomSonNumber(Math.floor(Math.random() * 3) + 1);
+    setCustomSonNumber(Math.floor(Math.random() * 6) + 1);
     setCustomLoveFamilyDie(Math.floor(Math.random() * 6) + 1);
+    setCustomLoveCharlemagneRoll(roll2d6plus3());
   };
 
   const handleApplyPreset = () => {
@@ -1348,22 +1366,22 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const base = deepClone(initialCharacterState || character);
       base.campaign = {
         ...base.campaign,
-        schemaVersion: 2,
+        schemaVersion: 3,
         appliedEvents: {
           'character_creation:preset': {
             appliedAt: new Date().toISOString(),
-            year: preset.stats.personal?.campaignYear || 768,
+            year: preset.stats.personal?.campaignYear || 767,
             label: `프리셋 생성: ${preset.name}`
           },
           'character_creation:family_characteristic': {
             appliedAt: new Date().toISOString(),
-            year: preset.stats.personal?.campaignYear || 768,
+            year: preset.stats.personal?.campaignYear || 767,
             label: '프리셋 가문 특성'
           }
         },
         winter: {
           ...base.campaign?.winter,
-          year: preset.stats.personal?.campaignYear || 768
+          year: preset.stats.personal?.campaignYear || 767
         }
       };
       if (base.horses?.warhorse) {
@@ -1380,7 +1398,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         personal: {
           ...base.personal,
           ...preset.stats.personal,
-          campaignYear: 768
+          campaignYear: 767
         },
         attributes: {
           ...base.attributes,
@@ -1426,15 +1444,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     const finalStr = customStr + (customAttrBonuses.str || 0);
     const finalCon = customCon + (customAttrBonuses.con || 0);
     const finalApp = customApp + (customAttrBonuses.app || 0);
-    const sonNumberLabel = customSonNumber === 1 ? "첫째 (Eldest)" : (customSonNumber === 2 ? "둘째 (Second)" : "셋째 (Third)");
+    const sonNumberLabel = `${customSonNumber}번째 아들`;
 
     newChar.personal = {
       ...newChar.personal,
       name: finalCustomName,
       age: 18,
-      campaignYear: 768,
+      campaignYear: 767,
       sonNumber: sonNumberLabel,
-      blessing: customBlessing || "가문의 축복",
+      blessing: '',
       homeland: "아르덴 (Ardennes)",
       home: "바스토뉴 (Bastogne)",
       culture: "프랑크 (Frankish)",
@@ -1456,48 +1474,17 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       currentHp: finalSiz + finalCon
     };
 
-    newChar.skills = {
-      awareness: 8, chirurgery: 1, faerieLore: 2, firstAid: 10, folkLore: 4,
-      horsemanship: 12, hunting: 6, industry: 5, recognize: 5, religion: 6, stewardship: 3, swimming: 5,
-      courtesy: 8, dancing: 2, eloquence: 6, falconry: 4, gaming: 5, heraldry: 5, intrigue: 3, languages: 2, playInstruments: 1, readingWriting: 2, romance: 4, singing: 3,
-      battle: 10, siege: 5,
-      axe: 6, bludgeon: 5, dagger: 8, spear: 10, sword: 13, unarmed: 6,
-      lance: 12, bow: 4, crossbow: 5, thrownWeapon: 4
-    };
+    newChar.skills = createFrankishMaleBaseSkills({ dex: finalDex });
+    addCappedSkill(newChar.skills, 'hunting', rollDie(3));
+    newChar.traits = createFrankishArdennesTraits();
 
-    newChar.traits = {
-      chaste: 10, lustful: 10,
-      energetic: 12, lazy: 8,
-      forgiving: 11, vengeful: 9,
-      generous: 13, selfish: 7,
-      honest: 12, deceitful: 8,
-      just: 10, arbitrary: 10,
-      merciful: 11, cruel: 9,
-      modest: 10, proud: 10,
-      pious: 12, worldly: 8,
-      prudent: 10, reckless: 10,
-      temperate: 10, indulgent: 10,
-      trusting: 11, suspicious: 9,
-      valorous: 15, cowardly: 5
-    };
-
-    newChar.passions = {
-      loyaltyLiege: 15,
-      loveFamily: Math.max(0, customLoveFamilyDie + 10 - customSonNumber),
-      hospitality: 15,
-      honor: 16,
-      hateSaracens: 12,
-      loveGod: 15
-    };
-
-    newChar.standings = {
-      charlemagne: 10,
-      liegeLord: 15,
-      family: 16,
-      retinue: 13,
-      church: 15,
-      commoners: 11
-    };
+    newChar.passions = deriveStartingPassions({
+      traits: newChar.traits,
+      sonNumber: customSonNumber,
+      loveCharlemagneRoll: customLoveCharlemagneRoll,
+      loveFamilyRoll: customLoveFamilyDie
+    });
+    newChar.standings = deriveStartingStandings({ traits: newChar.traits, passions: newChar.passions });
 
     newChar.horses = {
       warhorse: {
@@ -1526,7 +1513,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     };
 
     const saint = makePatronSaintChoice(customSaintIndex, customSaintChoice20);
-    saint.apply(newChar);
     newChar.family = newChar.family || {};
     newChar.family.patronSaint = saint.name;
     newChar.family.patronSaintRoll = customSaintRoll;
@@ -1580,7 +1566,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     trainingResult = applySkillTrainingPlan(newChar.skills, fatherSkillPoints, customTrainingFocus);
     
     newChar.family.manors = startingManors;
-    newChar.personal.blessing = `${customBlessing} / ${saint.name}의 가호`;
+    newChar.personal.blessing = '';
 
     // 2. Apply Family Characteristic Choices (Master Tacticians or Player's Choice)
     const characteristic = familyCharacteristics[customCharIndex];
@@ -1638,6 +1624,11 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       applied: true,
       appliedBonus: finalCharEffect
     };
+
+    saint.apply(newChar);
+    Object.keys(newChar.skills).forEach(key => {
+      newChar.skills[key] = Math.min(20, newChar.skills[key]);
+    });
 
     // 3. Apply Table 1-15: Frankish Birth Gifts
     const rollsCount = getBirthGiftRollCount(customFatherIndex, customSubclass);
@@ -1723,50 +1714,68 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     });
 
     newChar.attributes.currentHp = newChar.attributes.siz + newChar.attributes.con;
+    const finalPassions = deriveStartingPassions({
+      traits: newChar.traits,
+      sonNumber: customSonNumber,
+      loveCharlemagneRoll: newChar.passions.loveCharlemagne,
+      loveFamilyRoll: customLoveFamilyDie
+    });
+    finalPassions.honor += 1;
+    finalPassions.loveGod += 1;
+    newChar.passions = { ...newChar.passions, ...finalPassions };
+    if (saint.name.includes('St. Helena')) newChar.passions.loveFamily += 2;
+    if (saint.name.includes('St. Joseph')) newChar.passions.honor += 2;
+    if (saint.name.includes('St. Mary')) newChar.passions.loveGod += 2;
+    newChar.standings = deriveStartingStandings({ traits: newChar.traits, passions: newChar.passions });
     newChar.campaign = {
-      schemaVersion: 2,
+      schemaVersion: 3,
+      lifecycle: {
+        careerStatus: 'active',
+        activeCharacterId: newChar.family?.members?.find(member => member.relation === '본인')?.id || null,
+        pendingSuccession: false
+      },
       appliedEvents: {
         'character_creation:custom': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `커스텀 생성: ${finalCustomName}`
         },
         'character_creation:patron_saint': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `수호 성인: ${saint.name}`
         },
         'character_creation:family_characteristic': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `가문 특성: ${characteristic.name}`
         },
         'character_creation:attribute_bonus': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `능력치 추가 5점: STR +${customAttrBonuses.str || 0}, SIZ +${customAttrBonuses.siz || 0}, DEX +${customAttrBonuses.dex || 0}, CON +${customAttrBonuses.con || 0}, APP +${customAttrBonuses.app || 0}`
         },
         'character_creation:father_skill_training': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `부친 신분 기술 포인트 ${trainingResult.spent}/${fatherSkillPoints}점 자동 배분`
         },
         'character_creation:starting_outfit': {
           appliedAt: new Date().toISOString(),
-          year: 768,
+          year: 767,
           label: `시작 복장: Outfit ${startingOutfit.rank}${outfitUpgradeCount ? ` (탄생 선물 업그레이드 +${outfitUpgradeCount})` : ''}`
         },
         ...appliedGifts.reduce((acc, gift, index) => {
           acc[`character_creation:birth_gift:${index + 1}`] = {
             appliedAt: new Date().toISOString(),
-            year: 768,
+            year: 767,
             label: `탄생 선물: ${gift}`
           };
           return acc;
         }, {})
       },
       winter: {
-        year: 768,
+        year: 767,
         steps: {
           aging: 'pending',
           harvest: 'pending',
@@ -1819,7 +1828,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const con = parseInt(character?.attributes?.con) || 0;
   const app = parseInt(character?.attributes?.app) || 0;
 
-  const calculatedDamage = Math.floor((str + siz) / 6);
+  const calculatedDamage = roundPaladin((str + siz) / 6);
   const calculatedHealing = Math.round((str + con) / 10);
   const calculatedMove = Math.round((str + dex) / 10);
   const maxHP = siz + con;
@@ -2196,6 +2205,9 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                         <option value={1}>첫째 (복장 감소 없음)</option>
                         <option value={2}>둘째 (시작 복장 -1)</option>
                         <option value={3}>셋째 (시작 복장 -1)</option>
+                        <option value={4}>넷째 (시작 복장 -1)</option>
+                        <option value={5}>다섯째 (시작 복장 -1)</option>
+                        <option value={6}>여섯째 (시작 복장 -1)</option>
                       </select>
                     </div>
                     <div>
@@ -2209,6 +2221,18 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                         style={{ textAlign: 'center', fontWeight: 'bold' }}
                       />
                     </div>
+                  </div>
+
+                  <div className="ft-form-group">
+                    <label className="ft-label">Love [Charlemagne] 2d6+3:</label>
+                    <input
+                      type="number"
+                      className="ft-input"
+                      min="5" max="15"
+                      value={customLoveCharlemagneRoll}
+                      onChange={e => setCustomLoveCharlemagneRoll(Math.min(15, Math.max(5, Number(e.target.value) || 5)))}
+                      style={{ textAlign: 'center', fontWeight: 'bold' }}
+                    />
                   </div>
 
                   <div className="ft-form-group">
@@ -2232,29 +2256,19 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   )}
 
                   <div className="ft-form-group" style={{ backgroundColor: 'rgba(255,255,255,0.45)', padding: '8px 10px', borderRadius: '4px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.76rem', color: 'var(--color-grey)', lineHeight: 1.45 }}>
-                    자동 계산: 기술 포인트 <strong>{customFatherSkillPoints}</strong>점, 시작 복장 <strong>Outfit {customPreviewOutfitRank}</strong>, Love [Family] <strong>{Math.max(0, customLoveFamilyDie + 10 - customSonNumber)}</strong>
-                  </div>
-
-                  <div className="ft-form-group">
-                    <label className="ft-label">시작 축복 이름:</label>
-                    <input
-                      type="text"
-                      className="ft-input"
-                      value={customBlessing}
-                      onChange={e => setCustomBlessing(e.target.value)}
-                    />
+                    자동 계산: 기술 포인트 <strong>{customFatherSkillPoints}</strong>점, 시작 복장 <strong>Outfit {customPreviewOutfitRank}</strong>, Love [Charlemagne] <strong>{customLoveCharlemagneRoll}</strong>, Love [Family] <strong>{Math.max(0, customLoveFamilyDie + 10 - customSonNumber)}</strong>
                   </div>
 
                   {/* 가문 탄생 선물 (Table 1-15 Frankish Birth Gifts) */}
                   <div className="ft-form-group" style={{ borderTop: '1px dashed rgba(201,168,76,0.2)', paddingTop: '12px', marginTop: '12px' }}>
                     <label className="ft-label" style={{ color: 'var(--color-gold-dark)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      🎁 가문 탄생 선물 (부친 신분 보너스: {getBirthGiftRollCount(customFatherIndex)}회 굴림)
+                      🎁 가문 탄생 선물 (부친 신분 보너스: {getBirthGiftRollCount(customFatherIndex, customSubclass)}회 굴림)
                     </label>
                     <span style={{ fontSize: '0.74rem', color: 'var(--color-grey)', display: 'block', marginBottom: '8px' }}>
                       룰북 40쪽 Table 1-15에 따라 조상 소지품 또는 유산을 획득합니다.
                     </span>
 
-                    {getBirthGiftRollCount(customFatherIndex) >= 1 && (
+                    {getBirthGiftRollCount(customFatherIndex, customSubclass) >= 1 && (
                       <div style={{ marginBottom: '8px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
                           <input
@@ -2281,7 +2295,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                             <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
                             <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
                               value={customBirthGiftReligiousTrait1} onChange={e => setCustomBirthGiftReligiousTrait1(e.target.value)}>
-                              <option value="pious">Pious (신앙심)</option>
                               <option value="chaste">Chaste (순결)</option>
                               <option value="forgiving">Forgiving (용서)</option>
                               <option value="merciful">Merciful (자비)</option>
@@ -2338,7 +2351,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       </div>
                     )}
 
-                    {getBirthGiftRollCount(customFatherIndex) >= 2 && (
+                    {getBirthGiftRollCount(customFatherIndex, customSubclass) >= 2 && (
                       <div style={{ marginBottom: '8px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
                           <input
@@ -2365,7 +2378,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                             <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
                             <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
                               value={customBirthGiftReligiousTrait2} onChange={e => setCustomBirthGiftReligiousTrait2(e.target.value)}>
-                              <option value="pious">Pious (신앙심)</option>
                               <option value="chaste">Chaste (순결)</option>
                               <option value="forgiving">Forgiving (용서)</option>
                               <option value="merciful">Merciful (자비)</option>
@@ -2422,7 +2434,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       </div>
                     )}
 
-                    {getBirthGiftRollCount(customFatherIndex) >= 3 && (
+                    {getBirthGiftRollCount(customFatherIndex, customSubclass) >= 3 && (
                       <div style={{ marginBottom: '8px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '70px 1fr', gap: '8px' }}>
                           <input
@@ -2449,7 +2461,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                             <span style={{ fontSize: '0.72rem', color: 'var(--color-gold-dark)' }}>성유물 가호 성향 선택 (+2): </span>
                             <select className="cs-roll-select" style={{ display: 'inline-block', width: 'auto', padding: '2px 4px', fontSize: '0.72rem' }}
                               value={customBirthGiftReligiousTrait3} onChange={e => setCustomBirthGiftReligiousTrait3(e.target.value)}>
-                              <option value="pious">Pious (신앙심)</option>
                               <option value="chaste">Chaste (순결)</option>
                               <option value="forgiving">Forgiving (용서)</option>
                               <option value="merciful">Merciful (자비)</option>
@@ -2766,6 +2777,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   <option value="둘째 (Second)">둘째 (Second)</option>
                   <option value="셋째 (Third)">셋째 (Third)</option>
                   <option value="넷째 (Fourth)">넷째 (Fourth)</option>
+                  <option value="다섯째 (Fifth)">다섯째 (Fifth)</option>
+                  <option value="여섯째 (Sixth)">여섯째 (Sixth)</option>
                 </select>
                 <input
                   type="text"
@@ -2819,42 +2832,27 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               )}
             </div>
 
-            {/* Frankish Blessing */}
-            <div style={{ backgroundColor: 'rgba(201,168,76,0.03)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(201,168,76,0.18)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                <label style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>성스러운 축복 (Table 1-17, p.42)</label>
-                <button type="button" className="btn-medieval" style={{ padding: '3px 8px', fontSize: '0.75rem' }} onClick={rollKnightBlessing}>
-                  <Dices size={12} style={{ marginRight: '4px' }} /> 1d20 굴리기
-                </button>
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <select
-                  value={character?.personal?.blessing || ''}
-                  onChange={e => handleInputChange('personal', 'blessing', e.target.value)}
-                  style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
-                >
-                  <option value="">-- 축복 선택 --</option>
-                  {frankishBlessings.map(b => (
-                    <option key={b.name} value={`${b.name}: ${b.desc}`}>{b.name}</option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  value={character?.personal?.blessing || ''}
-                  onChange={e => handleInputChange('personal', 'blessing', e.target.value)}
-                  placeholder="또는 직접 입력"
-                  style={{ width: '120px', padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
-                />
-              </div>
-              {character?.personal?.blessing && (
-                <div style={{ fontSize: '0.82rem', color: 'var(--color-royal-blue)', backgroundColor: 'white', padding: '6px 10px', borderRadius: '4px', border: '1px dotted var(--color-border)' }}>
-                  <strong>상세:</strong> {character.personal.blessing}
-                  {knightBlessingRollResult && character.personal.blessing.includes(knightBlessingRollResult.blessing.split(':')[0]) && (
-                    <div style={{ marginTop: '4px', color: 'var(--color-grey)' }}>🎲 굴림값: {knightBlessingRollResult.roll}</div>
+            {/* Table 1-17 is available only to the successor of a canonized character. */}
+            {((character?.campaign?.legacy?.blessingRolls || 0) > 0 || character?.personal?.blessing) && (
+              <div style={{ backgroundColor: 'rgba(201,168,76,0.03)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(201,168,76,0.18)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <label style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>성인 계승 축복 (Table 1-17, p.42)</label>
+                  {(character?.campaign?.legacy?.blessingRolls || 0) > 0 && (
+                    <button type="button" className="btn-medieval" style={{ padding: '3px 8px', fontSize: '0.75rem' }} onClick={rollKnightBlessing}>
+                      <Dices size={12} style={{ marginRight: '4px' }} /> 1d20 굴리기
+                    </button>
                   )}
                 </div>
-              )}
-            </div>
+                {character?.personal?.blessing && (
+                  <div style={{ fontSize: '0.82rem', color: 'var(--color-royal-blue)', backgroundColor: 'white', padding: '6px 10px', borderRadius: '4px', border: '1px dotted var(--color-border)' }}>
+                    <strong>상세:</strong> {character.personal.blessing}
+                    {knightBlessingRollResult && character.personal.blessing.includes(knightBlessingRollResult.blessing.split(':')[0]) && (
+                      <div style={{ marginTop: '4px', color: 'var(--color-grey)' }}>🎲 굴림값: {knightBlessingRollResult.roll}</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* The Leap Ceremony */}
             <div style={{ backgroundColor: 'rgba(201,168,76,0.03)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(201,168,76,0.18)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
