@@ -1,9 +1,14 @@
 /* global console, structuredClone */
 import assert from 'node:assert/strict';
 import {
+  adjustOpposedTrait,
+  applyDeferredExperienceAdjustments,
+  applyStatisticModifiers,
+  calculateMovementRate,
   compareOpposedD20,
   createFrankishArdennesTraits,
   createFrankishMaleBaseSkills,
+  createReflexiveModifier,
   deriveStartingPassions,
   deriveStartingStandings,
   getAgingRollCount,
@@ -12,10 +17,23 @@ import {
   getHarvestModifier,
   getLineageEra,
   getSuccessorEligibility,
+  getsAutomaticExperienceCheck,
+  getTravelDistance,
+  parseDiceNotation,
   resolveD20Roll,
+  resolveExperienceChecks,
+  resolveExperienceRoll,
+  resolveFeatRoll,
+  resolveForcedMarch,
   resolveHarvest,
-  roundPaladin
-} from '../src/utils/paladinRules.js';
+  resolveOpposedD20,
+  resolveTraitExperienceChecks,
+  resolveUnknownRoute,
+  rollD3,
+  rollDiceNotation,
+  roundPaladin,
+  TRAIT_PAIRS
+} from '../src/rules/index.js';
 import { sanitizeCampaignState } from '../src/utils/campaignState.js';
 
 const test = (ruleId, name, assertion) => {
@@ -49,6 +67,78 @@ test('CORE-RES-004', 'opposed roll ordering', () => {
   assert.equal(compareOpposedD20(resolveD20Roll(8, 10), resolveD20Roll(6, 10)), 'actor');
   assert.equal(compareOpposedD20(resolveD20Roll(10, 10), resolveD20Roll(9, 10)), 'actor');
   assert.equal(compareOpposedD20(resolveD20Roll(12, 10), resolveD20Roll(20, 10)), 'bothFail');
+});
+
+test('INTRO-DICE-001', 'printed dice notation and d3 conversion', () => {
+  assert.deepEqual(parseDiceNotation('5d6+150'), { notation: '5d6+150', count: 5, sides: 6, modifier: 150 });
+  const values = [0, 0.999];
+  const result = rollDiceNotation('2d3+1', () => values.shift());
+  assert.deepEqual(result.rawRolls, [1, 6]);
+  assert.deepEqual(result.rolls, [1, 3]);
+  assert.equal(result.total, 5);
+  assert.equal(rollD3(() => 0.5), 2);
+});
+
+test('CORE-RES-001', 'invalid physical d20 results are rejected', () => {
+  assert.throws(() => resolveD20Roll(0, 10), RangeError);
+  assert.throws(() => resolveD20Roll(21, 10), RangeError);
+  assert.throws(() => resolveD20Roll(10, Number.NaN), TypeError);
+});
+
+test('CORE-OPPOSED-001', 'highest successful modified roll wins and loser may be partial', () => {
+  const lowerCritical = resolveD20Roll(10, 10);
+  const higherSuccess = resolveD20Roll(15, 20);
+  const result = resolveOpposedD20(lowerCritical, higherSuccess);
+  assert.equal(result.winner, 'opponent');
+  assert.equal(result.actorOutcome, 'partial');
+  assert.equal(result.opponentOutcome, 'win');
+  assert.equal(resolveOpposedD20(resolveD20Roll(8, 10), resolveD20Roll(8, 12)).winner, 'tie');
+});
+
+test('CORE-MOD-001', 'statistic and reflexive modifiers are applied before resolution', () => {
+  assert.equal(applyStatisticModifiers(15, [-5, 2]), 12);
+  assert.deepEqual(createReflexiveModifier(5), { actor: 5, opponent: -5 });
+  assert.equal(resolveD20Roll(18, applyStatisticModifiers(20, 2)).outcome, 'critical');
+});
+
+test('CORE-FEAT-001', 'feat halves the statistic and yields only critical or fumble', () => {
+  assert.equal(resolveFeatRoll(6, 15).featTarget, 8);
+  assert.equal(resolveFeatRoll(6, 15).outcome, 'critical');
+  assert.equal(resolveFeatRoll(9, 15).outcome, 'fumble');
+});
+
+test('CORE-MOVE-001', 'movement, travel, unknown route and forced march tables', () => {
+  assert.equal(calculateMovementRate({ str: 10, dex: 15 }), 3);
+  assert.equal(calculateMovementRate({ str: 10, dex: 15, creature: 'quadruped', unencumbered: true }), 7);
+  assert.equal(getTravelDistance('royalRoad', 'normal'), 20);
+  assert.equal(getTravelDistance('track', 'hurried'), 4);
+  assert.deepEqual(resolveUnknownRoute('success'), { pace: 'leisurely', delayDays: 0, lost: false });
+  const march = resolveForcedMarch({ roll: 20, con: 10, movementRate: 9, roadType: 'royalRoad', rng: () => 0 });
+  assert.equal(march.attemptedDistance, 57);
+  assert.equal(march.distance, 28.5);
+  assert.equal(march.mustRest, true);
+  assert.equal(march.damage, 2);
+});
+
+test('CORE-XP-002', 'experience succeeds on equal-or-higher and has no score-20 cap', () => {
+  assert.equal(resolveExperienceRoll(10, 10).nextValue, 11);
+  assert.equal(resolveExperienceRoll(9, 10).nextValue, 10);
+  assert.equal(resolveExperienceRoll(20, 22).nextValue, 23);
+  assert.equal(getsAutomaticExperienceCheck(20), true);
+  const result = resolveExperienceChecks({ values: { sword: 20, hunting: 10 }, checked: {}, rng: () => 0.999 });
+  assert.equal(result.values.sword, 21);
+  assert.equal(result.results.some(entry => entry.key === 'hunting'), false);
+  assert.equal(applyDeferredExperienceAdjustments(resolveExperienceRoll(10, 10), [-1]).nextValue, 10);
+});
+
+test('TRAIT-PAIR-001', 'heroic trait values keep the opposed trait at zero', () => {
+  assert.equal(TRAIT_PAIRS.length, 12);
+  assert.equal(TRAIT_PAIRS.flat().includes('pious'), false);
+  const legacyCheck = resolveTraitExperienceChecks({ traits: { pious: 20 }, checked: { pious: true }, rng: () => 0.999 });
+  assert.equal(legacyCheck.results.some(result => result.key === 'pious'), false);
+  const heroic = adjustOpposedTrait({ valorous: 19, cowardly: 1 }, 'valorous', 1);
+  assert.deepEqual(heroic, { valorous: 20, cowardly: 0 });
+  assert.deepEqual(adjustOpposedTrait(heroic, 'valorous', 1), { valorous: 21, cowardly: 0 });
 });
 
 test('CORE-MATH-001', 'Paladin half-up rounding', () => {
@@ -88,7 +178,7 @@ test('SUCCESSION-001', 'successor procedure starts at age 15, not 18', () => {
 test('WIN-AGE-001', 'aging table and career end', () => {
   assert.deepEqual([1, 2, 4, 7, 12, 16].map(getAgingRollCount), [5, 4, 3, 2, 1, 0]);
   assert.equal(getAttributeCareerStatus({ siz: 4, dex: 4, str: 4, con: 4, app: 4 }), 'active');
-  assert.equal(getAttributeCareerStatus({ siz: 3, dex: 4, str: 4, con: 4, app: 4 }), 'incapacitated');
+  assert.equal(getAttributeCareerStatus({ siz: 3, dex: 4, str: 4, con: 4, app: 4 }), 'bedridden');
   assert.equal(getAttributeCareerStatus({ siz: 0, dex: 4, str: 4, con: 4, app: 4 }), 'deceased');
 });
 
@@ -169,7 +259,7 @@ test('SAVE-MIG-001', 'legacy passions and winter economy migrate', () => {
   oldSave.campaign.winter.economy = { grossIncome: 18, stewardshipTarget: 12, stewardshipModifier: 2, treasuryDelta: -4, maintenancePending: true };
   const migrated = sanitizeCampaignState(oldSave, defaults);
   assert.equal(migrated.passions.loveCharlemagne, 17);
-  assert.equal(migrated.campaign.schemaVersion, 3);
+  assert.equal(migrated.campaign.schemaVersion, 5);
   assert.equal(migrated.campaign.winter.harvestModifier, -3);
   assert.deepEqual(migrated.campaign.winter.economy, oldSave.campaign.winter.economy);
 });
@@ -201,8 +291,20 @@ test('SAVE-LIFE-002', 'pending succession cannot reactivate a living predecessor
     pendingSuccession: true
   };
   const migrated = sanitizeCampaignState(pendingSave, defaults);
-  assert.equal(migrated.campaign.lifecycle.careerStatus, 'pending_succession');
+  assert.equal(migrated.campaign.lifecycle.careerStatus, 'historical');
+  assert.equal(migrated.campaign.lifecycle.status, 'pending_successor');
   assert.equal(migrated.campaign.lifecycle.activeCharacterId, null);
+});
+
+test('SAVE-HEROIC-001', 'heroic scores survive save sanitization in either trait direction', () => {
+  const heroicSave = structuredClone(defaults);
+  heroicSave.skills.sword = 37;
+  heroicSave.traits.chaste = 0;
+  heroicSave.traits.lustful = 24;
+  const migrated = sanitizeCampaignState(heroicSave, defaults);
+  assert.equal(migrated.skills.sword, 37);
+  assert.equal(migrated.traits.chaste, 0);
+  assert.equal(migrated.traits.lustful, 24);
 });
 
 console.log('rule audit regression passed');

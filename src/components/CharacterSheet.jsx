@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
+import CharacterCreationWizard from './CharacterCreationWizard';
+import LifecyclePanel from './LifecyclePanel';
+import { t } from '../i18n';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
-import { createFrankishArdennesTraits, createFrankishMaleBaseSkills, deriveStartingPassions, deriveStartingStandings, rollDie, roundPaladin } from '../utils/paladinRules';
+import {
+  adjustOpposedTrait,
+  calculateMovementRate,
+  createFrankishArdennesTraits,
+  createFrankishMaleBaseSkills,
+  deriveStartingPassions,
+  deriveStartingStandings,
+  resolveD20Roll,
+  rollD3,
+  rollDie,
+  roundPaladin,
+  setOpposedTraitValue
+} from '../rules';
 import { getFamilyCharacteristicIndexFromRoll } from '../utils/rulebookTables';
 
-const oppositeMap = {
-  chaste: 'lustful', lustful: 'chaste',
-  energetic: 'lazy', lazy: 'energetic',
-  forgiving: 'vengeful', vengeful: 'forgiving',
-  generous: 'selfish', selfish: 'generous',
-  honest: 'deceitful', deceitful: 'honest',
-  just: 'arbitrary', arbitrary: 'just',
-  merciful: 'cruel', cruel: 'merciful',
-  modest: 'proud', proud: 'modest',
-  pious: 'worldly', worldly: 'pious',
-  prudent: 'reckless', reckless: 'prudent',
-  temperate: 'indulgent', indulgent: 'temperate',
-  trusting: 'suspicious', suspicious: 'trusting',
-  valorous: 'cowardly', cowardly: 'valorous'
+const applyTraitAdjustment = (character, trait, amount, maximum = 20) => {
+  character.traits = adjustOpposedTrait(character.traits, trait, amount, maximum);
 };
 
 const lordOfficerSubclasses = [
@@ -36,24 +39,24 @@ const lordOfficerSubclasses = [
 
 export const patronSaints = [
   { name: "성 암브로시오 (St. Ambrose)", patronage: "필기사", benefit: "+5 웅변 (Eloquence)", apply: (char) => { char.skills.eloquence = (char.skills.eloquence || 0) + 5; } },
-  { name: "성 아나스타시아 (St. Anastasia)", patronage: "순교자", benefit: "+3 정숙 (Chaste)", apply: (char) => { char.traits.chaste = Math.min(20, (char.traits.chaste || 10) + 3); char.traits.lustful = 20 - char.traits.chaste; } },
-  { name: "성 보니파시오 (St. Boniface)", patronage: "청년", benefit: "+3 자비 (Merciful)", apply: (char) => { char.traits.merciful = Math.min(20, (char.traits.merciful || 10) + 3); char.traits.cruel = 20 - char.traits.merciful; } },
-  { name: "성 크리스토포로 (St. Christopher)", patronage: "여행자", benefit: "+3 겸손 (Modest)", apply: (char) => { char.traits.modest = Math.min(20, (char.traits.modest || 10) + 3); char.traits.proud = 20 - char.traits.modest; } },
+  { name: "성 아나스타시아 (St. Anastasia)", patronage: "순교자", benefit: "+3 정숙 (Chaste)", apply: (char) => applyTraitAdjustment(char, 'chaste', 3) },
+  { name: "성 보니파시오 (St. Boniface)", patronage: "청년", benefit: "+3 자비 (Merciful)", apply: (char) => applyTraitAdjustment(char, 'merciful', 3) },
+  { name: "성 크리스토포로 (St. Christopher)", patronage: "여행자", benefit: "+3 겸손 (Modest)", apply: (char) => applyTraitAdjustment(char, 'modest', 3) },
   { name: "성 데니스 (St. Denis)", patronage: "프랑크인", benefit: "+2 샤를마뉴 사랑 (Love Charlemagne)", apply: (char) => { char.passions.loveCharlemagne = (char.passions.loveCharlemagne || 0) + 2; } },
   { name: "성 엘리기오 (St. Eligius)", patronage: "치유자", benefit: "+5 응급처치 (First Aid)", apply: (char) => { char.skills.firstAid = (char.skills.firstAid || 0) + 5; } },
-  { name: "성 가브리엘 (St. Gabriel)", patronage: "전령", benefit: "+3 관용 (Forgiving)", apply: (char) => { char.traits.forgiving = Math.min(20, (char.traits.forgiving || 10) + 3); char.traits.vengeful = 20 - char.traits.forgiving; } },
+  { name: "성 가브리엘 (St. Gabriel)", patronage: "전령", benefit: "+3 관용 (Forgiving)", apply: (char) => applyTraitAdjustment(char, 'forgiving', 3) },
   { name: "성 헬레나 (St. Helena)", patronage: "미망인", benefit: "+2 가족에 대한 사랑 (Love Family)", apply: (char) => { char.passions.loveFamily = (char.passions.loveFamily || 15) + 2; } },
-  { name: "성 힐라리오 (St. Hilary)", patronage: "광인", benefit: "+3 정의 (Just)", apply: (char) => { char.traits.just = Math.min(20, (char.traits.just || 10) + 3); char.traits.arbitrary = 20 - char.traits.just; } },
+  { name: "성 힐라리오 (St. Hilary)", patronage: "광인", benefit: "+3 정의 (Just)", apply: (char) => applyTraitAdjustment(char, 'just', 3) },
   { name: "성 후베르토 (St. Hubert)", patronage: "사냥꾼", benefit: "+5 수렵 (Hunting)", apply: (char) => { char.skills.hunting = (char.skills.hunting || 0) + 5; } },
-  { name: "성 야고보 (St. James)", patronage: "노동자", benefit: "+3 열정 (Energetic)", apply: (char) => { char.traits.energetic = Math.min(20, (char.traits.energetic || 10) + 3); char.traits.lazy = 20 - char.traits.energetic; } },
-  { name: "성 예로니모 (St. Jerome)", patronage: "학생", benefit: "+3 신뢰 (Trusting)", apply: (char) => { char.traits.trusting = Math.min(20, (char.traits.trusting || 10) + 3); char.traits.suspicious = 20 - char.traits.trusting; } },
-  { name: "성 요한 세례자 (St. John the Baptist)", patronage: "어린이", benefit: "+3 정직 (Honest)", apply: (char) => { char.traits.honest = Math.min(20, (char.traits.honest || 10) + 3); char.traits.deceitful = 20 - char.traits.honest; } },
+  { name: "성 야고보 (St. James)", patronage: "노동자", benefit: "+3 열정 (Energetic)", apply: (char) => applyTraitAdjustment(char, 'energetic', 3) },
+  { name: "성 예로니모 (St. Jerome)", patronage: "학생", benefit: "+3 신뢰 (Trusting)", apply: (char) => applyTraitAdjustment(char, 'trusting', 3) },
+  { name: "성 요한 세례자 (St. John the Baptist)", patronage: "어린이", benefit: "+3 정직 (Honest)", apply: (char) => applyTraitAdjustment(char, 'honest', 3) },
   { name: "성 요셉 (St. Joseph)", patronage: "장인", benefit: "+2 명예 (Honor Passion)", apply: (char) => { char.passions.honor = (char.passions.honor || 16) + 2; } },
-  { name: "성 유스티노 (St. Justin)", patronage: "연설가", benefit: "+3 신중 (Prudent)", apply: (char) => { char.traits.prudent = Math.min(20, (char.traits.prudent || 10) + 3); char.traits.reckless = 20 - char.traits.prudent; } },
-  { name: "성 마르티노 (St. Martin)", patronage: "군인", benefit: "+3 절제 (Temperate)", apply: (char) => { char.traits.temperate = Math.min(20, (char.traits.temperate || 10) + 3); char.traits.indulgent = 20 - char.traits.temperate; } },
+  { name: "성 유스티노 (St. Justin)", patronage: "연설가", benefit: "+3 신중 (Prudent)", apply: (char) => applyTraitAdjustment(char, 'prudent', 3) },
+  { name: "성 마르티노 (St. Martin)", patronage: "군인", benefit: "+3 절제 (Temperate)", apply: (char) => applyTraitAdjustment(char, 'temperate', 3) },
   { name: "성모 마리아 (St. Mary)", patronage: "어머니", benefit: "+2 신에 대한 사랑 (Love God)", apply: (char) => { char.passions.loveGod = (char.passions.loveGod || 15) + 2; } },
-  { name: "성 미카엘 (St. Michael)", patronage: "전사", benefit: "+3 용맹 (Valorous)", apply: (char) => { char.traits.valorous = Math.min(20, (char.traits.valorous || 10) + 3); char.traits.cowardly = 20 - char.traits.valorous; } },
-  { name: "성 오메르 (St. Omer)", patronage: "병자 및 빈민", benefit: "+3 관대 (Generous)", apply: (char) => { char.traits.generous = Math.min(20, (char.traits.generous || 10) + 3); char.traits.selfish = 20 - char.traits.generous; } },
+  { name: "성 미카엘 (St. Michael)", patronage: "전사", benefit: "+3 용맹 (Valorous)", apply: (char) => applyTraitAdjustment(char, 'valorous', 3) },
+  { name: "성 오메르 (St. Omer)", patronage: "병자 및 빈민", benefit: "+3 관대 (Generous)", apply: (char) => applyTraitAdjustment(char, 'generous', 3) },
   { name: "자유 선택 (Player's Choice)", patronage: "자유 선택", benefit: "원하는 수호 성인 선택", apply: () => {} }
 ];
 
@@ -686,53 +689,41 @@ const revertSaint = (char, saintName) => {
   if (oldSaint.name.includes("암브로시오") || oldSaint.name.includes("Ambrose")) {
     char.skills.eloquence = Math.max(0, (char.skills.eloquence || 0) - 5);
   } else if (oldSaint.name.includes("아나스타시아") || oldSaint.name.includes("Anastasia")) {
-    char.traits.chaste = Math.max(0, (char.traits.chaste || 10) - 3);
-    char.traits.lustful = 20 - char.traits.chaste;
+    applyTraitAdjustment(char, 'chaste', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("보니파시오") || oldSaint.name.includes("Boniface")) {
-    char.traits.merciful = Math.max(0, (char.traits.merciful || 10) - 3);
-    char.traits.cruel = 20 - char.traits.merciful;
+    applyTraitAdjustment(char, 'merciful', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("크리스토포로") || oldSaint.name.includes("Christopher")) {
-    char.traits.modest = Math.max(0, (char.traits.modest || 10) - 3);
-    char.traits.proud = 20 - char.traits.modest;
+    applyTraitAdjustment(char, 'modest', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("데니스") || oldSaint.name.includes("Denis")) {
     char.standings.charlemagne = Math.max(0, (char.standings.charlemagne || 10) - 2);
   } else if (oldSaint.name.includes("엘리기오") || oldSaint.name.includes("Eligius")) {
     char.skills.firstAid = Math.max(0, (char.skills.firstAid || 0) - 5);
   } else if (oldSaint.name.includes("가브리엘") || oldSaint.name.includes("Gabriel")) {
-    char.traits.forgiving = Math.max(0, (char.traits.forgiving || 10) - 3);
-    char.traits.vengeful = 20 - char.traits.forgiving;
+    applyTraitAdjustment(char, 'forgiving', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("헬레나") || oldSaint.name.includes("Helena")) {
     char.passions.loveFamily = Math.max(0, (char.passions.loveFamily || 15) - 2);
   } else if (oldSaint.name.includes("힐라리오") || oldSaint.name.includes("Hilary")) {
-    char.traits.just = Math.max(0, (char.traits.just || 10) - 3);
-    char.traits.arbitrary = 20 - char.traits.just;
+    applyTraitAdjustment(char, 'just', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("후베르토") || oldSaint.name.includes("Hubert")) {
     char.skills.hunting = Math.max(0, (char.skills.hunting || 0) - 5);
   } else if (oldSaint.name.includes("야고보") || oldSaint.name.includes("James")) {
-    char.traits.energetic = Math.max(0, (char.traits.energetic || 10) - 3);
-    char.traits.lazy = 20 - char.traits.energetic;
+    applyTraitAdjustment(char, 'energetic', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("예로니모") || oldSaint.name.includes("Jerome")) {
-    char.traits.trusting = Math.max(0, (char.traits.trusting || 10) - 3);
-    char.traits.suspicious = 20 - char.traits.trusting;
+    applyTraitAdjustment(char, 'trusting', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("요한 세례자") || oldSaint.name.includes("John the Baptist")) {
-    char.traits.honest = Math.max(0, (char.traits.honest || 10) - 3);
-    char.traits.deceitful = 20 - char.traits.honest;
+    applyTraitAdjustment(char, 'honest', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("요셉") || oldSaint.name.includes("Joseph")) {
     char.passions.honor = Math.max(0, (char.passions.honor || 16) - 2);
   } else if (oldSaint.name.includes("유스티노") || oldSaint.name.includes("Justin")) {
-    char.traits.prudent = Math.max(0, (char.traits.prudent || 10) - 3);
-    char.traits.reckless = 20 - char.traits.prudent;
+    applyTraitAdjustment(char, 'prudent', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("마르티노") || oldSaint.name.includes("Martin")) {
-    char.traits.temperate = Math.max(0, (char.traits.temperate || 10) - 3);
-    char.traits.indulgent = 20 - char.traits.temperate;
+    applyTraitAdjustment(char, 'temperate', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("성모 마리아") || oldSaint.name.includes("Mary")) {
     char.passions.loveGod = Math.max(0, (char.passions.loveGod || 15) - 2);
   } else if (oldSaint.name.includes("미카엘") || oldSaint.name.includes("Michael")) {
-    char.traits.valorous = Math.max(0, (char.traits.valorous || 10) - 3);
-    char.traits.cowardly = 20 - char.traits.valorous;
+    applyTraitAdjustment(char, 'valorous', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("오메르") || oldSaint.name.includes("Omer")) {
-    char.traits.generous = Math.max(0, (char.traits.generous || 10) - 3);
-    char.traits.selfish = 20 - char.traits.generous;
+    applyTraitAdjustment(char, 'generous', -3, Number.MAX_SAFE_INTEGER);
   }
 };
 
@@ -777,7 +768,7 @@ const revertCharacteristic = (char, charName) => {
 
 export default function CharacterSheet({ character, setCharacter, initialCharacterState }) {
   const [isGenOpen, setIsGenOpen] = useState(false);
-  const [genActiveTab, setGenActiveTab] = useState('custom'); // 'preset' or 'custom'
+  const [genActiveTab, setGenActiveTab] = useState('core'); // 'core', 'custom', or 'preset'
   const [selectedPreset, setSelectedPreset] = useState(0);
 
   // 가문 캐릭터 시트 로컬 상태들
@@ -870,15 +861,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollSheetMuster = () => {
-    const rOld = Math.floor(Math.random() * 6) + 1;
+    const rOld = rollDie(6);
     const oldVal = Math.max(0, rOld - 5);
-    const rMid = Math.floor(Math.random() * 6) + 1;
+    const rMid = rollDie(6);
     const midVal = Math.max(0, rMid - 2);
-    const rYoung = Math.floor(Math.random() * 6) + 1;
+    const rYoung = rollDie(6);
     const youngVal = rYoung + 1;
-    const rL1 = Math.floor(Math.random() * 6) + 1;
-    const rL2 = Math.floor(Math.random() * 6) + 1;
-    const rL3 = Math.floor(Math.random() * 6) + 1;
+    const rL1 = rollDie(6);
+    const rL2 = rollDie(6);
+    const rL3 = rollDie(6);
     const lineageVal = rL1 + rL2 + rL3 + 5;
 
     setCharacter(prev => {
@@ -900,16 +891,16 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollSheetStandings = () => {
-    const rChar1 = Math.floor(Math.random() * 6) + 1;
-    const rChar2 = Math.floor(Math.random() * 6) + 1;
+    const rChar1 = rollDie(6);
+    const rChar2 = rollDie(6);
     const charVal = rChar1 + rChar2;
 
-    const rChur1 = Math.floor(Math.random() * 6) + 1;
-    const rChur2 = Math.floor(Math.random() * 6) + 1;
+    const rChur1 = rollDie(6);
+    const rChur2 = rollDie(6);
     const churchVal = rChur1 + rChur2;
 
-    const rComm1 = Math.floor(Math.random() * 6) + 1;
-    const rComm2 = Math.floor(Math.random() * 6) + 1;
+    const rComm1 = rollDie(6);
+    const rComm2 = rollDie(6);
     const commonVal = rComm1 + rComm2;
 
     setCharacter(prev => {
@@ -929,8 +920,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollSheetHonor = () => {
-    const r1 = Math.floor(Math.random() * 6) + 1;
-    const r2 = Math.floor(Math.random() * 6) + 1;
+    const r1 = rollDie(6);
+    const r2 = rollDie(6);
     const val = r1 + r2 + 3;
 
     setCharacter(prev => {
@@ -954,7 +945,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const [gearBirthGiftRollResult, setGearBirthGiftRollResult] = useState(null);
 
   const rollKnightFatherClass = () => {
-    const r = Math.floor(Math.random() * 20) + 1;
+    const r = rollDie(20);
     let className = '';
     if (r === 1) className = "영주 또는 관료 (Lord or Officer)";
     else if (r >= 2 && r <= 3) className = "기치 기사 (Banneret Knight)";
@@ -967,13 +958,13 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightFatherSurvival = () => {
-    const r = Math.floor(Math.random() * 20) + 1;
+    const r = rollDie(20);
     let condition = '';
     if (r <= 13) condition = "부친 생존 (Father living)";
     else if (r <= 17) condition = "부친 사망 (Father deceased)";
     else if (r <= 19) condition = "부친 병상 (Father bedridden)";
     else {
-      const missingYears = (Math.floor(Math.random() * 6) + 1) + (Math.floor(Math.random() * 6) + 1);
+      const missingYears = (rollDie(6)) + (rollDie(6));
       condition = `부친 실종 (Father missing, ${missingYears}년 동안)`;
     }
     handleInputChange('personal', 'fathersSurvival', condition);
@@ -981,7 +972,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightSonNumber = () => {
-    const r = Math.floor(Math.random() * 6) + 1;
+    const r = rollDie(6);
     let sonNum = '';
     if (r <= 2) sonNum = "첫째 (Eldest)";
     else if (r <= 4) sonNum = "둘째 (Second)";
@@ -991,7 +982,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightPageEducation = () => {
-    const r = Math.floor(Math.random() * 20) + 1;
+    const r = rollDie(20);
     const edu = pageEducations.find(b => r >= b.rollRange[0] && r <= b.rollRange[1]);
     const name = edu ? edu.name : "왕실 궁정 (Royal court)";
     handleInputChange('personal', 'pageEducation', name);
@@ -1003,7 +994,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       alert("성인으로 추대된 선대가 남긴 축복 굴림이 없습니다.");
       return;
     }
-    const r = Math.floor(Math.random() * 20) + 1;
+    const r = rollDie(20);
     const blessing = frankishBlessings.find(b => r >= b.rollRange[0] && r <= b.rollRange[1]);
     const desc = blessing ? `${blessing.name}: ${blessing.desc}` : "성스러운 가호";
     setCharacter(prev => ({
@@ -1028,9 +1019,9 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       alert("기사 도약 영광은 이미 이 캠페인에 반영되었습니다.");
       return;
     }
-    const r = Math.floor(Math.random() * 20) + 1;
+    const r = rollDie(20);
     const dex = character?.attributes?.dex || 10;
-    const success = r <= dex;
+    const success = resolveD20Roll(r, dex).success;
     setKnightLeapRollResult({ roll: r, dex, success });
     if (success) {
       setCharacter(prev => {
@@ -1048,32 +1039,21 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       alert("프랑크 문화 보정은 이미 이 캠페인에 반영되었습니다.");
       return;
     }
-    const r1 = Math.floor(Math.random() * 3) + 1; // +1d3 Energetic
-    const r2 = Math.floor(Math.random() * 3) + 1; // +1d3 Generous
-    const r3 = Math.floor(Math.random() * 3) + 1; // +1d3 Valorous
+    const r1 = rollD3();
+    const r2 = rollD3();
+    const r3 = rollD3();
 
     setCharacter(prev => {
       const result = applyOnce(prev, 'character_creation:frankish_cultural_modifiers', updated => {
-        updated.traits.energetic = Math.min(20, (updated.traits.energetic || 10) + r1);
-        updated.traits.lazy = 20 - updated.traits.energetic;
-
-        updated.traits.generous = Math.min(20, (updated.traits.generous || 10) + r2);
-        updated.traits.selfish = 20 - updated.traits.generous;
-
-        updated.traits.valorous = Math.min(20, (updated.traits.valorous || 10) + r3);
-        updated.traits.cowardly = 20 - updated.traits.valorous;
+        applyTraitAdjustment(updated, 'energetic', r1);
+        applyTraitAdjustment(updated, 'generous', r2);
+        applyTraitAdjustment(updated, 'valorous', r3);
 
         updated.passions.honor = (updated.passions.honor || 16) + 1;
         updated.passions.loveGod = (updated.passions.loveGod || 15) + 1;
 
-        const rels = ['chaste', 'forgiving', 'merciful', 'modest', 'temperate', 'trusting'];
-        rels.forEach(trait => {
-          updated.traits[trait] = Math.min(20, (updated.traits[trait] || 10) + 1);
-          const opposed = {
-            chaste: 'lustful', forgiving: 'vengeful', merciful: 'cruel',
-            modest: 'proud', temperate: 'indulgent', trusting: 'suspicious'
-          }[trait];
-          updated.traits[opposed] = 20 - updated.traits[trait];
+        ['chaste', 'forgiving', 'merciful', 'modest', 'temperate', 'trusting'].forEach(trait => {
+          applyTraitAdjustment(updated, trait, 1);
         });
 
         return updated;
@@ -1085,23 +1065,18 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightHomelandModifiers = () => {
-    const r1 = Math.floor(Math.random() * 3) + 1;
-    const r2 = Math.floor(Math.random() * 3) + 1;
-    const r3 = Math.floor(Math.random() * 3) + 1;
-    const r4 = Math.floor(Math.random() * 3) + 1;
+    const r1 = rollD3();
+    const r2 = rollD3();
+    const r3 = rollD3();
+    const r4 = rollD3();
 
     setCharacter(prev => {
       const updated = JSON.parse(JSON.stringify(prev));
       updated.skills.hunting = (updated.skills.hunting || 0) + r1;
 
-      updated.traits.temperate = Math.min(20, (updated.traits.temperate || 10) + r2);
-      updated.traits.indulgent = 20 - updated.traits.temperate;
-
-      updated.traits.modest = Math.min(20, (updated.traits.modest || 10) + r3);
-      updated.traits.proud = 20 - updated.traits.modest;
-
-      updated.traits.suspicious = Math.min(20, (updated.traits.suspicious || 10) + r4);
-      updated.traits.trusting = 20 - updated.traits.suspicious;
+      applyTraitAdjustment(updated, 'temperate', r2);
+      applyTraitAdjustment(updated, 'modest', r3);
+      applyTraitAdjustment(updated, 'suspicious', r4);
 
       return updated;
     });
@@ -1110,7 +1085,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollKnightFeature = () => {
-    const catRoll = Math.floor(Math.random() * 6) + 1;
+    const catRoll = rollDie(6);
     let desc = '';
     let feature = '';
 
@@ -1152,7 +1127,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollStartingOutfit = () => {
-    const roll = Math.floor(Math.random() * 6) + 1;
+    const roll = rollDie(6);
     setGearOutfitRollResult(getStartingOutfitPackage(roll));
   };
 
@@ -1167,7 +1142,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollGearBirthGift = () => {
-    const roll = Math.floor(Math.random() * 20) + 1;
+    const roll = rollDie(20);
     const gift = birthGiftsTable.find(g => g.roll === roll) || birthGiftsTable[roll - 1];
     setGearBirthGiftRollResult({ roll, name: gift.name, benefit: gift.benefit });
   };
@@ -1193,8 +1168,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   };
 
   const rollSheetEnemyHate = () => {
-    const r1 = Math.floor(Math.random() * 6) + 1;
-    const r2 = Math.floor(Math.random() * 6) + 1;
+    const r1 = rollDie(6);
+    const r2 = rollDie(6);
     const val = r1 + r2 + 3;
     setSheetEnemyHateRollResult({ rolls: [r1, r2], val });
   };
@@ -1301,8 +1276,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const handleRollAttributes = () => {
     // 룰북 Table 1-8: 모든 남성 능력치 2d6+3 (범위 5~15)
-    const roll2d6plus3 = () => Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 5;
-    const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+    const roll2d6plus3 = () => rollDie(6) + rollDie(6) + 3;
+    const rollD20 = () => rollDie(20);
 
     setCustomStr(roll2d6plus3());
     setCustomDex(roll2d6plus3());
@@ -1326,8 +1301,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     setCustomBirthGiftRoll1(rollD20());
     setCustomBirthGiftRoll2(rollD20());
     setCustomBirthGiftRoll3(rollD20());
-    setCustomSonNumber(Math.floor(Math.random() * 6) + 1);
-    setCustomLoveFamilyDie(Math.floor(Math.random() * 6) + 1);
+    setCustomSonNumber(rollDie(6));
+    setCustomLoveFamilyDie(rollDie(6));
     setCustomLoveCharlemagneRoll(roll2d6plus3());
   };
 
@@ -1366,7 +1341,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const base = deepClone(initialCharacterState || character);
       base.campaign = {
         ...base.campaign,
-        schemaVersion: 3,
+        schemaVersion: 5,
         appliedEvents: {
           'character_creation:preset': {
             appliedAt: new Date().toISOString(),
@@ -1544,10 +1519,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       }
       if (subclassData.traits) {
         Object.entries(subclassData.traits).forEach(([tKey, tVal]) => {
-          newChar.traits[tKey] = (newChar.traits[tKey] || 0) + tVal;
-          if (oppositeMap[tKey]) {
-            newChar.traits[oppositeMap[tKey]] = 20 - newChar.traits[tKey];
-          }
+          applyTraitAdjustment(newChar, tKey, tVal);
         });
       }
     } else {
@@ -1558,8 +1530,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       if (customFatherIndex === 3) {
         addCappedSkill(newChar.skills, 'sword', 3);
         addCappedSkill(newChar.skills, customMercenaryWeapon, 3);
-        newChar.traits.cruel = Math.min(20, (newChar.traits.cruel || 10) + 3);
-        newChar.traits.merciful = 20 - newChar.traits.cruel;
+        applyTraitAdjustment(newChar, 'cruel', 3);
       }
     }
 
@@ -1638,10 +1609,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
     const applySingleGift = (rollNum, religiousTrait, weaponKey, choice20, roll19a, roll19b) => {
       if (rollNum === 8 || rollNum === 9) {
-        newChar.traits[religiousTrait] = Math.min(20, (newChar.traits[religiousTrait] || 10) + 2);
-        if (oppositeMap[religiousTrait]) {
-          newChar.traits[oppositeMap[religiousTrait]] = 20 - newChar.traits[religiousTrait];
-        }
+        applyTraitAdjustment(newChar, religiousTrait, 2);
         newChar.gear.personalGear = (newChar.gear.personalGear ? newChar.gear.personalGear + ", " : "") + `성골함 (성유물 보관 - ${religiousTrait} +2)`;
         appliedGifts.push(`성유물 성골함 (${religiousTrait} +2)`);
       } else if (rollNum === 17) {
@@ -1728,7 +1696,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     if (saint.name.includes('St. Mary')) newChar.passions.loveGod += 2;
     newChar.standings = deriveStartingStandings({ traits: newChar.traits, passions: newChar.passions });
     newChar.campaign = {
-      schemaVersion: 3,
+      schemaVersion: 5,
       lifecycle: {
         careerStatus: 'active',
         activeCharacterId: newChar.family?.members?.find(member => member.relation === '본인')?.id || null,
@@ -1812,12 +1780,10 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     });
   };
 
-  const handleTraitChange = (traitName, oppositeName, value) => {
-    const numValue = Math.min(20, Math.max(0, parseInt(value) || 0));
-    const oppositeValue = 20 - numValue;
+  const handleTraitChange = (traitName, value) => {
     setCharacter(prev => ({
       ...prev,
-      traits: { ...(prev?.traits || {}), [traitName]: numValue, [oppositeName]: oppositeValue }
+      traits: setOpposedTraitValue(prev?.traits || {}, traitName, value)
     }));
   };
 
@@ -1829,8 +1795,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const app = parseInt(character?.attributes?.app) || 0;
 
   const calculatedDamage = roundPaladin((str + siz) / 6);
-  const calculatedHealing = Math.round((str + con) / 10);
-  const calculatedMove = Math.round((str + dex) / 10);
+  const calculatedHealing = roundPaladin((str + con) / 10);
+  const calculatedMove = calculateMovementRate({ str, dex });
   const maxHP = siz + con;
   const knockdown = siz;
   const majorWound = con;
@@ -1941,41 +1907,62 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           onClick={() => setIsGenOpen(!isGenOpen)}
         >
           <Sparkles size={16} />
-          {isGenOpen ? '생성 도우미 닫기' : '✨ 룰북 캐릭터 생성 도우미'}
+          {isGenOpen ? '생성 도우미 닫기' : '룰북 캐릭터 생성 도우미'}
         </button>
       </div>
+
+      <LifecyclePanel
+        character={character}
+        setCharacter={setCharacter}
+        onOpenCreation={() => {
+          setGenActiveTab('core');
+          setIsGenOpen(true);
+        }}
+      />
 
       {isGenOpen && (
         <div className="cs-gen-container view-animate">
           <div className="cs-gen-header">
             <h3>
               <Sparkles size={20} className="glow-effect" style={{ color: 'var(--color-gold)' }} />
-              룰북 기반 기사 캐릭터 생성기 (Page 25-30)
+              룰북 기반 기사 캐릭터 생성기
             </h3>
             <span style={{ fontSize: '0.78rem', color: 'var(--color-grey)' }}>
-              18~21세의 아르덴 출신 기사단원을 규칙서 기준으로 자동 생성합니다.
+              Chapter One · PDF 26-41 · 진행 중 생성은 현재 캐릭터와 분리해 저장됩니다.
             </span>
           </div>
 
           <div className="cs-gen-tabs">
             <button
               type="button"
+              className={`cs-gen-tab-btn ${genActiveTab === 'core' ? 'active' : ''}`}
+              onClick={() => setGenActiveTab('core')}
+            >
+              {t('creation.core')}
+            </button>
+            <button
+              type="button"
               className={`cs-gen-tab-btn ${genActiveTab === 'preset' ? 'active' : ''}`}
               onClick={() => setGenActiveTab('preset')}
             >
-              👑 기사 프리셋 빠른 시작
+              {t('creation.preset')}
             </button>
             <button
               type="button"
               className={`cs-gen-tab-btn ${genActiveTab === 'custom' ? 'active' : ''}`}
               onClick={() => setGenActiveTab('custom')}
             >
-              🎲 규칙서 커스텀 주사위 생성
+              {t('creation.manual')}
             </button>
           </div>
 
-          {genActiveTab === 'preset' ? (
+          {genActiveTab === 'core' ? (
+            <CharacterCreationWizard character={character} setCharacter={setCharacter} />
+          ) : genActiveTab === 'preset' ? (
             <div>
+              <p className="cc-warning" style={{ marginBottom: '12px' }}>
+                이 프리셋은 앱이 작성한 빠른 시작 예시이며 룰북 주사위 생성 결과가 아닙니다.
+              </p>
               <div className="cs-presets-grid">
                 {presets.map((p, idx) => (
                   <div
@@ -2013,6 +2000,9 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
             </div>
           ) : (
             <div>
+              <p className="cc-warning" style={{ marginBottom: '12px' }}>
+                이 화면은 기존 저장과 자유 편집을 위한 수동 도구입니다. 자동 기술 배분을 포함하므로 Core Rules Character 결과로 표시되지 않습니다.
+              </p>
               <div className="cs-roll-grid">
                 <div className="cs-roll-col">
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -3098,19 +3088,19 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                   <td className="cs-trait-name">{t.label1}</td>
                   <td className="cs-trait-val">
                     <div className="cs-num-ctrl mini">
-                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, t.key2, Math.max(0, (character?.traits?.[t.key1] || 0) - 1))}>−</button>
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, Math.max(0, (character?.traits?.[t.key1] || 0) - 1))}>−</button>
                       <input type="number" value={character?.traits?.[t.key1] || 0}
-                        onChange={e => handleTraitChange(t.key1, t.key2, e.target.value)} />
-                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, t.key2, Math.min(20, (character?.traits?.[t.key1] || 0) + 1))}>+</button>
+                        min="0" onChange={e => handleTraitChange(t.key1, e.target.value)} />
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, (character?.traits?.[t.key1] || 0) + 1)}>+</button>
                     </div>
                   </td>
                   <td className="cs-trait-divider">/</td>
                   <td className="cs-trait-val">
                     <div className="cs-num-ctrl mini">
-                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, t.key1, Math.max(0, (character?.traits?.[t.key2] || 0) - 1))}>−</button>
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, Math.max(0, (character?.traits?.[t.key2] || 0) - 1))}>−</button>
                       <input type="number" value={character?.traits?.[t.key2] || 0}
-                        onChange={e => handleTraitChange(t.key2, t.key1, e.target.value)} />
-                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, t.key1, Math.min(20, (character?.traits?.[t.key2] || 0) + 1))}>+</button>
+                        min="0" onChange={e => handleTraitChange(t.key2, e.target.value)} />
+                      <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, (character?.traits?.[t.key2] || 0) + 1)}>+</button>
                     </div>
                   </td>
                   <td className="cs-trait-name-right">{t.label2}</td>
@@ -3124,7 +3114,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       {/* ══════ PASSIONS + STANDINGS (side by side) ══════ */}
       <div className="cs-row">
         {/* Passions */}
-        <section className="cs-section" style={{ flex: '1' }}>
+        <section className="cs-section">
           <div className="sheet-ribbon"><h3>기사의 열망 (Passions)</h3></div>
           <div className="cs-section-inner">
             {passions.map(p => (
@@ -3185,7 +3175,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         </section>
 
         {/* Standings */}
-        <section className="cs-section" style={{ flex: '1' }}>
+        <section className="cs-section">
           <div className="sheet-ribbon"><h3>사회적 명망 &amp; 신분 (Standings)</h3></div>
           <div className="cs-section-inner">
             {standingsList.map(s => (
@@ -3611,7 +3601,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }} />
                   <button type="button" className="btn-medieval" onClick={() => {
                     let d20 = parseInt(sheetSaintRoll);
-                    if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = Math.floor(Math.random() * 20) + 1;
+                    if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = rollDie(20);
                     setSheetSaintRoll(String(d20));
                     applySheetSaint(makePatronSaintChoice(d20 - 1, sheetSaintChoice20), d20);
                   }}>🎲 d20 굴림</button>
@@ -3718,7 +3708,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 'bold', border: '1px solid var(--color-gold-light)', borderRadius: '4px' }} />
                     <button type="button" className="btn-medieval" onClick={() => {
                       let d20 = parseInt(sheetCharRoll);
-                      if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = Math.floor(Math.random() * 20) + 1;
+                      if (isNaN(d20) || d20 < 1 || d20 > 20) d20 = rollDie(20);
                       const charIndex = getCharIndexFromRoll(d20);
                       setSheetCharRoll(String(d20));
                       applySheetChar(makeFamilyCharacteristicChoice(charIndex, sheetCharChoice19, sheetCharChoice20), d20);

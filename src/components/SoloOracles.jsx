@@ -4,7 +4,13 @@ import { maleNames, femaleNames, surnames, locations, titles } from '../data/nam
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
 import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
-import { compareOpposedD20, resolveD20Roll } from '../utils/paladinRules';
+import {
+  compareOpposedD20,
+  getsAutomaticExperienceCheck,
+  resolveD20Roll,
+  resolveExperienceRoll,
+  rollDie
+} from '../rules';
 
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
@@ -314,7 +320,7 @@ export default function SoloOracles({ character, setCharacter }) {
   };
 
   const rollD20Check = (target) => {
-    const roll = Math.floor(Math.random() * 20) + 1;
+    const roll = rollDie(20);
     return resolveD20Roll(roll, target);
   };
 
@@ -415,12 +421,12 @@ export default function SoloOracles({ character, setCharacter }) {
     setRollResolution(null);
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setD20Result(tempRoll);
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
         setD20Result(finalRoll);
         setRollResolution(resolveD20(finalRoll, targetSkill));
         setIsRollingD20(false);
@@ -436,7 +442,7 @@ export default function SoloOracles({ character, setCharacter }) {
       const rolls = [];
       let sum = 0;
       for (let i = 0; i < d6Count; i++) {
-        const r = Math.floor(Math.random() * 6) + 1;
+        const r = rollDie(6);
         rolls.push(r);
         sum += r;
       }
@@ -448,7 +454,7 @@ export default function SoloOracles({ character, setCharacter }) {
         const rollsFinal = [];
         let sumFinal = 0;
         for (let i = 0; i < d6Count; i++) {
-          const r = Math.floor(Math.random() * 6) + 1;
+          const r = rollDie(6);
           rollsFinal.push(r);
           sumFinal += r;
         }
@@ -464,13 +470,13 @@ export default function SoloOracles({ character, setCharacter }) {
     setIsRollingOracle(true);
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       const tempMatch = getOracleAnswerFromRoll(tempRoll);
       setOracleAnswer({ roll: tempRoll, ...tempMatch });
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
         const match = getOracleAnswerFromRoll(finalRoll);
         setOracleAnswer({ roll: finalRoll, ...match });
         setIsRollingOracle(false);
@@ -589,7 +595,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setTraitRollResult({
         roll: tempRoll,
         key: rolledKey,
@@ -603,7 +609,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
 
         let outcome = '';
         let desc = '';
@@ -631,7 +637,7 @@ export default function SoloOracles({ character, setCharacter }) {
           checkRequired = true;
         } else {
           const opposedBase = getTraitValue(opposedKey);
-          opposedRollVal = Math.floor(Math.random() * 20) + 1;
+          opposedRollVal = rollDie(20);
 
           const opposedCheck = resolveD20Roll(opposedRollVal, opposedBase);
           if (opposedCheck.success) {
@@ -697,7 +703,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setPassionRollResult({
         roll: tempRoll,
         key: selectedPassionKey,
@@ -709,7 +715,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
 
         let outcome = '';
         let state = '';
@@ -833,8 +839,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const rollA = Math.floor(Math.random() * 20) + 1;
-      const rollB = Math.floor(Math.random() * 20) + 1;
+      const rollA = rollDie(20);
+      const rollB = rollDie(20);
       setEmotionRollResult({
         rollA,
         rollB,
@@ -844,8 +850,8 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
 
-        const finalRollA = Math.floor(Math.random() * 20) + 1;
-        const finalRollB = Math.floor(Math.random() * 20) + 1;
+        const finalRollA = rollDie(20);
+        const finalRollB = rollDie(20);
         const valA = emotionA.value;
         const valB = emotionB.value;
 
@@ -904,7 +910,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setGroupRollResult({
         roll: tempRoll,
         isRolling: true
@@ -913,7 +919,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
 
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
         let successesCount = 0;
         let fumblesCount = 0;
 
@@ -976,7 +982,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setIntrospectionResult({
         roll: tempRoll,
         isRolling: true
@@ -985,7 +991,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (counter > 15) {
         clearInterval(interval);
 
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
         let title = '평온함';
         let desc = '기사는 현실의 임무에 또렷이 집중하고 있습니다. 정상적인 모험 활동이 가능합니다.';
         let color = 'var(--color-grey)';
@@ -1106,7 +1112,7 @@ export default function SoloOracles({ character, setCharacter }) {
       const remainder = giftAmount % 100;
       if (remainder > 0) {
         setIsRollingGiftProportion(true);
-        const roll = Math.floor(Math.random() * 100) + 1;
+        const roll = rollDie(100);
         const success = roll <= remainder;
         if (success) {
           pointsEarned += 1;
@@ -1121,7 +1127,7 @@ export default function SoloOracles({ character, setCharacter }) {
       const remainder = giftAmount % 10;
       if (remainder > 0) {
         setIsRollingGiftProportion(true);
-        const roll = Math.floor(Math.random() * 10) + 1;
+        const roll = rollDie(10);
         const success = roll <= remainder;
         if (success) {
           pointsEarned += 1;
@@ -1163,7 +1169,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setStandingRollResult({
         roll: tempRoll,
         isRolling: true
@@ -1171,7 +1177,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
 
         let outcome = '';
         let desc = '';
@@ -1270,8 +1276,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const rollP = Math.floor(Math.random() * 20) + 1;
-      const rollO = Math.floor(Math.random() * 20) + 1;
+      const rollP = rollDie(20);
+      const rollO = rollDie(20);
       setClashResult({
         rollP,
         rollO,
@@ -1280,8 +1286,8 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRollP = Math.floor(Math.random() * 20) + 1;
-        const finalRollO = Math.floor(Math.random() * 20) + 1;
+        const finalRollP = rollDie(20);
+        const finalRollO = rollDie(20);
 
         const playerCheck = resolveD20Roll(finalRollP, pTarget);
         const opponentCheck = resolveD20Roll(finalRollO, oTarget);
@@ -1409,7 +1415,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setSkillRollResult({
         roll: tempRoll,
         isRolling: true
@@ -1417,7 +1423,7 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
 
         let outcome = '';
         let desc = '';
@@ -1478,15 +1484,19 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const executeImprovementRoll = () => {
     if (isRollingImprove) return;
+    const skillVal = character?.skills?.[selectedImproveKey] || 0;
+    const canImprove = character?.skillsChecked?.[selectedImproveKey] || getsAutomaticExperienceCheck(skillVal);
+    if (!canImprove) {
+      alert('경험 체크가 없는 기술은 겨울 경험 판정을 할 수 없습니다.');
+      return;
+    }
     setIsRollingImprove(true);
     setImproveRollResult(null);
     setImproveApplied(false);
 
-    const skillVal = character?.skills?.[selectedImproveKey] || 0;
-
     let counter = 0;
     const interval = setInterval(() => {
-      const tempRoll = Math.floor(Math.random() * 20) + 1;
+      const tempRoll = rollDie(20);
       setImproveRollResult({
         roll: tempRoll,
         isRolling: true
@@ -1494,25 +1504,22 @@ export default function SoloOracles({ character, setCharacter }) {
       counter++;
       if (counter > 15) {
         clearInterval(interval);
-        const finalRoll = Math.floor(Math.random() * 20) + 1;
+        const finalRoll = rollDie(20);
 
         let outcome = '';
         let desc = '';
         let color = '';
         let isSuccess = false;
 
-        if (skillVal >= 20) {
-          outcome = '수련 최고 한계치 도달';
-          desc = '이미 20 이상의 신의 기량에 도달하여, 일반 겨울철 수련으로는 더 이상 스킬을 올릴 수 없습니다.';
-          color = 'var(--color-grey)';
-        } else if (finalRoll > skillVal || finalRoll === 20) {
-          outcome = '수련 대성공! (스킬 +1 상승) 📈';
-          desc = `귀중한 깨달음! 주사위 눈 [ ${finalRoll} ]이 현재 기술 레벨 [ ${skillVal} ]의 장벽을 훌륭히 초과하여, 영구적인 기량 상승을 쟁취했습니다.`;
+        const improvement = resolveExperienceRoll(finalRoll, skillVal);
+        if (improvement.success) {
+          outcome = '경험 판정 성공 (기술 +1)';
+          desc = `d20 [${finalRoll}]이 경험 판정 기준 [${improvement.target}] 이상이므로 기술이 ${improvement.nextValue}(으)로 증가합니다.`;
           color = 'var(--color-success)';
           isSuccess = true;
         } else {
-          outcome = '수련 유지 (스킬 변화 없음) 🕯️';
-          desc = `배움의 깊이 축적! 주사위 눈 [ ${finalRoll} ]이 현재 기술 [ ${skillVal} ]의 한계를 넘지 못해 수치 상 변화는 없지만 기사의 내공에 쌓입니다. 경험치 체크는 규정에 따라 소실됩니다.`;
+          outcome = '경험 판정 실패 (기술 유지)';
+          desc = `d20 [${finalRoll}]이 경험 판정 기준 [${improvement.target}]보다 낮아 기술은 변하지 않습니다. 경험 체크는 소모됩니다.`;
           color = 'var(--color-grey)';
         }
 
@@ -1545,7 +1552,7 @@ export default function SoloOracles({ character, setCharacter }) {
       const updatedSkills = { ...prev.skills };
       if (improveRollResult?.isSuccess) {
         const currentVal = prev.skills?.[selectedImproveKey] || 0;
-        updatedSkills[selectedImproveKey] = Math.min(20, currentVal + 1);
+        updatedSkills[selectedImproveKey] = currentVal + 1;
       }
 
       return {
@@ -1569,8 +1576,8 @@ export default function SoloOracles({ character, setCharacter }) {
     setBattleTacticsResult(null);
 
     setTimeout(() => {
-      const pRoll = Math.floor(Math.random() * 20) + 1;
-      const eRoll = Math.floor(Math.random() * 20) + 1;
+      const pRoll = rollDie(20);
+      const eRoll = rollDie(20);
 
       // Opposed resolution
       const pVal = playerBattleSkillOverride;
@@ -1654,7 +1661,7 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousLoot = meleeEventResult?.lootAward || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
       let outcome = '';
       let desc = '';
       let glory = 0;
@@ -1715,7 +1722,7 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousLoot = followersFateResult?.lootAward || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
       let outcome = '';
       let desc = '';
       let glory = 0;
@@ -1774,7 +1781,7 @@ export default function SoloOracles({ character, setCharacter }) {
       let damage = 0;
 
       if (hunting.critical && winner === 'actor') {
-        const bootyRoll = Math.floor(Math.random() * 6) + Math.floor(Math.random() * 6) + 2;
+        const bootyRoll = rollDie(6) + rollDie(6);
         outcome = '결정적 추격 성공: 적 야영지 발견';
         desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 적 야영지를 찾아 전리품을 쓸어 담고 2라운드 분량의 추격 Glory를 얻습니다.`;
         glory = base * 2;
@@ -1791,11 +1798,11 @@ export default function SoloOracles({ character, setCharacter }) {
         glory = base;
       } else if (hunting.fumble) {
         outcome = '추격 대실패: 매복';
-        damage = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+        damage = rollDie(6) + rollDie(6) + rollDie(6);
         desc = `Hunting ${hunting.roll}/${hunting.target}. 매복에 걸려 ${damage} 피해를 받습니다. 추격 Glory는 없습니다.`;
       } else {
         outcome = '무리한 추격';
-        damage = Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
+        damage = rollDie(6) + rollDie(6) + rollDie(6);
         desc = `Hunting ${hunting.roll}/${hunting.target} 대 적 ${enemy.roll}/${enemy.target}. 적 하나를 쓰러뜨려 1라운드 Glory를 얻지만 ${damage} 피해를 받습니다.`;
         glory = base;
       }
@@ -2030,7 +2037,7 @@ export default function SoloOracles({ character, setCharacter }) {
     const previousGlory = trialResult?.glory || 0;
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
       let targetVal = 10;
       let typeLabel = '';
 
@@ -2112,7 +2119,7 @@ export default function SoloOracles({ character, setCharacter }) {
       if (selectedLadyAmorType === 'passive') {
         if (knightApp.critical && winner === 'actor') {
           outcome = '낭만적인 넋을 잃음 (Fallen Madly in Love - Critical)';
-          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
+          amorValue = Math.min(20, rollDie(6) + 6 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
           desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Chaste ${ladyResistance.roll}/${ladyResistance.target}. ${targetLadyName}가 기사에게 Amor를 품습니다. 생성 Amor 값: ${amorValue}.`;
           glory = 20;
           amorIncrease = amorValue;
@@ -2122,7 +2129,7 @@ export default function SoloOracles({ character, setCharacter }) {
           glory = -10;
         } else if (knightApp.success || winner === 'tie') {
           outcome = '사랑의 감성 고양 (Infatuated - Success)';
-          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7);
+          amorValue = Math.min(20, rollDie(6) + 6);
           desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Chaste ${ladyResistance.roll}/${ladyResistance.target}. 수줍은 Amor가 생겨납니다. 생성 Amor 값: ${amorValue}.`;
           glory = 10;
           amorIncrease = amorValue;
@@ -2139,7 +2146,7 @@ export default function SoloOracles({ character, setCharacter }) {
           desc = `기사는 이미 ${existingAmorTarget}에 대한 Amor를 품고 있습니다. 룰북상 한 번에 하나의 Amor만 가질 수 있습니다.`;
         } else if (knightApp.critical && winner === 'actor') {
           outcome = '기사적 연애 대성공 (Deliberate Courtship - Critical)';
-          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 12 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
+          amorValue = Math.min(20, rollDie(6) + 11 + Math.floor((character?.gear?.gloryTotal || 0) / 1000));
           desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Honor ${ladyResistance.roll}/${ladyResistance.target}. [${courtshipGift}] 예물로 상호 Amor가 생깁니다. 생성 Amor 값: ${amorValue}.`;
           glory = 50;
           amorIncrease = amorValue;
@@ -2149,7 +2156,7 @@ export default function SoloOracles({ character, setCharacter }) {
           glory = -30;
         } else if (knightApp.success || winner === 'tie') {
           outcome = '구애 성공 (Lady Courted - Success)';
-          amorValue = Math.min(20, Math.floor(Math.random() * 6) + 7);
+          amorValue = Math.min(20, rollDie(6) + 6);
           desc = `APP ${knightApp.roll}/${knightApp.target} 대 숙녀 Honor ${ladyResistance.roll}/${ladyResistance.target}. [${courtshipGift}]을(를) 바쳐 상호 Amor가 시작됩니다. 생성 Amor 값: ${amorValue}.`;
           glory = 20;
           amorIncrease = amorValue;
@@ -2185,7 +2192,7 @@ export default function SoloOracles({ character, setCharacter }) {
     setDreamResult(null);
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
       let outcome = '';
       let desc = '';
 
@@ -2454,7 +2461,7 @@ export default function SoloOracles({ character, setCharacter }) {
     setAppraisedTreasure(null);
 
     setTimeout(() => {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
 
       let name = '';
       let value = 0;
@@ -3542,7 +3549,7 @@ export default function SoloOracles({ character, setCharacter }) {
             </div>
             <div className="cs-section-inner">
               <p style={{ fontSize: '0.82rem', color: 'var(--color-ink-light)', marginBottom: '12px' }}>
-                기사의 일반 능력, 궁정 교양, 전투 무술 기술들을 굴려 성공 체크를 남기거나, 겨울 단계에서 훈련 d20 굴림(d20 &gt; 현재 레벨)을 통해 영구히 스킬 레벨을 단련합니다.
+                기술 판정에서 경험 체크를 남기고, 겨울 단계에 체크된 기술의 경험 판정을 굴립니다. d20이 현재값 이상이면 기술이 1 증가합니다.
               </p>
 
               <div className="cs-row" style={{ gap: '16px' }}>
@@ -3629,11 +3636,11 @@ export default function SoloOracles({ character, setCharacter }) {
                 {/* 3-2. 겨울 단계 스킬 성장 수련기 */}
                 <div style={{ flex: '1 1 300px', background: 'rgba(0,0,0,0.01)', padding: '12px', border: '1px solid var(--color-grey-light)' }}>
                   <h4 style={{ color: 'var(--color-gold-dark)', fontWeight: 'bold', fontSize: '0.9rem', borderBottom: '2px solid var(--color-gold-dark)', paddingBottom: '4px', marginBottom: '8px' }}>
-                    📈 겨울철 스킬 수련 훈련 (Skill Improvement)
+                    겨울 경험 판정 (Experience Roll)
                   </h4>
 
                   <div className="cs-field">
-                    <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>수련할 기술:</span>
+                    <span className="cs-field-label" style={{ whiteSpace: 'nowrap' }}>판정할 기술:</span>
                     <select
                       value={selectedImproveKey}
                       onChange={e => {
@@ -3655,16 +3662,16 @@ export default function SoloOracles({ character, setCharacter }) {
                   </div>
 
                   <p style={{ fontSize: '0.74rem', color: 'var(--color-grey)', margin: '8px 0 0 0', lineHeight: '1.4' }}>
-                    * 수련 룰: d20 굴림이 <strong>현재 스킬 레벨을 초과</strong>하거나 <strong>20</strong>이 나오면 레벨이 +1 영구 상승합니다. (수련 완료 시 성공 여부와 상관없이 시트 체크는 소모 해제됩니다)
+                    * 경험 룰: 체크된 기술은 d20이 <strong>현재값 이상</strong>이면 +1 증가합니다. 값이 20 이상이면 자동으로 체크되며, 20이 나오면 증가합니다. 판정 뒤 체크는 소모됩니다.
                   </p>
 
                   <button
                     className="btn-medieval"
                     onClick={executeImprovementRoll}
                     style={{ width: '100%', justifyContent: 'center', marginTop: '12px' }}
-                    disabled={isRollingImprove}
+                    disabled={isRollingImprove || (!character?.skillsChecked?.[selectedImproveKey] && !getsAutomaticExperienceCheck(character?.skills?.[selectedImproveKey] || 0))}
                   >
-                    {isRollingImprove ? '수련 성과를 점검하는 중...' : '📈 스킬 성장 수련 굴리기'}
+                    {isRollingImprove ? '경험 판정 중...' : '경험 판정 굴리기'}
                   </button>
 
                   {improveRollResult && (

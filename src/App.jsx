@@ -131,12 +131,25 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 3,
+    schemaVersion: 5,
+    saveRevision: 0,
+    characterCreationSession: null,
+    completedCreationIds: [],
+    characterArchives: [],
     appliedEvents: {},
+    chronicleEvents: [],
     passionStates: [],
     lifecycle: {
+      status: 'active',
       careerStatus: 'active',
       activeCharacterId: 'roland',
+      primaryCharacterId: 'roland',
+      pendingCareerEnd: null,
+      salvation: null,
+      legacy: null,
+      successor: null,
+      events: [],
+      unresolvedChoices: [],
       pendingSuccession: false
     },
     winter: {

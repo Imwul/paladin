@@ -1,21 +1,8 @@
-const TRAIT_PAIRS = [
-  ['chaste', 'lustful'],
-  ['energetic', 'lazy'],
-  ['forgiving', 'vengeful'],
-  ['generous', 'selfish'],
-  ['honest', 'deceitful'],
-  ['just', 'arbitrary'],
-  ['merciful', 'cruel'],
-  ['modest', 'proud'],
-  ['prudent', 'reckless'],
-  ['temperate', 'indulgent'],
-  ['trusting', 'suspicious'],
-  ['valorous', 'cowardly']
-];
+import { normalizeOpposedTraits, sanitizeCharacterCreationSession, sanitizeLifecycleState } from '../rules/index.js';
 
-const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병', '포로']);
+const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병', '포로', '행동 불능', '병상', '역사적']);
 const VALID_GENDERS = new Set(['male', 'female', 'unknown']);
-const HEROIC_SCORE_MAX = 30;
+const RULE_SCORE_MAX = Number.MAX_SAFE_INTEGER;
 
 export const deepClone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -36,6 +23,16 @@ const sanitizeString = (value, fallback = '') => (
 const sanitizeStringArray = (value, fallback = []) => {
   if (!Array.isArray(value)) return [...fallback];
   return value.filter(item => typeof item === 'string').slice(0, 20);
+};
+
+const sanitizeEffectSummary = (value, fallback = '') => {
+  if (typeof value === 'string') return value;
+  if (!isPlainObject(value)) return fallback;
+  return Object.entries(value).flatMap(([group, entries]) => (
+    isPlainObject(entries)
+      ? Object.entries(entries).map(([key, amount]) => `${group}.${key} ${Number(amount) >= 0 ? '+' : ''}${amount}`)
+      : []
+  )).join(', ') || fallback;
 };
 
 const sanitizeCheckedMap = (value, defaults = {}) => {
@@ -272,21 +269,13 @@ export const sanitizeCampaignState = (data, defaults) => {
   }
   personal.features = sanitizeStringArray(personal.features, defaults.personal.features);
 
-  const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 0, HEROIC_SCORE_MAX);
+  const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 0, RULE_SCORE_MAX);
   attributes.currentHp = clampInt(source.attributes?.currentHp, 0, attributes.siz + attributes.con, attributes.siz + attributes.con);
 
-  const traits = sanitizeNumberMap(source.traits, defaults.traits, 0, HEROIC_SCORE_MAX);
-  TRAIT_PAIRS.forEach(([primary, opposite]) => {
-    const primaryVal = clampInt(traits[primary], 0, HEROIC_SCORE_MAX, defaults.traits[primary] ?? 10);
-    const oppositeVal = clampInt(traits[opposite], 0, HEROIC_SCORE_MAX, Math.max(0, 20 - primaryVal));
-    if (primaryVal + oppositeVal !== 20) {
-      traits[primary] = primaryVal;
-      traits[opposite] = Math.max(0, 20 - primaryVal);
-    } else {
-      traits[primary] = primaryVal;
-      traits[opposite] = oppositeVal;
-    }
-  });
+  const traits = normalizeOpposedTraits(
+    sanitizeNumberMap(source.traits, defaults.traits, 0, RULE_SCORE_MAX),
+    defaults.traits
+  );
 
   const gear = {
     ...defaults.gear,
@@ -301,29 +290,51 @@ export const sanitizeCampaignState = (data, defaults) => {
     ...(isPlainObject(source.family) ? source.family : {})
   };
   family.members = sanitizeFamilyMembers(family.members, defaults.family.members);
+  family.patronSaintBenefit = sanitizeEffectSummary(family.patronSaintBenefit, defaults.family.patronSaintBenefit);
   family.ancestorRollLog = Array.isArray(family.ancestorRollLog) ? family.ancestorRollLog.filter(line => typeof line === 'string').slice(-500) : [];
   family.ancestorApplied = Boolean(family.ancestorApplied);
 
   const sourceLifecycle = isPlainObject(source.campaign?.lifecycle) ? source.campaign.lifecycle : {};
-  const validCareerStatuses = new Set(['active', 'incapacitated', 'deceased', 'retired', 'pending_succession']);
-  const self = family.members.find(member => member.relation === '본인');
-  const attributeValues = ['siz', 'dex', 'str', 'con', 'app'].map(key => Number(attributes[key]));
-  let careerStatus = validCareerStatuses.has(sourceLifecycle.careerStatus) ? sourceLifecycle.careerStatus : 'active';
-  if (attributeValues.some(value => Number.isFinite(value) && value <= 0) || self?.status === '사망') {
-    careerStatus = 'deceased';
-  } else if (self?.status === '은퇴') {
-    careerStatus = 'retired';
-  } else if (attributeValues.some(value => Number.isFinite(value) && value <= 3)) {
-    careerStatus = 'incapacitated';
-  } else if (self?.status === '생존' && !['pending_succession', 'retired', 'deceased'].includes(careerStatus)) {
-    careerStatus = 'active';
+  if (sourceLifecycle.careerStatus === 'pending_succession') {
+    sourceLifecycle.careerStatus = 'historical';
+    sourceLifecycle.status = 'pending_successor';
+    sourceLifecycle.activeCharacterId = null;
+    sourceLifecycle.pendingSuccession = true;
+    sourceLifecycle.unresolvedChoices = [...new Set([...(sourceLifecycle.unresolvedChoices || []), 'migrated_career_end_status'])];
   }
-  const lifecycle = {
-    ...sourceLifecycle,
-    careerStatus,
-    activeCharacterId: self?.status === '생존' && ['active', 'incapacitated'].includes(careerStatus) ? self.id : null,
-    pendingSuccession: Boolean(sourceLifecycle.pendingSuccession || ['deceased', 'retired', 'pending_succession'].includes(careerStatus))
-  };
+  if (!sourceLifecycle.salvation && isPlainObject(source.campaign?.salvation)) {
+    sourceLifecycle.salvation = {
+      salvationId: `migrated-salvation:${source.campaign.salvation.sourceCharacterId || 'unknown'}:${source.campaign.salvation.year || personal.campaignYear}`,
+      migratedLegacyRecord: source.campaign.salvation,
+      roll: source.campaign.salvation.outcome ? {
+        result: source.campaign.salvation.outcome,
+        target: source.campaign.salvation.score,
+        source: 'migrated-v4',
+        sourceRuleId: 'LIFE-SALVATION-001'
+      } : null,
+      destination: source.campaign.salvation.destination || null,
+      canonization: { eligible: false, status: source.campaign.salvation.canonized ? 'migrated_unverified' : 'not_eligible', churchRoll: null }
+    };
+  }
+  if (!sourceLifecycle.legacy && isPlainObject(source.campaign?.legacy)) {
+    sourceLifecycle.legacy = {
+      ...source.campaign.legacy,
+      legacyId: `migrated-legacy:${source.campaign.legacy.sourceCharacterId || 'unknown'}`,
+      predecessorId: source.campaign.legacy.sourceCharacterId || null,
+      transferableScores: [],
+      selectedTransfers: [],
+      scoreCaps: { salvation: source.campaign.legacy.salvationScore || 0, transferCount: source.campaign.legacy.transferSlots || 1 },
+      birthGiftGrant: { grantId: 'migrated-v4-birth-gift', count: source.campaign.legacy.birthGiftRolls || 1, consumed: false, sourceRuleId: 'LIFE-LEGACY-001' },
+      blessingGrant: source.campaign.legacy.blessingRolls ? { grantId: 'migrated-v4-blessing', count: 0, consumed: true, sourceRuleId: 'LIFE-SAINT-001', migrationNote: '기존 텍스트만으로 새 축복 grant를 만들지 않음' } : null,
+      inheritableEquipment: [],
+      inheritableManors: [],
+      inheritableFamilyData: {},
+      unresolvedChoices: ['migrated_v4_legacy_review'],
+      consumed: false,
+      sourceRuleIds: ['LIFE-LEGACY-001']
+    };
+  }
+  const lifecycle = sanitizeLifecycleState(sourceLifecycle, { personal, attributes, family });
 
   return {
     ...defaults,
@@ -331,12 +342,12 @@ export const sanitizeCampaignState = (data, defaults) => {
     personal,
     attributes,
     traits,
-    skills: sanitizeNumberMap(source.skills, defaults.skills, 0, HEROIC_SCORE_MAX),
+    skills: sanitizeNumberMap(source.skills, defaults.skills, 0, RULE_SCORE_MAX),
     skillsChecked: sanitizeCheckedMap(source.skillsChecked, defaults.skillsChecked),
     traitsChecked: sanitizeCheckedMap(source.traitsChecked, defaults.traitsChecked || {}),
-    passions: sanitizeNumberMap(source.passions, defaults.passions, 0, HEROIC_SCORE_MAX),
+    passions: sanitizeNumberMap(source.passions, defaults.passions, 0, RULE_SCORE_MAX),
     passionsChecked: sanitizeCheckedMap(source.passionsChecked, defaults.passionsChecked),
-    standings: sanitizeNumberMap(source.standings, defaults.standings, 0, HEROIC_SCORE_MAX),
+    standings: sanitizeNumberMap(source.standings, defaults.standings, 0, RULE_SCORE_MAX),
     standingsChecked: sanitizeCheckedMap(source.standingsChecked, defaults.standingsChecked || {}),
     squire: {
       ...defaults.squire,
@@ -358,10 +369,25 @@ export const sanitizeCampaignState = (data, defaults) => {
     journal: sanitizeJournal(source.journal, defaults.journal),
     campaign: {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
-      schemaVersion: 3,
+      schemaVersion: 5,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
+      saveRevision: clampInt(source.campaign?.saveRevision, 0, Number.MAX_SAFE_INTEGER, 0),
+      chronicleEvents: Array.isArray(source.campaign?.chronicleEvents)
+        ? source.campaign.chronicleEvents.filter(isPlainObject).slice(-500)
+        : [],
       passionStates: sanitizePassionStates(source.campaign?.passionStates),
       lifecycle,
+      characterCreationSession: sanitizeCharacterCreationSession(source.campaign?.characterCreationSession),
+      completedCreationIds: Array.isArray(source.campaign?.completedCreationIds)
+        ? source.campaign.completedCreationIds.filter(id => typeof id === 'string').slice(-100)
+        : [],
+      characterArchives: Array.isArray(source.campaign?.characterArchives)
+        ? source.campaign.characterArchives.filter(isPlainObject).slice(-25)
+        : [],
+      preparedCharacter: isPlainObject(source.campaign?.preparedCharacter) ? source.campaign.preparedCharacter : null,
+      preparedCharacters: Array.isArray(source.campaign?.preparedCharacters)
+        ? source.campaign.preparedCharacters.filter(isPlainObject).slice(-10)
+        : [],
       winter: sanitizeWinter(source.campaign?.winter, personal.campaignYear)
     }
   };
@@ -371,7 +397,7 @@ export const hasAppliedEvent = (character, eventId) => Boolean(character?.campai
 
 export const markAppliedEvent = (character, eventId, label) => ({
   ...(character.campaign || {}),
-  schemaVersion: 3,
+  schemaVersion: 5,
   appliedEvents: {
     ...(character.campaign?.appliedEvents || {}),
     [eventId]: {
@@ -398,7 +424,7 @@ export const appendWinterLog = (character, message) => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 3,
+    schemaVersion: 5,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {
@@ -414,7 +440,7 @@ export const markWinterStep = (character, step, status = 'resolved') => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 3,
+    schemaVersion: 5,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {

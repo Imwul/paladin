@@ -5,7 +5,7 @@ import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, fra
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable, patronSaints } from './CharacterSheet';
 import { applyOnce, hasAppliedEvent, sanitizeCampaignState } from '../utils/campaignState';
-import { getSuccessorEligibility, resolveD20Roll, roundPaladin } from '../utils/paladinRules';
+import { adjustOpposedTrait, getSuccessorEligibility, resolveD20Roll, rollD3 as rollPaladinD3, rollDie, roundPaladin } from '../rules';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -365,6 +365,10 @@ const splitName = (fullName) => {
   return { ko: koPart, en: enPart };
 };
 
+const applyTraitAdjustment = (character, trait, amount, maximum = 20) => {
+  character.traits = adjustOpposedTrait(character.traits, trait, amount, maximum);
+};
+
 const revertSaint = (char, saintName) => {
   if (!saintName) return;
   const oldSaint = patronSaints.find(s => s.name === saintName || saintName.includes(s.name.split(' (')[0]));
@@ -373,57 +377,46 @@ const revertSaint = (char, saintName) => {
   if (oldSaint.name.includes("암브로시오") || oldSaint.name.includes("Ambrose")) {
     char.skills.eloquence = Math.max(0, (char.skills.eloquence || 0) - 5);
   } else if (oldSaint.name.includes("아나스타시아") || oldSaint.name.includes("Anastasia")) {
-    char.traits.chaste = Math.max(0, (char.traits.chaste || 10) - 3);
-    char.traits.lustful = 20 - char.traits.chaste;
+    applyTraitAdjustment(char, 'chaste', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("보니파시오") || oldSaint.name.includes("Boniface")) {
-    char.traits.merciful = Math.max(0, (char.traits.merciful || 10) - 3);
-    char.traits.cruel = 20 - char.traits.merciful;
+    applyTraitAdjustment(char, 'merciful', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("크리스토포로") || oldSaint.name.includes("Christopher")) {
-    char.traits.modest = Math.max(0, (char.traits.modest || 10) - 3);
-    char.traits.proud = 20 - char.traits.modest;
+    applyTraitAdjustment(char, 'modest', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("데니스") || oldSaint.name.includes("Denis")) {
     char.standings.charlemagne = Math.max(0, (char.standings.charlemagne || 10) - 2);
   } else if (oldSaint.name.includes("엘리기오") || oldSaint.name.includes("Eligius")) {
     char.skills.firstAid = Math.max(0, (char.skills.firstAid || 0) - 5);
   } else if (oldSaint.name.includes("가브리엘") || oldSaint.name.includes("Gabriel")) {
-    char.traits.forgiving = Math.max(0, (char.traits.forgiving || 10) - 3);
-    char.traits.vengeful = 20 - char.traits.forgiving;
+    applyTraitAdjustment(char, 'forgiving', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("헬레나") || oldSaint.name.includes("Helena")) {
     char.passions.loveFamily = Math.max(0, (char.passions.loveFamily || 15) - 2);
   } else if (oldSaint.name.includes("힐라리오") || oldSaint.name.includes("Hilary")) {
-    char.traits.just = Math.max(0, (char.traits.just || 10) - 3);
-    char.traits.arbitrary = 20 - char.traits.just;
+    applyTraitAdjustment(char, 'just', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("후베르토") || oldSaint.name.includes("Hubert")) {
     char.skills.hunting = Math.max(0, (char.skills.hunting || 0) - 5);
   } else if (oldSaint.name.includes("야고보") || oldSaint.name.includes("James")) {
-    char.traits.energetic = Math.max(0, (char.traits.energetic || 10) - 3);
-    char.traits.lazy = 20 - char.traits.energetic;
+    applyTraitAdjustment(char, 'energetic', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("예로니모") || oldSaint.name.includes("Jerome")) {
-    char.traits.trusting = Math.max(0, (char.traits.trusting || 10) - 3);
-    char.traits.suspicious = 20 - char.traits.trusting;
+    applyTraitAdjustment(char, 'trusting', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("요한 세례자") || oldSaint.name.includes("John the Baptist")) {
-    char.traits.honest = Math.max(0, (char.traits.honest || 10) - 3);
-    char.traits.deceitful = 20 - char.traits.honest;
+    applyTraitAdjustment(char, 'honest', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("요셉") || oldSaint.name.includes("Joseph")) {
     char.passions.honor = Math.max(0, (char.passions.honor || 16) - 2);
   } else if (oldSaint.name.includes("유스티노") || oldSaint.name.includes("Justin")) {
-    char.traits.prudent = Math.max(0, (char.traits.prudent || 10) - 3);
-    char.traits.reckless = 20 - char.traits.prudent;
+    applyTraitAdjustment(char, 'prudent', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("마르티노") || oldSaint.name.includes("Martin")) {
-    char.traits.temperate = Math.max(0, (char.traits.temperate || 10) - 3);
-    char.traits.indulgent = 20 - char.traits.temperate;
+    applyTraitAdjustment(char, 'temperate', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("성모 마리아") || oldSaint.name.includes("Mary")) {
     char.passions.loveGod = Math.max(0, (char.passions.loveGod || 15) - 2);
   } else if (oldSaint.name.includes("미카엘") || oldSaint.name.includes("Michael")) {
-    char.traits.valorous = Math.max(0, (char.traits.valorous || 10) - 3);
-    char.traits.cowardly = 20 - char.traits.valorous;
+    applyTraitAdjustment(char, 'valorous', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("오메르") || oldSaint.name.includes("Omer")) {
-    char.traits.generous = Math.max(0, (char.traits.generous || 10) - 3);
-    char.traits.selfish = 20 - char.traits.generous;
+    applyTraitAdjustment(char, 'generous', -3, Number.MAX_SAFE_INTEGER);
   }
 };
 
 export default function FamilyTree({ character, setCharacter }) {
+  const legacyLifecyclePanelAvailable = false;
 
   // Collapsible accordion state
   const [activePanel, setActivePanel] = useState(null); // 'settings' | 'chronicle' | 'salvation' | null
@@ -824,7 +817,7 @@ export default function FamilyTree({ character, setCharacter }) {
           setChroniclePendingRoll(null);
           let val = parseInt(chronicleManualD6);
           if (isNaN(val) || val < 1 || (pending.hateType === 'd3' && val > 3) || (pending.hateType === 'd6' && val > 6)) {
-            val = Math.floor(Math.random() * (pending.hateType === 'd3' ? 3 : 6)) + 1;
+            val = pending.hateType === 'd3' ? rollPaladinD3() : rollDie(6);
           }
 
           let updatedHates = { ...grandfatherHates };
@@ -875,7 +868,7 @@ export default function FamilyTree({ character, setCharacter }) {
           setChroniclePendingRoll(null);
           let val = parseInt(chronicleManualD6);
           if (isNaN(val) || val < 1 || (pending.hateType === 'd3' && val > 3) || (pending.hateType === 'd6' && val > 6)) {
-            val = Math.floor(Math.random() * (pending.hateType === 'd3' ? 3 : 6)) + 1;
+            val = pending.hateType === 'd3' ? rollPaladinD3() : rollDie(6);
           }
 
           let updatedHates = { ...fatherHates };
@@ -916,19 +909,19 @@ export default function FamilyTree({ character, setCharacter }) {
 
         let d20 = parseInt(chronicleManualD20);
         if (isNaN(d20) || d20 < 1 || d20 > 20) {
-          d20 = Math.floor(Math.random() * 20) + 1;
+          d20 = rollDie(20);
         }
 
-        const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+        const rollD20 = () => rollDie(20);
         const rollD6 = () => {
           const val = parseInt(chronicleManualD6);
           if (!isNaN(val) && val >= 1 && val <= 6) return val;
-          return Math.floor(Math.random() * 6) + 1;
+          return rollDie(6);
         };
         const rollD3 = () => {
           const val = parseInt(chronicleManualD6);
           if (!isNaN(val) && val >= 1 && val <= 3) return val;
-          return Math.floor(Math.random() * 3) + 1;
+          return rollPaladinD3();
         };
 
         let logMsg = pending.logPrefix;
@@ -1290,19 +1283,19 @@ export default function FamilyTree({ character, setCharacter }) {
 
       let d20 = parseInt(chronicleManualD20);
       if (isNaN(d20) || d20 < 1 || d20 > 20) {
-        d20 = Math.floor(Math.random() * 20) + 1;
+        d20 = rollDie(20);
       }
 
-      const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+      const rollD20 = () => rollDie(20);
       const rollD6 = () => {
         const val = parseInt(chronicleManualD6);
         if (!isNaN(val) && val >= 1 && val <= 6) return val;
-        return Math.floor(Math.random() * 6) + 1;
+        return rollDie(6);
       };
       const rollD3 = () => {
         const val = parseInt(chronicleManualD6);
         if (!isNaN(val) && val >= 1 && val <= 3) return val;
-        return Math.floor(Math.random() * 3) + 1;
+        return rollPaladinD3();
       };
 
       let logMsg = "";
@@ -2320,7 +2313,7 @@ export default function FamilyTree({ character, setCharacter }) {
             return;
           } else {
             // 룰북 Father 757 Roll 19-20: 1d6 Hate [Danes], Honor -1
-            const daneHateRoll = Math.floor(Math.random() * 6) + 1;
+            const daneHateRoll = rollDie(6);
             setFatherHates(prev => ({ ...prev, danes: (prev.danes || 0) + daneHateRoll }));
             setFatherHonorModifier(prev => prev - 1);
             logMsg += `⚠️ 덴마크 국왕의 오만한 기습에 걸려 머리가 깎인 채로 사절에서 풀려나는 굴욕을 겪었습니다. (Honor -1, 덴마크인 증오 +${daneHateRoll})`;
@@ -2671,7 +2664,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
       saveChronicleHistory();
 
-      const rollD20 = () => Math.floor(Math.random() * 20) + 1;
+      const rollD20 = () => rollDie(20);
 
       if (interactiveStage === 'gf_running') {
         const nextYr = interactiveYear + 1;
@@ -2790,9 +2783,9 @@ export default function FamilyTree({ character, setCharacter }) {
 
   const rollAncestorHistory = () => {
     const logs = [];
-    const rollD20 = () => Math.floor(Math.random() * 20) + 1;
-    const rollD6 = () => Math.floor(Math.random() * 6) + 1;
-    const rollD3 = () => Math.floor(Math.random() * 3) + 1;
+    const rollD20 = () => rollDie(20);
+    const rollD6 = () => rollDie(6);
+    const rollD3 = () => rollPaladinD3();
 
     logs.push(`📜 [${character.family?.ancestor || '알베르'} 경(조부)의 생애: 연대기 시작 723년]`);
     let gfGlory = 2500;
@@ -3733,7 +3726,7 @@ export default function FamilyTree({ character, setCharacter }) {
     let giftsToRoll = chronicleBirthGifts;
     
     for (let i = 0; i < giftsToRoll; i++) {
-      const roll = Math.floor(Math.random() * 20) + 1;
+      const roll = rollDie(20);
       rollGiftIndices.push(roll);
       const gift = birthGiftsTable[roll - 1];
       if (gift) {
@@ -3763,10 +3756,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
       // Inherit Cruel trait if father had any
       if (fatherHates.cruel && fatherHates.cruel > 0) {
-        const currentCruel = updated.traits.cruel || 9;
-        const newCruel = Math.min(20, currentCruel + fatherHates.cruel);
-        updated.traits.cruel = newCruel;
-        updated.traits.merciful = 20 - newCruel;
+        applyTraitAdjustment(updated, 'cruel', fatherHates.cruel);
       }
 
       // Inherit Honor modifier if father had any
@@ -3961,7 +3951,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
     let d20 = parseInt(salvationManualD20);
     if (isNaN(d20) || d20 < 1 || d20 > 20) {
-      d20 = Math.floor(Math.random() * 20) + 1;
+      d20 = rollDie(20);
     }
 
     const check = resolveD20Roll(d20, totalSalvationScore);
@@ -3972,7 +3962,7 @@ export default function FamilyTree({ character, setCharacter }) {
     const saintEligible = bonusPoints >= 15 && totalSalvationScore >= 20 && check.critical;
 
     const churchStanding = character.standings.church || 15;
-    const churchRoll = saintEligible ? Math.floor(Math.random() * 20) + 1 : null;
+    const churchRoll = saintEligible ? rollDie(20) : null;
     const churchCheck = saintEligible ? resolveD20Roll(churchRoll, churchStanding) : null;
     const isSaint = Boolean(churchCheck?.success);
 
@@ -4616,7 +4606,7 @@ export default function FamilyTree({ character, setCharacter }) {
         return;
       }
     } else {
-      r = Math.floor(Math.random() * 20) + 1;
+      r = rollDie(20);
     }
     setFcRoll(r);
     setFcManualD20('');
@@ -5358,6 +5348,10 @@ export default function FamilyTree({ character, setCharacter }) {
     switch (status) {
       case '생존': return '#2e6b33';
       case '사망': return '#6b5d4e';
+      case '은퇴': return '#8a641f';
+      case '행동 불능': return '#9a5a1f';
+      case '병상': return '#8b2020';
+      case '역사적': return '#5f5a52';
       case '질병': return '#8b2020';
       case '실종': return '#702b8b';
       case '포로': return '#d27c2c';
@@ -5454,6 +5448,10 @@ export default function FamilyTree({ character, setCharacter }) {
           <span style={{ marginLeft: '4px', color: statusColor, fontWeight: 'normal' }}>
             {member.status === '생존' && '생존'}
             {member.status === '사망' && '영면'}
+            {member.status === '은퇴' && '은퇴'}
+            {member.status === '행동 불능' && '행동 불능'}
+            {member.status === '병상' && '병상 상태'}
+            {member.status === '역사적' && '역사적 인물'}
             {member.status === '질병' && '병환'}
             {member.status === '실종' && '실종'}
             {member.status === '포로' && '포로'}
@@ -6268,7 +6266,7 @@ export default function FamilyTree({ character, setCharacter }) {
                           onClick={() => {
                             let d20 = parseInt(patronSaintRoll);
                             if (isNaN(d20) || d20 < 1 || d20 > 20) {
-                              d20 = Math.floor(Math.random() * 20) + 1;
+                              d20 = rollDie(20);
                             }
                             const saint = patronSaints[d20 - 1];
                             setPatronSaintResult({ roll: d20, saint });
@@ -6355,7 +6353,8 @@ export default function FamilyTree({ character, setCharacter }) {
           )}
         </div>
 
-        {/* Panel 3: 기사의 마지막 기록과 구원 판정 */}
+        {legacyLifecyclePanelAvailable && <>
+        {/* 이전 저장 호환용 패널: 정식 생애 절차는 CharacterSheet의 LifecyclePanel이 소유합니다. */}
         <div className="ft-panel" style={{ border: '1px solid var(--color-gold-light)', borderRadius: '8px', backgroundColor: 'rgba(255, 255, 255, 0.45)', overflow: 'hidden', boxShadow: 'none' }}>
           <div 
             style={{ backgroundColor: 'rgba(201, 168, 76, 0.1)', padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', userSelect: 'none', fontWeight: 'bold', color: 'var(--color-gold-dark)' }}
@@ -6544,6 +6543,7 @@ export default function FamilyTree({ character, setCharacter }) {
             );
           })()}
         </div>
+        </>}
 
       </div>
 
@@ -6752,13 +6752,17 @@ export default function FamilyTree({ character, setCharacter }) {
                   <label className="ft-label">현재 생존/건강 상태:</label>
                   <select 
                     className="ft-input" 
-                    value={formStatus} 
+                    value={formStatus}
                     onChange={e => setFormStatus(e.target.value)}
+                    disabled={editingMember?.relation === '본인'}
                   >
                     <option value="생존">생존 (Healthy)</option>
                     <option value="사망">사망 (Deceased)</option>
                     <option value="은퇴">확정 은퇴 (Retired)</option>
                     <option value="질병">질병 (Illness)</option>
+                    <option value="행동 불능">행동 불능 (Incapacitated)</option>
+                    <option value="병상">병상 상태 (Bedridden)</option>
+                    <option value="역사적">역사적 인물 (Historical)</option>
                     <option value="실종">실종 (Missing)</option>
                     <option value="포로">포로 (Captive)</option>
                   </select>
@@ -6888,7 +6892,7 @@ export default function FamilyTree({ character, setCharacter }) {
                             className="btn-medieval btn-medieval-primary"
                             onClick={() => {
                               setFcManualD20('');
-                              const r = Math.floor(Math.random() * 20) + 1;
+                              const r = rollDie(20);
                               setFcRoll(r);
                             }}
                             style={{ height: '28px', display: 'flex', alignItems: 'center', gap: '4px', padding: '0 10px', fontSize: '0.76rem', flex: 1 }}
@@ -7036,7 +7040,7 @@ export default function FamilyTree({ character, setCharacter }) {
             </div>
 
             <div className="ft-modal-footer">
-              {modalMode === 'edit' && editingMember?.status === '생존' && editingMember?.relation !== '본인' && (
+              {legacyLifecyclePanelAvailable && modalMode === 'edit' && editingMember?.status === '생존' && editingMember?.relation !== '본인' && (
                 <button 
                   type="button" 
                   className="btn-medieval" 

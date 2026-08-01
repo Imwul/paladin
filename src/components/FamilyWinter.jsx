@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, Heart, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
+import { Shield, Dices, RotateCcw, ChevronRight, ChevronLeft, Check, Award, Compass, AlertTriangle } from 'lucide-react';
 import { maleNames, femaleNames } from '../data/names';
 import FamilyTree from './FamilyTree';
 import { birthGiftsTable } from './CharacterSheet';
 import { applyOnce, appendWinterLog, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
-import { getAgingRollCount, getAttributeCareerStatus, getHarvestModifier, resolveD20Roll, resolveHarvest } from '../utils/paladinRules';
+import {
+  adjustOpposedTrait,
+  getAgingRollCount,
+  getHarvestModifier,
+  resolveAttributeLifecycle,
+  resolveD20Roll,
+  resolveExperienceChecks,
+  resolveHarvest,
+  resolveTraitExperienceChecks,
+  rollD3,
+  rollDie
+} from '../rules';
 
 const winterCheckKeyMap = {
   standingLord: 'liegeLord',
@@ -25,16 +36,20 @@ const rollBirthGift = (character) => {
   character.skills = character.skills || {};
   character.traits = character.traits || {};
   character.horses = character.horses || {};
-  const roll = Math.floor(Math.random() * 20) + 1;
+  const roll = rollDie(20);
   const gift = birthGiftsTable.find(item => item.roll === roll) || birthGiftsTable[roll - 1];
   if (gift?.apply) gift.apply(character);
   return { roll, gift };
 };
 
 export default function FamilyWinter({ character, setCharacter }) {
+  const currentYear = character.personal?.campaignYear || 767;
+  const currentWinter = character.campaign?.winter || {};
   const [activeSubTab, setActiveSubTab] = useState('tree');
   const [winterStep, setWinterStep] = useState(1);
-  const [logMessages, setLogMessages] = useState([]);
+  const [logMessages, setLogMessages] = useState(() => (
+    Array.isArray(currentWinter.logs) ? [...currentWinter.logs].reverse() : []
+  ));
 
   // Interactive Step States
   const [agingD20, setAgingD20] = useState(null);
@@ -58,7 +73,6 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [personalEventText, setPersonalEventText] = useState(null);
   const [personalEventApplied, setPersonalEventApplied] = useState(false);
 
-  const [marriageRoll, setMarriageRoll] = useState(null);
   const [marriageResult, setMarriageResult] = useState(null);
   const [childbirthRoll, setChildbirthRoll] = useState(null);
   const [childbirthResult, setChildbirthResult] = useState(null);
@@ -99,8 +113,6 @@ export default function FamilyWinter({ character, setCharacter }) {
     }));
   };
 
-  const currentYear = character.personal?.campaignYear || 767;
-  const currentWinter = character.campaign?.winter || {};
   const [calculatedAnnualGlory, setCalculatedAnnualGlory] = useState(null);
   const [gloryApplied, setGloryApplied] = useState(hasAppliedEvent(character, `winter:annual_glory:${currentYear}`));
   const [gloryBonusPoints, setGloryBonusPoints] = useState(currentWinter.gloryBonusPoints || 0);
@@ -112,24 +124,11 @@ export default function FamilyWinter({ character, setCharacter }) {
   const [showRefFamily, setShowRefFamily] = useState(false);
   const [showRefExperience, setShowRefExperience] = useState(false);
 
-  useEffect(() => {
-    if (Array.isArray(currentWinter.logs)) {
-      setLogMessages([...currentWinter.logs].reverse());
-    }
-  }, [currentWinter.year]);
-
-  const resolveWinterStep = (step, status = 'resolved') => {
-    setCharacter(prev => ({
-      ...prev,
-      campaign: markWinterStep(prev, step, status)
-    }));
-  };
-
   // ══════════════════════════════════════════════════
   // STEP 2: AGING LOGIC
   // ══════════════════════════════════════════════════
   const rollAging = () => {
-    if (['deceased', 'pending_succession'].includes(character.campaign?.lifecycle?.careerStatus)) {
+    if (['deceased', 'retired', 'historical'].includes(character.campaign?.lifecycle?.careerStatus)) {
       alert('현재 기사의 생애가 이미 끝났습니다. 구원과 다음 캐릭터 절차를 먼저 해결해 주세요.');
       return;
     }
@@ -180,7 +179,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       return;
     }
 
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     setAgingD20(d20);
 
     const numRolls = getAgingRollCount(d20);
@@ -188,7 +187,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const losses = [];
     const stats = ["SIZ", "DEX", "STR", "CON", "APP"];
     for (let i = 0; i < numRolls; i++) {
-      const d6 = Math.floor(Math.random() * 6) + 1;
+      const d6 = rollDie(6);
       if (d6 <= 5) {
         losses.push(stats[d6 - 1]);
       } else {
@@ -216,31 +215,23 @@ export default function FamilyWinter({ character, setCharacter }) {
           updated.attributes[key] = Math.max(0, (updated.attributes[key] || 0) - 1);
         });
         updated.attributes.currentHp = Math.min(updated.attributes.currentHp || 0, updated.attributes.siz + updated.attributes.con);
-        const careerStatus = getAttributeCareerStatus(updated.attributes);
-        updated.campaign = {
-          ...(updated.campaign || {}),
-          lifecycle: {
-            ...(updated.campaign?.lifecycle || {}),
-            careerStatus,
-            endedAtYear: careerStatus === 'deceased' ? currentYear : updated.campaign?.lifecycle?.endedAtYear,
-            endReason: careerStatus === 'deceased' ? '노화로 능력치가 0에 도달' : careerStatus === 'incapacitated' ? '능력치가 3 이하라 병상 생활' : undefined,
-            pendingSuccession: careerStatus === 'deceased'
-          }
-        };
-        if (careerStatus === 'deceased') {
-          const self = updated.family?.members?.find(member => member.relation === '본인');
-          if (self) {
-            self.status = '사망';
-            self.deathCause = '노화';
-            self.lifeYears = `${String(self.lifeYears || '').split('~')[0] || currentYear - (updated.personal?.age || 0)}~${currentYear}`;
-          }
-          updated.campaign.winter.unresolved = {
-            ...(updated.campaign.winter.unresolved || {}),
+        const lifecycleResult = resolveAttributeLifecycle(updated, {
+          eventId: `lifecycle:winter-aging:${currentYear}`,
+          cause: '노화로 인한 능력치 하락',
+          year: currentYear,
+          sourceRuleId: 'WINTER-AGING-001',
+          sourcePage: 'Chapter 10 pp. 174-175',
+          triggeringEvent: 'winter_aging'
+        });
+        const resolved = lifecycleResult.character;
+        if (resolved.campaign?.lifecycle?.careerStatus === 'deceased') {
+          resolved.campaign.winter.unresolved = {
+            ...(resolved.campaign.winter.unresolved || {}),
             careerEnd: { label: '기사 사망 후 구원 및 다음 캐릭터 선택', required: true }
           };
         }
-        updated.campaign = markWinterStep(updated, 'aging');
-        return updated;
+        resolved.campaign = markWinterStep(resolved, 'aging');
+        return resolved;
       }, '겨울 노화 정산');
       return result.character;
     });
@@ -258,7 +249,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 수확 수입은 이미 반영되었습니다.");
       return;
     }
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     setHarvestRoll(d20);
 
     const hasProsperity = character.personal?.blessing?.includes("번영") || character.personal?.blessing?.includes("Prosperity");
@@ -375,7 +366,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') squireMaintMod = -2;
 
     const squirePenalty = character.squire?.nextYearPenalty || 0;
-    const sRoll = Math.floor(Math.random() * 20) + 1;
+    const sRoll = rollDie(20);
     setSquireSurvivalRoll(sRoll);
 
     const finalSquireRoll = Math.min(20, Math.max(1, sRoll + squireAgeMod + squireMaintMod + squirePenalty));
@@ -397,7 +388,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     else if (maintenanceLevel === 'impoverished' || maintenanceLevel === 'miserly') horseMaintMod = -5;
 
     const horsePenalty = character.horses?.warhorse?.nextYearPenalty || 0;
-    const hRoll = Math.floor(Math.random() * 20) + 1;
+    const hRoll = rollDie(20);
     setHorseSurvivalRoll(hRoll);
 
     const finalHorseRoll = Math.min(20, Math.max(1, hRoll + horseAgeMod + horseMaintMod + horsePenalty));
@@ -514,7 +505,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 개인 사건은 이미 해결되었습니다.");
       return;
     }
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     setPersonalEventRoll(d20);
     setPersonalEventText(personalEventTable[d20]);
     setPersonalEventApplied(false);
@@ -531,7 +522,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     const key = personalEventText.trait;
     const resolvedKey = resolveWinterCheckKey(key);
     const testValue = character.traits?.[key] ?? character.passions?.[key] ?? character.standings?.[resolvedKey] ?? 10;
-    const testRoll = Math.floor(Math.random() * 20) + 1;
+    const testRoll = rollDie(20);
     let outcome = 'Failure';
     const check = resolveD20Roll(testRoll, testValue);
     if (check.fumble) outcome = 'Fumble';
@@ -564,16 +555,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           updated.skillsChecked = { ...(updated.skillsChecked || {}), [skillKey]: true };
         };
         const addTrait = (traitKey, amount) => {
-          const opposites = {
-            chaste: 'lustful', energetic: 'lazy', forgiving: 'vengeful',
-            generous: 'selfish', honest: 'deceitful', just: 'arbitrary',
-            merciful: 'cruel', modest: 'proud', pious: 'worldly',
-            prudent: 'reckless', temperate: 'indulgent', trusting: 'suspicious',
-            valorous: 'cowardly'
-          };
-          const next = Math.min(20, Math.max(0, (updated.traits[traitKey] || 0) + amount));
-          updated.traits[traitKey] = next;
-          if (opposites[traitKey]) updated.traits[opposites[traitKey]] = 20 - next;
+          updated.traits = adjustOpposedTrait(updated.traits, traitKey, amount);
         };
         const addPassion = (passionKey, amount) => {
           updated.passions[passionKey] = Math.min(25, Math.max(0, (updated.passions[passionKey] || 0) + amount));
@@ -588,7 +570,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (key === 'valorous') updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 50;
           if (key === 'honor') {
             updated.gear.gloryThisGame = (updated.gear.gloryThisGame || 0) + 20;
-            updated.gear.cash = (updated.gear.cash || 0) + Math.floor(Math.random() * 12) + 2;
+            updated.gear.cash = (updated.gear.cash || 0) + rollDie(12) + 1;
           }
           if (key === 'loveGod') {
             addPassion('loveGod', 1);
@@ -635,7 +617,15 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (key === 'loveGod') addStanding('church', -1);
           if (key === 'generous') updated.gear.cash = Math.max(0, (updated.gear.cash || 0) - 1);
           if (key === 'standingChurch') addStanding('commoners', -1);
-          if (key === 'standingCommoners') checkTrait('pious');
+          if (key === 'standingCommoners') {
+            updated.campaign.winter.unresolved = {
+              ...(updated.campaign.winter.unresolved || {}),
+              personalEventChristianTrait: {
+                label: '개인 사건 19: 기독교 성향 선택 및 판정',
+                required: true
+              }
+            };
+          }
           if (updated.traits?.[key] !== undefined) checkTrait(key);
         } else if (outcome === 'Fumble') {
           if (key === 'honor') addPassion('honor', -1);
@@ -643,7 +633,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (key === 'loveGod') addPassion('loveGod', -1);
           if (key === 'standingLord') addPassion('honor', -1);
           if (key === 'standingChurch') addStanding('church', -1);
-          if (key === 'standingCommoners') updated.derived.currentHp = Math.max(0, (updated.derived?.currentHp || updated.derived?.maxHp || 0) - (Math.floor(Math.random() * 6) + 1) - (Math.floor(Math.random() * 6) + 1) - (Math.floor(Math.random() * 6) + 1));
+          if (key === 'standingCommoners') updated.derived.currentHp = Math.max(0, (updated.derived?.currentHp || updated.derived?.maxHp || 0) - (rollDie(6)) - (rollDie(6)) - (rollDie(6)));
           if (key === 'loveCharlemagne') addStanding('charlemagne', -1);
           if (key === 'energetic') updated.campaign.winter.steps.training = 'skipped';
         }
@@ -665,24 +655,25 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 가문 단계는 이미 정산되었습니다.");
       return;
     }
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     const finalRoll = d20 + (parseInt(marriageModifier) || 0);
-    setMarriageRoll(finalRoll);
-    let rank = "가신 기사의 딸";
-    let dowry = 1;
-    let glory = 50;
-    let manors = 0;
+    const result = finalRoll <= 5
+      ? { rank: "부유한 평민 상인의 딸", dowry: rollDie(18) + 8, glory: 0, manors: 0 }
+      : finalRoll <= 8
+        ? { rank: "수습 종자의 딸", dowry: 3, glory: 10, manors: 0 }
+        : finalRoll <= 10
+          ? { rank: "가신 기사의 딸", dowry: rollDie(6), glory: 50, manors: 0 }
+          : finalRoll === 11
+            ? { rank: "부유한 봉신기사의 맏딸", dowry: rollD3() + 6, glory: 100, manors: 0 }
+            : finalRoll <= 20
+              ? { rank: "일반 봉신기사의 딸", dowry: rollDie(6), glory: 100, manors: 0 }
+              : finalRoll <= 25
+                ? { rank: "봉신기사 가문 여상속인", dowry: rollDie(6) + 10, glory: 100, manors: 1 }
+                : finalRoll <= 27
+                  ? { rank: "부유한 봉신기사 가문 여상속인", dowry: rollDie(6), glory: 300, manors: 2 }
+                  : { rank: "남작 가문의 막내딸", dowry: rollDie(6) + 10, glory: 250, manors: 1 };
 
-    if (finalRoll <= 5) { rank = "부유한 평민 상인의 딸"; dowry = Math.floor(Math.random() * 18) + 9; glory = 0; }
-    else if (finalRoll <= 8) { rank = "수습 종자의 딸"; dowry = 3; glory = 10; }
-    else if (finalRoll <= 10) { rank = "가신 기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 50; }
-    else if (finalRoll === 11) { rank = "부유한 봉신기사의 맏딸"; dowry = Math.floor(Math.random() * 3) + 7; glory = 100; }
-    else if (finalRoll <= 20) { rank = "일반 봉신기사의 딸"; dowry = Math.floor(Math.random() * 6) + 1; glory = 100; }
-    else if (finalRoll <= 25) { rank = "봉신기사 가문 여상속인"; dowry = Math.floor(Math.random() * 6) + 11; glory = 100; manors = 1; }
-    else if (finalRoll <= 27) { rank = "부유한 봉신기사 가문 여상속인"; dowry = Math.floor(Math.random() * 6) + 1; glory = 300; manors = 2; }
-    else { rank = "남작 가문의 막내딸"; dowry = Math.floor(Math.random() * 6) + 11; glory = 250; manors = 1; }
-
-    setMarriageResult({ rank, dowry, glory, manors });
+    setMarriageResult(result);
   };
 
   const rollChildbirth = () => {
@@ -694,7 +685,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("소지금이 부족하여 연인/첩의 출산 테이블을 굴릴 수 없습니다. (유지비 £0.5 필요)");
       return;
     }
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     
     // Blessings & Maintenance Modifiers
     const maintenanceLevel = character.personal?.maintenance || 'ordinary';
@@ -723,13 +714,13 @@ export default function FamilyWinter({ character, setCharacter }) {
       alert("올해 가문 단계는 이미 정산되었습니다.");
       return;
     }
-    const d20 = Math.floor(Math.random() * 20) + 1;
+    const d20 = rollDie(20);
     setFamilyEventRoll(d20);
     setFamilyEventChoice(null);
 
     // Roll d6 immediately if debts or ransom are rolled
     if (d20 === 7 || d20 === 14) {
-      const d6 = Math.floor(Math.random() * 6) + 1;
+      const d6 = rollDie(6);
       setFamilyEventD6Roll(d6);
     } else {
       setFamilyEventD6Roll(null);
@@ -855,25 +846,29 @@ export default function FamilyWinter({ character, setCharacter }) {
 
         const spawnChild = (isSon) => {
           const childId = 'child_' + Math.random().toString(36).substr(2, 9);
-          let childName = '';
-          let childNote = '';
-          if (isSon) {
-            const randMale = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
-            childName = `${randMale.ko} 경 (Sir ${randMale.en})`;
-            childNote = childbirthMother === 'lover' ? `연인/첩 소생 아들(서자).` : `가문의 적통을 이어갈 아들.`;
-          } else {
-            const randFemale = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Aude", ko: "오드" };
-            childName = `${randFemale.ko} 부인 (Lady ${randFemale.en})`;
-            childNote = childbirthMother === 'lover' ? `연인/첩 소생 딸.` : `가문의 사랑받는 귀족 영애 딸.`;
-          }
+          const child = isSon
+            ? (() => {
+                const name = maleNames[Math.floor(Math.random() * maleNames.length)] || { en: "Pierre", ko: "피에르" };
+                return {
+                  name: `${name.ko} 경 (Sir ${name.en})`,
+                  note: childbirthMother === 'lover' ? `연인/첩 소생 아들(서자).` : `가문의 적통을 이어갈 아들.`
+                };
+              })()
+            : (() => {
+                const name = femaleNames[Math.floor(Math.random() * femaleNames.length)] || { en: "Aude", ko: "오드" };
+                return {
+                  name: `${name.ko} 부인 (Lady ${name.en})`,
+                  note: childbirthMother === 'lover' ? `연인/첩 소생 딸.` : `가문의 사랑받는 귀족 영애 딸.`
+                };
+              })();
           return {
             id: childId,
-            name: childName,
+            name: child.name,
             relation: '자녀',
             generation: playerGen + 1,
             status: '생존',
             lifeYears: `${currentYear}~`,
-            note: childNote,
+            note: child.note,
             parentId: playerId
           };
         };
@@ -1003,8 +998,7 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (familyEventChoice === 'a') {
             checkTrait(updated, 'standingFamily');
             checkTrait(updated, 'honor');
-            updated.traits.just = Math.max(0, (updated.traits.just || 10) - 1);
-            updated.traits.arbitrary = 20 - updated.traits.just;
+            updated.traits = adjustOpposedTrait(updated.traits, 'just', -1);
           } else {
             checkTrait(updated, 'just');
             updated.standings.family = Math.max(0, (updated.standings.family || 16) - 1);
@@ -1083,103 +1077,42 @@ export default function FamilyWinter({ character, setCharacter }) {
       return;
     }
 
-    const checkedSkills = Object.keys(character.skillsChecked).filter(k => character.skillsChecked[k]);
-    const checkedPassions = Object.keys(character.passionsChecked).filter(k => character.passionsChecked[k]);
-    const checkedTraits = Object.keys(character.traitsChecked || {}).filter(k => character.traitsChecked[k]);
-    const checkedStandings = Object.keys(character.standingsChecked || {}).filter(k => character.standingsChecked[k]);
-
-    // Auto-check skills & passions with value >= 20 as per rulebook
-    const allCheckedSkills = new Set([
-      ...checkedSkills,
-      ...Object.keys(character.skills).filter(k => (character.skills[k] || 0) >= 20)
-    ]);
-    const allCheckedPassions = new Set([
-      ...checkedPassions,
-      ...Object.keys(character.passions).filter(k => (character.passions[k] || 0) >= 20)
-    ]);
-    const allCheckedStandings = new Set([
-      ...checkedStandings,
-      ...Object.keys(character.standings || {}).filter(k => (character.standings[k] || 0) >= 20)
-    ]);
-
     const logs = [];
-    const updatedSkills = { ...character.skills };
-    const updatedPassions = { ...character.passions };
-    const updatedTraits = { ...character.traits };
-    const updatedStandings = { ...(character.standings || {}) };
-
-    // Roll for skills
-    allCheckedSkills.forEach(key => {
-      const val = character.skills[key] || 0;
-      const d20 = Math.floor(Math.random() * 20) + 1;
-      const target = Math.min(20, val);
-      const success = d20 >= target;
-      if (success) {
-        updatedSkills[key] = val + 1;
-        logs.push(`[기술 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! → ${val + 1} 🎉`);
-      } else {
-        logs.push(`[기술 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
-      }
-    });
-
-    // Roll for passions
-    allCheckedPassions.forEach(key => {
-      const val = character.passions[key] || 0;
-      const d20 = Math.floor(Math.random() * 20) + 1;
-      const target = Math.min(20, val);
-      const success = d20 >= target;
-      if (success) {
-        updatedPassions[key] = val + 1;
-        logs.push(`[열망 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! → ${val + 1} 🎉`);
-      } else {
-        logs.push(`[열망 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
-      }
-    });
-
-    allCheckedStandings.forEach(key => {
-      const val = character.standings?.[key] || 0;
-      const d20 = Math.floor(Math.random() * 20) + 1;
-      const target = Math.min(20, val);
-      const success = d20 >= target;
-      if (success) {
-        updatedStandings[key] = val + 1;
-        logs.push(`[명망 ${key} 성장]: d20 [${d20}] vs [${target}]. 성공! -> ${val + 1}`);
-      } else {
-        logs.push(`[명망 ${key} 유지]: d20 [${d20}] vs [${target}]. 실패.`);
-      }
-    });
-
-    const oppositeMap = {
-      chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
-      generous: "selfish", honest: "deceitful", just: "arbitrary",
-      merciful: "cruel", modest: "proud", pious: "worldly",
-      prudent: "reckless", temperate: "indulgent", trusting: "suspicious",
-      valorous: "cowardly"
+    const resolveCategory = (values, checked, label) => {
+      const categoryResult = resolveExperienceChecks({ values, checked });
+      categoryResult.results.forEach(result => {
+        const verb = result.success ? `성장 -> ${result.nextValue}` : '유지';
+        logs.push(`[${label} ${result.key} ${verb}]: d20 [${result.roll}] / 기준 [${result.target}]`);
+      });
+      return categoryResult;
     };
-    checkedTraits.forEach(key => {
-      const val = character.traits[key] || 0;
-      const d20 = Math.floor(Math.random() * 20) + 1;
-      const success = d20 >= val || d20 === 20;
-      // Traits cannot exceed 20 because they are paired
-      if (success && val < 20) {
-        updatedTraits[key] = val + 1;
-        if (oppositeMap[key]) updatedTraits[oppositeMap[key]] = 20 - updatedTraits[key];
-        logs.push(`[성향 ${key} 성장]: d20 [${d20}] vs [${val}]. 성공! → ${val + 1} 🎉`);
-      } else {
-        logs.push(`[성향 ${key} 유지]: d20 [${d20}] vs [${val}]. 실패.`);
-      }
+
+    const skillResult = resolveCategory(character.skills || {}, character.skillsChecked || {}, '기술');
+    const passionResult = resolveCategory(character.passions || {}, character.passionsChecked || {}, '열망');
+    const standingResult = resolveCategory(character.standings || {}, character.standingsChecked || {}, '명망');
+    const traitResult = resolveTraitExperienceChecks({
+      traits: character.traits || {},
+      checked: character.traitsChecked || {}
+    });
+    traitResult.results.forEach(result => {
+      const verb = result.success ? `성장 -> ${result.nextValue}` : '유지';
+      logs.push(`[성향 ${result.key} ${verb}]: d20 [${result.roll}] / 기준 [${result.target}]`);
+    });
+    let updatedTraits = { ...character.traits };
+    traitResult.results.forEach(result => {
+      if (result.success) updatedTraits = adjustOpposedTrait(updatedTraits, result.key, 1);
     });
 
     setCharacter(prev => {
       const updated = {
         ...prev,
-        skills: updatedSkills,
+        skills: skillResult.values,
         skillsChecked: {},
         traits: updatedTraits,
         traitsChecked: {},
-        passions: updatedPassions,
+        passions: passionResult.values,
         passionsChecked: {},
-        standings: updatedStandings,
+        standings: standingResult.values,
         standingsChecked: {}
       };
       updated.campaign = markAppliedEvent(updated, eventId, '겨울 경험 판정');
@@ -1234,20 +1167,8 @@ export default function FamilyWinter({ character, setCharacter }) {
           alert("성향은 자유 단련(Option A)으로 15를 초과하여 올릴 수 없습니다!");
           return;
         }
-        // opposite trait adjusts automatically
-        const oppositeMap = {
-          chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
-          generous: "selfish", honest: "deceitful", just: "arbitrary",
-          merciful: "cruel", modest: "proud", pious: "worldly",
-          prudent: "reckless", temperate: "indulgent", trusting: "suspicious",
-          valorous: "cowardly"
-        };
-        const opp = oppositeMap[selectedTrait];
         setCharacter(prev => {
-          const nextTraits = { ...prev.traits };
-          const newVal = Math.min(15, (prev.traits[selectedTrait] || 0) + 1);
-          nextTraits[selectedTrait] = newVal;
-          nextTraits[opp] = 20 - newVal;
+          const nextTraits = adjustOpposedTrait(prev.traits, selectedTrait, 1, 15);
           const updated = {
             ...prev,
             traits: nextTraits
@@ -1493,16 +1414,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       } else if (statType === 'standing') {
         nextStandings[key] = (prev.standings[key] || 0) + 1;
       } else if (statType === 'trait') {
-        const oppositeMap = {
-          chaste: "lustful", energetic: "lazy", forgiving: "vengeful",
-          generous: "selfish", honest: "deceitful", just: "arbitrary",
-          merciful: "cruel", modest: "proud", pious: "worldly",
-          prudent: "reckless", temperate: "indulgent", trusting: "suspicious",
-          valorous: "cowardly"
-        };
-        const opp = oppositeMap[key];
-        nextTraits[key] = (prev.traits[key] || 0) + 1;
-        nextTraits[opp] = Math.max(0, (prev.traits[opp] || 0) - 1);
+        Object.assign(nextTraits, adjustOpposedTrait(nextTraits, key, 1));
       }
 
       const updated = {
@@ -1529,7 +1441,7 @@ export default function FamilyWinter({ character, setCharacter }) {
   };
 
   const endWinterPhase = () => {
-    if (['deceased', 'pending_succession'].includes(character.campaign?.lifecycle?.careerStatus)) {
+    if (['deceased', 'retired', 'historical'].includes(character.campaign?.lifecycle?.careerStatus)) {
       alert('사망한 기사의 겨울 정산을 계속할 수 없습니다. 구원 판정과 다음 캐릭터 선택을 먼저 해결해 주세요.');
       return;
     }
@@ -1693,7 +1605,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
     // reset states
     setAgingD20(null); setHarvestRoll(null); setSquireSurvivalRoll(null);
-    setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
+    setPersonalEventRoll(null); setChildbirthRoll(null);
     setFamilyEventRoll(null); setExperienceLogs([]); setTrainingApplied(false);
     setCalculatedAnnualGlory(null); setGloryBonusPoints(0); setBonusSpent(0);
     // reset training options
@@ -1710,7 +1622,7 @@ export default function FamilyWinter({ character, setCharacter }) {
     setWinterStep(1);
     setLogMessages([]);
     setAgingD20(null); setHarvestRoll(null); setSquireSurvivalRoll(null);
-    setPersonalEventRoll(null); setMarriageRoll(null); setChildbirthRoll(null);
+    setPersonalEventRoll(null); setChildbirthRoll(null);
     setFamilyEventRoll(null); setExperienceLogs([]); setTrainingApplied(false);
     setCalculatedAnnualGlory(null); setGloryBonusPoints(0); setBonusSpent(0);
     // reset training options
@@ -1725,7 +1637,7 @@ export default function FamilyWinter({ character, setCharacter }) {
 
   // Lists for selection
   const attributeKeys = ['siz', 'dex', 'str', 'con', 'app'];
-  const traitKeys = ['chaste', 'energetic', 'forgiving', 'generous', 'honest', 'just', 'merciful', 'modest', 'pious', 'prudent', 'temperate', 'trusting', 'valorous'];
+  const traitKeys = ['chaste', 'energetic', 'forgiving', 'generous', 'honest', 'just', 'merciful', 'modest', 'prudent', 'temperate', 'trusting', 'valorous'];
   const passionKeys = Object.keys(character.passions);
   const standingKeys = Object.keys(character.standings || {});
 

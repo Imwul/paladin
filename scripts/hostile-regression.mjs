@@ -59,6 +59,7 @@ corrupt.gear.cash = -50;
 corrupt.gear.gloryTotal = -500;
 corrupt.attributes.siz = 99;
 corrupt.attributes.currentHp = 999;
+corrupt.skills.sword = Number.POSITIVE_INFINITY;
 corrupt.personal.maintenance = 'dragon-hoard';
 corrupt.traits.chaste = 18;
 corrupt.traits.lustful = 18;
@@ -81,8 +82,9 @@ const saveLoadRoundTrip = sanitizeCampaignState(JSON.parse(JSON.stringify(corrup
 
 assert.equal(sanitized.gear.cash, 0);
 assert.equal(sanitized.gear.gloryTotal, 0);
-assert.equal(sanitized.attributes.siz, 30);
+assert.equal(sanitized.attributes.siz, 99);
 assert.equal(sanitized.attributes.currentHp <= sanitized.attributes.siz + sanitized.attributes.con, true);
+assert.equal(sanitized.skills.sword, defaults.skills.sword);
 assert.equal(sanitized.personal.maintenance, 'ordinary');
 assert.equal(sanitized.traits.chaste + sanitized.traits.lustful, 20);
 assert.equal(sanitizeCampaignState({

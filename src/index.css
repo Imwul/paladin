@@ -1388,12 +1388,26 @@ input[type="number"] {
 
 /* ─── Responsive adjustments ─── */
 @media (max-width: 600px) {
+  .cs-row > .cs-section {
+    flex-basis: 100%;
+  }
+
   .cs-section-inner {
     padding: 10px 12px;
   }
   
   .cs-field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cs-field-full {
+    grid-column: 1 / -1 !important;
+  }
+
+  .cs-field .cs-field-label {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
   
   .cs-attr-block {

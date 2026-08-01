@@ -41,6 +41,8 @@ Existing saves are migrated through `sanitizeCampaignState`. Legacy fields are p
 
 - Existing format: schema version 2 saves may omit lifecycle/economy fields, use `loyaltyLiege` instead of `loveCharlemagne`, clamp attributes above zero and contain only free-form family status strings.
 - New format: schema version 3 adds canonical lifecycle (`active`, `incapacitated`, `deceased`, `retired`, `pending_succession`), pending Salvation legacy, Winter harvest/economy state and canonical Love Charlemagne while preserving arbitrary legacy fields.
+- Phase 2 format: schema version 4 adds an in-progress character-creation session, completion IDs, character archives and a full roll/choice/modifier trace. Version 2/3 saves continue through the same sanitizer, and a malformed object-valued saint effect is repaired to a display-safe summary.
+- Phase 3 format: schema version 5 replaces the ambiguous succession flag with the explicit lifecycle state machine, event/effect ledgers, Chronicle events, Salvation/Canonization ledgers, pending Legacy, prepared-character state and successor creation context. Version 4 `pending_succession` saves migrate to a historical predecessor plus an unresolved `pending_successor`; blessing text never manufactures a fresh grant.
 - Reason: death, retirement, incapacity, succession and unresolved annual economy must survive save/load without inventing a living character or applying income twice.
 - Migration/read path: `sanitizeCampaignState` accepts old or incomplete objects, overlays safe structural defaults, maps Loyalty only when Love Charlemagne is absent, derives lifecycle conservatively and preserves journal/family/user text.
 - Rollback: exported version 3 JSON remains ordinary JSON and keeps the old fields; an older build can ignore added campaign keys, but it cannot reproduce the corrected lifecycle semantics. Users should retain an exported backup before intentionally reopening a campaign in an older build.
@@ -51,24 +53,25 @@ Existing saves are migrated through `sanitizeCampaignState`. Legacy fields are p
 - `RULE_DIFFERENCES.md`: house rules, historical/version differences, ambiguities, and interface-only behavior
 - This file: scope, counts, critical findings, fix summary, and verification result
 
-## Final counts and verification
+## Compliance counts
 
-The matrix contains 136 independently triggered rule or table-family entries. Counts refer to the final status of every row in `RULE_TRACEABILITY.md`.
+The matrix contains 136 independently triggered rule or table-family entries. The Phase 1 column reflects the Rules Engine remaster described below.
 
-| Status | Baseline | Final |
-|---|---:|---:|
-| Exact | 3 | 16 |
-| Partial | 62 | 75 |
-| Incorrect | 21 | 1 |
-| Missing | 19 | 16 |
-| UI-only | 28 | 25 |
-| House Rule | 3 | 3 |
+| Status | Baseline | Audit fixes | Remaster Phase 1 | Remaster Phase 2 | Remaster Phase 3 |
+|---|---:|---:|---:|---:|---:|
+| Exact | 3 | 16 | 16 | 31 | 36 |
+| Partial | 62 | 75 | 74 | 64 | 60 |
+| Incorrect | 21 | 1 | 1 | 0 | 0 |
+| Missing | 19 | 16 | 14 | 12 | 11 |
+| UI-only | 28 | 25 | 25 | 23 | 23 |
+| Logic-only | 0 | 0 | 3 | 3 | 3 |
+| House Rule | 3 | 3 | 3 | 3 | 3 |
 
 The rise in `Partial` is intentional: an incorrect or missing rule is not called exact merely because its highest-risk arithmetic was corrected. For example, the Winter personal-event roll now uses the exact d20 resolver, but the row remains partial because several event choices and downstream effects are not automated.
 
 ## Fix result
 
-- Added one source-derived rules module for Paladin rounding, standard and opposed d20 checks, campaign/lineage boundaries, successor age eligibility, aging outcomes, harvest, starting passions/Standings, and Frankish Ardennes base generation.
+- Added the initial source-derived rules layer for Paladin rounding, standard and opposed d20 checks, campaign/lineage boundaries, successor age eligibility, aging outcomes, harvest, starting passions/Standings, and Frankish Ardennes base generation; Remaster Phase 1 below splits and extends that layer.
 - Corrected the 767 start, the 745-766 father era, the 768-814 phase boundaries and the 767 opening chronology.
 - Corrected natural-1, natural-20, above-20 and below-zero resolution in the major oracle, Winter and Salvation paths.
 - Rebuilt the default rules-based male creation path around the twelve source trait pairs, four starting passions, six derived Standings, Table 1-12 skill dice, culture/homeland modifiers, Saint Denis and Paladin rounding. Authored quick-start presets remain separate convenience data.
@@ -77,16 +80,123 @@ The rise in `Partial` is intentional: an incorrect or missing rule is not called
 - Moved age, squire age and mount age handling into Winter Step 2; restored age-14 replacement squires and attribute-zero death. Harvest now uses the printed result values and Standing/phase/situational modifiers, while maintenance requires an explicit net ledger resolution.
 - Migrated schema version 2 saves to version 3 without deleting legacy passions, user text or historical records.
 
+## Remaster Phase 1: Rules Engine
+
+### Authoritative source pass
+
+The complete 463-page PDF was extracted and read again before implementation. The table of contents, all chapter boundaries and all rules-bearing passages were scanned, with original rendered pages rechecked for dice and rounding, the twelve opposed traits, d20 and opposed resolution, modifiers, Feats, movement and travel, forced march, and experience.
+
+This pass found one source inconsistency and one audit error. The Introduction gives Phase 4 as 801-813 while Chapter 15 includes 814; the current 801-814 interpretation is retained and recorded for user confirmation. The old matrix also claimed that a critical automatically outranked a higher ordinary success in opposed resolution. Chapter 6 instead awards the win to the highest successful modified die result, so the engine, tests and matrix now follow that wording.
+
+### Architecture and behavior
+
+- Split the mixed helper file into `src/rules` modules for core resolution, personality, progression, travel, campaign and character rules. `src/utils/paladinRules.js` remains as a compatibility facade.
+- Routed source dice used by the four large gameplay components through shared `rollDie`/`rollD3` functions. Random list selection remains later-phase work.
+- Added exact engine procedures for printed dice notation, d3 conversion, statistic and reflexive modifiers, opposed partial success, Feats, Movement Rate, Table 6-2 travel, unknown routes, forced march and experience.
+- Replaced duplicated trait-pair arithmetic in character creation, the sheet, ancestry, personal events, Winter training, Winter experience and Glory bonuses with the twelve-pair engine.
+- Removed the remaining `Pious` Winter training option. Table 10-9 event 19 now records its required Christian-trait choice as unresolved instead of silently awarding an invented Pious check.
+- Corrected Winter and Solo experience boundaries: equal-or-higher succeeds, values 20+ receive a free check, a 20 can raise a value above 20, and traits may become heroic while the opposite remains 0.
+- Removed the save sanitizer's invented score-30 ceiling. Existing values and schema keys are unchanged; finite nonnegative heroic values now survive save/load in either trait direction.
+
+### Compliance change
+
+- `INTRO-DICE-001`, `CORE-FEAT-001` and `CORE-MOVE-001` moved to `Logic-only`: the engine is exact, but no new player-facing feature was added in this phase.
+- `CORE-OPPOSED-001`, `CORE-MOD-001`, `CORE-XP-001`, `CORE-XP-002`, `TRAIT-PAIR-001` and `RNG-001` remain `Partial` with narrower, explicit remaining scope.
+- Missing decreased from 16 to 14. Partial decreased from 75 to 74. No row was promoted to `Exact` without a complete app surface.
+
+### Verification
+
+- Production build: passed, with the existing large-bundle advisory.
+- Rule regression: 24 Rule-ID groups passed.
+- Hostile save/state regression: passed, including nonnumeric score recovery and heroic-value round trips.
+- Browser smoke: passed for heroic trait `21/0`, the equal-or-higher experience wording, unchecked-skill gating and an empty browser error log.
+- Screenshots: `docs/screenshots/phase-1-rules-engine.jpg` and `docs/screenshots/phase-1-experience-roll.jpg`.
+- Repository-wide lint remains outside a clean baseline; the existing legacy component findings are still present.
+
+### Remaining after Phase 1
+
+The Rules Engine APIs do not by themselves complete the player-facing Feat or travel workflows. Several later-phase event and combat callers still own consequence-specific branches, experience adjustments awarded by events are not consistently deferred until after the annual roll, the Solo trait helper narrates checks without persisting every check, and random list selection is not yet injectable. These items remain visible as `Logic-only` or `Partial` rather than being treated as complete.
+
+## Remaster Phase 2: Character Creation
+
+### Authoritative source pass
+
+Chapter One was extracted again from the printed PDF and every source page used by creation was visually rechecked before editing. The implementation follows the printed procedure rather than the legacy generator: personal data and family, youth, attributes, personality, skills, knighthood, initial Glory, possessions, birth gifts and the first character story.
+
+The requested 20-step interface preserves the rulebook's nine-step order while separating dense source subprocedures into visible checkpoints. Every step displays its Rule ID and page, and a downstream change recomputes from stored dice and choices instead of stacking modifiers twice.
+
+### Architecture and behavior
+
+- Added one deterministic character-creation engine and source-data module. Automatic and manual physical dice use the same roll record, source page and modifier ledger.
+- Added a resumable schema-version-4 session with seed, current step, rolls, choices, invalidations, unresolved choices and squire-year history. The active character is untouched until final confirmation.
+- Added exact father/subtable/survival, Page education, culture/homeland, attribute, trait, passion, Standing, skill-order, knighthood, initial Glory, outfit and birth-gift procedures.
+- Added a 20-step chronicle wizard with gated progress, source disclosures, mobile controls, keyboard focus and reduced-motion handling. Authored presets and manual editing remain visibly separate from the rulebook path.
+- Added an atomic, idempotent completion transaction that updates the character sheet, family tree, journal and campaign lifecycle together and archives the previous summary.
+- Did not enable the source-ambiguous female-specific route. Its printed tables are implemented and tested, while the UI records why user confirmation is required.
+
+### Compliance change
+
+- `Incorrect` decreased from 1 to 0 by correcting `CHAR-GLORY-001` with source-itemized cumulative Glory and one knighting award.
+- `Exact` increased from 16 to 31. Father, survival, Page, culture, attributes, feature, traits, passions, Standings, skill ordering, knighthood, Glory, outfit and birth-gift rows now have engine, UI and regression coverage.
+- `Missing` decreased from 14 to 12. Female skill formulas and knighthood are no longer absent; the former remains `Partial` until the female-specific route is interpreted.
+- Female-specific generation and full later-year Ideal benefits remain `Partial`; no ambiguous or later-phase rule was invented to improve the count.
+
+### Verification
+
+- Character-creation regression: passed, covering 19 Rule-ID groups, every relevant d20/d6 table boundary, male/female formulas, source-order caps, nested rerolls, save/resume and atomic/idempotent completion.
+- Phase 1 rule regression and hostile save/state regression: passed unchanged.
+- Production build and targeted lint for all new Phase 2 modules: passed. The existing large-bundle advisory remains.
+- Browser full path: passed from seed entry through Review at desktop width and at 390 CSS pixels. A completion-render incompatibility found during this pass was fixed with a save migration and a regression assertion.
+- Screenshots: `docs/screenshots/phase-2-character-start.png`, `phase-2-traits.png`, `phase-2-passions.png`, `phase-2-initial-glory.png`, `phase-2-review.png`, and `phase-2-mobile.png`.
+
+### Remaining after Phase 2
+
+The female-specific route needs user confirmation on son-number/application order before it can be enabled. Shared multiplayer family ownership, same-family successor modifiers, later-year Ideal benefits and lifecycle procedures remain assigned to subsequent phases. Phase 3 and later gameplay was not expanded here.
+
+## Remaster Phase 3: Lifecycle, Salvation, Succession and Korean UI
+
+### Authoritative source pass
+
+Chapter One's end-of-career pages and Tables 1-16/1-17 were extracted and visually reread before editing. The implemented order is career end, Salvation, optional Canonization, pending Legacy, successor route selection and the existing twenty-step character-creation procedure. Death, retirement, temporary incapacity and bedridden survival never share one result.
+
+### Architecture and behavior
+
+- Added a schema-version-5 lifecycle engine with pure resolvers for incapacity, bedridden state, recovery, death, retirement, career-end preparation/confirmation, Salvation, Canonization, Legacy and successor activation.
+- Career end updates the active identity, Family Tree, Journal, Chronicle, pending state, save revision and effect IDs in one idempotent transaction. Reloads and repeated commands reuse the recorded result.
+- Added persisted Salvation and Canonization ledgers using the shared d20 resolver and injectable seeded/manual rolls. Canonization requires the deed threshold, Salvation 20+, a critical Salvation and a successful Church Standing roll.
+- Added source-shaped Legacy grants and the separate same-family, new-family and prepared-second-character routes. Same-family generation reuses the Phase 2 wizard and applies only the printed APP, Valorous, Glory, equipment, manor, score-transfer, gift and blessing changes with provenance.
+- Added Korean-primary locale files with English fallback for the lifecycle panel, canonical creation wizard and principal Character Sheet navigation/status labels. The destructive career-end dialog has focus management, keyboard dismissal, visible status text, reduced-motion styling and 44px controls.
+- Kept Winter Phase scope narrow: only attribute consequences now enter the lifecycle resolver. Survival, mount and the remaining Winter procedures stay assigned to Phase 4.
+
+### Compliance change
+
+- `Exact`: 31 → 36; `Partial`: 64 → 60; `Missing`: 12 → 11.
+- `LIFE-001`, `LIFE-LEGACY-001`, `LIFE-SAINT-001` and `LIFE-NEWCHAR-001` moved from `Partial` to `Exact` after engine, UI, persistence and regression coverage were completed.
+- `LIFE-NEWFAMILY-001` moved from `Missing` to `Exact` through its explicit approved, no-lineage-benefit route.
+- `LIFE-SALVATION-001` and `WINTER-AGING-001` remain `Exact` with their implementation evidence moved to the lifecycle engine. `CHAR-FAMILY-001` and the global `SAVE-IDEMP-001` remain `Partial` because multiplayer family ownership and unrelated legacy mutations are outside this phase.
+
+### Verification
+
+- `npm run ci:temporary`: passed, including production build, Phase 1 rules, Phase 2 character creation, Phase 3 lifecycle and hostile save/state regressions.
+- Targeted ESLint for the Phase 3 rules/i18n modules, lifecycle panel, canonical wizard, Winter integration, migration and regressions: passed.
+- Browser smoke: passed through death confirmation, Salvation ledger/manual check, Legacy selection, successor selection and the reused same-family wizard. Career-end dialog focus, Korean labels and an empty browser error/warning log were checked.
+- Responsive smoke: passed at 390 CSS pixels (`scrollWidth` equals `clientWidth`) and 1440 CSS pixels with no document overflow. Reduced-motion rules are present for lifecycle and wizard transitions.
+- Screenshots: `docs/screenshots/phase-3-career-end-confirmation.png`, `phase-3-salvation.png`, `phase-3-legacy-selection.png`, `phase-3-successor-selection.png`, `phase-3-successor-wizard.png`, `phase-3-lifecycle-desktop.png`, and `phase-3-lifecycle-mobile.png`.
+
+### Remaining after Phase 3
+
+The full Winter survival and mount target sets, multiplayer shared-family ownership, female-specific creation ambiguity, later-year Ideal effects and repository-wide localization remain incomplete. Real Firebase round-trip testing still needs a configured project. These limits remain `Partial`, `UI-only` or `House Rule`; none was promoted to improve the totals.
+
 ## Remaining critical scope
 
-The app is still not a complete implementation of the 463-page core book. The remaining `Incorrect` row is initial Glory calculation (`CHAR-GLORY-001`). The largest `Missing` or `UI-only` areas are full personal combat and health, movement and travel, siege, wealth transactions, foreign-character creation, opponent/creature execution, directed traits/oaths, and complete Chapter 19 adventures. Salvation score transfers, same-family successor modifiers, Winter survival targets, personal/family event effects and exact maintenance choices remain partial.
+The app is still not a complete implementation of the 463-page core book, but the traceability matrix now has no `Incorrect` rows. The largest `Missing` or `UI-only` areas are full personal combat and health, the player-facing travel workflow, siege, wealth transactions, foreign-character creation, opponent/creature execution, directed traits/oaths, and complete Chapter 19 adventures. Winter survival targets, personal/family event effects and exact maintenance choices remain partial.
 
-The random layer is only centralized for newly audited core procedures. Many legacy widgets still call `Math.random` directly, so every random table cannot yet be seeded and exhaustively replayed. Real Firebase save/load was not exercised because it requires project credentials; offline and online modes nevertheless share the same local rule code and tables.
+Source dice now use the shared engine, but legacy random selections still call `Math.random` directly, so every random table cannot yet be seeded and exhaustively replayed. Real Firebase save/load was not exercised because it requires project credentials; offline and online modes nevertheless share the same local rule code and tables.
 
 ## Verification
 
-- `npm run ci:temporary`: passed. This includes the production build, 15 rule-ID regression groups and the hostile save/state regression.
+- `npm run ci:temporary`: passed after Phase 3. This includes the production build and Phase 1, Phase 2, Phase 3 and hostile save/state regression suites.
 - Browser smoke: passed for 767 startup, twelve trait pairs, canonical passions, six son-number choices, gated saint blessing, Saint Denis, creation modal, chronology and Winter Step 2. Browser error log was empty.
-- `npm run lint`: failed with 186 repository-wide findings (182 errors and 4 warnings). These include long-standing unused code, undefined legacy oracle handlers and React hook/purity findings; this audit does not claim a clean repository-wide lint baseline. The new rules module, audit scripts, Dashboard and changed data tables pass their targeted lint run.
+- `npm run lint`: still fails on the legacy repository baseline with 159 errors and 3 warnings across 10 files. These are concentrated in `FamilyTree.jsx`, `SoloOracles.jsx`, `CharacterSheet.jsx` and other older components; this phase does not claim a clean repository-wide baseline. The Phase 3 rules/i18n modules, lifecycle panel, canonical wizard, Winter integration, migration and regressions pass their targeted lint run.
 - Typecheck: not configured. The project is JavaScript and has no `typecheck` script or TypeScript configuration.
-- Build warning: the main JavaScript bundle is 1.88 MB minified (536.72 kB gzip), above Vite's 500 kB advisory threshold; the build still succeeds.
+- Build warning: the main JavaScript bundle is 2.02 MB minified (574.88 kB gzip), above Vite's 500 kB advisory threshold; the build still succeeds.

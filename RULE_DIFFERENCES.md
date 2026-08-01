@@ -7,6 +7,7 @@
 | d20 critical | Critical equals the modified statistic | Natural 1 is also always critical | Incorrect | Replace with one shared exact resolver. |
 | Values above 20 | Add excess to die result; result 20+ is critical | Target is clamped and die is not transformed | Incorrect | Implement Chapter 6 procedure. |
 | Values below 1 | Automatic failure; expanded fumble range | Target is clamped to 0/1 | Incorrect | Preserve negative target and calculate fumble threshold. |
+| Opposed resolution | Highest successful modified die result wins; a successful loser gets partial success | Shared comparator gave every critical priority over ordinary successes | Incorrect | Compare successful modified die results without an extra critical-priority rule. |
 | Core start year | First characters and opening scenario are in 767 | Default/new custom characters begin in 768 | Incorrect | New campaigns start in 767; retain existing saved years. |
 | Father chronology | Father history is 745-766 | Timeline label/range includes 767 | Incorrect | End father history at 766 and start player history at 767. |
 | Starting passions | Honor, Love Charlemagne, Love family, Love God | Loyalty liege, Love family, Hospitality, Honor, Hate Saracens, Love God | Incorrect/House Rule | Use the four source passions for new characters; preserve optional legacy passions in saves. |
@@ -24,11 +25,15 @@
 
 ## Disposition after the audit
 
-The d20 resolver, 767 start, father chronology, four starting passions, Saint Denis, rules-based Frankish Ardennes generation, Winter aging, aging death, Salvation calculation and fabricated legacy multiplier were corrected. Harvest modifiers and the economy ledger were upgraded but remain partial. Personal events, Survival, family-event targeting, compulsory Glory-bonus spending and complete successor generation remain open in the traceability matrix rather than being accepted as app conventions.
+The d20 resolver, opposed-roll ordering, 767 start, father chronology, four starting passions, Saint Denis, rules-based Frankish Ardennes generation, Winter aging, aging death, Salvation, Canonization, Legacy and the complete same/new-family successor routes were corrected. Harvest modifiers and the economy ledger were upgraded but remain partial. Personal events, Survival, family-event targeting and compulsory Glory-bonus spending remain open in the traceability matrix rather than being accepted as app conventions.
 
 The Table 1-17 blessing control is now hidden unless a canonized predecessor granted a blessing roll. A valid roll consumes that grant. Existing saved blessing text is displayed but does not create another grant. The rules-based creation path no longer offers an arbitrary starting blessing.
 
+The Phase 2 `Core Rules Character` route is the canonical Chapter One implementation. `Quick-start Preset` remains labeled as authored sample data and `Manual Character` remains an explicit override/editor route; neither is presented as a rulebook roll or allowed to silently change the canonical creation session.
+
 Table 1-15 blessed spear/sword entries are now stored as conditional modifiers against pagans instead of permanently increasing the base weapon skill. Sacred relics no longer fabricate a `Pious/Worldly` result; the integrated creation path requires one of the six printed Religious traits, while legacy/manual unresolved records are retained as a visible choice requirement.
+
+Winter training no longer offers `Pious` as a core trait. Table 10-9 event 19 failure now remains unresolved until a printed Christian trait is chosen and rolled; it no longer converts the choice into an automatic Pious experience check.
 
 ## Interface conveniences that do not inherently change rules
 
@@ -54,15 +59,52 @@ The default Loyalty/Hospitality passion set and natural-1 critical wording resem
 
 ## Ambiguous or GM-dependent rules
 
+### Phase 3 lifecycle interpretation record
+
+- Death and definitive retirement both open Salvation, but they remain different career and Family Tree states. Temporary incapacity and bedridden survival never open Salvation.
+- The same-family route requires an explicit family candidate and predecessor/household father-class context before the canonical wizard proceeds. The app does not infer a replacement class from a name or free-form note.
+- Source-listed personal/family equipment, money and horses are separate selectable inheritance records. Temporary/consumed items are excluded, each copied item receives provenance, and manor inheritance remains unresolved until GM approval is recorded.
+- Choosing the new-family route records approval, creates a new family context and forfeits unused predecessor Legacy because the rulebook grants no lineage benefit to that character.
+- A version 4 `pending_succession` record cannot prove whether its predecessor died or retired. Migration therefore keeps the predecessor historical, creates an unresolved `pending_successor` state and never revives that character.
+- Existing blessing prose is historical content, not evidence of an unused Table 1-17 roll. Migration stores it without generating a blessing grant.
+
+### Female-specific creation order
+
+- Source: Chapter 1 pp.28, 31, 34-35 and 41-42; Tables 1-2, 1-10 and 1-13.
+- Source conflict: The book supplies female family-characteristic and skill tables and discusses female knights, while the son-number procedure subtracts the son's ordinal from Love [family] and also modifies Page education/outfit before the normal Standing [family] derivation. It does not state one unambiguous replacement order for a female-specific route.
+- Implemented certainty: Table 1-2 and Table 1-13 are exact, tested engine data. A woman may use the explicitly offered male-equivalent core route where the Gamemaster applies the printed mainstream procedure.
+- Current UI: The female-specific route is visible but disabled with a source-ambiguity notice. It does not guess a daughter-number formula, silently drop the modifier, or manufacture acceptance/disguise mechanics.
+- Impact: Choosing an invented order can change Love [family], Standing [family], Page education and starting outfit.
+- Recommendation: Keep `CHAR-FAMCHAR-F-001`, `CHAR-SKILL-F-001` and `CHAR-FEMALE-001` Partial until the user confirms the intended table/order interpretation.
+- User confirmation: Required before enabling the female-specific route.
+
+### Phase 4 date discrepancy in the printed source
+
+- Source: Introduction p.19; Chapter 15 contents and Phase 4 heading.
+- Source conflict: The introductory chronology labels Phase 4 as 801-813 and then lists Charlemagne's death in 814 separately. Chapter 15 labels Phase 4 as 801-814 and includes 814 in that chapter.
+- Current interpretation: Keep 814 inside Phase 4 while also treating it as the core-campaign conclusion. This follows the detailed chapter structure already recorded by the audit.
+- Impact: Removing 814 from Phase 4 would change phase-derived lookups during the final campaign year.
+- Recommendation: Do not invent a separate Phase 5 or silently choose a new boundary. Retain the detailed Chapter 15 interpretation until the user confirms otherwise.
+- User confirmation: Needed before changing the existing 801-814 phase boundary.
+
 ### Underage family member and succession
 
 - Source: Chapter 1 pp. 35, 42-44.
 - Interpretation A: A replacement player character must be at least 15, then uses squire-year growth until he qualifies for knighthood; age 18 is normal, not an absolute legal threshold.
 - Interpretation B: A campaign may select only an already playable/qualified family member, using a prepared second character, while young heirs remain in the family tree until later.
-- Baseline app: Blocks selected successors below 18 and has no prepared-second-character or waiting flow.
+- Current app: Blocks only candidates below 15, routes ages 15-17 through the same squire-year and qualification procedure as any other successor, and keeps prepared second characters separate from permanent succession.
 - Impact: A strict age-18 gate can reject an exceptional 16- or 17-year-old who already meets the printed requirements. Allowing any child to inherit immediately would also be wrong.
-- Recommendation: Require an explicit generated character record and the printed knighthood qualifications, not age 18 alone. Until those statistics exist, treat under-15 members as unavailable and 15-17 members as pending character generation.
+- Implemented interpretation: Require an explicit generated character record and the printed knighthood qualifications, not age 18 alone. Under-15 members are unavailable; ages 15-17 enter canonical generation and become active only after its qualification/completion transaction.
 - User confirmation: Not required for the source-aligned minimum; a campaign-specific regency system would be a separate house rule.
+
+### Retired predecessor equipment wording
+
+- Source: Chapter 1 pp.39 and 42-43.
+- Source conflict: The general Possessions rule says a character created after a predecessor's retirement or death may inherit that predecessor's equipment instead of Table 1-14. The later same-family paragraph specifically says that the deceased character may pass down equipment, treasure and goods.
+- Current interpretation: Keep equipment selection available after either definitive career end, following the earlier explicit retirement-or-death clause. Preserve the predecessor status in provenance and never copy the old `birthGifts` grant record as a fresh grant.
+- Impact: Restricting the later wording to death would force a retired predecessor's same-family successor back to Table 1-14 despite the earlier sentence.
+- Recommendation: Keep this interpretation until the user confirms that the later “deceased” wording is intended to narrow the earlier rule.
+- User confirmation: Required before removing equipment inheritance from definitive retirement.
 
 ### Campaign end at 814
 
