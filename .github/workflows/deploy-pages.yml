@@ -1,4 +1,4 @@
-name: Deploy Paladin APO
+name: Deploy Paladin
 
 on:
   push:
