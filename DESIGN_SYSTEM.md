@@ -15,8 +15,9 @@ The interface is a Carolingian royal register interpreted through modern editori
 
 ## Typography
 
-- Primary Korean family: `Eulyoo1945` Regular 400 and SemiBold 600.
-- English and Latin display family: `Black North` Regular 400.
+- Primary Korean glyph family: `Eulyoo1945` Regular 400 and SemiBold 600.
+- English and Latin glyph family: `Black North` Regular 400.
+- Content stacks Black North before Eulyoo1945, so mixed Korean-English strings select the intended font for each script without splitting the saved text.
 - Fallback: AppleMyungjo, Batang, serif.
 - Display: year, character name and folio title.
 - Register: section title and administrative heading.

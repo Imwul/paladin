@@ -21,8 +21,8 @@
   --focus: #155b85;
   --font-medieval: 'Black North', 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
   --font-display: var(--font-medieval);
-  --font-body: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-ui: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-body: var(--font-medieval);
+  --font-ui: var(--font-medieval);
   --font-data: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
   --color-parchment: var(--paper);
   --color-parchment-dark: var(--paper-grey);
@@ -38,8 +38,8 @@
   --color-grey: var(--ink-muted);
   --color-grey-light: var(--paper-grey);
   --color-success: #285e53;
-  --font-korean: var(--font-body);
-  --font-korean-serif: var(--font-body);
+  --font-korean: var(--font-medieval);
+  --font-korean-serif: var(--font-medieval);
   --font-heading: var(--font-display);
   --font-serif: var(--font-display);
   --font-gothic: var(--font-display);
