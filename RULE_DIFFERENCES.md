@@ -135,6 +135,16 @@ The default Loyalty/Hospitality passion set and natural-1 critical wording resem
 - Legacy save migration: A save paused after the old Harvest step preserves its recorded gross income and resumes Maintenance inside Economic Circumstances without rerolling or paying the income twice.
 - Glory bonus: Winter cannot close while any crossed-threshold point remains unspent. A manual skip is not offered because the printed rule has no discard option.
 
+### Final Completion Chronicle and ledger boundary
+
+- Source: Chapter 4 pp.84-94, Chapter 10 pp.174-182 and the printed character-sheet Glory history.
+- Implemented interpretation: Every Glory and Standing change is a rules transaction, but the Chronicle is a narrative of meaningful deeds and life events rather than a duplicate transaction log.
+- Chronicle inclusion: adventures, consequential personal/family events, exceptional harvests, illness, death, marriage, birth, knighting, retirement, major Glory thresholds and succession.
+- Chronicle exclusion: routine age increments without loss, ordinary income arithmetic, survival rolls with no consequence, experience-roll counts, training field names and annual-close administration.
+- Family continuity: same-family and prepared-second routes preserve shared Family Timeline, Glory and Standing history with character IDs. A genuinely new-family route starts new ledgers.
+- Save migration: schema v6 preserves unknown fields and all old journal text. Existing pre-v6 Glory totals mark already-passed 1,000-point thresholds as claimed because the old save cannot prove whether those points were spent; this prevents duplicate benefits.
+- User confirmation: Not required. This changes presentation and provenance, not a printed game result.
+
 ## Offline fallback finding
 
 The app has no network-fetched rule tables or event outcomes. Firebase only stores and loads the complete local character object. Therefore online and offline modes currently execute the same local rules and random calls, and there is no stale fallback table to compare. The remaining risk is synchronization behavior, not probability drift: real Firebase save/load was not testable without the user's project configuration.

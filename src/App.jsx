@@ -138,13 +138,17 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 5,
+    schemaVersion: 6,
     saveRevision: 0,
     characterCreationSession: null,
     completedCreationIds: [],
     characterArchives: [],
     appliedEvents: {},
     chronicleEvents: [],
+    gloryLedger: [],
+    standingLedger: [],
+    familyTimeline: [],
+    gloryBonusClaimedThreshold: 0,
     passionStates: [],
     lifecycle: {
       status: 'active',

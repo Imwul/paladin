@@ -43,6 +43,7 @@ Existing saves are migrated through `sanitizeCampaignState`. Legacy fields are p
 - New format: schema version 3 adds canonical lifecycle (`active`, `incapacitated`, `deceased`, `retired`, `pending_succession`), pending Salvation legacy, Winter harvest/economy state and canonical Love Charlemagne while preserving arbitrary legacy fields.
 - Phase 2 format: schema version 4 adds an in-progress character-creation session, completion IDs, character archives and a full roll/choice/modifier trace. Version 2/3 saves continue through the same sanitizer, and a malformed object-valued saint effect is repaired to a display-safe summary.
 - Phase 3 format: schema version 5 replaces the ambiguous succession flag with the explicit lifecycle state machine, event/effect ledgers, Chronicle events, Salvation/Canonization ledgers, pending Legacy, prepared-character state and successor creation context. Version 4 `pending_succession` saves migrate to a historical predecessor plus an unresolved `pending_successor`; blessing text never manufactures a fresh grant.
+- Final Completion format: schema version 6 adds first-class Glory, Standing and Family Timeline ledgers plus the last claimed 1,000-Glory threshold. Older saves conservatively mark thresholds below their existing Glory total as already claimed, preventing duplicate bonus awards while preserving every unknown field.
 - Reason: death, retirement, incapacity, succession and unresolved annual economy must survive save/load without inventing a living character or applying income twice.
 - Migration/read path: `sanitizeCampaignState` accepts old or incomplete objects, overlays safe structural defaults, maps Loyalty only when Love Charlemagne is absent, derives lifecycle conservatively and preserves journal/family/user text.
 - Rollback: exported version 3 JSON remains ordinary JSON and keeps the old fields; an older build can ignore added campaign keys, but it cannot reproduce the corrected lifecycle semantics. Users should retain an exported backup before intentionally reopening a campaign in an older build.
@@ -195,7 +196,7 @@ Chapter 10 pp.174-183 and the Chapter 4 Glory passages were visually reread befo
 
 ### Architecture and behavior
 
-- Added one engine-owned ten-step Winter transaction model. Every step records its Rule ID, source, input, roll, modifiers, unresolved choices, state changes, completion ID, rollback boundary and Chronicle entry.
+- Added one engine-owned ten-step Winter transaction model. Every step records its Rule ID, source, input, roll, modifiers, unresolved choices, state changes, completion ID and rollback boundary; only meaningful life events enter the Chronicle.
 - Added exact order guards, duplicate prevention, save/resume state, annual close guards and migration for old `harvest`, `maintenance`, `familyEvent` and `annualGlory` step names. A save paused after legacy Harvest reuses its recorded gross income and cannot roll the harvest a second time.
 - Structured all twenty Table 10-9 personal-event rows and all Table 10-12/10-13 family-event and relation/sex rows. Deterministic effects apply automatically; choices or unsupported target creation remain visible unresolved records.
 - Replaced the launcher/dashboard shell with a Korean-first royal register: persistent campaign context, folio index navigation, Chronicle, dossier, family register, Standing/Glory ledgers and source-order Winter wizard.
@@ -222,9 +223,30 @@ The app is still not a complete implementation of the 463-page core book, but th
 
 Source dice now use the shared engine, but legacy random selections still call `Math.random` directly, so every random table cannot yet be seeded and exhaustively replayed. Real Firebase save/load was not exercised because it requires project credentials; offline and online modes nevertheless share the same local rule code and tables.
 
+## Final Completion: Campaign Validation
+
+### Source and play pass
+
+- Reread all 463 PDF pages in order, including tables, sidebars, examples, notes, optional rules, footnotes and illustration-only pages. `RULEBOOK_PAGE_AUDIT.md` records one row per PDF page.
+- Ran an 11-year deterministic campaign: Gerold for ten years, death and Salvation, Legacy selection, same-family successor creation and knighting, then Raimund for one continued year.
+- The corrected path completed eleven full Winter sequences without consulting an external table. This statement applies only to the implemented creation, lifecycle and Winter scope; it does not claim that missing combat, siege or adventure systems are complete.
+
+### Final Completion changes
+
+- Restored Marriage and Childbirth inside Winter Step 6 before the Family Event, including permission, Courtesy, waiting modifiers, Table 10-10 dowry/Glory/manors, non-wife upkeep, Table 10-11 mother/child outcomes, twins and sex rolls.
+- Added first-class Glory and Standing ledgers with year, cause, amount, before/after value and source. Annual Glory posts each passive source separately and stores the exact claimed threshold.
+- Added a Family Timeline for birth, marriage, illness, death, knighting, retirement and succession. Same-family successors preserve predecessor ledgers and the shared family chronology.
+- Changed Chronicle automation to exclude routine numeric transactions and annual-close prose. Adventures and consequential life events remain visible.
+- Applied structured Prosperity, Fertility and Eternal Youth blessings in Harvest, Childbirth and Aging. Romantic annual Glory now recognizes named `Amor [person]` passion keys.
+- Added schema v6 migration, table-boundary Winter regression and `test:campaign` to the temporary CI suite.
+
+### Release decision
+
+The build remains a conditional release candidate, not a complete digital implementation of every Rulebook procedure. See `RELEASE_CHECKLIST.md` for the blocking scope and `CAMPAIGN_VALIDATION.md` for the played route and consultation count.
+
 ## Verification
 
-- `npm run ci:temporary`: passed after the Grand Remaster. This includes production build and Phase 1, Phase 2, Phase 3, Winter and hostile save/state regression suites.
+- `npm run ci:temporary`: includes production build, Phase 1, Phase 2, Phase 3, Winter, 11-year campaign and hostile save/state regression suites.
 - `npm run lint`: still fails on the legacy repository baseline with 141 errors and 3 warnings. New and changed Grand Remaster modules pass their targeted lint run; remaining classes are documented in `PHASE_4_GRAND_REMASTER_REPORT.md`.
 - Typecheck: not configured. The project is JavaScript and has no `typecheck` script or TypeScript configuration.
 - Build: initial application JavaScript is about 326 kB minified (103 kB gzip); the separately loaded lore-data chunk is about 435 kB (142 kB gzip), below the advisory threshold.

@@ -18,6 +18,8 @@ export default function FamilyRegister({ character, setCharacter }) {
     [character.family?.members]
   );
   const visibleMembers = focusGeneration === 'all' ? members : members.filter(member => String(member.generation) === focusGeneration);
+  const timeline = useMemo(() => [...(character.campaign?.familyTimeline || [])]
+    .sort((a, b) => Number(b.year || 0) - Number(a.year || 0)), [character.campaign?.familyTimeline]);
 
   return (
     <article className="folio-page family-register view-animate">
@@ -43,7 +45,18 @@ export default function FamilyRegister({ character, setCharacter }) {
         {!visibleMembers.length && <div className="quiet-complete"><UsersRound size={18} aria-hidden="true" />이 세대에는 기록된 가문원이 없습니다.</div>}
       </div>
 
-      <SectionHeader index="II" title="계보 편집과 조상 연대" meta="Lineage Map · Ancestor History" />
+      <SectionHeader index="II" title="가문의 연대" meta="Birth · Marriage · Death · Succession" />
+      <div className="family-timeline">
+        {timeline.length ? timeline.map((event, index) => (
+          <article key={event.id || index} className="family-timeline__entry">
+            <time>{event.year || '연대 미상'}</time>
+            <div><strong>{event.title || '가문 사건'}</strong>{event.narrative && <p>{event.narrative}</p>}</div>
+            <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'succession' || event.type === 'knighting' ? 'active' : 'neutral'}>{event.type || '가문'}</StatusSeal>
+          </article>
+        )) : <div className="quiet-complete"><UsersRound size={18} aria-hidden="true" />탄생, 혼인, 죽음과 계승이 이곳에 기록됩니다.</div>}
+      </div>
+
+      <SectionHeader index="III" title="계보 편집과 조상 연대" meta="Lineage Map · Ancestor History" />
       <div className="legacy-surface legacy-surface--family"><FamilyTree character={character} setCharacter={setCharacter} /></div>
     </article>
   );

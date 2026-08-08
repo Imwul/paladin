@@ -1436,6 +1436,49 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
     timestamp: completedAt
   };
   const completionEvents = [creationEvent, knightingEvent, transitionEvent].filter(Boolean);
+  const completionChronicleEvents = completionEvents.map(event => {
+    const isKnighting = event.triggeringEvent === 'knighting';
+    const isSuccession = String(event.triggeringEvent).includes('successor');
+    return {
+      ...event,
+      id: event.lifecycleEventId,
+      type: isKnighting ? 'knighting' : isSuccession ? 'succession' : 'character',
+      title: isKnighting ? `${draft.personal.name}의 기사 서임` : isSuccession ? `${draft.personal.name}의 계승` : `${draft.personal.name}의 연대기 시작`,
+      narrative: isKnighting ? '기사 자격을 충족하고 서임을 받아 1,000 영광을 얻었습니다.' : isSuccession ? '선대의 유산을 이어 새 활성 캐릭터가 되었습니다.' : draft.story
+    };
+  });
+  const creationGloryLedger = draft.gloryLedger.filter(entry => Number(entry.amount || 0) !== 0).map((entry, index) => ({
+    id: `glory:${activeCharacterId}:creation:${index}`,
+    year: completionYear,
+    characterId: activeCharacterId,
+    characterName: draft.personal.name,
+    title: entry.sourceLabel,
+    narrative: entry.calculation,
+    amount: Number(entry.amount || 0),
+    status: 'posted',
+    sourceRuleId: entry.sourceRuleId,
+    sourcePage: entry.sourcePage,
+    createdAt: completedAt
+  }));
+  const birthYear = completionYear - Number(draft.personal.age || 0);
+  const creationFamilyTimeline = [
+    {
+      id: `family:${activeCharacterId}:birth`, year: birthYear, type: 'birth', memberId: activeCharacterId,
+      characterId: activeCharacterId, characterName: draft.personal.name, title: `${draft.personal.name} 탄생`,
+      narrative: `${draft.family.name} 가문의 새 세대로 태어났습니다.`, sourceRuleId: 'CHAR-STORY-001', sourcePage: 'Chapter 1 pp. 39-40', createdAt: completedAt
+    },
+    ...(draft.qualification?.qualified ? [{
+      id: `family:${activeCharacterId}:knighting`, year: completionYear, type: 'knighting', memberId: activeCharacterId,
+      characterId: activeCharacterId, characterName: draft.personal.name, title: `${draft.personal.name} 기사 서임`,
+      narrative: '기사 자격을 모두 갖추고 정식으로 서임되었습니다.', sourceRuleId: 'CHAR-KNIGHT-QUAL-001', sourcePage: 'Chapter 1 p. 35', createdAt: completedAt
+    }] : []),
+    ...(isSuccessor ? [{
+      id: `family:${activeCharacterId}:succession`, year: completionYear, type: 'succession', memberId: activeCharacterId,
+      relatedMemberId: successorContext.sourceCharacterId || null, characterId: activeCharacterId, characterName: draft.personal.name,
+      title: `${draft.personal.name} 계승`, narrative: '선대의 삶이 끝난 뒤 가문의 연대와 캠페인을 이어받았습니다.',
+      sourceRuleId: isNewFamily ? 'LIFE-NEWFAMILY-001' : 'LIFE-NEWCHAR-001', sourcePage: 'Chapter 1 pp. 42-43', createdAt: completedAt
+    }] : [])
+  ];
   let completedLegacy = clone(previousLifecycle.legacy || successorContext?.pendingLegacy || null);
   if (completedLegacy && isSameFamily) {
     completedLegacy.consumed = true;
@@ -1454,7 +1497,7 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
   }
   next.campaign = {
     ...(next.campaign || {}),
-    schemaVersion: 5,
+    schemaVersion: 6,
     saveRevision: Number(next.campaign?.saveRevision || 0) + 1,
     characterCreationSession: completedSession,
     completedCreationIds: [...new Set([...(next.campaign?.completedCreationIds || []), completionId])],
@@ -1482,7 +1525,17 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
       unresolvedChoices: [],
       events: [...lifecycleEvents, ...completionEvents].slice(-250)
     },
-    chronicleEvents: [...(next.campaign?.chronicleEvents || []), ...completionEvents.map(event => ({ ...event, type: 'lifecycle' }))].slice(-500),
+    chronicleEvents: [...(next.campaign?.chronicleEvents || []), ...completionChronicleEvents].slice(-500),
+    gloryLedger: [
+      ...(isSameFamily || isPreparedSecond ? next.campaign?.gloryLedger || [] : []),
+      ...creationGloryLedger
+    ].slice(-1000),
+    standingLedger: (isSameFamily || isPreparedSecond ? next.campaign?.standingLedger || [] : []).slice(-1000),
+    familyTimeline: [
+      ...(isSameFamily || isPreparedSecond ? next.campaign?.familyTimeline || [] : []),
+      ...creationFamilyTimeline
+    ].slice(-500),
+    gloryBonusClaimedThreshold: 0,
     appliedEvents: {
       ...(next.campaign?.appliedEvents || {}),
       [completionId]: { appliedAt: completedAt, year: completionYear, label: isSuccessor ? 'Successor character creation completed' : 'Core Rules Character creation completed' },

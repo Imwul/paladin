@@ -15,6 +15,8 @@ const FILTERS = [
   ['miracle', '기적']
 ];
 
+const ADMINISTRATIVE_JOURNAL = /겨울 정산 완료|단계 거래와|규칙 거래 중 연대기 사건/;
+
 const normalizeEvents = character => {
   const events = (character.campaign?.chronicleEvents || []).map((event, index) => ({
     id: event.id || `chronicle-${index}`,
@@ -30,12 +32,14 @@ const normalizeEvents = character => {
     lifecycle: event.lifecycleEffect
   }));
   Object.entries(character.journal || {}).forEach(([year, entry]) => {
+    const narrative = String(entry.text || '').split(/\n{2,}/).filter(block => !ADMINISTRATIVE_JOURNAL.test(block)).join('\n\n').trim();
+    if (!narrative) return;
     events.push({
       id: `journal-${year}`,
       year: Number(year),
       type: /겨울/.test(entry.text) ? 'winter' : 'character',
       title: `${year}년 기록`,
-      narrative: entry.text,
+      narrative,
       ruleId: '',
       source: '개인 일지'
     });

@@ -101,6 +101,11 @@ export default function AppShell({
     return () => window.removeEventListener('keydown', handleEscape);
   }, [mobileOpen]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    document.getElementById('main-content')?.focus({ preventScroll: true });
+  }, [activeTab]);
+
   const navigate = tab => {
     onNavigate(tab);
     setMobileOpen(false);
@@ -219,7 +224,7 @@ export default function AppShell({
 
       <footer className="royal-footer">
         <span lang="en">Paladin · Living Chronicle</span>
-        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v5</span>
+        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v6</span>
       </footer>
     </div>
   );

@@ -24,6 +24,7 @@
   --font-body: var(--font-medieval);
   --font-ui: var(--font-medieval);
   --font-data: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-numeral: 'Black North', 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
   --color-parchment: var(--paper);
   --color-parchment-dark: var(--paper-grey);
   --color-ink: var(--ink);
@@ -399,8 +400,8 @@ a:focus-visible,
 .register-heading__action { justify-self: end; }
 
 .text-command {
-  min-height: 36px;
-  padding: 0 8px;
+  min-height: 44px;
+  padding: 0 10px;
   border: 0;
   border-bottom: 1px solid currentColor;
   border-radius: 0;
@@ -559,6 +560,11 @@ a:focus-visible,
 .family-register-row strong, .family-register-row small { display: block; }
 .family-register-row small { color: var(--ink-muted); font-size: 0.65rem; }
 .family-register-row p { margin: 0; color: var(--ink-soft); font-size: 0.75rem; }
+.family-timeline { border-top: 2px solid var(--ink); }
+.family-timeline__entry { min-height: 72px; display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.family-timeline__entry time { color: var(--seal-dark); font-family: var(--font-data); }
+.family-timeline__entry strong { display: block; }
+.family-timeline__entry p, .glory-entry p { margin: 4px 0 0; color: var(--ink-soft); font-size: 0.7rem; }
 
 .standing-register { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
 .glory-totals { display: grid; grid-template-columns: 2fr 1fr 1fr; border-bottom: 2px solid var(--ink); }
@@ -571,6 +577,7 @@ a:focus-visible,
 .glory-entry > b { color: var(--seal-dark); font-size: 1.2rem; text-align: right; }
 .glory-entry strong, .glory-entry small { display: block; }
 .glory-entry small { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.56rem; }
+.standing-entry > b { color: var(--ink); }
 
 .ledger-state { min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--ink-muted); text-align: center; }
 .ledger-state p { max-width: 520px; margin: 0; font-size: 0.8rem; }
@@ -608,6 +615,9 @@ a:focus-visible,
 .winter-step-sheet__workspace { max-width: 960px; padding-top: 28px; }
 
 .choice-panel { display: grid; gap: 16px; }
+.family-winter-controls { gap: 20px; }
+.winter-subprocedure { min-width: 0; display: grid; gap: 12px; margin: 0; padding: 16px 0; border: 0; border-top: 1px solid var(--rule-dark); }
+.winter-subprocedure legend { padding: 0 12px 0 0; color: var(--seal-dark); font-family: var(--font-ui); font-size: 0.72rem; font-weight: 800; }
 .segmented-control { width: fit-content; display: flex; border: 1px solid var(--ink); }
 .segmented-control button { min-height: 44px; padding: 0 16px; border: 0; border-left: 1px solid var(--ink); border-radius: 0; background: var(--paper-bright); color: var(--ink); cursor: pointer; }
 .segmented-control button:first-child { border-left: 0; }
@@ -681,6 +691,25 @@ a:focus-visible,
 .document-conflict__versions article:first-child { border-left: 0; }
 .document-conflict__versions span, .document-conflict__versions small { font-family: var(--font-data); font-size: 0.62rem; }
 .document-conflict__versions strong { font-family: var(--font-data); font-size: 1.4rem; }
+
+/* Display-scale numerals use the same engraved face as the main Latin titles. */
+.folio-heading__year,
+.dashboard-register__stats dd,
+.chronicle-year > header strong,
+.glory-totals strong,
+.winter-progress > div:first-child strong,
+.document-conflict__versions strong,
+.remaster-app .cc-stat-callout strong,
+.remaster-app .cc-result-grid strong,
+.remaster-app .cc-attribute-table strong,
+.remaster-app .cc-allocation-status strong,
+.remaster-app .cs-derived-value,
+.remaster-app .cs-hp-main input,
+.remaster-app .cs-glory-item input,
+.remaster-app .cs-roll-stat-val,
+.remaster-app .d20-number {
+  font-family: var(--font-numeral) !important;
+}
 .document-conflict__versions button { width: 100%; margin-top: auto; }
 .document-conflict > footer { display: flex; align-items: center; gap: 7px; color: var(--ink-muted); font-size: 0.72rem; }
 
@@ -728,6 +757,7 @@ a:focus-visible,
   .dashboard-columns { grid-template-columns: 1fr; gap: 0; }
   .family-register-row { grid-template-columns: 44px minmax(0, 1fr) auto; }
   .family-register-row p { grid-column: 2 / -1; padding-bottom: 8px; }
+  .family-timeline__entry { grid-template-columns: 64px minmax(0, 1fr) auto; }
   .standing-register { grid-template-columns: 1fr; }
   .winter-form-grid, .winter-form-grid--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .royal-footer { padding: 0 18px; }
@@ -737,10 +767,20 @@ a:focus-visible,
 @media (max-width: 560px) {
   .royal-header { padding-inline: 14px; }
   .royal-wordmark { gap: 7px; font-size: 1.45rem; }
-  .campaign-strip { padding-inline: 14px; }
-  .campaign-strip span { padding-inline: 11px; font-size: 0.68rem; }
+  .campaign-strip { min-height: 64px; display: grid; grid-template-columns: auto auto minmax(0, 1fr); padding-inline: 8px; overflow: hidden; }
+  .campaign-strip span { min-width: 0; min-height: 32px; overflow: hidden; padding-inline: 8px; font-size: 0.66rem; text-overflow: ellipsis; }
+  .campaign-strip span:nth-child(4) { padding-left: 8px; border-left: 0; }
   .folio-breadcrumb { padding-inline: 14px; }
   .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container { padding: 18px 14px 28px; }
+  .legacy-surface [style*="grid-template-columns"],
+  .legacy-surface .cs-field-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .legacy-surface [style*="grid-column"] { grid-column: auto !important; }
+  .legacy-surface .cs-companion-row { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .legacy-surface .cs-companion-field { width: 100%; }
+  .legacy-surface input,
+  .legacy-surface select,
+  .legacy-surface textarea,
+  .legacy-surface button { max-width: 100%; }
   .folio-heading { min-height: 132px; display: block; padding-top: 20px; }
   .folio-heading h1 { padding-right: 0; font-size: 2.15rem; }
   .folio-heading__year { position: absolute; top: 18px; right: 0; z-index: -1; font-size: 3rem; opacity: 0.2; }
@@ -766,6 +806,8 @@ a:focus-visible,
   .family-register-row { grid-template-columns: 36px minmax(0, 1fr); gap: 10px; }
   .family-register-row .status-seal { grid-column: 2; justify-self: start; }
   .family-register-row p { grid-column: 2; }
+  .family-timeline__entry { grid-template-columns: 52px minmax(0, 1fr); gap: 10px; }
+  .family-timeline__entry .status-seal { grid-column: 2; justify-self: start; }
   .glory-totals { grid-template-columns: 1fr 1fr; }
   .glory-totals > div:first-child { grid-column: 1 / -1; border-bottom: 1px solid var(--rule-dark); }
   .glory-totals > div:first-child strong { font-size: 3rem; }

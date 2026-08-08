@@ -15,6 +15,7 @@ import {
 import {
   closeWinterYear,
   ensureWinterState,
+  FAMILY_EVENT_TABLE,
   getTrainingSkillGroups,
   MAINTENANCE_GRADES,
   PERSONAL_EVENT_TABLE,
@@ -99,6 +100,13 @@ export default function WinterPhase({ character, setCharacter }) {
   const [situationalModifier, setSituationalModifier] = useState(0);
   const [personalEventChoice, setPersonalEventChoice] = useState('');
   const [familyEventChoice, setFamilyEventChoice] = useState('');
+  const livingSpouse = useMemo(() => (character.family?.members || []).find(member => ['부인', '남편', '배우자', 'wife', 'husband', 'spouse'].some(label => String(member.relation).toLowerCase().includes(label)) && member.status !== '사망'), [character.family?.members]);
+  const [marriageAction, setMarriageAction] = useState(livingSpouse ? 'already_married' : 'skip');
+  const [spouseName, setSpouseName] = useState('');
+  const [spouseAge, setSpouseAge] = useState(character.personal?.age || 18);
+  const [childbirthAction, setChildbirthAction] = useState(livingSpouse ? 'roll' : 'skip');
+  const [motherName, setMotherName] = useState('');
+  const [childNames, setChildNames] = useState('');
   const [trainingOption, setTrainingOption] = useState('score');
   const [trainingGroup, setTrainingGroup] = useState('traits');
   const [trainingKey, setTrainingKey] = useState('');
@@ -195,12 +203,54 @@ export default function WinterPhase({ character, setCharacter }) {
         </div>
       );
     }
-    if (step.id === 'family') return (
-      <div className="choice-panel winter-form-grid">
-        <SelectField label="결과 20일 때 선택할 사건" value={familyEventChoice} onChange={setFamilyEventChoice} options={Array.from({ length: 19 }, (_, index) => ({ value: String(index + 1), label: `${index + 1}번 사건` }))} placeholder="20이 아니면 사용하지 않음" />
-        <button type="button" className="primary-command" onClick={() => execute({ eventChoice: Number(familyEventChoice) || undefined })}><Dices size={17} aria-hidden="true" /> 가족 사건·관계·성별 판정</button>
-      </div>
-    );
+    if (step.id === 'family') {
+      const needsEventChoice = record?.status === 'awaiting_event_choice';
+      const parsedChildNames = childNames.split(',').map(name => name.trim()).filter(Boolean);
+      return (
+        <div className="choice-panel family-winter-controls">
+          <fieldset className="winter-subprocedure">
+            <legend>혼인</legend>
+            <SelectField label="이번 겨울" value={livingSpouse ? 'already_married' : marriageAction} onChange={setMarriageAction} options={livingSpouse ? [{ value: 'already_married', label: `${livingSpouse.name}와 혼인 중` }] : [
+              { value: 'skip', label: '혼인을 시도하지 않음' },
+              { value: 'below_class', label: '낮은 계급과 혼인 허가 요청' },
+              { value: 'within_class_roll', label: '같은 계급 후보 탐색 후 혼인' },
+              { value: 'within_class_wait', label: '같은 계급 후보를 만나고 기다림' }
+            ]} />
+            {!livingSpouse && !['skip', 'already_married'].includes(marriageAction) && (
+              <div className="winter-form-grid">
+                <label className="winter-field"><span>배우자 이름</span><input value={spouseName} onChange={event => setSpouseName(event.target.value)} placeholder="혼인 성공 시 가계도에 기록" /></label>
+                <label className="winter-field"><span>배우자 나이</span><input type="number" min="14" max="80" value={spouseAge} onChange={event => setSpouseAge(Number(event.target.value))} /></label>
+              </div>
+            )}
+          </fieldset>
+
+          <fieldset className="winter-subprocedure">
+            <legend>출산</legend>
+            <div className="segmented-control" role="group" aria-label="출산 판정 여부">
+              <button type="button" className={childbirthAction === 'skip' ? 'active' : ''} onClick={() => setChildbirthAction('skip')} aria-pressed={childbirthAction === 'skip'}>해당 없음</button>
+              <button type="button" className={childbirthAction === 'roll' ? 'active' : ''} onClick={() => setChildbirthAction('roll')} aria-pressed={childbirthAction === 'roll'}>출산 가능 관계 판정</button>
+            </div>
+            {childbirthAction === 'roll' && (
+              <div className="winter-form-grid">
+                {!livingSpouse && marriageAction === 'skip' && <label className="winter-field"><span>상대 이름</span><input value={motherName} onChange={event => setMotherName(event.target.value)} placeholder="배우자·연인·동행인" /></label>}
+                <label className="winter-field"><span>아이 이름</span><input value={childNames} onChange={event => setChildNames(event.target.value)} placeholder="쌍둥이는 쉼표로 구분" /></label>
+              </div>
+            )}
+          </fieldset>
+
+          {needsEventChoice && <SelectField label="가족 사건 선택" value={familyEventChoice} onChange={setFamilyEventChoice} options={Object.entries(FAMILY_EVENT_TABLE).filter(([id]) => id !== '20').map(([value, item]) => ({ value, label: `${value}. ${item.title}` }))} />}
+          <button type="button" className="primary-command" onClick={() => execute({
+            eventChoice: Number(familyEventChoice) || undefined,
+            marriageAction: livingSpouse ? 'already_married' : marriageAction,
+            spouseName,
+            spouseAge,
+            childbirthAction,
+            motherName,
+            childNames: parsedChildNames
+          })}><Dices size={17} aria-hidden="true" /> {needsEventChoice ? '선택한 가족 절차 판정' : '혼인·출산·가족 사건 판정'}</button>
+        </div>
+      );
+    }
     if (step.id === 'experience') return <button type="button" className="primary-command" onClick={() => execute({})}><Dices size={17} aria-hidden="true" /> 경험 체크 일괄 판정</button>;
     if (step.id === 'training') return (
       <div className="choice-panel training-panel">

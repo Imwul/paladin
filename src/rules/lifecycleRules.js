@@ -1,8 +1,9 @@
 import { resolveD20Roll, rollDie } from './coreRules.js';
 import { RELIGIOUS_TRAITS } from './personalityRules.js';
 import { getSuccessorEligibility } from './campaignRules.js';
+import { appendChronicleEvent, appendFamilyTimeline } from './ledgerRules.js';
 
-export const LIFECYCLE_SCHEMA_VERSION = 5;
+export const LIFECYCLE_SCHEMA_VERSION = 6;
 
 export const LIFECYCLE_STATES = Object.freeze([
   'active',
@@ -99,10 +100,31 @@ const appendLifecycleEvent = (character, event) => {
     ...(character.campaign.lifecycle.events || []),
     event
   ].slice(-250);
-  character.campaign.chronicleEvents = [
-    ...(character.campaign.chronicleEvents || []),
-    { ...event, type: 'lifecycle' }
-  ].slice(-500);
+  const trigger = String(event.triggeringEvent || '');
+  const familyType = trigger.includes('knighting') ? 'knighting'
+    : trigger.includes('successor') ? 'succession'
+      : trigger.includes('church_standing') ? 'canonization'
+        : character.campaign.lifecycle.careerStatus === 'deceased' && event.nextStatus === 'pending_salvation' ? 'death'
+          : character.campaign.lifecycle.careerStatus === 'retired' && event.nextStatus === 'pending_salvation' ? 'retirement'
+            : ['incapacitated', 'bedridden', 'active'].includes(event.nextStatus) ? event.nextStatus : 'legacy';
+  const title = familyType === 'death' ? `${character.personal?.name || '기사'}의 죽음`
+    : familyType === 'retirement' ? `${character.personal?.name || '기사'}의 은퇴`
+      : familyType === 'knighting' ? `${character.personal?.name || '기사'}의 기사 서임`
+        : familyType === 'succession' ? '새 계승자를 정하다'
+          : familyType === 'canonization' ? '시성 심사'
+            : `${character.personal?.name || '기사'} · ${statusLabel(event.nextStatus)}`;
+  const narrative = event.cause
+    ? `${event.cause}. ${event.triggeringEvent || ''}`.trim()
+    : String(event.triggeringEvent || '생애의 전환을 기록했습니다.');
+  appendChronicleEvent(character, { ...event, id: event.lifecycleEventId, type: familyType, title, narrative });
+  appendFamilyTimeline(character, {
+    ...event,
+    id: `family:${event.lifecycleEventId}`,
+    type: familyType,
+    memberId: character.campaign.lifecycle.primaryCharacterId,
+    title,
+    narrative
+  });
   character.campaign.appliedEvents[event.lifecycleEventId] = {
     appliedAt: event.timestamp,
     year: event.year,

@@ -1,6 +1,7 @@
 import { getAgingRollCount, getHarvestModifier, resolveHarvest } from './campaignRules.js';
 import { resolveD20Roll, rollDice, rollDie } from './coreRules.js';
 import { resolveAttributeLifecycle } from './lifecycleRules.js';
+import { appendChronicleEvent, appendFamilyTimeline, postAnnualGlory, recordGloryAward, recordStandingChange } from './ledgerRules.js';
 import { adjustOpposedTrait, RELIGIOUS_TRAITS } from './personalityRules.js';
 import { resolveExperienceChecks, resolveTraitExperienceChecks } from './progressionRules.js';
 
@@ -18,11 +19,11 @@ export const WINTER_STEPS = [
 ];
 
 export const MAINTENANCE_GRADES = {
-  impoverished: { label: '빈곤(Impoverished)', minimum: 0, maximum: 2, childSurvival: -2, horseSurvival: -5, annualGlory: 0 },
-  poor: { label: '가난(Poor)', minimum: 3, maximum: 5, childSurvival: -1, horseSurvival: -2, annualGlory: 0 },
-  ordinary: { label: '보통(Ordinary)', minimum: 6, maximum: 8, childSurvival: 0, horseSurvival: 0, annualGlory: 0 },
-  rich: { label: '부유(Rich)', minimum: 9, maximum: 12, childSurvival: 1, horseSurvival: 0, annualGlory: 10 },
-  superlative: { label: '최상(Superlative)', minimum: 13, maximum: Number.POSITIVE_INFINITY, childSurvival: 1, horseSurvival: 1, annualGlory: 15 }
+  impoverished: { label: '빈곤(Impoverished)', minimum: 0, maximum: 2, childbirth: 0, childSurvival: -2, horseSurvival: -5, annualGlory: 0 },
+  poor: { label: '가난(Poor)', minimum: 3, maximum: 5, childbirth: 0, childSurvival: -1, horseSurvival: -2, annualGlory: 0 },
+  ordinary: { label: '보통(Ordinary)', minimum: 6, maximum: 8, childbirth: 0, childSurvival: 0, horseSurvival: 0, annualGlory: 0 },
+  rich: { label: '부유(Rich)', minimum: 9, maximum: 12, childbirth: 1, childSurvival: 1, horseSurvival: 0, annualGlory: 10 },
+  superlative: { label: '최상(Superlative)', minimum: 13, maximum: Number.POSITIVE_INFINITY, childbirth: 2, childSurvival: 1, horseSurvival: 1, annualGlory: 15 }
 };
 
 export const FAMILY_RELATION_TABLE = [
@@ -35,6 +36,46 @@ export const FAMILY_RELATION_TABLE = [
   { min: 17, max: 19, key: 'inLawHalfKin', label: '인척 또는 이복 혈족', keywords: ['인척', '처남', '매부', '시동생', '이복', 'half', 'in-law'] },
   { min: 20, max: 20, key: 'nibling', label: '조카', keywords: ['조카', 'nephew', 'niece'] }
 ];
+
+export const RANDOM_MARRIAGE_TABLE = [
+  { min: 1, max: 5, rank: 'wealthy_commoner', label: '부유한 평민의 딸', dowry: '3d6+6', glory: 0, manors: 0 },
+  { min: 6, max: 8, rank: 'esquire_daughter', label: '향사의 딸', dowry: '3', glory: 10, manors: 0 },
+  { min: 9, max: 10, rank: 'household_knight_daughter', label: '가신 기사의 딸', dowry: '1d6', glory: 50, manors: 0 },
+  { min: 11, max: 11, rank: 'rich_vassal_eldest', label: '부유한 봉신 기사의 장녀', dowry: '1d3+6', glory: 100, manors: 0 },
+  { min: 12, max: 20, rank: 'vassal_knight_daughter', label: '봉신 기사의 딸', dowry: '1d6', glory: 100, manors: 0 },
+  { min: 21, max: 25, rank: 'vassal_heiress', label: '봉신 기사의 상속녀', dowry: '1d6+10', glory: 100, manors: 1 },
+  { min: 26, max: 27, rank: 'wealthy_vassal_heiress', label: '부유한 봉신 기사의 상속녀', dowry: '1d6', glory: 300, manors: 2 },
+  { min: 28, max: Number.POSITIVE_INFINITY, rank: 'baron_younger_daughter', label: '남작의 차녀', dowry: '1d6+10', glory: 250, manors: 1 }
+];
+
+const rollDowry = (notation, rng) => {
+  if (notation === '3') return 3;
+  if (notation === '3d6+6') return rollDice(3, 6, rng) + 6;
+  if (notation === '1d3+6') return rollDie(3, rng) + 6;
+  if (notation === '1d6+10') return rollDie(6, rng) + 10;
+  return rollDie(6, rng);
+};
+
+export const resolveRandomMarriage = ({ roll, waitingModifier = 0 }, rng = Math.random) => {
+  const modifiedRoll = Number(roll) + Math.max(0, Number(waitingModifier || 0));
+  const result = RANDOM_MARRIAGE_TABLE.find(entry => modifiedRoll >= entry.min && modifiedRoll <= entry.max);
+  return { ...result, roll: Number(roll), waitingModifier: Math.max(0, Number(waitingModifier || 0)), modifiedRoll, dowryAmount: rollDowry(result.dowry, rng) };
+};
+
+export const resolveChildbirthRoll = ({ roll, modifier = 0, sexRolls = [] }, rng = Math.random) => {
+  const adjustedRoll = Math.max(1, Math.min(20, Number(roll) + Number(modifier || 0)));
+  const births = adjustedRoll === 20 ? 2 : adjustedRoll >= 12 ? 1 : 0;
+  const childSexRolls = Array.from({ length: births }, (_, index) => Number(sexRolls[index] || rollDie(6, rng)));
+  return {
+    roll: Number(roll),
+    modifier: Number(modifier || 0),
+    adjustedRoll,
+    motherDies: adjustedRoll === 11 || adjustedRoll === 12,
+    childrenDie: adjustedRoll === 11,
+    births,
+    children: adjustedRoll === 11 ? [] : childSexRolls.map(sexRoll => ({ sexRoll, gender: sexRoll % 2 === 1 ? 'female' : 'male' }))
+  };
+};
 
 const eventOutcome = (summary, data = {}) => ({
   summary,
@@ -215,7 +256,28 @@ const getManorCount = character => {
   return character.family?.hasEstate || String(character.gear?.homePossessions || '').includes('장원') ? 1 : 0;
 };
 
-const hasSpouse = character => (character.family?.members || []).some(member => ['부인', '남편', '배우자'].some(label => String(member.relation).includes(label)) && member.status !== '사망');
+const getSpouse = character => (character.family?.members || []).find(member => ['부인', '남편', '배우자', 'wife', 'husband', 'spouse'].some(label => String(member.relation).toLowerCase().includes(label)) && member.status !== '사망');
+
+const hasSpouse = character => Boolean(getSpouse(character));
+
+const hasBlessing = (character, key, label) => {
+  const blessing = character.campaign?.creationTrace?.blessing || character.personal?.blessing || '';
+  return blessing?.key === key || String(blessing?.label || blessing).toLowerCase().includes(String(label).toLowerCase());
+};
+
+const getSelfMember = character => {
+  const activeId = character.campaign?.lifecycle?.activeCharacterId;
+  return (character.family?.members || []).find(member => member.id === activeId)
+    || (character.family?.members || []).find(member => member.relation === '본인');
+};
+
+const familyMemberId = (character, prefix, year, index = 0) => {
+  const used = new Set((character.family?.members || []).map(member => member.id));
+  let id = `${prefix}-${year}-${index + 1}`;
+  let suffix = 1;
+  while (used.has(id)) id = `${prefix}-${year}-${index + 1}-${suffix++}`;
+  return id;
+};
 
 const createEmptyWinter = year => ({
   year,
@@ -265,13 +327,13 @@ const markApplied = (character, completionId, label) => {
 const isApplied = (character, completionId) => Boolean(character.campaign?.appliedEvents?.[completionId]);
 
 const pushChronicle = (character, record) => {
-  character.campaign.chronicleEvents = character.campaign.chronicleEvents || [];
-  character.campaign.chronicleEvents.push({
+  if (!record.isMeaningful) return;
+  appendChronicleEvent(character, {
     id: record.completionId,
     year: record.year,
     age: character.personal?.age,
-    type: 'winter',
-    title: `${record.number}단계 · ${record.label}`,
+    type: record.chronicleType || 'winter',
+    title: record.chronicleTitle || record.label,
     narrative: record.journalEntry,
     sourceRuleId: record.ruleId,
     sourcePage: record.sourcePage,
@@ -279,7 +341,6 @@ const pushChronicle = (character, record) => {
     standing: record.standing || undefined,
     lifecycleEffect: record.lifecycleEffect || undefined
   });
-  character.campaign.chronicleEvents = character.campaign.chronicleEvents.slice(-500);
 };
 
 const createRecord = (step, year, input = {}) => ({
@@ -297,12 +358,28 @@ const createRecord = (step, year, input = {}) => ({
   stateChanges: [],
   completionId: `winter:${year}:${step.id}`,
   rollbackBoundary: `winter:${year}:before:${step.id}`,
-  journalEntry: ''
+  journalEntry: '',
+  isMeaningful: false,
+  chronicleType: 'winter',
+  chronicleTitle: ''
 });
 
-const applyScore = (character, group, key, amount) => {
+const applyScore = (character, group, key, amount, context = {}) => {
   character[group] = character[group] || {};
   const before = Number(character[group][key] || 0);
+  if (group === 'standings') {
+    const ledger = recordStandingChange(character, {
+      id: context.id || `standing:${context.year || character.personal?.campaignYear}:${key}:${context.sequence || 0}`,
+      year: context.year,
+      standingKey: key,
+      amount,
+      title: context.title || `${key} 지위 변화`,
+      narrative: context.narrative || '',
+      sourceRuleId: context.sourceRuleId || '',
+      sourcePage: context.sourcePage || ''
+    });
+    return { path: `${group}.${key}`, before: ledger.before, after: ledger.after, ledgerId: ledger.id };
+  }
   if (group === 'traits') character.traits = adjustOpposedTrait(character.traits, key, amount);
   else character[group][key] = Math.max(0, before + Number(amount || 0));
   return { path: `${group}.${key}`, before, after: Number(character[group][key] || 0) };
@@ -315,7 +392,7 @@ const addCheck = (character, group, key) => {
   return { path: `${mapName}.${key}`, before: false, after: true };
 };
 
-const applyOutcome = (character, winter, outcome, rng) => {
+const applyOutcome = (character, winter, outcome, rng, context = {}) => {
   const stateChanges = [];
   const unresolved = [];
   const applyCash = amount => {
@@ -330,7 +407,7 @@ const applyOutcome = (character, winter, outcome, rng) => {
   };
 
   (outcome.mandatoryEffect || []).forEach(effect => {
-    if (effect.type === 'score') stateChanges.push(applyScore(character, effect.group, effect.key, effect.amount));
+    if (effect.type === 'score') stateChanges.push(applyScore(character, effect.group, effect.key, effect.amount, context));
     if (effect.type === 'cash') applyCash(effect.amount);
     if (effect.type === 'scaledCash') applyCash(-Math.ceil(Number(character.traits?.[effect.key] || 0) / effect.divisor));
     if (effect.type === 'winterFlag') {
@@ -355,11 +432,19 @@ const applyOutcome = (character, winter, outcome, rng) => {
   (outcome.skillCheck || []).forEach(key => stateChanges.push(addCheck(character, 'skills', key)));
   (outcome.standing || []).forEach(effect => {
     if (effect.check) stateChanges.push(addCheck(character, 'standings', effect.key));
-    else stateChanges.push(applyScore(character, 'standings', effect.key, effect.amount));
+    else stateChanges.push(applyScore(character, 'standings', effect.key, effect.amount, { ...context, id: `${context.id || 'standing'}:${effect.key}` }));
   });
   if (outcome.glory) {
     const before = Number(character.gear?.gloryThisGame || 0);
-    character.gear.gloryThisGame = before + outcome.glory;
+    recordGloryAward(character, {
+      id: `${context.id || `glory:${winter.year}`}:glory`,
+      year: winter.year,
+      title: context.title || '겨울 사건 영광',
+      narrative: outcome.journalPrompt || '',
+      amount: outcome.glory,
+      sourceRuleId: context.sourceRuleId || '',
+      sourcePage: context.sourcePage || ''
+    });
     stateChanges.push({ path: 'gear.gloryThisGame', before, after: character.gear.gloryThisGame });
   }
   if (outcome.unresolvedChoice) unresolved.push(outcome.unresolvedChoice);
@@ -463,6 +548,9 @@ const resolveSolo = (character, winter, record, input) => {
   if (!['completed', 'not_applicable'].includes(choice)) throw new RangeError('Solo Scenario requires completed or not_applicable.');
   record.result = choice;
   record.journalEntry = choice === 'completed' ? `개인 모험을 마치고 ${record.year}년 겨울 정산을 시작했습니다.` : `개인 모험이 해당되지 않아 ${record.year}년 겨울 정산을 시작했습니다.`;
+  record.isMeaningful = choice === 'completed';
+  record.chronicleType = 'adventure';
+  record.chronicleTitle = '개인 모험을 마치다';
   winter.flags.soloScenarioPerformed = choice === 'completed';
 };
 
@@ -481,9 +569,10 @@ const resolveAging = (character, winter, record, input, rng) => {
     character.horses.warhorse.age = before + 1;
     record.stateChanges.push({ path: 'horses.warhorse.age', before, after: before + 1 });
   }
-  if (character.personal.age < 30) {
-    record.result = { age: character.personal.age, agingRollRequired: false };
-    record.journalEntry = `${character.personal.age}세가 되었으며 30세 미만이므로 노화 표 판정은 없습니다.`;
+  const agingStartsAt = hasBlessing(character, 'eternalYouth', 'eternal youth') ? 35 : 30;
+  if (character.personal.age < agingStartsAt) {
+    record.result = { age: character.personal.age, agingRollRequired: false, agingStartsAt };
+    record.journalEntry = `${character.personal.age}세가 되었으며 ${agingStartsAt}세 미만이므로 노화 표 판정은 없습니다.`;
     return;
   }
   const agingRoll = input.agingRoll || rollDie(20, rng);
@@ -509,6 +598,9 @@ const resolveAging = (character, winter, record, input, rng) => {
     record.unresolvedChoice = { type: 'lifecycle_transition', label: record.lifecycleEffect === 'deceased' ? '사망 후 구원과 계승 절차' : '병상 상태와 활동 제한 확인', required: true };
   }
   record.journalEntry = `${character.personal.age}세 노화 d20 ${agingRoll}: ${record.result.losses.length ? record.result.losses.join(', ').toUpperCase() + ' 감소' : '능력치 감소 없음'}. 생애 상태 ${record.lifecycleEffect || 'active'}.`;
+  record.isMeaningful = record.result.losses.length > 0 || ['deceased', 'bedridden'].includes(record.lifecycleEffect);
+  record.chronicleType = ['deceased', 'bedridden'].includes(record.lifecycleEffect) ? 'death' : 'winter';
+  record.chronicleTitle = record.lifecycleEffect === 'deceased' ? '노화로 생을 마치다' : record.lifecycleEffect === 'bedridden' ? '병상에 들다' : '세월의 흔적';
 };
 
 const resolveEconomy = (character, winter, record, input, rng) => {
@@ -532,14 +624,16 @@ const resolveEconomy = (character, winter, record, input, rng) => {
       const modifier = getHarvestModifier({
         year: record.year,
         standings: character.standings,
-        prosperity: String(character.personal?.blessing || '').includes('번영') || String(character.personal?.blessing || '').includes('Prosperity'),
+        prosperity: hasBlessing(character, 'prosperity', 'prosperity'),
         situationalModifier: Number(input.situationalModifier || 0)
       });
       harvest = resolveHarvest({ roll: harvestRoll, stewardship: character.skills?.stewardship || 0, modifier, manors });
     }
   }
   const requiredMaintenance = householdKnight ? 0 : grade.minimum;
-  const grossIncome = harvest.income;
+  const activeWards = (character.family?.wards || []).filter(ward => Number(ward.startYear || 0) <= record.year && (!ward.endYear || record.year < ward.endYear));
+  const wardIncome = activeWards.reduce((sum, ward) => sum + Number(ward.annualIncome || 1), 0);
+  const grossIncome = harvest.income + wardIncome;
   const surplus = grossIncome - requiredMaintenance;
   const cashBefore = Number(character.gear?.cash || 0);
   if (cashBefore + surplus < 0) {
@@ -569,6 +663,7 @@ const resolveEconomy = (character, winter, record, input, rng) => {
     choice: input.choice || 'maintain',
     treasuryDelta: record.unresolvedChoice ? 0 : surplus,
     harvest,
+    wardIncome,
     completionId: record.completionId
   };
   record.roll = harvest.roll;
@@ -576,7 +671,9 @@ const resolveEconomy = (character, winter, record, input, rng) => {
   record.result = winter.annualLedger;
   record.journalEntry = householdKnight
     ? `${record.year}년은 주군이 보통 수준의 생활을 제공하는 가신 기사로 기록했습니다.`
-    : `장원 ${manors}곳 총수입 £${grossIncome}, ${grade.label} 유지비 £${requiredMaintenance}, 보물고 순변동 ${surplus >= 0 ? '+' : ''}£${surplus}.`;
+    : `장원 ${manors}곳과 후견 수입 £${grossIncome}, ${grade.label} 유지비 £${requiredMaintenance}, 보물고 순변동 ${surplus >= 0 ? '+' : ''}£${surplus}.`;
+  record.isMeaningful = Boolean(record.unresolvedChoice) || (!householdKnight && ['critical', 'fumble'].includes(harvest.outcome));
+  record.chronicleTitle = record.unresolvedChoice ? '겨울 재정의 위기' : harvest.outcome === 'critical' ? '풍요로운 수확' : '혹독한 수확';
   if (!record.unresolvedChoice && winter.flags?.legacyHarvestResolved) {
     winter.flags.legacyHarvestResolved = false;
     winter.economy.maintenancePending = false;
@@ -612,10 +709,25 @@ const resolveSurvival = (character, winter, record, _input, rng) => {
       appliedEffectId: `${record.completionId}:${target.targetId}`
     };
   });
+  winter.survivalRecords.filter(item => item.type === 'family' && ['death', 'illness'].includes(item.result)).forEach(item => {
+    appendFamilyTimeline(character, {
+      id: `${record.completionId}:family:${item.targetId}:${item.result}`,
+      year: record.year,
+      type: item.result,
+      memberId: item.targetId,
+      title: item.result === 'death' ? `${item.label} 사망` : `${item.label} 질병`,
+      narrative: item.journal,
+      sourceRuleId: 'WINTER-SURVIVAL-001',
+      sourcePage: 'Ch.10 p.176'
+    });
+  });
   record.roll = winter.survivalRecords.map(item => ({ targetId: item.targetId, roll: item.roll }));
   record.result = { healthy: winter.survivalRecords.filter(item => ['healthy', 'herd_replacement'].includes(item.result)).length, illness: winter.survivalRecords.filter(item => item.result === 'illness').length, deaths: winter.survivalRecords.filter(item => item.result === 'death').length };
   record.stateChanges = winter.survivalRecords.map(item => ({ path: `survival.${item.targetId}`, after: item.result }));
   record.journalEntry = `${winter.survivalRecords.length}개 대상의 생존을 개별 판정했습니다. 사망 ${record.result.deaths}, 질병 ${record.result.illness}, 건강 또는 보충 ${record.result.healthy}.`;
+  record.isMeaningful = record.result.deaths > 0 || record.result.illness > 0;
+  record.chronicleType = record.result.deaths > 0 ? 'death' : 'family';
+  record.chronicleTitle = record.result.deaths > 0 ? '가문에 죽음이 닥치다' : '겨울 질병';
 };
 
 const resolvePersonalEvent = (character, winter, record, input, rng) => {
@@ -640,48 +752,274 @@ const resolvePersonalEvent = (character, winter, record, input, rng) => {
   const target = Number(character[event.checkGroup]?.[event.checkKey] || 0);
   const check = resolveD20Roll(checkRoll, target);
   const outcome = event.outcomes[check.outcome];
-  const applied = applyOutcome(character, winter, outcome, rng);
+  const applied = applyOutcome(character, winter, outcome, rng, {
+    id: record.completionId,
+    year: record.year,
+    title: `개인 사건 · ${event.trigger}`,
+    narrative: outcome.journalPrompt,
+    sourceRuleId: record.ruleId,
+    sourcePage: event.sourcePage
+  });
   record.input = { ...input, eventChoice: eventRoll === 20 ? selectedEvent : undefined };
   record.roll = { event: eventRoll, selectedEvent, check: checkRoll };
   record.modifiers = [{ label: event.trigger, value: target }];
   record.result = { event: selectedEvent, trigger: event.trigger, check, outcome };
   record.stateChanges.push(...applied.stateChanges);
   record.glory = outcome.glory || 0;
+  record.standing = outcome.standing?.length ? outcome.standing : undefined;
   if (applied.unresolved.length) record.unresolvedChoice = applied.unresolved;
   record.journalEntry = `개인 사건 ${selectedEvent}번 ${event.trigger}, d20 ${checkRoll}/${target}: ${check.outcome}. ${outcome.journalPrompt}`;
+  record.isMeaningful = true;
+  record.chronicleType = 'winter';
+  record.chronicleTitle = `겨울의 ${event.trigger} 사건`;
   if (applied.unresolved.length) record.status = 'awaiting_choice';
 };
 
-const resolveFamily = (character, winter, record, input, rng) => {
-  const familyEventRoll = input.familyEventRoll || rollDie(20, rng);
-  const eventNumber = familyEventRoll === 20 && Number(input.eventChoice) >= 1 && Number(input.eventChoice) <= 19 ? Number(input.eventChoice) : familyEventRoll;
-  const familyEvent = FAMILY_EVENT_TABLE[eventNumber];
-  const relationRoll = input.relationRoll || rollDie(20, rng);
-  const sexRoll = input.sexRoll || rollDie(6, rng);
-  const relation = resolveFamilyRelation({ relationRoll, sexRoll, members: character.family?.members || [] });
-  record.roll = { familyEvent: familyEventRoll, selectedEvent: eventNumber, relation: relationRoll, sex: sexRoll };
-  record.result = { familyEvent, relation };
+const createSpouse = (character, { year, name, rank, age }) => {
+  const self = getSelfMember(character);
+  const id = familyMemberId(character, 'spouse', year);
+  const spouse = {
+    id,
+    name: String(name || '이름 미정 배우자'),
+    relation: '배우자',
+    generation: self?.generation || 3,
+    status: '생존',
+    lifeYears: `${year - Number(age || character.personal?.age || 18)}~`,
+    birthYear: year - Number(age || character.personal?.age || 18),
+    spouseId: self?.id,
+    gender: character.personal?.gender === 'female' ? 'male' : 'female',
+    note: rank
+  };
+  character.family.members.push(spouse);
+  if (self) self.spouseId = id;
+  return spouse;
+};
+
+const resolveMarriage = (character, winter, record, input, rng) => {
+  const action = hasSpouse(character) ? 'already_married' : input.marriageAction || 'skip';
+  const result = { action, status: 'skipped', spouse: null, glory: 0, dowry: 0, manors: 0 };
+  if (action === 'already_married' || action === 'skip') return result;
+  if (!['below_class', 'within_class_wait', 'within_class_roll'].includes(action)) throw new RangeError('Unknown marriage action.');
+
+  if (action === 'below_class') {
+    const roll = Number(input.marriagePermissionRoll || rollDie(20, rng));
+    const check = resolveD20Roll(roll, Number(character.standings?.liegeLord || 0));
+    result.permission = check;
+    result.roll = roll;
+    if (!check.success) {
+      result.status = 'permission_refused';
+      return result;
+    }
+    result.status = 'married';
+    result.rank = 'ordinary_woman';
+    result.label = '평범한 여성';
+    result.dowry = Number(input.dowryRoll || rollDie(6, rng));
+    result.glory = 10;
+  } else {
+    const roll = Number(input.courtesyRoll || rollDie(20, rng));
+    const check = resolveD20Roll(roll, Number(character.skills?.courtesy || 0));
+    result.courtesy = check;
+    result.roll = roll;
+    if (!check.success) {
+      result.status = 'no_candidate';
+      return result;
+    }
+    if (action === 'within_class_wait') {
+      winter.flags.marriageWaitingBonus = Number(winter.flags.marriageWaitingBonus || 0) + 1;
+      result.status = 'candidate_met';
+      result.waitingModifier = winter.flags.marriageWaitingBonus;
+      return result;
+    }
+    const tableRoll = Number(input.marriageTableRoll || rollDie(20, rng));
+    const tableResult = resolveRandomMarriage({ roll: tableRoll, waitingModifier: winter.flags.marriageWaitingBonus || 0 }, rng);
+    Object.assign(result, tableResult, { status: 'married' });
+    winter.flags.marriageWaitingBonus = 0;
+  }
+
+  const spouse = createSpouse(character, { year: record.year, name: input.spouseName, rank: result.label || result.rank, age: input.spouseAge });
+  result.spouse = spouse;
+  const cashBefore = Number(character.gear?.cash || 0);
+  character.gear.cash = cashBefore + Number(result.dowry || result.dowryAmount || 0);
+  result.dowry = Number(result.dowry || result.dowryAmount || 0);
+  record.stateChanges.push({ path: 'gear.cash', before: cashBefore, after: character.gear.cash });
+  if (result.manors) {
+    const before = getManorCount(character);
+    character.family.manors = before + Number(result.manors);
+    record.stateChanges.push({ path: 'family.manors', before, after: character.family.manors });
+  }
+  if (result.glory) {
+    const before = Number(character.gear?.gloryThisGame || 0);
+    recordGloryAward(character, {
+      id: `${record.completionId}:marriage:glory`, year: record.year, title: '혼인 영광', narrative: `${result.label || result.rank}과 혼인했습니다.`, amount: result.glory,
+      sourceRuleId: 'WINTER-MARRIAGE-001', sourcePage: 'Ch.10 pp.176-179'
+    });
+    record.stateChanges.push({ path: 'gear.gloryThisGame', before, after: character.gear.gloryThisGame });
+  }
+  appendFamilyTimeline(character, {
+    id: `${record.completionId}:marriage`, year: record.year, type: 'marriage', memberId: getSelfMember(character)?.id, relatedMemberId: spouse.id,
+    title: `${character.personal?.name || '기사'}의 혼인`, narrative: `${spouse.name}와 혼인하여 지참금 £${result.dowry}${result.manors ? `와 장원 ${result.manors}곳` : ''}을 받았습니다.`,
+    sourceRuleId: 'WINTER-MARRIAGE-001', sourcePage: 'Ch.10 pp.176-179'
+  });
+  return result;
+};
+
+const resolveChildbirths = (character, record, input, rng) => {
+  const grade = MAINTENANCE_GRADES[character.personal?.maintenance] || MAINTENANCE_GRADES.ordinary;
+  const requests = Array.isArray(input.childbirths) ? input.childbirths : input.childbirthAction === 'roll' ? [{ motherId: input.motherId, motherName: input.motherName, childNames: input.childNames }] : [];
+  const results = [];
+  requests.forEach((request, requestIndex) => {
+    const spouse = getSpouse(character);
+    const mother = (character.family?.members || []).find(member => member.id === request.motherId) || spouse;
+    const isWife = Boolean(mother && mother.id === spouse?.id);
+    if (!isWife) {
+      const before = Number(character.gear?.cash || 0);
+      if (before < 0.5) {
+        results.push({ status: 'departed_unpaid', motherId: mother?.id || null, motherName: request.motherName || mother?.name || '기록되지 않은 여성' });
+        return;
+      }
+      character.gear.cash = before - 0.5;
+      record.stateChanges.push({ path: 'gear.cash', before, after: character.gear.cash });
+    }
+    const fertility = hasBlessing(character, 'fertility', 'fertility') ? 5 : 0;
+    const modifier = grade.childbirth + fertility;
+    const roll = Number(request.roll || rollDie(20, rng));
+    const childbirth = resolveChildbirthRoll({ roll, modifier, sexRolls: request.sexRolls }, rng);
+    const result = { ...childbirth, status: childbirth.births ? 'birth' : childbirth.motherDies ? 'death' : 'no_birth', motherId: mother?.id || null, motherName: request.motherName || mother?.name || '기록되지 않은 여성', children: [] };
+    if (childbirth.motherDies && mother) {
+      mother.status = '사망';
+      mother.deathCause = '출산';
+      mother.lifeYears = `${String(mother.lifeYears || '').split('~')[0]}~${record.year}`;
+      appendFamilyTimeline(character, {
+        id: `${record.completionId}:mother-death:${mother.id}`, year: record.year, type: 'death', memberId: mother.id,
+        title: `${mother.name} 출산 중 사망`, narrative: childbirth.childrenDie ? '산모와 아이가 모두 출산 중 숨졌습니다.' : '산모는 숨졌으나 아이는 살아남았습니다.',
+        sourceRuleId: 'WINTER-CHILDBIRTH-001', sourcePage: 'Ch.10 p.179'
+      });
+    }
+    childbirth.children.forEach((child, childIndex) => {
+      const self = getSelfMember(character);
+      const id = familyMemberId(character, 'child', record.year, requestIndex * 2 + childIndex);
+      const relation = child.gender === 'female' ? '딸' : '아들';
+      const member = {
+        id,
+        name: String(request.childNames?.[childIndex] || `이름 미정 ${relation}`),
+        relation,
+        generation: Math.min(12, Number(self?.generation || 3) + 1),
+        status: '생존',
+        lifeYears: `${record.year}~`,
+        birthYear: record.year,
+        parentId: self?.id,
+        gender: child.gender,
+        note: mother ? `${mother.name}의 자녀` : '출생 기록'
+      };
+      character.family.members.push(member);
+      result.children.push(member);
+      appendFamilyTimeline(character, {
+        id: `${record.completionId}:birth:${id}`, year: record.year, type: 'birth', memberId: id, relatedMemberId: mother?.id || null,
+        title: `${member.name} 탄생`, narrative: `${relation}이 건강하게 태어났습니다.`, sourceRuleId: 'WINTER-CHILDBIRTH-001', sourcePage: 'Ch.10 p.179'
+      });
+    });
+    results.push(result);
+  });
+  return results;
+};
+
+const applyFamilyEvent = (character, winter, record, familyEvent, relation, rng) => {
   const unresolved = [];
-  if (familyEventRoll === 20 && eventNumber === 20) unresolved.push({ type: 'family_event_choice', label: '1-19번 가족 사건 중 하나 선택' });
-  if (relation.unresolvedChoice) unresolved.push(relation.unresolvedChoice);
-  if (familyEvent.choice) unresolved.push({ type: 'family_event_effect_choice', label: `${familyEvent.title}: 선택 결과 기록`, choices: familyEvent.choice });
-  if (familyEvent.unresolved) unresolved.push({ type: familyEvent.unresolved, label: `${familyEvent.title} 추가 판정` });
+  const target = relation.selectedTarget;
+  const context = { id: `${record.completionId}:family-event`, year: record.year, title: `가족 사건 · ${familyEvent.title}`, narrative: familyEvent.summary, sourceRuleId: 'WINTER-FAMILY-001', sourcePage: 'Ch.10 p.180' };
   if (familyEvent.effect) {
-    const applied = applyOutcome(character, winter, eventOutcome(familyEvent.summary, { mandatoryEffect: familyEvent.effect }), rng);
+    const applied = applyOutcome(character, winter, eventOutcome(familyEvent.summary, { mandatoryEffect: familyEvent.effect }), rng, context);
     record.stateChanges.push(...applied.stateChanges);
   }
   if (familyEvent.glory) {
     const before = Number(character.gear?.gloryThisGame || 0);
-    character.gear.gloryThisGame = before + familyEvent.glory;
+    recordGloryAward(character, { ...context, amount: familyEvent.glory, id: `${context.id}:glory` });
     record.stateChanges.push({ path: 'gear.gloryThisGame', before, after: character.gear.gloryThisGame });
-    record.glory = familyEvent.glory;
+    record.glory = Number(record.glory || 0) + familyEvent.glory;
   }
-  if (familyEvent.familyEffect || familyEvent.lifecycleEffect) unresolved.push({ type: familyEvent.familyEffect || familyEvent.lifecycleEffect, label: `${familyEvent.title}의 가문 상태 반영` });
+  if ([1, 2].includes(familyEvent.roll) || familyEvent.lifecycleEffect === 'target_death') {
+    if (target) {
+      target.status = '사망';
+      target.deathCause = familyEvent.title;
+      target.lifeYears = `${String(target.lifeYears || '').split('~')[0]}~${record.year}`;
+    } else unresolved.push({ type: 'family_target_required', label: `${familyEvent.title}: 사망할 가문원을 선택하거나 새 대상 기록` });
+  }
+  if (familyEvent.familyEffect === 'captive') {
+    if (target) target.status = '포로'; else unresolved.push({ type: 'family_target_required', label: '투옥된 가문원 선택' });
+  }
+  if (familyEvent.familyEffect === 'missing') {
+    if (target) target.status = '실종'; else unresolved.push({ type: 'family_target_required', label: '실종된 가문원 선택' });
+  }
+  if (familyEvent.familyEffect === 'start_feud') winter.flags.familyFeud = true;
+  if (familyEvent.familyEffect === 'ward') {
+    const birthYear = Number(target?.birthYear || String(target?.lifeYears || '').split('~')[0]);
+    character.family.wards = Array.isArray(character.family.wards) ? character.family.wards : [];
+    character.family.wards.push({
+      id: `${record.completionId}:ward`,
+      memberId: target?.id || null,
+      memberName: target?.name || '미지정 미성년 친족',
+      annualIncome: 1,
+      startYear: record.year + 1,
+      endYear: Number.isFinite(birthYear) ? birthYear + 15 : null,
+      sourceRuleId: 'WINTER-FAMILY-001'
+    });
+    if (!Number.isFinite(birthYear)) unresolved.push({ type: 'ward_age_required', label: '후견 종료 연도를 계산할 미성년 친족의 출생 연도 기록' });
+  }
+  if (familyEvent.roll === 19) {
+    record.stateChanges.push(addCheck(character, 'passions', 'honor'));
+    record.stateChanges.push(addCheck(character, 'passions', 'loveFamily'));
+  }
+  if (familyEvent.choice) unresolved.push({ type: 'family_event_effect_choice', label: `${familyEvent.title}: ${familyEvent.summary}`, choices: familyEvent.choice });
+  if (familyEvent.unresolved) unresolved.push({ type: familyEvent.unresolved, label: `${familyEvent.title}: ${familyEvent.summary}` });
+  if (familyEvent.familyEffect === 'new_bastard_child') unresolved.push({ type: 'new_bastard_child', label: '사생아의 이름, 부모와 성별을 정해 가계도에 추가' });
+  appendFamilyTimeline(character, {
+    id: `${record.completionId}:event`, year: record.year, type: familyEvent.lifecycleEffect === 'target_death' ? 'death' : familyEvent.familyEffect || 'family', memberId: target?.id || null,
+    title: familyEvent.title, narrative: `${familyEvent.summary}${target ? ` 대상: ${target.name}.` : ''}`, sourceRuleId: 'WINTER-FAMILY-001', sourcePage: 'Ch.10 p.180'
+  });
+  return unresolved;
+};
+
+const resolveFamily = (character, winter, record, input, rng) => {
+  character.family = character.family || {};
+  character.family.members = Array.isArray(character.family.members) ? character.family.members : [];
+  const previous = winter.records.family;
+  const resumingEventChoice = previous?.status === 'awaiting_event_choice';
+  const marriage = resumingEventChoice ? previous.result?.marriage : resolveMarriage(character, winter, record, input, rng);
+  const childbirths = resumingEventChoice ? (previous.result?.childbirths || []) : resolveChildbirths(character, record, input, rng);
+  if (resumingEventChoice) record.stateChanges = [...(previous.stateChanges || [])];
+  const familyEventRoll = resumingEventChoice ? Number(previous.roll?.familyEvent || 20) : Number(input.familyEventRoll || rollDie(20, rng));
+  if (familyEventRoll === 20 && !(Number(input.eventChoice) >= 1 && Number(input.eventChoice) <= 19)) {
+    const births = childbirths.reduce((sum, item) => sum + item.children.length, 0);
+    record.roll = { marriage: marriage?.roll, familyEvent: 20, selectedEvent: 20, childbirths: childbirths.map(item => ({ roll: item.roll, adjustedRoll: item.adjustedRoll })) };
+    record.result = { status: 'awaiting_event_choice', marriage, childbirths };
+    record.unresolvedChoice = { type: 'family_event_choice', label: 'Table 10-12의 1-19번 가족 사건 중 하나 선택' };
+    record.journalEntry = [marriage?.status === 'married' ? `${marriage.spouse.name}와 혼인` : '', births ? `자녀 ${births}명 탄생` : '', 'Table 10-12 결과 20: 플레이어가 가족 사건 하나를 선택해야 합니다.'].filter(Boolean).join('. ');
+    record.isMeaningful = marriage?.status === 'married' || births > 0;
+    record.chronicleType = marriage?.status === 'married' ? 'marriage' : 'family';
+    record.chronicleTitle = marriage?.status === 'married' ? '혼인과 가문의 겨울' : '새 세대의 탄생';
+    record.status = 'awaiting_event_choice';
+    return;
+  }
+  const eventNumber = familyEventRoll === 20 && Number(input.eventChoice) >= 1 && Number(input.eventChoice) <= 19 ? Number(input.eventChoice) : familyEventRoll;
+  const familyEvent = { ...FAMILY_EVENT_TABLE[eventNumber], roll: eventNumber };
+  const relationRoll = Number(input.relationRoll || rollDie(20, rng));
+  const sexRoll = Number(input.sexRoll || rollDie(6, rng));
+  const relation = resolveFamilyRelation({ relationRoll, sexRoll, members: character.family.members });
+  record.roll = { marriage: marriage.roll, familyEvent: familyEventRoll, selectedEvent: eventNumber, relation: relationRoll, sex: sexRoll, childbirths: childbirths.map(item => ({ roll: item.roll, adjustedRoll: item.adjustedRoll })) };
+  record.result = { marriage, childbirths, familyEvent, relation };
+  const unresolved = [];
+  if (relation.unresolvedChoice) unresolved.push(relation.unresolvedChoice);
+  unresolved.push(...applyFamilyEvent(character, winter, record, familyEvent, relation, rng));
   if (unresolved.length) {
     record.unresolvedChoice = unresolved;
     record.status = 'awaiting_choice';
   }
-  record.journalEntry = `가족 사건 d20 ${familyEventRoll}: ${familyEvent.title}. 대상은 Table 10-13 d20 ${relationRoll}, d6 ${sexRoll}의 ${relation.relationLabel}(${relation.gender})입니다.`;
+  const births = childbirths.reduce((sum, item) => sum + item.children.length, 0);
+  const parts = [marriage.status === 'married' ? `${marriage.spouse.name}와 혼인` : marriage.status === 'candidate_met' ? '혼인 후보와 만남' : '', births ? `자녀 ${births}명 탄생` : '', `${familyEvent.title}: ${familyEvent.summary}`].filter(Boolean);
+  record.journalEntry = parts.join('. ');
+  record.isMeaningful = true;
+  record.chronicleType = marriage.status === 'married' ? 'marriage' : births ? 'family' : familyEvent.lifecycleEffect === 'target_death' ? 'death' : 'family';
+  record.chronicleTitle = marriage.status === 'married' ? '혼인과 가문의 겨울' : births ? '새 세대의 탄생' : familyEvent.title;
 };
 
 const resolveExperience = (character, _winter, record, _input, rng) => {
@@ -729,6 +1067,7 @@ const resolveTraining = (character, winter, record, input) => {
     return;
   }
   const option = input.option;
+  const context = { id: `${record.completionId}:training`, year: record.year, title: '겨울 훈련', narrative: '훈련과 실습으로 지위가 변화했습니다.', sourceRuleId: 'WINTER-TRAIN-001', sourcePage: 'Ch.10 p.181' };
   if (option === 'score') {
     const group = input.group;
     const key = input.key;
@@ -737,7 +1076,7 @@ const resolveTraining = (character, winter, record, input) => {
     const current = Number(character[group]?.[key] || 0);
     if (amount > 0 && ['traits', 'passions', 'standings'].includes(group) && current >= 15) throw new RangeError('Traits, passions and standings cannot be trained over 15.');
     if (amount > 0 && group === 'attributes' && (current >= 20 || character.personal?.age > 30 || (key === 'siz' && character.personal?.age > 21))) throw new RangeError('Attribute training age or maximum restriction applies.');
-    record.stateChanges.push(applyScore(character, group, key, amount));
+    record.stateChanges.push(applyScore(character, group, key, amount, context));
   } else if (option === 'skills15') {
     const selections = input.selections || {};
     const selected = [selections.ordinary, selections.courtly, selections.combat, selections.free];
@@ -746,13 +1085,13 @@ const resolveTraining = (character, winter, record, input) => {
     selected.forEach(key => {
       const current = Number(character.skills?.[key] || 0);
       if (current <= 0 || current >= 15) throw new RangeError('Selected skills must start above 0 and remain at or below 15.');
-      record.stateChanges.push(applyScore(character, 'skills', key, 1));
+      record.stateChanges.push(applyScore(character, 'skills', key, 1, context));
     });
   } else if (option === 'skill20') {
     const key = input.key;
     const current = Number(character.skills?.[key] || 0);
     if (!key || current <= 15 || current >= 20) throw new RangeError('One skill from 16 through 19 is required.');
-    record.stateChanges.push(applyScore(character, 'skills', key, 1));
+    record.stateChanges.push(applyScore(character, 'skills', key, 1, context));
   } else {
     throw new RangeError('One printed training option is required.');
   }
@@ -770,13 +1109,14 @@ export const computeAnnualGlory = character => {
   if (manors) entries.push({ source: 'holdings', label: `장원 ${manors}곳`, amount: Math.min(100, manors * 6) });
   const grade = MAINTENANCE_GRADES[character.personal?.maintenance] || MAINTENANCE_GRADES.ordinary;
   if (grade.annualGlory) entries.push({ source: 'maintenance', label: grade.label, amount: grade.annualGlory });
+  const amorKey = Object.keys(character.passions || {}).find(key => key === 'amor' || key.startsWith('amor'));
   const ideals = [
     ['Chivalrous', ['energetic', 'generous', 'just', 'merciful', 'modest', 'valorous'], 'honor'],
     ['Religious', ['chaste', 'forgiving', 'merciful', 'modest', 'temperate', 'trusting'], 'loveGod'],
-    ['Romantic', ['forgiving', 'generous', 'honest', 'just', 'prudent', 'trusting'], 'amor']
+    ['Romantic', ['forgiving', 'generous', 'honest', 'just', 'prudent', 'trusting'], amorKey]
   ];
   ideals.forEach(([label, traits, passion]) => {
-    if (qualifiesIdeal(character, traits, passion)) entries.push({ source: 'ideal', label, amount: 100 });
+    if (passion && qualifiesIdeal(character, traits, passion)) entries.push({ source: 'ideal', label, amount: 100 });
   });
   ['attributes', 'skills', 'traits', 'passions', 'standings'].forEach(group => {
     Object.entries(character[group] || {}).forEach(([key, value]) => {
@@ -794,13 +1134,19 @@ const resolveGlory = (character, winter, record) => {
   const after = before + calculation.total;
   character.gear.gloryTotal = after;
   character.gear.gloryThisGame = 0;
-  const bonus = Math.floor(after / 1000) - Math.floor(before / 1000);
+  const claimedThreshold = Math.max(0, Number(character.campaign?.gloryBonusClaimedThreshold || 0));
+  const currentThreshold = Math.floor(after / 1000);
+  const bonus = currentThreshold - claimedThreshold;
   winter.gloryBonusPoints = Math.max(0, bonus);
   winter.bonusSpent = 0;
-  record.result = { ...calculation, previousTotal: before, newTotal: after, bonusPoints: bonus };
+  postAnnualGlory(character, { year: record.year, entries: calculation.entries, total: calculation.total, previousTotal: before, newTotal: after, sourceRuleId: 'WINTER-GLORY-001', sourcePage: 'Ch.10 pp.181-182; Ch.4 p.90' });
+  record.result = { ...calculation, previousTotal: before, newTotal: after, claimedThreshold, currentThreshold, bonusPoints: bonus };
   record.stateChanges = [{ path: 'gear.gloryTotal', before, after }, { path: 'gear.gloryThisGame', before: calculation.entries.find(entry => entry.source === 'play')?.amount || 0, after: 0 }];
   record.glory = calculation.total;
   record.journalEntry = `플레이와 연간 원천 ${calculation.entries.length}건에서 영광 ${calculation.total}점을 더해 누적 ${after}점이 되었습니다. 보너스 ${Math.max(0, bonus)}점.`;
+  record.isMeaningful = bonus > 0;
+  record.chronicleType = 'glory';
+  record.chronicleTitle = `${currentThreshold * 1000} 영광의 경지`;
 };
 
 const resolveGloryBonus = (character, winter, record, input) => {
@@ -814,9 +1160,10 @@ const resolveGloryBonus = (character, winter, record, input) => {
   if (allocations.length !== available) throw new RangeError(`All ${available} Glory bonus points must be spent immediately.`);
   allocations.forEach(({ group, key }) => {
     if (!['attributes', 'traits', 'passions', 'standings', 'skills'].includes(group) || !key || character[group]?.[key] === undefined) throw new RangeError('Invalid Glory bonus allocation.');
-    record.stateChanges.push(applyScore(character, group, key, 1));
+    record.stateChanges.push(applyScore(character, group, key, 1, { id: `${record.completionId}:${group}:${key}`, year: record.year, title: '영광 보너스', narrative: '1,000 영광 경계를 넘어 보너스를 배분했습니다.', sourceRuleId: 'GLORY-BONUS-001', sourcePage: 'Ch.10 p.181; Ch.4 pp.90-91' }));
   });
   winter.bonusSpent += allocations.length;
+  character.campaign.gloryBonusClaimedThreshold = Math.floor(Number(character.gear?.gloryTotal || 0) / 1000);
   record.result = { available, spent: allocations.length, allocations };
   record.journalEntry = `영광 보너스 ${allocations.length}점을 즉시 배분했습니다: ${allocations.map(item => `${item.group}.${item.key}`).join(', ')}.`;
 };
@@ -903,10 +1250,8 @@ export const closeWinterYear = rawCharacter => {
   const year = winter.year;
   const completionId = `winter:${year}:closed`;
   if (isApplied(character, completionId)) return { character: rawCharacter, applied: false };
-  const summary = `${year}년 겨울 정산 완료. ${winter.transactions.length}개 단계 거래와 ${winter.survivalRecords.length}개 생존 기록을 봉인했습니다.`;
-  character.journal = character.journal || {};
-  const existing = character.journal[year]?.text;
-  character.journal[year] = { text: existing ? `${existing}\n\n${summary}` : summary, updatedAt: new Date().toISOString() };
+  const meaningful = winter.transactions.filter(transaction => transaction.isMeaningful);
+  const summary = `${year}년 겨울 정산 완료. ${winter.transactions.length}개 규칙 거래 중 연대기 사건 ${meaningful.length}건을 봉인했습니다.`;
   character.personal.campaignYear = year + 1;
   character.campaign.winterHistory = [...(character.campaign.winterHistory || []), { ...winter, closedAt: new Date().toISOString(), summary }].slice(-50);
   character.campaign.winter = createEmptyWinter(year + 1);

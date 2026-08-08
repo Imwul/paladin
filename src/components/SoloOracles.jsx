@@ -7,6 +7,7 @@ import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '..
 import {
   compareOpposedD20,
   getsAutomaticExperienceCheck,
+  LIFECYCLE_SCHEMA_VERSION,
   resolveD20Roll,
   resolveExperienceRoll,
   rollDie
@@ -577,7 +578,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
   const appendPassionState = (campaign, entry) => ({
     ...(campaign || {}),
-    schemaVersion: 2,
+    schemaVersion: LIFECYCLE_SCHEMA_VERSION,
     appliedEvents: campaign?.appliedEvents || {},
     winter: campaign?.winter,
     passionStates: [
@@ -597,7 +598,7 @@ export default function SoloOracles({ character, setCharacter }) {
       ...prev,
       campaign: {
         ...(prev.campaign || {}),
-        schemaVersion: 2,
+        schemaVersion: LIFECYCLE_SCHEMA_VERSION,
         appliedEvents: prev.campaign?.appliedEvents || {},
         winter: prev.campaign?.winter,
         passionStates: (prev.campaign?.passionStates || []).map(state => (

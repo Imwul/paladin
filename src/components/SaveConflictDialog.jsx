@@ -12,7 +12,7 @@ export default function SaveConflictDialog({ conflict, onClose, onUseCloud, onKe
     <div className="modal-backdrop" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
       <section ref={dialogRef} className="document-conflict" role="dialog" aria-modal="true" aria-labelledby="save-conflict-title" aria-describedby="save-conflict-description">
         <header>
-          <span className="serial-label">DOCUMENT REVISION CONFLICT</span>
+          <span className="serial-label" lang="en">Document revision conflict</span>
           <h2 id="save-conflict-title">서로 다른 기록본이 발견되었습니다</h2>
           <button type="button" className="icon-command" onClick={onClose} aria-label="충돌 창 닫기"><X size={18} aria-hidden="true" /></button>
         </header>
@@ -20,14 +20,14 @@ export default function SaveConflictDialog({ conflict, onClose, onUseCloud, onKe
         <div className="document-conflict__versions">
           <article>
             <HardDrive size={20} aria-hidden="true" />
-            <span>LOCAL FOLIO</span>
+            <span lang="en">Local folio</span>
             <strong>개정 {localRevision}</strong>
             <small>{conflict.local?.personal?.campaignYear || '-'}년 · {conflict.local?.personal?.name || '기사 기록'}</small>
             <button type="button" className="btn-medieval" onClick={onKeepLocal}>로컬 기록 유지</button>
           </article>
           <article>
             <Cloud size={20} aria-hidden="true" />
-            <span>CLOUD FOLIO</span>
+            <span lang="en">Cloud folio</span>
             <strong>개정 {cloudRevision}</strong>
             <small>{conflict.cloud?.personal?.campaignYear || '-'}년 · {conflict.cloud?.personal?.name || '기사 기록'}</small>
             <button type="button" className="btn-medieval btn-medieval-primary" onClick={onUseCloud}>클라우드 기록 사용</button>

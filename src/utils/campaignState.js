@@ -252,6 +252,10 @@ const sanitizePassionStates = (value) => {
     .slice(-50);
 };
 
+const sanitizeLedgerEntries = (value, limit) => (
+  Array.isArray(value) ? value.filter(isPlainObject).slice(-limit) : []
+);
+
 export const validateCampaignImport = (data) => {
   const errors = [];
   if (!isPlainObject(data)) errors.push('root');
@@ -266,6 +270,7 @@ export const validateCampaignImport = (data) => {
 
 export const sanitizeCampaignState = (data, defaults) => {
   const source = isPlainObject(data) ? deepClone(data) : {};
+  const sourceSchemaVersion = clampInt(source.campaign?.schemaVersion, 0, 100, 0);
 
   if (source.passions?.hateSarasens !== undefined) {
     if (source.passions.hateSaracens === undefined || source.passions.hateSaracens === 12) {
@@ -399,12 +404,23 @@ export const sanitizeCampaignState = (data, defaults) => {
     journal: sanitizeJournal(source.journal, defaults.journal),
     campaign: {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
-      schemaVersion: 5,
+      schemaVersion: 6,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
       saveRevision: clampInt(source.campaign?.saveRevision, 0, Number.MAX_SAFE_INTEGER, 0),
       chronicleEvents: Array.isArray(source.campaign?.chronicleEvents)
         ? source.campaign.chronicleEvents.filter(isPlainObject).slice(-500)
         : [],
+      gloryLedger: sanitizeLedgerEntries(
+        source.campaign?.gloryLedger || source.gear?.gloryLedger,
+        1000
+      ),
+      standingLedger: sanitizeLedgerEntries(source.campaign?.standingLedger, 1000),
+      familyTimeline: sanitizeLedgerEntries(source.campaign?.familyTimeline, 500),
+      gloryBonusClaimedThreshold: source.campaign?.gloryBonusClaimedThreshold !== undefined
+        ? clampInt(source.campaign.gloryBonusClaimedThreshold, 0, 10000, 0)
+        : sourceSchemaVersion < 6
+          ? Math.floor(gear.gloryTotal / 1000)
+          : clampInt(defaults.campaign?.gloryBonusClaimedThreshold, 0, 10000, 0),
       passionStates: sanitizePassionStates(source.campaign?.passionStates),
       lifecycle,
       characterCreationSession: sanitizeCharacterCreationSession(source.campaign?.characterCreationSession),
@@ -427,7 +443,7 @@ export const hasAppliedEvent = (character, eventId) => Boolean(character?.campai
 
 export const markAppliedEvent = (character, eventId, label) => ({
   ...(character.campaign || {}),
-  schemaVersion: 5,
+  schemaVersion: 6,
   appliedEvents: {
     ...(character.campaign?.appliedEvents || {}),
     [eventId]: {
@@ -454,7 +470,7 @@ export const appendWinterLog = (character, message) => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 5,
+    schemaVersion: 6,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {
@@ -470,7 +486,7 @@ export const markWinterStep = (character, step, status = 'resolved') => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 5,
+    schemaVersion: 6,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {

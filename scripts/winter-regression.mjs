@@ -5,7 +5,10 @@ import {
   ensureWinterState,
   FAMILY_RELATION_TABLE,
   PERSONAL_EVENT_TABLE,
+  RANDOM_MARRIAGE_TABLE,
+  resolveChildbirthRoll,
   resolveFamilyRelation,
+  resolveRandomMarriage,
   resolveSurvivalRoll,
   resolveWinterStep,
   WINTER_STEPS
@@ -33,7 +36,7 @@ const makeCharacter = () => ({
   skillsChecked: { awareness: true },
   squire: { name: 'Test Squire', age: 15, firstAid: 8, horsemanship: 8, weapon: 8, status: '건강' },
   horses: { warhorse: { type: 'Charger', age: 6, status: '건강', hp: 40, armor: 5 } },
-  gear: { cash: 10, gloryThisGame: 0, gloryTotal: 100, homePossessions: '장원', personalGear: '' },
+  gear: { cash: 10, gloryThisGame: 0, gloryTotal: 1200, homePossessions: '장원', personalGear: '' },
   family: {
     name: 'Test House',
     manors: 1,
@@ -45,9 +48,10 @@ const makeCharacter = () => ({
   },
   journal: {},
   campaign: {
-    schemaVersion: 5,
+    schemaVersion: 6,
     appliedEvents: {},
     chronicleEvents: [],
+    gloryLedger: [], standingLedger: [], familyTimeline: [], gloryBonusClaimedThreshold: 0,
     lifecycle: { status: 'active', careerStatus: 'active', activeCharacterId: 'self', primaryCharacterId: 'self', events: [], unresolvedChoices: [] },
     winter: null
   }
@@ -98,10 +102,34 @@ character = result.character;
 assert.equal(result.record.result.check.outcome, 'failure');
 assert.equal(result.awaitingChoice, false);
 
-result = resolveWinterStep(character, { stepId: 'family', input: { familyEventRoll: 3, relationRoll: 3, sexRoll: 2 } });
+const familyStepStart = structuredClone(character);
+result = resolveWinterStep(character, { stepId: 'family', input: {
+  familyEventRoll: 3, relationRoll: 3, sexRoll: 2,
+  marriageAction: 'within_class_roll', courtesyRoll: 1, marriageTableRoll: 21, spouseName: 'Adele', spouseAge: 18,
+  childbirthAction: 'roll', childbirths: [{ roll: 20, childNames: ['Emma', 'Hugo'], sexRolls: [1, 2] }]
+} });
 character = result.character;
 assert.equal(result.record.result.relation.selectedTarget.id, 'father');
 assert.equal(result.awaitingChoice, false);
+assert.equal(result.record.result.marriage.status, 'married');
+assert.equal(result.record.result.marriage.manors, 1);
+assert.deepEqual(result.record.result.childbirths[0].children.map(child => child.gender), ['female', 'male']);
+assert.equal(character.campaign.familyTimeline.filter(entry => ['marriage', 'birth'].includes(entry.type)).length, 3);
+
+let choiceResult = resolveWinterStep(familyStepStart, { stepId: 'family', input: {
+  familyEventRoll: 20,
+  marriageAction: 'within_class_roll', courtesyRoll: 1, marriageTableRoll: 21, spouseName: 'Adele', spouseAge: 18,
+  childbirthAction: 'roll', childbirths: [{ roll: 20, childNames: ['Emma', 'Hugo'], sexRolls: [1, 2] }]
+} });
+assert.equal(choiceResult.awaitingChoice, true);
+assert.equal(choiceResult.record.result.marriage.status, 'married', 'Marriage resolves before the family-event choice pause.');
+assert.equal(choiceResult.record.result.childbirths[0].children.length, 2, 'Childbirth resolves before the family-event choice pause.');
+const memberCountBeforeChoice = choiceResult.character.family.members.length;
+const lineageCountBeforeChoice = choiceResult.character.campaign.familyTimeline.length;
+choiceResult = resolveWinterStep(choiceResult.character, { stepId: 'family', input: { eventChoice: 3, relationRoll: 3, sexRoll: 2 } });
+assert.equal(choiceResult.awaitingChoice, false);
+assert.equal(choiceResult.character.family.members.length, memberCountBeforeChoice, 'Resuming a family-event choice cannot duplicate spouse or children.');
+assert.equal(choiceResult.character.campaign.familyTimeline.length, lineageCountBeforeChoice + 1, 'Only the selected family event is appended on resume.');
 
 result = resolveWinterStep(character, { stepId: 'experience', input: {} }, constantRng(0.99));
 character = result.character;
@@ -117,9 +145,11 @@ result = resolveWinterStep(character, { stepId: 'glory', input: {} });
 character = result.character;
 assert.equal(result.record.result.entries.some(entry => entry.source === 'holdings'), true);
 assert.equal(character.gear.gloryThisGame, 0);
+assert.equal(character.campaign.winter.gloryBonusPoints, 1, 'An unclaimed 1,000-point threshold is available exactly once.');
 
-result = resolveWinterStep(character, { stepId: 'gloryBonus', input: { allocations: [] } });
+result = resolveWinterStep(character, { stepId: 'gloryBonus', input: { allocations: [{ group: 'skills', key: 'sword' }] } });
 character = result.character;
+assert.equal(character.campaign.gloryBonusClaimedThreshold, 1);
 assert.equal(ensureWinterState(character).currentStep, 'complete');
 const closed = closeWinterYear(character);
 assert.equal(closed.applied, true);
@@ -143,6 +173,14 @@ for (let roll = 1; roll <= 20; roll += 1) {
   assert.ok(relation.relationKey);
   assert.equal(relation.gender, 'male');
 }
+
+assert.equal(RANDOM_MARRIAGE_TABLE.length, 8);
+for (let roll = 1; roll <= 35; roll += 1) assert.ok(resolveRandomMarriage({ roll }), `Marriage roll ${roll} must resolve.`);
+assert.equal(resolveRandomMarriage({ roll: 20, waitingModifier: 1 }).rank, 'vassal_heiress');
+assert.deepEqual(resolveChildbirthRoll({ roll: 10 }), { roll: 10, modifier: 0, adjustedRoll: 10, motherDies: false, childrenDie: false, births: 0, children: [] });
+assert.equal(resolveChildbirthRoll({ roll: 11 }).motherDies, true);
+assert.equal(resolveChildbirthRoll({ roll: 12, sexRolls: [2] }).children[0].gender, 'male');
+assert.deepEqual(resolveChildbirthRoll({ roll: 20, sexRolls: [1, 2] }).children.map(child => child.gender), ['female', 'male']);
 
 assert.deepEqual(resolveSurvivalRoll({ roll: 1 }), { roll: 1, adjustedRoll: 1, result: 'death', consequence: '사망' });
 assert.equal(resolveSurvivalRoll({ roll: 2 }).result, 'illness');

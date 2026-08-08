@@ -8,6 +8,7 @@ import {
   adjustOpposedTrait,
   getAgingRollCount,
   getHarvestModifier,
+  LIFECYCLE_SCHEMA_VERSION,
   resolveAttributeLifecycle,
   resolveD20Roll,
   resolveExperienceChecks,
@@ -1573,7 +1574,7 @@ export default function FamilyWinter({ character, setCharacter }) {
       ];
       updated.campaign = {
         ...(updated.campaign || {}),
-        schemaVersion: 2,
+        schemaVersion: LIFECYCLE_SCHEMA_VERSION,
         appliedEvents: {
           ...(updated.campaign?.appliedEvents || {}),
           ...(manualSkipLabels.length > 0 ? {
