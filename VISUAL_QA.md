@@ -1,0 +1,44 @@
+# Visual QA
+
+## Build
+
+- Date: 2026-08-08
+- Public URL: `https://imwul.github.io/paladin/`
+- Verified commit: `4ff1d43`
+- Browsers: deployed GitHub Pages build in the Codex in-app browser.
+
+## Responsive Matrix
+
+| Width | Horizontal overflow | Replacement glyphs |
+|---:|---:|---:|
+| 360 | 0 | 0 |
+| 390 | 0 | 0 |
+| 768 | 0 | 0 |
+| 1024 | 0 | 0 |
+| 1440 | 0 | 0 |
+| 1920 | 0 | 0 |
+
+## Interaction Checks
+
+- All ten primary ledger screens load through the persistent index without an error state.
+- Mobile index opens at 320px, traps focus on the first navigation command, and closes after navigation.
+- Settings dialog receives focus, is labelled, and returns focus to the settings command when closed.
+- Winter renders ten source-ordered steps and does not overflow at desktop or mobile widths.
+- Current-character display is derived from the lifecycle active character ID. Regression coverage confirms that death or retirement clears the current name and exposes the predecessor separately.
+
+## Typography and Assets
+
+- Black North and Eulyoo1945 both report loaded in the deployed page.
+- Mixed Korean-English content uses `Black North, Eulyoo1945, AppleMyungjo, Batang, serif`: Latin glyphs resolve through Black North and Korean glyphs through Eulyoo1945.
+- Small English and Latin register labels use title case with no uppercase transform.
+- The family reference list contains eight Lucide shield icons and no broken surrogate-pair glyphs.
+- The public-domain knightly investiture plate loads with a non-zero natural width.
+
+## Captures
+
+- `docs/screenshots/grand-remaster-dashboard-1440.png`
+- `docs/screenshots/grand-remaster-dashboard-390.png`
+- `docs/screenshots/grand-remaster-mobile-index-390.png`
+- `docs/screenshots/grand-remaster-character-390.png`
+- `docs/screenshots/grand-remaster-winter-1440.png`
+- `docs/screenshots/grand-remaster-reference-1024.png`
