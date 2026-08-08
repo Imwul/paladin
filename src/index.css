@@ -280,7 +280,7 @@ body {
   text-align: center;
   justify-content: center;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
+  text-transform: none;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -839,7 +839,7 @@ body {
   font-size: 0.72rem;
   font-weight: 800;
   color: var(--color-crimson);
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.1em;
 }
 
@@ -2612,7 +2612,7 @@ input[type="number"] {
   color: var(--color-gold-dark);
   font-size: 0.78rem;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: none;
   margin-bottom: 4px;
 }
 

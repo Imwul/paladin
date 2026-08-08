@@ -5,6 +5,7 @@ import {
   calculateSalvationLedger,
   createCharacterCreationSession,
   createSuccessorContext,
+  getActiveCharacterIdentity,
   getCreationRollRequests,
   prepareCareerEnd,
   prepareSalvation,
@@ -86,6 +87,21 @@ test('LIFE-001', 'incapacitated, bedridden, deceased and retired remain distinct
   assert.equal(retirement.character.campaign.lifecycle.careerStatus, 'retired');
   assert.equal(retirement.character.family.members[0].status, '은퇴');
   assert.equal(retirement.character.family.members[0].deathCause, undefined);
+});
+
+test('LIFE-ACTIVE-001', 'current-character identity follows the active lifecycle record', () => {
+  const living = makeCharacter();
+  assert.deepEqual(getActiveCharacterIdentity(living), {
+    active: true,
+    id: 'adalhart',
+    name: 'Adalhart',
+    predecessorName: null
+  });
+
+  const ended = endCareer(living).character;
+  assert.equal(getActiveCharacterIdentity(ended).active, false);
+  assert.equal(getActiveCharacterIdentity(ended).name, '활성 기사 없음');
+  assert.equal(getActiveCharacterIdentity(ended).predecessorName, 'Adalhart');
 });
 
 test('SAVE-IDEMP-001', 'career end and Salvation cannot apply twice', () => {

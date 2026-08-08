@@ -22,6 +22,8 @@ This phase reread Chapter 10 pp.174-183 and the Chapter 4 Glory passages before 
 - Added feature folders, shared UI components, dialog focus hook and engine-owned Winter module.
 - Replaced the lower letter stamp with a cited public-domain knightly investiture plate.
 - Unified Korean typography around Eulyoo1945 and changed the document language metadata to Korean.
+- Added Black North for title-case English and Latin display text, removed small all-caps register labels, and replaced fragile emoji glyphs in the family index with Lucide icons.
+- Current-character labels now follow the lifecycle active character ID and clear during death, retirement, and succession gaps.
 
 ## Localization and Accessibility
 

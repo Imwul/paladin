@@ -21,11 +21,11 @@ export default function FamilyRegister({ character, setCharacter }) {
 
   return (
     <article className="folio-page family-register view-animate">
-      <FolioHeading eyebrow="REGISTRUM DOMUS · LINEA SUCCESSIONIS" title={`${character.family?.name || '무명'} 가문`} year={character.personal?.campaignYear || 767}>
+      <FolioHeading eyebrow="Registrum Domus · Linea Successionis" title={`${character.family?.name || '무명'} 가문`} year={character.personal?.campaignYear || 767}>
         {character.family?.motto || '표어 미기록'} · {members.length}명의 혈족과 혼인 관계
       </FolioHeading>
 
-      <SectionHeader index="I" title="세대별 가문 원부" meta="MOBILE FOCUS REGISTER" />
+      <SectionHeader index="I" title="세대별 가문 원부" meta="Mobile Focus Register" />
       <div className="generation-control" role="group" aria-label="세대 선택">
         <Focus size={15} aria-hidden="true" />
         <button type="button" className={focusGeneration === 'all' ? 'active' : ''} onClick={() => setFocusGeneration('all')}>전체</button>
@@ -43,7 +43,7 @@ export default function FamilyRegister({ character, setCharacter }) {
         {!visibleMembers.length && <div className="quiet-complete"><UsersRound size={18} aria-hidden="true" />이 세대에는 기록된 가문원이 없습니다.</div>}
       </div>
 
-      <SectionHeader index="II" title="계보 편집과 조상 연대" meta="LINEAGE MAP · ANCESTOR HISTORY" />
+      <SectionHeader index="II" title="계보 편집과 조상 연대" meta="Lineage Map · Ancestor History" />
       <div className="legacy-surface legacy-surface--family"><FamilyTree character={character} setCharacter={setCharacter} /></div>
     </article>
   );

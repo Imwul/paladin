@@ -4341,7 +4341,7 @@ export default function FamilyTree({ character, setCharacter }) {
     { id: 'albert', name: '알베르 경 (Sir Albert)', relation: '조부', generation: 1, status: '사망', lifeYears: '702~744', deathCause: '은퇴 후 사망', note: '가문 조부 연대의 기사.', gender: 'male' },
     { id: 'gerard', name: '제라르 경 (Sir Gerard)', relation: '부친', generation: 2, status: '생존', lifeYears: '724~', note: '가문 부친 연대의 기사.', spouseId: 'eleanor', gender: 'male' },
     { id: 'eleanor', name: '엘레오노르 부인 (Lady Eleanor)', relation: '모친', generation: 2, status: '생존', lifeYears: '748~', note: '기품 있는 성품으로 영지 관리를 돌보는 인자한 어머니.', spouseId: 'gerard', gender: 'female' },
-    { id: 'roland', name: '롤랑 경 (Sir Roland)', relation: '본인', generation: 3, status: '생존', lifeYears: '749~', note: '767년 플레이어 캐릭터.', parentId: 'gerard', gender: 'male' },
+    { id: 'roland', name: '이름 없는 기사', relation: '본인', generation: 3, status: '생존', lifeYears: '749~', note: '플레이어 캐릭터.', parentId: 'gerard', gender: 'male' },
     { id: 'pierre', name: '피에르 (Pierre)', relation: '남동생', generation: 3, status: '생존', lifeYears: '752~', note: '플레이어의 남동생.', parentId: 'gerard', gender: 'male' }
   ];
 
@@ -5595,7 +5595,7 @@ export default function FamilyTree({ character, setCharacter }) {
             🏰 {character.family?.name || '무명'} 가문 계보도
           </h5>
           <p style={{ fontSize: '0.82rem', color: 'var(--color-grey)', marginTop: '2px' }}>
-            가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 {character.personal?.name || '롤랑 경'} 중심)
+            가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 {character.personal?.name || '이름 없는 기사'} 중심)
           </p>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>

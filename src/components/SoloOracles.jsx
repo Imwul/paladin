@@ -116,9 +116,9 @@ export default function SoloOracles({ character, setCharacter }) {
   const [isRollingEmotions, setIsRollingEmotions] = useState(false);
 
   const [groupKnights, setGroupKnights] = useState([
-    { name: '롤랑 경 (Sir Roland)', passionScore: 16 },
-    { name: '올리비에 경 (Sir Oliver)', passionScore: 14 },
-    { name: '오지에 경 (Sir Ogier)', passionScore: 12 }
+    { name: '기사 1', passionScore: 16 },
+    { name: '기사 2', passionScore: 14 },
+    { name: '기사 3', passionScore: 12 }
   ]);
   const [groupPassionName, setGroupPassionName] = useState('Honor');
   const [groupRollResult, setGroupRollResult] = useState(null);

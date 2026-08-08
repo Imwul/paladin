@@ -215,8 +215,8 @@ export default function WinterPhase({ character, setCharacter }) {
           <SelectField label="변화" value={String(trainingAmount)} onChange={value => setTrainingAmount(Number(value))} options={[{ value: '1', label: '+1' }, { value: '-1', label: '-1' }]} />
         </div>}
         {trainingOption === 'skills15' && <div className="winter-form-grid winter-form-grid--four">
-          {['ordinary', 'courtly', 'combat'].map(group => <SelectField key={group} label={group.toUpperCase()} value={skillSelections[group]} onChange={value => setSkillSelections(current => ({ ...current, [group]: value }))} options={trainingGroups[group].filter(key => Number(character.skills[key]) > 0 && Number(character.skills[key]) < 15)} />)}
-          <SelectField label="FREE" value={skillSelections.free} onChange={value => setSkillSelections(current => ({ ...current, free: value }))} options={allSkills.filter(key => Number(character.skills[key]) > 0 && Number(character.skills[key]) < 15)} />
+          {['ordinary', 'courtly', 'combat'].map(group => <SelectField key={group} label={group.replace(/^./, letter => letter.toUpperCase())} value={skillSelections[group]} onChange={value => setSkillSelections(current => ({ ...current, [group]: value }))} options={trainingGroups[group].filter(key => Number(character.skills[key]) > 0 && Number(character.skills[key]) < 15)} />)}
+          <SelectField label="Free" value={skillSelections.free} onChange={value => setSkillSelections(current => ({ ...current, free: value }))} options={allSkills.filter(key => Number(character.skills[key]) > 0 && Number(character.skills[key]) < 15)} />
         </div>}
         {trainingOption === 'skill20' && <SelectField label="16-19 기술" value={highSkill} onChange={setHighSkill} options={highSkills} />}
         <button type="button" className="primary-command" onClick={() => execute(trainingOption === 'score' ? { option: trainingOption, group: trainingGroup, key: trainingKey, amount: trainingAmount } : trainingOption === 'skills15' ? { option: trainingOption, selections: skillSelections } : { option: trainingOption, key: highSkill })}><Check size={17} aria-hidden="true" /> 훈련 적용</button>
@@ -243,12 +243,12 @@ export default function WinterPhase({ character, setCharacter }) {
 
   return (
     <article className="folio-page winter-folio view-animate">
-      <FolioHeading eyebrow="RITUS HIBERNUS · ANNUAL ADMINISTRATION" title="겨울 정산 장부" year={winter.year}>
+      <FolioHeading eyebrow="Ritus Hibernus · Annual Administration" title="겨울 정산 장부" year={winter.year}>
         원문 10단계를 순서대로 처리하고, 각 결과를 독립 거래와 연대기 항목으로 남깁니다.
       </FolioHeading>
 
       <section className="winter-progress" aria-label="겨울 정산 진행 상황">
-        <div><span>PROGRESS</span><strong>{resolvedCount}/10</strong></div>
+        <div><span lang="en">Progress</span><strong>{resolvedCount}/10</strong></div>
         <div className="winter-progress__track" aria-hidden="true"><span style={{ width: `${resolvedCount * 10}%` }} /></div>
         <span>{winter.currentStep === 'complete' ? '마감 대기' : `${Math.max(1, activeIndex + 1)}단계 처리 중`}</span>
       </section>
@@ -269,7 +269,7 @@ export default function WinterPhase({ character, setCharacter }) {
 
       <section className="winter-step-sheet">
         <header>
-          <div><span className="serial-label">STEP {String(step.number).padStart(2, '0')} · {step.english}</span><h2>{step.label}</h2></div>
+          <div><span className="serial-label" lang="en">Step {String(step.number).padStart(2, '0')} · {step.english}</span><h2>{step.label}</h2></div>
           <StatusSeal tone={stateTone(status)}>{status === 'resolved' ? '완료' : status === 'awaiting_choice' ? '선택 대기' : '미처리'}</StatusSeal>
         </header>
         <p className="winter-step-sheet__summary">{step.summary}</p>
@@ -308,7 +308,7 @@ export default function WinterPhase({ character, setCharacter }) {
         </section>
       )}
 
-      <SectionHeader index="XI" title="연간 거래 원장" meta={`${winter.transactions?.length || 0} TRANSACTIONS`} />
+      <SectionHeader index="XI" title="연간 거래 원장" meta={`${winter.transactions?.length || 0} Transactions`} />
       <div className="winter-transaction-ledger">
         {(winter.transactions || []).map(transaction => <LedgerRow key={transaction.completionId} label={`${transaction.number}. ${transaction.label}`} meta={`${transaction.ruleId} · ${transaction.sourcePage}`} value={transaction.status?.includes('manual') ? 'GM 기록' : '완료'} />)}
         {!winter.transactions?.length && <p className="muted-copy">아직 봉인된 단계 거래가 없습니다.</p>}

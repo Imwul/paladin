@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import './ProperNoun.css';
 
 /**
@@ -49,7 +49,7 @@ export default function ProperNoun({ en, ko }) {
 
   return (
     <span ref={containerRef} className="proper-noun">
-      <span ref={enRef} className="proper-noun-en">{en}</span>{isWrapped ? (
+      <span ref={enRef} className="proper-noun-en" lang="en">{en}</span>{isWrapped ? (
         <span className="proper-noun-wrap-container">
           <span ref={koRef} className="proper-noun-ko" style={{ display: 'block' }}>{ko}</span>
         </span>

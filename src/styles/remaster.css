@@ -55,6 +55,14 @@
 .remaster-app *::before,
 .remaster-app *::after {
   letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.remaster-app :lang(en),
+.remaster-app :lang(la),
+.remaster-app .latin-register,
+.remaster-app .proper-noun-en {
+  font-family: var(--font-medieval) !important;
 }
 
 html {
@@ -130,7 +138,6 @@ a:focus-visible,
   font-size: 0.67rem;
   font-weight: 700;
   line-height: 1.3;
-  text-transform: uppercase;
 }
 
 .royal-wordmark {

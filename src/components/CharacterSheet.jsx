@@ -333,7 +333,7 @@ const presets = [
     description: "전장의 최전선에서 마창을 치켜들고 돌격하는 기사입니다. 뛰어난 무력과 마술, 가문의 용맹함을 지니고 있습니다.",
     stats: {
       personal: {
-        name: "롤랑 경 (Sir Roland)",
+        name: "",
         age: 21,
         sonNumber: "첫째",
         blessing: "성스러운 아우라 (Holy Aura)",
@@ -380,7 +380,7 @@ const presets = [
     description: "샤를마뉴 대제의 궁정에서 조언하고 사절 역할을 담당하는 기사입니다. 뛰어난 외모와 세련된 교양, 말솜씨를 자랑합니다.",
     stats: {
       personal: {
-        name: "올리비에 경 (Sir Olivier)",
+        name: "",
         age: 21,
         sonNumber: "첫째",
         blessing: "기민한 지성 (Keen Intellect)",
@@ -426,7 +426,7 @@ const presets = [
     description: "신과 주군에 대한 굳건한 믿음으로 신성 마법과 치유의 능력을 발휘하는 기사입니다. 가문의 경건함과 치유의 성품을 지닙니다.",
     stats: {
       personal: {
-        name: "가바레 경 (Sir Gavaret)",
+        name: "",
         age: 21,
         sonNumber: "첫째",
         blessing: "기적의 숨결 (Miraculous Breath)",
@@ -471,7 +471,7 @@ const presets = [
     description: "어떤 참혹한 전장에서도 살아남은 실전 기사입니다. 가문의 예리한 경계심과 잔혹하지만 생존에 특화된 전투 기술을 보유합니다.",
     stats: {
       personal: {
-        name: "가랑 경 (Sir Garin)",
+        name: "",
         age: 21,
         sonNumber: "첫째",
         blessing: "질긴 생명력 (Iron Resilience)",
@@ -1237,6 +1237,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const otherTotal = Object.entries(prev).reduce((sum, [attrKey, val]) => (
         attrKey === key ? sum : sum + (Number(val) || 0)
       ), 0);
+      const preservedName = character?.personal?.name || '';
       return {
         ...prev,
         [key]: Math.min(nextRequested, Math.max(0, 5 - otherTotal))
@@ -1373,6 +1374,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         personal: {
           ...base.personal,
           ...preset.stats.personal,
+          name: preservedName,
           campaignYear: 767
         },
         attributes: {
@@ -1984,7 +1986,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
               <div style={{ backgroundColor: 'rgba(255,255,255,0.4)', padding: '12px 16px', borderRadius: '6px', border: '1px solid rgba(201,168,76,0.15)', fontSize: '0.8rem', color: 'var(--color-ink)' }}>
                 <strong>선택된 프리셋 상세 정보:</strong><br />
-                • 이름: {presets[selectedPreset].stats.personal.name}<br />
+                • 이름: 현재 입력값 유지<br />
                 • 주요 속성: STR {presets[selectedPreset].stats.attributes.str} / SIZ {presets[selectedPreset].stats.attributes.siz} / DEX {presets[selectedPreset].stats.attributes.dex} / CON {presets[selectedPreset].stats.attributes.con} / APP {presets[selectedPreset].stats.attributes.app}<br />
                 • 대표 성향: 용맹 {presets[selectedPreset].stats.traits.valorous} / 경건 {presets[selectedPreset].stats.traits.pious}<br />
                 • 주 무기 숙련도: 검 {presets[selectedPreset].stats.skills.sword} / 마창 {presets[selectedPreset].stats.skills.lance} / 전술 {presets[selectedPreset].stats.skills.battle}

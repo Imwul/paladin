@@ -49,6 +49,27 @@ const getSelf = character => {
     || character?.family?.members?.find(member => member.relation === '본인');
 };
 
+export const getActiveCharacterIdentity = character => {
+  const lifecycle = character?.campaign?.lifecycle || {};
+  const explicitlyWithoutActiveCharacter = Object.hasOwn(lifecycle, 'activeCharacterId')
+    && !lifecycle.activeCharacterId;
+  const member = lifecycle.activeCharacterId
+    ? character?.family?.members?.find(entry => entry.id === lifecycle.activeCharacterId)
+    : character?.family?.members?.find(entry => entry.relation === '본인');
+  const careerStatus = lifecycle.careerStatus || member?.lifecycleStatus || 'active';
+  const active = !explicitlyWithoutActiveCharacter
+    && !['deceased', 'retired', 'historical'].includes(careerStatus);
+
+  return {
+    active,
+    id: active ? lifecycle.activeCharacterId || member?.id || null : null,
+    name: active
+      ? character?.personal?.name || member?.name || '이름 없는 기사'
+      : '활성 기사 없음',
+    predecessorName: active ? null : character?.personal?.name || member?.name || null
+  };
+};
+
 const appendJournal = (character, year, text, timestamp) => {
   const key = String(year);
   const prior = character.journal?.[key]?.text || '';

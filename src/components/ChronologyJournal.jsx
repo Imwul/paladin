@@ -404,7 +404,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
       end: 766
     },
     player: {
-      title: `기사 ${(character.personal?.name || '롤랑 경').split(' (')[0]}의 연대 (767 AD ~ 현재)`,
+      title: `기사 ${(character.personal?.name || '이름 없는 기사').split(' (')[0]}의 연대 (767 AD ~ 현재)`,
       start: 767,
       end: Math.max(767, campaignYear)
     }
@@ -450,7 +450,7 @@ export default function ChronologyJournal({ character, setCharacter }) {
 
   // Compute family stats
   const totalGlory = character.gear?.gloryTotal || 1200;
-  const currentLeaderName = (character.personal?.name || '롤랑 경').split(' (')[0];
+  const currentLeaderName = (character.personal?.name || '이름 없는 기사').split(' (')[0];
 
   return (
     <div className="cs-page view-animate">

@@ -24,6 +24,7 @@ The interface is a Carolingian royal register interpreted through modern editori
 - Data: Rule ID, page, roll and modifier labels use Eulyoo1945 with tabular numerals; English and Latin register labels use Black North.
 - Script accents are not used for functional text.
 - Natural letter spacing is retained for legibility; headings wrap instead of shrinking with viewport width.
+- English and Latin register labels use title case. All caps are reserved for canonical rules abbreviations and identifiers.
 
 ## Color
 

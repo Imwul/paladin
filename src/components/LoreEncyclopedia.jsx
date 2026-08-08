@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { greatFamilies, soloScenarios, gazetteer, bestiary, bibliography, npcs, paladins, cultures, frankishSociety, franklandTerritories, minorNpcs } from '../data/lore';
+import { useState } from 'react';
+import { greatFamilies, soloScenarios, bestiary, bibliography, npcs, paladins, cultures, frankishSociety, franklandTerritories, minorNpcs } from '../data/lore';
 import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword, Library } from 'lucide-react';
-import ProperNoun from './ProperNoun';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
 
 import europe768Map from '../assets/europe_768.jpg';
@@ -13,7 +12,6 @@ export default function LoreEncyclopedia() {
   const [activeSubTab, setActiveSubTab] = useState('families');
   const [selectedFamily, setSelectedFamily] = useState(greatFamilies[0]);
   const [selectedScenario, setSelectedScenario] = useState(soloScenarios[0]);
-  const [selectedRegion, setSelectedRegion] = useState(gazetteer[0]);
   const [selectedMonster, setSelectedMonster] = useState(bestiary[0]);
   const [selectedNPC, setSelectedNPC] = useState(npcs ? npcs[0] : null);
   const [selectedCulture, setSelectedCulture] = useState(cultures ? cultures[0] : null);
@@ -91,13 +89,6 @@ export default function LoreEncyclopedia() {
   const filteredScenarios = soloScenarios.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.rules.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const filteredGazetteer = gazetteer.filter(g =>
-    g.nameKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    g.nameEN.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    g.rulerKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    g.historyKO.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const filteredTerritories = franklandTerritories.filter(t => {
@@ -219,7 +210,7 @@ export default function LoreEncyclopedia() {
         {cultureLangMode === 'both' && koVal && enVal && <div style={{ height: '8px' }} />}
         
         {(cultureLangMode === 'EN' || cultureLangMode === 'both') && enVal && (
-          <p style={{ 
+          <p lang="en" style={{
             fontSize: '0.78rem', 
             lineHeight: '1.5', 
             color: 'var(--color-ink-light)', 
@@ -465,9 +456,9 @@ export default function LoreEncyclopedia() {
                 }}
               >
                 <div>
-                  <span style={{ fontSize: '1.2rem', marginRight: '8px' }}>{f.crestSymbol.split('')[0] || '🛡️'}</span>
+                  <Shield size={18} aria-hidden="true" style={{ marginRight: '8px', verticalAlign: 'middle' }} />
                   <strong style={{ fontSize: '0.95rem', color: selectedFamily?.key === f.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{f.nameKO}</strong>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{f.nameEN}</div>
+                  <div lang="en" style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{f.nameEN}</div>
                 </div>
                 <ChevronRight size={16} color="var(--color-gold)" />
               </div>
@@ -482,7 +473,7 @@ export default function LoreEncyclopedia() {
             <section className="cs-section" style={{ flex: '2 1 450px' }}>
               <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>{selectedFamily.nameKO}</h3>
-                <span style={{ fontSize: '1.3rem', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))' }}>{selectedFamily.crestSymbol}</span>
+                <Shield size={20} aria-hidden="true" />
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
                 
@@ -528,7 +519,7 @@ export default function LoreEncyclopedia() {
                     &ldquo;{selectedFamily.crestDescKO}&rdquo;
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px', fontFamily: 'var(--font-serif)' }}>
-                    ({selectedFamily.crestDescEN})
+                    <span lang="en">({selectedFamily.crestDescEN})</span>
                   </div>
                 </div>
 
@@ -539,7 +530,7 @@ export default function LoreEncyclopedia() {
                     &ldquo;{selectedFamily.mottoKO}&rdquo;
                   </p>
                   <p style={{ fontSize: '0.85rem', color: 'var(--color-grey)', fontStyle: 'italic', fontFamily: 'var(--font-serif)' }}>
-                    ({selectedFamily.mottoEN})
+                    <span lang="en">({selectedFamily.mottoEN})</span>
                   </p>
                 </div>
 
@@ -550,7 +541,7 @@ export default function LoreEncyclopedia() {
                     {selectedFamily.backgroundKO}
                   </p>
                   <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
-                    {selectedFamily.backgroundEN}
+                    <span lang="en">{selectedFamily.backgroundEN}</span>
                   </p>
                 </div>
 
@@ -561,7 +552,7 @@ export default function LoreEncyclopedia() {
                     {selectedFamily.traitsKO}
                   </p>
                   <p style={{ fontSize: '0.78rem', color: 'var(--color-grey)', marginTop: '2px', fontFamily: 'var(--font-serif)' }}>
-                    ({selectedFamily.traitsEN})
+                    <span lang="en">({selectedFamily.traitsEN})</span>
                   </p>
                 </div>
 
@@ -751,7 +742,7 @@ export default function LoreEncyclopedia() {
                 <div>
                   <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{t.emoji}</span>
                   <strong style={{ fontSize: '0.95rem', color: selectedTerritory?.key === t.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{t.nameKO.split(' (')[0]}</strong>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{t.nameEN}</div>
+                  <div lang="en" style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{t.nameEN}</div>
                 </div>
                 <ChevronRight size={16} color="var(--color-gold)" />
               </div>
@@ -807,7 +798,7 @@ export default function LoreEncyclopedia() {
                       <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fffefb' }}>
                         <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 통치 영주 (Rulers)</div>
                         <div style={{ fontSize: '0.88rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedTerritory.rulerKO}</div>
-                        <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{selectedTerritory.rulerEN}</div>
+                        <div lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{selectedTerritory.rulerEN}</div>
                       </div>
                       <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fffefb' }}>
                         <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>❤️ 시작 열정 (Passion)</div>
@@ -821,7 +812,7 @@ export default function LoreEncyclopedia() {
                       <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)', margin: '0 0 8px 0' }}>
                         {selectedTerritory.descKO}
                       </p>
-                      <p style={{ fontSize: '0.76rem', lineHeight: 1.5, color: 'var(--color-ink-light)', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic', margin: 0 }}>
+                      <p lang="en" style={{ fontSize: '0.76rem', lineHeight: 1.5, color: 'var(--color-ink-light)', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontStyle: 'italic', margin: 0 }}>
                         {selectedTerritory.descEN}
                       </p>
                     </div>
@@ -852,7 +843,7 @@ export default function LoreEncyclopedia() {
                           <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
                               <strong style={{ fontSize: '0.85rem', color: 'var(--color-royal-blue)' }}>🏰 {town.nameKO}</strong>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{town.nameEN}</span>
+                              <span lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{town.nameEN}</span>
                             </div>
                             <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{town.descKO}</p>
                           </div>
@@ -873,7 +864,7 @@ export default function LoreEncyclopedia() {
                           <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
                               <strong style={{ fontSize: '0.85rem', color: 'var(--color-crimson)' }}>⛪ {abbey.nameKO}</strong>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{abbey.nameEN}</span>
+                              <span lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{abbey.nameEN}</span>
                             </div>
                             <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{abbey.descKO}</p>
                           </div>
@@ -894,7 +885,7 @@ export default function LoreEncyclopedia() {
                           <div key={idx} style={{ border: '1px solid var(--color-gold-light)', padding: '12px', borderRadius: '4px', background: '#fffefb' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(179,143,67,0.1)', paddingBottom: '4px', marginBottom: '6px' }}>
                               <strong style={{ fontSize: '0.85rem', color: 'var(--color-ink)' }}>✨ {site.nameKO}</strong>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{site.nameEN}</span>
+                              <span lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{site.nameEN}</span>
                             </div>
                             <p style={{ fontSize: '0.8rem', color: 'var(--color-ink-light)', margin: 0, lineHeight: 1.4 }}>{site.descKO}</p>
                           </div>
@@ -1151,7 +1142,7 @@ export default function LoreEncyclopedia() {
                                   <h4 style={{ margin: 0, fontSize: '0.95rem', color: 'var(--color-crimson)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                     <span>{hoveredHotspot.emoji}</span> {hoveredHotspot.nameKO}
                                   </h4>
-                                  <span style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{hoveredHotspot.nameEN}</span>
+                                  <span lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)' }}>{hoveredHotspot.nameEN}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '10px', fontSize: '0.78rem' }}>
                                   <div>
@@ -1353,7 +1344,7 @@ export default function LoreEncyclopedia() {
                   <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
                     {selectedMonster.loreKO}
                   </p>
-                  <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
+                  <p lang="en" style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontStyle: 'italic' }}>
                     {selectedMonster.loreEN}
                   </p>
                 </div>
@@ -1504,7 +1495,7 @@ export default function LoreEncyclopedia() {
                       <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff' }}>
                         <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '2px' }}>👑 신분 및 작위</div>
                         <div style={{ fontSize: '0.9rem', color: 'var(--color-royal-blue)', fontWeight: 'bold', fontFamily: 'var(--font-korean-serif)' }}>{selectedNPC.titleKO}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>{selectedNPC.titleEN}</div>
+                        <div lang="en" style={{ fontSize: '0.75rem', color: 'var(--color-grey)' }}>{selectedNPC.titleEN}</div>
                       </div>
                       <div style={{ border: '1px solid var(--color-gold-light)', padding: '10px', borderRadius: '4px', background: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
                         <div style={{ textAlign: 'center' }}>
@@ -1646,7 +1637,7 @@ export default function LoreEncyclopedia() {
                       <p style={{ fontSize: '0.92rem', lineHeight: 1.7, color: 'var(--color-ink)', fontFamily: 'var(--font-korean-serif)' }}>
                         {selectedNPC.biographyKO}
                       </p>
-                      <p style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic' }}>
+                      <p lang="en" style={{ fontSize: '0.8rem', lineHeight: 1.6, color: 'var(--color-ink-light)', marginTop: '8px', borderLeft: '2px solid var(--color-grey-light)', paddingLeft: '8px', fontStyle: 'italic' }}>
                         {selectedNPC.biographyEN}
                       </p>
                     </div>
@@ -1677,7 +1668,7 @@ export default function LoreEncyclopedia() {
                       {filteredPaladins.map((p, idx) => (
                         <tr key={idx} style={{ borderBottom: '1px solid var(--color-grey-light)', background: idx % 2 === 0 ? 'rgba(179,143,67,0.02)' : '#fff' }}>
                           <td style={{ padding: '10px 8px', fontWeight: 'bold', color: 'var(--color-crimson)', minWidth: '150px' }}>
-                            {p.nameKO} <div style={{ fontSize: '0.72rem', color: 'var(--color-grey)', fontWeight: 'normal' }}>{p.nameEN}</div>
+                            {p.nameKO} <div lang="en" style={{ fontSize: '0.72rem', color: 'var(--color-grey)', fontWeight: 'normal' }}>{p.nameEN}</div>
                           </td>
                           <td style={{ padding: '10px 8px', fontWeight: '500', minWidth: '80px' }}>{p.knighted}</td>
                           <td style={{ padding: '10px 8px', color: 'var(--color-royal-blue)', minWidth: '120px' }}>{p.companion}</td>
@@ -1813,7 +1804,7 @@ export default function LoreEncyclopedia() {
                     {/* Biography EN */}
                     <div style={{ borderLeft: '3px solid var(--color-gold)', paddingLeft: '12px', background: '#faf8f5', padding: '12px', borderRadius: '0 4px 4px 0' }}>
                       <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--color-grey)', fontWeight: 'bold', marginBottom: '4px' }}>📜 Rulebook Original Entry</div>
-                      <p style={{ fontSize: '0.82rem', lineHeight: 1.6, color: 'var(--color-ink-light)', fontFamily: 'var(--font-korean-serif)', fontStyle: 'italic', margin: 0 }}>
+                      <p lang="en" style={{ fontSize: '0.82rem', lineHeight: 1.6, color: 'var(--color-ink-light)', fontStyle: 'italic', margin: 0 }}>
                         {activeMinorNPC.biographyEN}
                       </p>
                     </div>
@@ -1853,7 +1844,7 @@ export default function LoreEncyclopedia() {
                 <div>
                   <span style={{ fontSize: '1.3rem', marginRight: '8px' }}>{c.emoji}</span>
                   <strong style={{ fontSize: '0.95rem', color: selectedCulture?.key === c.key ? 'var(--color-crimson)' : 'var(--color-ink)' }}>{c.nameKO.split(' (')[0]}</strong>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{c.nameEN}</div>
+                  <div lang="en" style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginTop: '2px' }}>{c.nameEN}</div>
                 </div>
                 <ChevronRight size={16} color="var(--color-gold)" />
               </div>
@@ -1868,7 +1859,7 @@ export default function LoreEncyclopedia() {
             <section className="cs-section" style={{ flex: '2 1 450px' }}>
               <div className="sheet-ribbon" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>{selectedCulture.emoji} {selectedCulture.nameKO}</h3>
-                <span style={{ fontSize: '0.9rem', color: '#fff', fontWeight: 'bold' }}>{selectedCulture.nameEN}</span>
+                <span lang="en" style={{ fontSize: '0.9rem', color: '#fff', fontWeight: 'bold' }}>{selectedCulture.nameEN}</span>
               </div>
               <div className="cs-section-inner" style={{ display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'rgba(179,143,67,0.01)' }}>
                 
@@ -2062,7 +2053,7 @@ export default function LoreEncyclopedia() {
                               <h4 style={{ margin: 0, fontWeight: 'bold', fontSize: '1rem', color: 'var(--color-ink)' }}>
                                 {topic.titleKO}
                               </h4>
-                              <span style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)', border: '1px solid var(--color-gold-light)', padding: '2px 6px', background: 'rgba(179,143,67,0.05)', borderRadius: '2px', fontWeight: 'bold' }}>
+                              <span lang="en" style={{ fontSize: '0.75rem', color: 'var(--color-gold-dark)', border: '1px solid var(--color-gold-light)', padding: '2px 6px', background: 'rgba(179,143,67,0.05)', borderRadius: '2px', fontWeight: 'bold' }}>
                                 {topic.nameEN}
                               </span>
                             </div>

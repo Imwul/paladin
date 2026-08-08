@@ -4,7 +4,7 @@ export function FolioHeading({ eyebrow, title, year, children }) {
   return (
     <header className="folio-heading">
       <div>
-        <span className="serial-label">{eyebrow}</span>
+        <span className="serial-label" lang="la">{eyebrow}</span>
         <h1>{title}</h1>
         {children && <p>{children}</p>}
       </div>
@@ -18,7 +18,7 @@ export function SectionHeader({ index, title, meta, action }) {
     <div className="register-heading">
       <span>{index}</span>
       <h2>{title}</h2>
-      {meta && <small>{meta}</small>}
+      {meta && <small className="latin-register">{meta}</small>}
       {action && <div className="register-heading__action">{action}</div>}
     </div>
   );
@@ -27,7 +27,7 @@ export function SectionHeader({ index, title, meta, action }) {
 export function LedgerRow({ label, value, meta, accent = false, children }) {
   return (
     <div className={`ledger-row ${accent ? 'ledger-row--accent' : ''}`}>
-      <div><span>{label}</span>{meta && <small>{meta}</small>}</div>
+      <div><span>{label}</span>{meta && <small className="latin-register">{meta}</small>}</div>
       {value !== undefined && <strong>{value}</strong>}
       {children}
     </div>

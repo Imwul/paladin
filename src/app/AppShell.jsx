@@ -23,19 +23,20 @@ import {
   X
 } from 'lucide-react';
 import { getCampaignPhase } from '../rules/campaignRules';
+import { getActiveCharacterIdentity } from '../rules/lifecycleRules';
 import knightInvestiture from '../assets/knight-investiture.jpg';
 
 export const NAV_ITEMS = [
-  { id: 'dashboard', label: '표지', meta: 'INDEX', icon: BookOpen },
-  { id: 'chronicle', label: '연대기', meta: 'CHRONICLE', icon: ScrollText },
-  { id: 'character', label: '기사', meta: 'DOSSIER', icon: UserRound },
-  { id: 'family', label: '가문', meta: 'LINEAGE', icon: UsersRound },
-  { id: 'winter', label: '겨울 정산', meta: 'WINTER', icon: Snowflake },
-  { id: 'adventure', label: '모험', meta: 'ADVENTURE', icon: Compass },
-  { id: 'standing', label: '지위', meta: 'STANDING', icon: Crown },
-  { id: 'glory', label: '영광', meta: 'GLORY', icon: Award },
-  { id: 'oracles', label: '신탁', meta: 'ORACLES', icon: Dices },
-  { id: 'reference', label: '참조', meta: 'REFERENCE', icon: BookText }
+  { id: 'dashboard', label: '표지', meta: 'Index', icon: BookOpen },
+  { id: 'chronicle', label: '연대기', meta: 'Chronicle', icon: ScrollText },
+  { id: 'character', label: '기사', meta: 'Dossier', icon: UserRound },
+  { id: 'family', label: '가문', meta: 'Lineage', icon: UsersRound },
+  { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake },
+  { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass },
+  { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
+  { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
+  { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
+  { id: 'reference', label: '참조', meta: 'Reference', icon: BookText }
 ];
 
 const getLifecycleLabel = (status) => ({
@@ -71,6 +72,7 @@ export default function AppShell({
   const winterSteps = character.campaign?.winter?.steps || {};
   const winterDone = Object.values(winterSteps).filter(value => value === 'resolved' || value === 'skipped').length;
   const activeItem = NAV_ITEMS.find(item => item.id === activeTab) || NAV_ITEMS[0];
+  const activeCharacter = getActiveCharacterIdentity(character);
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
@@ -110,19 +112,19 @@ export default function AppShell({
 
       <header className="royal-header">
         <div className="royal-header__identity">
-          <span className="serial-label" lang="la">CODEX REGIUS · 0767</span>
+          <span className="serial-label" lang="la">Codex Regius · 0767</span>
           <div className="royal-wordmark" aria-label="Paladin">
-            <span lang="en">PALADIN</span>
+            <span lang="en">Paladin</span>
           </div>
           <p>샤를마뉴 대제의 기사 생애 기록부</p>
         </div>
 
         <div className="royal-header__registry" aria-label="현재 캠페인 기록">
-          <div><span>ANNO</span><strong>{year}</strong></div>
-          <div><span>FOLIO</span><strong>{String(NAV_ITEMS.findIndex(item => item.id === activeTab) + 1).padStart(2, '0')}</strong></div>
-          <div><span>REV.</span><strong>{character.campaign?.saveRevision || 0}</strong></div>
+          <div><span lang="la">Anno</span><strong>{year}</strong></div>
+          <div><span lang="la">Folio</span><strong>{String(NAV_ITEMS.findIndex(item => item.id === activeTab) + 1).padStart(2, '0')}</strong></div>
+          <div><span lang="en">Rev.</span><strong>{character.campaign?.saveRevision || 0}</strong></div>
           <div className={`save-state save-state--${cloudState.tone}`} role="status" aria-live="polite">
-            <span>SAVE</span><strong>{cloudState.label}</strong>
+            <span lang="en">Save</span><strong>{cloudState.label}</strong>
           </div>
           {cloudActions?.canLogin && (
             <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onLogin} aria-label="구글 계정으로 로그인" title="구글 계정으로 로그인">
@@ -156,7 +158,7 @@ export default function AppShell({
       <div className="campaign-strip" aria-label="캠페인 현재 상태">
         <span><CalendarDays size={14} aria-hidden="true" /> {year}년</span>
         <span><Shield size={14} aria-hidden="true" /> Phase {phase?.number ?? 0}</span>
-        <span><UserRound size={14} aria-hidden="true" /> {character.personal?.name || '이름 없는 기사'}</span>
+        <span><UserRound size={14} aria-hidden="true" /> {activeCharacter.name}</span>
         <span>{getLifecycleLabel(lifecycle)}</span>
         <span><Snowflake size={14} aria-hidden="true" /> 겨울 {winterDone}/10</span>
         <span className={unresolvedCount ? 'campaign-strip__warning' : ''}>미결 {unresolvedCount}</span>
@@ -170,7 +172,7 @@ export default function AppShell({
           aria-label="왕실 장부 목차"
         >
           <div className="folio-navigation__heading">
-            <span lang="la">INDEX GENERALIS</span>
+            <span lang="la">Index Generalis</span>
             <strong>장부 목차</strong>
           </div>
           <ol>
@@ -209,14 +211,14 @@ export default function AppShell({
 
         <main id="main-content" className="folio-main" tabIndex="-1">
           <div className="folio-breadcrumb" aria-label="현재 위치">
-            <span lang="la">PALATINUM</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong><span lang="en">{activeItem.meta}</span>
+            <span lang="la">Palatinum</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong><span lang="en">{activeItem.meta}</span>
           </div>
           {children}
         </main>
       </div>
 
       <footer className="royal-footer">
-        <span lang="en">PALADIN · LIVING CHRONICLE</span>
+        <span lang="en">Paladin · Living Chronicle</span>
         <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v5</span>
       </footer>
     </div>

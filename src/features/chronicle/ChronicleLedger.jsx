@@ -54,11 +54,11 @@ export default function ChronicleLedger({ character }) {
 
   return (
     <article className="folio-page chronicle-folio view-animate">
-      <FolioHeading eyebrow="ANNALES REGNI · REGISTRUM EVENTUUM" title="왕국 연대기" year={character.personal?.campaignYear || 767}>
+      <FolioHeading eyebrow="Annales Regni · Registrum Eventuum" title="왕국 연대기" year={character.personal?.campaignYear || 767}>
         기사와 가문의 사건을 연도, 규칙, 결과에 따라 보존합니다.
       </FolioHeading>
 
-      <SectionHeader index="I" title="사건 색인" meta={`${visibleEvents.length} ENTRIES`} />
+      <SectionHeader index="I" title="사건 색인" meta={`${visibleEvents.length} Entries`} />
       <div className="chronicle-filters" role="group" aria-label="연대기 필터">
         <Filter size={15} aria-hidden="true" />
         {FILTERS.map(([id, label]) => (
@@ -68,13 +68,13 @@ export default function ChronicleLedger({ character }) {
 
       {Object.keys(grouped).length ? Object.entries(grouped).map(([year, yearEvents]) => (
         <section className="chronicle-year" key={year}>
-          <header><strong>{year}</strong><span>ANNO DOMINI</span><small>{yearEvents.length}건</small></header>
+          <header><strong>{year}</strong><span lang="la">Anno Domini</span><small>{yearEvents.length}건</small></header>
           <div>
             {yearEvents.map(event => (
               <article className="chronicle-entry" key={event.id}>
                 <div className="chronicle-entry__meta">
                   <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{event.type}</StatusSeal>
-                  {event.age !== undefined && <span>AGE {event.age}</span>}
+                  {event.age !== undefined && <span lang="en">Age {event.age}</span>}
                   {event.ruleId && <code>{event.ruleId}</code>}
                   {event.source && <span>{event.source}</span>}
                 </div>
@@ -82,9 +82,9 @@ export default function ChronicleLedger({ character }) {
                 {event.narrative && <p>{event.narrative}</p>}
                 {(event.glory !== undefined || event.standing || event.lifecycle) && (
                   <footer>
-                    {event.glory !== undefined && <span>GLORY {Number(event.glory) >= 0 ? '+' : ''}{event.glory}</span>}
-                    {event.standing && <span>STANDING {String(event.standing)}</span>}
-                    {event.lifecycle && <span>LIFECYCLE {String(event.lifecycle)}</span>}
+                    {event.glory !== undefined && <span lang="en">Glory {Number(event.glory) >= 0 ? '+' : ''}{event.glory}</span>}
+                    {event.standing && <span lang="en">Standing {String(event.standing)}</span>}
+                    {event.lifecycle && <span lang="en">Lifecycle {String(event.lifecycle)}</span>}
                   </footer>
                 )}
               </article>
