@@ -41,6 +41,13 @@
   letter-spacing: 0 !important;
 }
 
+.remaster-app,
+.remaster-app *,
+.remaster-app *::before,
+.remaster-app *::after {
+  letter-spacing: 0 !important;
+}
+
 html {
   background: var(--ink);
   color-scheme: light;
