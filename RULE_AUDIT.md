@@ -55,17 +55,17 @@ Existing saves are migrated through `sanitizeCampaignState`. Legacy fields are p
 
 ## Compliance counts
 
-The matrix contains 136 independently triggered rule or table-family entries. The Phase 1 column reflects the Rules Engine remaster described below.
+The matrix contains 136 independently triggered rule or table-family entries. The latest column reflects the Grand Remaster and Chapter 10 pass described below.
 
-| Status | Baseline | Audit fixes | Remaster Phase 1 | Remaster Phase 2 | Remaster Phase 3 |
-|---|---:|---:|---:|---:|---:|
-| Exact | 3 | 16 | 16 | 31 | 36 |
-| Partial | 62 | 75 | 74 | 64 | 60 |
-| Incorrect | 21 | 1 | 1 | 0 | 0 |
-| Missing | 19 | 16 | 14 | 12 | 11 |
-| UI-only | 28 | 25 | 25 | 23 | 23 |
-| Logic-only | 0 | 0 | 3 | 3 | 3 |
-| House Rule | 3 | 3 | 3 | 3 | 3 |
+| Status | Baseline | Audit fixes | Remaster Phase 1 | Remaster Phase 2 | Remaster Phase 3 | Grand Remaster |
+|---|---:|---:|---:|---:|---:|---:|
+| Exact | 3 | 16 | 16 | 31 | 36 | 38 |
+| Partial | 62 | 75 | 74 | 64 | 60 | 58 |
+| Incorrect | 21 | 1 | 1 | 0 | 0 | 0 |
+| Missing | 19 | 16 | 14 | 12 | 11 | 11 |
+| UI-only | 28 | 25 | 25 | 23 | 23 | 23 |
+| Logic-only | 0 | 0 | 3 | 3 | 3 | 3 |
+| House Rule | 3 | 3 | 3 | 3 | 3 | 3 |
 
 The rise in `Partial` is intentional: an incorrect or missing rule is not called exact merely because its highest-risk arithmetic was corrected. For example, the Winter personal-event roll now uses the exact d20 resolver, but the row remains partial because several event choices and downstream effects are not automated.
 
@@ -187,16 +187,44 @@ Chapter One's end-of-career pages and Tables 1-16/1-17 were extracted and visual
 
 The full Winter survival and mount target sets, multiplayer shared-family ownership, female-specific creation ambiguity, later-year Ideal effects and repository-wide localization remain incomplete. Real Firebase round-trip testing still needs a configured project. These limits remain `Partial`, `UI-only` or `House Rule`; none was promoted to improve the totals.
 
+## Grand Remaster: Chapter 10 and Editorial Interface
+
+### Authoritative source pass
+
+Chapter 10 pp.174-183 and the Chapter 4 Glory passages were visually reread before the Winter engine and interface changed. The canonical annual order is Solo Scenario, Aging, Economic Circumstances, Survival, Personal Event, Family, Experience, Training and Practice, Compute Glory, then immediate Glory Bonus spending. The order suggested by the design brief was not used where it differed from the printed book.
+
+### Architecture and behavior
+
+- Added one engine-owned ten-step Winter transaction model. Every step records its Rule ID, source, input, roll, modifiers, unresolved choices, state changes, completion ID, rollback boundary and Chronicle entry.
+- Added exact order guards, duplicate prevention, save/resume state, annual close guards and migration for old `harvest`, `maintenance`, `familyEvent` and `annualGlory` step names. A save paused after legacy Harvest reuses its recorded gross income and cannot roll the harvest a second time.
+- Structured all twenty Table 10-9 personal-event rows and all Table 10-12/10-13 family-event and relation/sex rows. Deterministic effects apply automatically; choices or unsupported target creation remain visible unresolved records.
+- Replaced the launcher/dashboard shell with a Korean-first royal register: persistent campaign context, folio index navigation, Chronicle, dossier, family register, Standing/Glory ledgers and source-order Winter wizard.
+- Added save revision comparison and a focus-managed document conflict dialog. Firebase is dynamically imported only when configured.
+- Lazy-loaded the large feature screens and split the 435 kB lore data chunk. Initial application JavaScript is now about 326 kB minified / 103 kB gzip instead of the former 2.02 MB / 575 kB gzip bundle.
+
+### Compliance change
+
+- `Exact`: 36 → 38; `Partial`: 60 → 58; every other category is unchanged.
+- `WINTER-ORDER-001` moved to `Exact` after engine, UI, save/resume, migration and regression coverage were connected.
+- `GLORY-BONUS-001` moved to `Exact` because Step 10 now requires every crossed-threshold point to be assigned before annual close.
+- Survival, mounts, personal events, family events, Training and annual Glory remain `Partial` where complete retainer/mount models, GM choices or external Rulebook systems are still absent.
+
+### Verification
+
+- `npm run ci:temporary`: passed with production build, core rules, character creation, lifecycle, Winter and hostile migration regressions.
+- Targeted ESLint for every new or changed Grand Remaster module: passed.
+- Repository-wide ESLint improved from 159 errors / 3 warnings to 141 errors / 3 warnings. Remaining findings are concentrated in the pre-existing `CharacterSheet.jsx`, `SoloOracles.jsx` and `FamilyTree.jsx` monoliths; six runtime-breaking undefined Solo controls and the Saint Denis reversal bug were fixed.
+- Production build has no chunk over Vite's 500 kB advisory threshold. Real Firebase round-trip still requires user credentials.
+
 ## Remaining critical scope
 
-The app is still not a complete implementation of the 463-page core book, but the traceability matrix now has no `Incorrect` rows. The largest `Missing` or `UI-only` areas are full personal combat and health, the player-facing travel workflow, siege, wealth transactions, foreign-character creation, opponent/creature execution, directed traits/oaths, and complete Chapter 19 adventures. Winter survival targets, personal/family event effects and exact maintenance choices remain partial.
+The app is still not a complete implementation of the 463-page core book, but the traceability matrix has no `Incorrect` rows. The largest `Missing` or `UI-only` areas are full personal combat and health, the player-facing travel workflow, siege, wealth transactions, foreign-character creation, opponent/creature execution, directed traits/oaths, and complete Chapter 19 adventures. Winter retainer/additional-mount coverage, personal/family event choices and exact Maintenance consequences remain partial.
 
 Source dice now use the shared engine, but legacy random selections still call `Math.random` directly, so every random table cannot yet be seeded and exhaustively replayed. Real Firebase save/load was not exercised because it requires project credentials; offline and online modes nevertheless share the same local rule code and tables.
 
 ## Verification
 
-- `npm run ci:temporary`: passed after Phase 3. This includes the production build and Phase 1, Phase 2, Phase 3 and hostile save/state regression suites.
-- Browser smoke: passed for 767 startup, twelve trait pairs, canonical passions, six son-number choices, gated saint blessing, Saint Denis, creation modal, chronology and Winter Step 2. Browser error log was empty.
-- `npm run lint`: still fails on the legacy repository baseline with 159 errors and 3 warnings across 10 files. These are concentrated in `FamilyTree.jsx`, `SoloOracles.jsx`, `CharacterSheet.jsx` and other older components; this phase does not claim a clean repository-wide baseline. The Phase 3 rules/i18n modules, lifecycle panel, canonical wizard, Winter integration, migration and regressions pass their targeted lint run.
+- `npm run ci:temporary`: passed after the Grand Remaster. This includes production build and Phase 1, Phase 2, Phase 3, Winter and hostile save/state regression suites.
+- `npm run lint`: still fails on the legacy repository baseline with 141 errors and 3 warnings. New and changed Grand Remaster modules pass their targeted lint run; remaining classes are documented in `PHASE_4_GRAND_REMASTER_REPORT.md`.
 - Typecheck: not configured. The project is JavaScript and has no `typecheck` script or TypeScript configuration.
-- Build warning: the main JavaScript bundle is 2.02 MB minified (574.88 kB gzip), above Vite's 500 kB advisory threshold; the build still succeeds.
+- Build: initial application JavaScript is about 326 kB minified (103 kB gzip); the separately loaded lore-data chunk is about 435 kB (142 kB gzip), below the advisory threshold.

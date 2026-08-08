@@ -1,6 +1,4 @@
-/* Fonts: Pretendard (Korean), Hahmlet (Korean Serif), Cinzel (EN Serif), Marcellus (EN Titles) */
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
-@import url("https://fonts.googleapis.com/css2?family=Hahmlet:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700;800&family=Marcellus&display=swap");
+/* Eulyoo1945 is loaded from the pinned stylesheet declared in index.html. */
 
 :root {
   /* Illuminated Manuscript Palette */
@@ -20,11 +18,11 @@
   --color-grey-light: #ddd3c1;
   --color-success: #2e6b33;
   
-  --font-korean: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif; /* Reading content defaults to Hahmlet */
-  --font-korean-serif: 'Hahmlet', 'Noto Serif KR', 'Nanum Myeongjo', 'Batang', serif;
-  --font-heading: 'Marcellus', 'Cinzel', 'Hahmlet', 'Georgia', serif; /* Titles default to Marcellus/Cinzel, falling back to Hahmlet for Korean */
-  --font-serif: 'Cinzel', 'Hahmlet', 'Georgia', serif;
-  --font-gothic: 'Marcellus', 'Cinzel', 'Hahmlet', 'Georgia', serif;
+  --font-korean: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-korean-serif: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-heading: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-serif: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-gothic: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
   
   --shadow-medieval: 0 2px 8px rgba(46, 31, 15, 0.05);
 }
@@ -43,7 +41,7 @@
 
 /* Force override browser-specific user agent styles for input/button/UI elements to keep them easily readable (Pretendard) */
 input, textarea, button, select, input[type="number"], input[type="text"], .btn-medieval, .btn-medieval-primary, .auth-badge, .tab-btn {
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif !important;
   letter-spacing: -0.03em !important;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;

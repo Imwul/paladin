@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import ProperNoun from './components/ProperNoun';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import Dashboard from './components/Dashboard';
-import CharacterSheet from './components/CharacterSheet';
-import FamilyWinter from './components/FamilyWinter';
-import ChronologyJournal from './components/ChronologyJournal';
-import SoloOracles from './components/SoloOracles';
-import LoreEncyclopedia from './components/LoreEncyclopedia';
-import SettingsModal from './components/SettingsModal';
+import AppShell from './app/AppShell';
+import { LoadingState } from './components/ui/LedgerUI';
+import SaveConflictDialog from './components/SaveConflictDialog';
 import { getFirebaseServices } from './firebase';
-import { BookOpen, User, Shield, Compass, Sparkles, Cloud, Settings, LogIn, LogOut, Library } from 'lucide-react';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import './components/SettingsModal.css';
+import './styles/remaster.css';
+
+const CharacterDossier = lazy(() => import('./features/character/CharacterDossier'));
+const FamilyRegister = lazy(() => import('./features/family/FamilyRegister'));
+const ChronicleLedger = lazy(() => import('./features/chronicle/ChronicleLedger'));
+const WinterPhase = lazy(() => import('./features/winter/WinterPhase'));
+const ChronologyJournal = lazy(() => import('./components/ChronologyJournal'));
+const SoloOracles = lazy(() => import('./components/SoloOracles'));
+const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
+const SettingsModal = lazy(() => import('./components/SettingsModal'));
+const StandingLedger = lazy(() => import('./features/ledgers/ReputationLedgers').then(module => ({ default: module.StandingLedger })));
+const GloryLedger = lazy(() => import('./features/ledgers/ReputationLedgers').then(module => ({ default: module.GloryLedger })));
 
 // Initial state template representing the full blank Knight Character Sheet & Linage
 const initialCharacterState = {
@@ -154,19 +161,27 @@ const initialCharacterState = {
     },
     winter: {
       year: 767,
+      transactionId: 'winter:767',
+      currentStep: 'soloScenario',
       steps: {
+        soloScenario: 'pending',
         aging: 'pending',
-        harvest: 'pending',
+        economy: 'pending',
         survival: 'pending',
         personalEvent: 'pending',
-        familyEvent: 'pending',
+        family: 'pending',
         experience: 'pending',
         training: 'pending',
-        annualGlory: 'pending',
-        maintenance: 'pending'
+        glory: 'pending',
+        gloryBonus: 'pending'
       },
+      records: {},
+      transactions: [],
       logs: [],
       unresolved: {},
+      annualLedger: null,
+      survivalRecords: [],
+      flags: {},
       gloryBonusPoints: 0,
       bonusSpent: 0,
       skippedWithConfirmation: {}
@@ -178,10 +193,23 @@ const createInitialCharacterState = () => deepClone(initialCharacterState);
 
 const mergeWithDefault = (data) => sanitizeCampaignState(data, createInitialCharacterState());
 
+const getInitialFirebaseStatus = () => {
+  try {
+    const savedConfig = localStorage.getItem('paladin_firebase_config');
+    if (!savedConfig) return 'UNCONFIGURED';
+    const parsed = JSON.parse(savedConfig);
+    return parsed.apiKey && parsed.apiKey !== 'YOUR_API_KEY' ? 'CONFIGURED_OFFLINE' : 'UNCONFIGURED';
+  } catch {
+    return 'UNCONFIGURED';
+  }
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [firebaseStatus, setFirebaseStatus] = useState('UNCONFIGURED');
+  const [firebaseStatus, setFirebaseStatus] = useState(getInitialFirebaseStatus);
+  const [saveActivity, setSaveActivity] = useState('saved');
+  const [saveConflict, setSaveConflict] = useState(null);
   const [user, setUser] = useState(null);
 
   const [rawCharacter, setRawCharacter] = useState(() => {
@@ -197,80 +225,66 @@ export default function App() {
   });
 
   const character = rawCharacter;
-  const setCharacter = (newData) => {
+  const setCharacter = useCallback((newData) => {
     setRawCharacter(prev => {
       const resolved = typeof newData === 'function' ? newData(prev) : newData;
-      return mergeWithDefault(resolved);
-    });
-  };
-
-  // Load custom config and handle Firebase Auth state
-  useEffect(() => {
-    try {
-      const savedConfig = localStorage.getItem('paladin_firebase_config');
-      if (savedConfig) {
-        const parsed = JSON.parse(savedConfig);
-        if (parsed.apiKey && parsed.apiKey !== "YOUR_API_KEY") {
-          setFirebaseStatus('CONFIGURED_OFFLINE');
+      const merged = mergeWithDefault(resolved);
+      return {
+        ...merged,
+        campaign: {
+          ...merged.campaign,
+          saveRevision: Math.max(prev.campaign?.saveRevision || 0, merged.campaign?.saveRevision || 0) + 1
         }
-      }
-    } catch (e) {
-      console.error(e);
-    }
+      };
+    });
+  }, []);
 
-    const services = getFirebaseServices();
-    if (!services.isMock && services.auth) {
-      const unsubscribe = services.auth.onAuthStateChanged(usr => {
+  // Subscribe to Firebase Auth and compare canonical revisions without overwriting local data.
+  useEffect(() => {
+    let unsubscribe;
+    let active = true;
+    getFirebaseServices().then(services => {
+      if (!active || services.isMock || !services.auth) return;
+      unsubscribe = services.auth.onAuthStateChanged(usr => {
         if (usr) {
           setUser(usr);
           setFirebaseStatus('LOGGED_IN');
-          // Load cloud data upon login
           services.loadFromCloud(usr.uid).then(cloudData => {
-            if (cloudData) {
-              if (sessionStorage.getItem('paladin_cloud_prompted')) {
-                return;
-              }
-              // Simple smart comparison to see if local data is already identical
-              const localSaved = localStorage.getItem('paladin_companion_data');
-              let isDifferent = true;
-              if (localSaved) {
-                try {
-                  const localParsed = JSON.parse(localSaved);
-                  if (JSON.stringify(mergeWithDefault(localParsed)) === JSON.stringify(mergeWithDefault(cloudData))) {
-                    isDifferent = false;
-                  }
-                } catch (e) {}
-              }
-
-              if (isDifferent) {
-                sessionStorage.setItem('paladin_cloud_prompted', 'true');
-                if (window.confirm("클라우드 백업 데이터를 발견했습니다! 기존 로컬 시트 데이터를 클라우드 데이터로 복구하시겠습니까?")) {
-                  setCharacter(cloudData);
-                }
-              }
+            if (!cloudData || sessionStorage.getItem('paladin_cloud_prompted')) return;
+            const localSaved = localStorage.getItem('paladin_companion_data');
+            const localData = localSaved ? mergeWithDefault(JSON.parse(localSaved)) : createInitialCharacterState();
+            const canonicalCloud = mergeWithDefault(cloudData);
+            if (JSON.stringify(localData) !== JSON.stringify(canonicalCloud)) {
+              sessionStorage.setItem('paladin_cloud_prompted', 'true');
+              setSaveConflict({ local: localData, cloud: canonicalCloud });
             }
+          }).catch(error => {
+            console.error('Cloud comparison failed:', error);
           });
         } else {
           setUser(null);
           setFirebaseStatus('CONFIGURED_OFFLINE');
         }
       });
-      return unsubscribe;
-    }
+    }).catch(error => console.error('Firebase initialization failed:', error));
+    return () => {
+      active = false;
+      unsubscribe?.();
+    };
   }, []);
 
   // Offline-first synchronization with LocalStorage
   useEffect(() => {
     try {
       localStorage.setItem('paladin_companion_data', JSON.stringify(character));
-    } catch (e) {
-      console.error("Failed to save state to localStorage:", e);
+    } catch (error) {
+      console.error('Failed to save state to localStorage:', error);
     }
   }, [character]);
 
   // Auth Operations
   const handleGoogleLogin = async () => {
-    const services = getFirebaseServices();
+    const services = await getFirebaseServices();
     if (services.isMock) {
       alert("파이어베이스가 연결되어 있지 않습니다. 우측의 톱니바퀴 아이콘을 눌러 연동 설정을 완료해 주세요!");
       setIsSettingsOpen(true);
@@ -287,7 +301,7 @@ export default function App() {
   };
 
   const handleLogout = async () => {
-    const services = getFirebaseServices();
+    const services = await getFirebaseServices();
     try {
       await services.logout();
       setUser(null);
@@ -299,130 +313,102 @@ export default function App() {
 
   const handleCloudSave = async () => {
     if (!user) return;
-    const services = getFirebaseServices();
+    const services = await getFirebaseServices();
     try {
+      setSaveActivity('saving');
       const sanitizedForCloud = mergeWithDefault(character);
       await services.saveToCloud(user.uid, sanitizedForCloud);
-      alert("성공적으로 기사 시트와 일지 정보가 클라우드 서버에 백업되었습니다!");
+      setSaveActivity('saved');
     } catch (error) {
+      setSaveActivity('error');
       alert(`클라우드 백업 실패: ${error.message}`);
     }
   };
 
   const handleCloudLoad = async () => {
     if (!user) return;
-    const services = getFirebaseServices();
+    const services = await getFirebaseServices();
     try {
+      setSaveActivity('loading');
       const cloudData = await services.loadFromCloud(user.uid);
       if (cloudData) {
-        if (window.confirm("클라우드 서버에서 백업 데이터를 가져와 현재 로컬 시트와 일지 정보를 모두 덮어쓰시겠습니까?")) {
-          setCharacter(cloudData);
-          alert("성공적으로 클라우드 백업 데이터를 가져와 복원하였습니다!");
-        }
+        setSaveConflict({ local: character, cloud: mergeWithDefault(cloudData) });
       } else {
-        alert("저장된 클라우드 백업 데이터를 찾을 수 없습니다.");
+        alert('저장된 클라우드 기록을 찾을 수 없습니다.');
       }
+      setSaveActivity('saved');
     } catch (error) {
+      setSaveActivity('error');
       alert(`클라우드 가져오기 실패: ${error.message}`);
     }
   };
 
+  const cloudState = useMemo(() => {
+    if (saveActivity === 'saving') return { label: '올리는 중', tone: 'pending' };
+    if (saveActivity === 'loading') return { label: '불러오는 중', tone: 'pending' };
+    if (saveActivity === 'error') return { label: '확인 필요', tone: 'danger' };
+    if (saveConflict) return { label: '버전 충돌', tone: 'danger' };
+    if (firebaseStatus === 'LOGGED_IN') return { label: '로컬·클라우드', tone: 'active' };
+    return { label: '로컬 저장', tone: 'neutral' };
+  }, [firebaseStatus, saveActivity, saveConflict]);
+
+  const renderActiveScreen = () => {
+    if (activeTab === 'dashboard') return <Dashboard character={character} setActiveTab={setActiveTab} />;
+    if (activeTab === 'chronicle') return <ChronicleLedger character={character} />;
+    if (activeTab === 'character') return <CharacterDossier character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />;
+    if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'adventure') return <ChronologyJournal character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'standing') return <StandingLedger character={character} />;
+    if (activeTab === 'glory') return <GloryLedger character={character} />;
+    if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'reference') return <LoreEncyclopedia />;
+    return <Dashboard character={character} setActiveTab={setActiveTab} />;
+  };
+
   return (
-    <div className="app-container">
-      
-      {/* Decorative Title Header bar & Unified Auth Bar */}
-      <div className="header-decor">
-        <div className="header-title-container">
-          <h1>
-            성기사의 모험과 연대기 <span className="title-ko-sub">Paladin: Passage of Arms</span>
-          </h1>
-          <p className="subtitle">
-            <ProperNoun en="Warriors of Charlemagne" ko="샤를마뉴 대제 용사들의 기록서" />
-          </p>
-        </div>
+    <AppShell
+      activeTab={activeTab}
+      character={character}
+      cloudState={cloudState}
+      cloudActions={{
+        canLogin: firebaseStatus === 'CONFIGURED_OFFLINE',
+        isLoggedIn: firebaseStatus === 'LOGGED_IN',
+        onLogin: handleGoogleLogin,
+        onLogout: handleLogout,
+        onSave: handleCloudSave,
+        onLoad: handleCloudLoad
+      }}
+      onNavigate={setActiveTab}
+      onOpenSettings={() => setIsSettingsOpen(true)}
+    >
+      <Suspense fallback={<LoadingState />}>
+        {renderActiveScreen()}
+      </Suspense>
 
-        {/* Global Authentication Bar */}
-        <div className="auth-bar">
-          {firebaseStatus === 'UNCONFIGURED' ? (
-            <span className="auth-badge unconfigured">
-              <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-grey)' }}></span>
-              미설정 (로컬 저장)
-            </span>
-          ) : firebaseStatus === 'CONFIGURED_OFFLINE' ? (
-            <>
-              <span className="auth-badge offline">
-                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-grey)' }}></span>
-                오프라인 (미연동)
-              </span>
-              <button className="btn-medieval" onClick={handleGoogleLogin}>
-                <LogIn size={15} /> 구글 로그인
-              </button>
-            </>
-          ) : (
-            <>
-              <span className="auth-badge online">
-                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-success)' }}></span>
-                CLOUD ({user?.displayName || "이준형"})
-              </span>
-              <button className="btn-medieval btn-medieval-primary" onClick={handleCloudSave}>
-                <Cloud size={15} /> 올리기
-              </button>
-              <button className="btn-medieval" onClick={handleCloudLoad}>
-                <Cloud size={15} /> 가져오기
-              </button>
-              <button className="btn-medieval" onClick={handleLogout}>
-                <LogOut size={15} /> 로그아웃
-              </button>
-            </>
-          )}
+      <Suspense fallback={null}>
+        <SettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          character={character}
+          setCharacter={setCharacter}
+          firebaseStatus={firebaseStatus}
+        />
+      </Suspense>
 
-          <button className="btn-medieval" onClick={() => setIsSettingsOpen(true)} style={{ padding: '8px 10px' }}>
-            <Settings size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* Navigation tab bar */}
-      <div className="tab-navigation">
-        <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
-          <BookOpen size={16} /> 성기사의 기록
-        </button>
-        <button className={`tab-btn ${activeTab === 'character' ? 'active' : ''}`} onClick={() => setActiveTab('character')}>
-          <User size={16} /> 기사의 기록
-        </button>
-        <button className={`tab-btn ${activeTab === 'family' ? 'active' : ''}`} onClick={() => setActiveTab('family')}>
-          <Shield size={16} /> 가문의 계보
-        </button>
-        <button className={`tab-btn ${activeTab === 'journal' ? 'active' : ''}`} onClick={() => setActiveTab('journal')}>
-          <Compass size={16} /> 모험 연대기
-        </button>
-        <button className={`tab-btn ${activeTab === 'oracles' ? 'active' : ''}`} onClick={() => setActiveTab('oracles')}>
-          <Sparkles size={16} /> 운명의 신탁과 주사위
-        </button>
-        <button className={`tab-btn ${activeTab === 'lore' ? 'active' : ''}`} onClick={() => setActiveTab('lore')}>
-          <Library size={16} /> 제국의 서고
-        </button>
-      </div>
-
-      {/* Main Content Render area */}
-      <div className="main-content">
-        {activeTab === 'dashboard' && <Dashboard setActiveTab={setActiveTab} />}
-        {activeTab === 'character' && <CharacterSheet character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />}
-        {activeTab === 'family' && <FamilyWinter character={character} setCharacter={setCharacter} />}
-        {activeTab === 'journal' && <ChronologyJournal character={character} setCharacter={setCharacter} />}
-        {activeTab === 'oracles' && <SoloOracles character={character} setCharacter={setCharacter} />}
-        {activeTab === 'lore' && <LoreEncyclopedia />}
-      </div>
-
-      {/* Settings & JSON Backup popup modal */}
-      <SettingsModal 
-        isOpen={isSettingsOpen} 
-        onClose={() => setIsSettingsOpen(false)} 
-        character={character} 
-        setCharacter={setCharacter} 
-        firebaseStatus={firebaseStatus} 
+      <SaveConflictDialog
+        conflict={saveConflict}
+        onClose={() => setSaveConflict(null)}
+        onKeepLocal={() => {
+          setSaveConflict(null);
+          setSaveActivity('saved');
+        }}
+        onUseCloud={() => {
+          setCharacter(saveConflict.cloud);
+          setSaveConflict(null);
+          setSaveActivity('saved');
+        }}
       />
-
-    </div>
+    </AppShell>
   );
 }

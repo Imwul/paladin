@@ -1,7 +1,3 @@
-import { initializeApp, getApps } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
-
 const REQUIRED_CONFIG_FIELDS = ['apiKey', 'authDomain', 'projectId', 'appId'];
 
 const createMockServices = (error = null) => ({
@@ -42,11 +38,19 @@ const getConfigAppName = (config) => `paladin-${btoa(`${config.projectId}:${conf
  * Dynamically initializes Firebase based on user-provided config in LocalStorage,
  * or falls back to mock/offline mode.
  */
-export function getFirebaseServices() {
+export async function getFirebaseServices() {
   const config = getStoredFirebaseConfig();
   if (!config) return createMockServices();
 
   try {
+    const [appModule, authModule, firestoreModule] = await Promise.all([
+      import('firebase/app'),
+      import('firebase/auth'),
+      import('firebase/firestore')
+    ]);
+    const { initializeApp, getApps } = appModule;
+    const { getAuth, GoogleAuthProvider, signInWithPopup, signOut } = authModule;
+    const { getFirestore, doc, setDoc, getDoc } = firestoreModule;
     const appName = getConfigAppName(config);
     const app = getApps().find(existing => existing.name === appName) || initializeApp(config, appName);
     const auth = getAuth(app);

@@ -9,6 +9,14 @@ export default [
   },
   js.configs.recommended,
   {
+    files: ['scripts/**/*.mjs', 'vite.config.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node
+      }
+    }
+  },
+  {
     files: ['src/**/*.{js,jsx}'],
     languageOptions: {
       ecmaVersion: 2024,

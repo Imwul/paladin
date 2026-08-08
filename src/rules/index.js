@@ -7,3 +7,4 @@ export * from './lifecycleRules.js';
 export * from './personalityRules.js';
 export * from './progressionRules.js';
 export * from './travelRules.js';
+export * from './winterRules.js';

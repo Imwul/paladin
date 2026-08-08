@@ -25,7 +25,7 @@
 
 ## Disposition after the audit
 
-The d20 resolver, opposed-roll ordering, 767 start, father chronology, four starting passions, Saint Denis, rules-based Frankish Ardennes generation, Winter aging, aging death, Salvation, Canonization, Legacy and the complete same/new-family successor routes were corrected. Harvest modifiers and the economy ledger were upgraded but remain partial. Personal events, Survival, family-event targeting and compulsory Glory-bonus spending remain open in the traceability matrix rather than being accepted as app conventions.
+The d20 resolver, opposed-roll ordering, 767 start, father chronology, four starting passions, Saint Denis, rules-based Frankish Ardennes generation, Winter aging, aging death, Salvation, Canonization, Legacy and the complete same/new-family successor routes were corrected. The Grand Remaster also enforces the printed ten-step Winter order and compulsory Glory-bonus spending. Harvest modifiers, Maintenance consequences, complete Survival target coverage and GM-dependent personal/family-event effects remain partial rather than being accepted as app conventions.
 
 The Table 1-17 blessing control is now hidden unless a canonized predecessor granted a blessing roll. A valid roll consumes that grant. Existing saved blessing text is displayed but does not create another grant. The rules-based creation path no longer offers an arbitrary starting blessing.
 
@@ -125,6 +125,15 @@ The default Loyalty/Hospitality passion set and natural-1 critical wording resem
 - Impact: Treasury grows by roughly a manor's gross income every year and changes later choices.
 - Recommendation: Use explicit income, required expense and surplus fields; either presentation is valid only if net results match.
 - User confirmation: Not needed for correcting the current net-result error.
+
+### Grand Remaster Winter resolution record
+
+- Source: Chapter 10 pp.174-183 and Chapter 4 pp.90-93.
+- Printed order: Solo Scenario, Aging, Economic Circumstances, Survival, Personal Event, Family, Experience, Training and Practice, Compute Glory, Glory Bonus.
+- Implemented interpretation: The detailed Chapter 10 sequence overrides any project brief or legacy UI sequence that lists different steps. Every step is a separate transaction and later steps cannot run first.
+- Manual boundary: Deterministic table effects are automatic. Player choices, missing family targets and rules requiring external play or Gamemaster judgment create an explicit unresolved record; the app never chooses for the player.
+- Legacy save migration: A save paused after the old Harvest step preserves its recorded gross income and resumes Maintenance inside Economic Circumstances without rerolling or paying the income twice.
+- Glory bonus: Winter cannot close while any crossed-threshold point remains unspent. A manual skip is not offered because the printed rule has no discard option.
 
 ## Offline fallback finding
 

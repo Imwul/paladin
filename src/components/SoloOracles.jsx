@@ -333,6 +333,51 @@ export default function SoloOracles({ character, setCharacter }) {
     return { ...rollGrades[check.outcome.toUpperCase()], ...check };
   };
 
+  const getOracleAnswerFromRoll = (roll) => {
+    const value = Math.max(1, Math.min(20, Number.parseInt(roll, 10) || 1));
+    return yesNoOracle.find(entry => {
+      const [minimum, maximum = minimum] = entry.roll.split('-').map(Number);
+      return value >= minimum && value <= maximum;
+    }) || yesNoOracle[0];
+  };
+
+  const handleTargetSkillChange = (value) => {
+    const nextTarget = Math.max(1, Math.min(20, Number.parseInt(value, 10) || 1));
+    setTargetSkill(nextTarget);
+    if (d20Result) setRollResolution(resolveD20(d20Result, nextTarget));
+  };
+
+  const handleManualD20Result = (value) => {
+    if (value === '') {
+      setD20Result(null);
+      setRollResolution(null);
+      return;
+    }
+    const roll = Math.max(1, Math.min(20, Number.parseInt(value, 10) || 1));
+    setD20Result(roll);
+    setRollResolution(resolveD20(roll, targetSkill));
+  };
+
+  const handleManualOracleRoll = (value) => {
+    if (value === '') {
+      setOracleAnswer(null);
+      return;
+    }
+    const roll = Math.max(1, Math.min(20, Number.parseInt(value, 10) || 1));
+    setOracleAnswer({ roll, ...getOracleAnswerFromRoll(roll) });
+  };
+
+  const applyName = () => {
+    if (!generatedName) return;
+    setCharacter(previous => ({
+      ...previous,
+      personal: {
+        ...(previous.personal || {}),
+        name: `${generatedName.fullTextKO} (${generatedName.fullTextEN})`
+      }
+    }));
+  };
+
   const battleBaseGloryByScale = { small: 15, medium: 30, large: 45, huge: 60 };
   const battleOutcomeMultiplier = { critical: 2, success: 1, failure: 0.5, disengaged: 0.01 };
   const battleVictoryMultiplier = { victory: 2, indecisive: 1, defeat: 0.5 };
@@ -2176,7 +2221,7 @@ export default function SoloOracles({ character, setCharacter }) {
           id: Date.now(),
           type: 'courtship',
           title: `🌹 궁정 구애: ${selectedLadyAmorType === 'passive' ? '넋을 잃음' : '적극적 연애'}`,
-          detail: `상대: "${targetLadyName}" | 공물: "${courtshipGift}" | 결과: d20: ${roll} -> ${outcome}`,
+          detail: `상대: "${targetLadyName}" | 공물: "${courtshipGift}" | 결과: d20: ${knightApp.roll} -> ${outcome}`,
           narrative: desc,
           glory: glory,
           timestamp: new Date().toLocaleTimeString()

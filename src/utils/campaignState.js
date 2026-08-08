@@ -1,4 +1,6 @@
-import { normalizeOpposedTraits, sanitizeCharacterCreationSession, sanitizeLifecycleState } from '../rules/index.js';
+import { sanitizeCharacterCreationSession } from '../rules/characterCreationRules.js';
+import { sanitizeLifecycleState } from '../rules/lifecycleRules.js';
+import { normalizeOpposedTraits } from '../rules/personalityRules.js';
 
 const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병', '포로', '행동 불능', '병상', '역사적']);
 const VALID_GENDERS = new Set(['male', 'female', 'unknown']);
@@ -168,29 +170,57 @@ const sanitizeAppliedEvents = (value) => {
 
 const sanitizeWinter = (value, campaignYear) => {
   const source = isPlainObject(value) ? value : {};
+  const legacyHarvestResolved = ['resolved', 'skipped'].includes(source.steps?.harvest)
+    && !['resolved', 'skipped'].includes(source.steps?.maintenance);
   const defaultSteps = {
+    soloScenario: 'pending',
     aging: 'pending',
-    harvest: 'pending',
+    economy: 'pending',
     survival: 'pending',
     personalEvent: 'pending',
-    familyEvent: 'pending',
+    family: 'pending',
     experience: 'pending',
     training: 'pending',
-    annualGlory: 'pending',
-    maintenance: 'pending'
+    glory: 'pending',
+    gloryBonus: 'pending'
   };
-  const validStepState = new Set(['pending', 'resolved', 'skipped']);
-  const steps = Object.entries({ ...defaultSteps, ...source.steps }).reduce((acc, [key, value]) => {
-    acc[key] = validStepState.has(value) ? value : defaultSteps[key] || 'pending';
+  const migratedSteps = {
+    ...source.steps,
+    economy: source.steps?.economy || (
+      ['resolved', 'skipped'].includes(source.steps?.harvest) && ['resolved', 'skipped'].includes(source.steps?.maintenance)
+        ? 'resolved'
+        : legacyHarvestResolved ? 'awaiting_choice' : 'pending'
+    ),
+    family: source.steps?.family || source.steps?.familyEvent || 'pending',
+    glory: source.steps?.glory || source.steps?.annualGlory || 'pending'
+  };
+  const validStepState = new Set(['pending', 'resolved', 'skipped', 'awaiting_choice']);
+  const steps = Object.entries(defaultSteps).reduce((acc, [key, fallback]) => {
+    const value = migratedSteps[key];
+    acc[key] = validStepState.has(value) ? value : fallback;
     return acc;
   }, {});
+  const currentStep = typeof source.currentStep === 'string' && (source.currentStep === 'complete' || Object.hasOwn(defaultSteps, source.currentStep))
+    ? source.currentStep
+    : Object.keys(defaultSteps).find(key => !['resolved', 'skipped'].includes(steps[key])) || 'complete';
+  const year = clampInt(source.year, 700, 1200, campaignYear);
   return {
-    year: clampInt(source.year, 700, 1200, campaignYear),
+    year,
+    transactionId: sanitizeString(source.transactionId, `winter:${year}`),
+    currentStep,
     steps,
     logs: Array.isArray(source.logs) ? source.logs.filter(line => typeof line === 'string').slice(-250) : [],
     unresolved: isPlainObject(source.unresolved) ? source.unresolved : {},
-    gloryBonusPoints: clampInt(source.gloryBonusPoints, 0, 20, 0),
-    bonusSpent: clampInt(source.bonusSpent, 0, 20, 0),
+    records: isPlainObject(source.records) ? source.records : {},
+    transactions: Array.isArray(source.transactions) ? source.transactions.filter(isPlainObject).slice(-20) : [],
+    annualLedger: isPlainObject(source.annualLedger) ? source.annualLedger : null,
+    survivalRecords: Array.isArray(source.survivalRecords) ? source.survivalRecords.filter(isPlainObject).slice(-250) : [],
+    flags: {
+      ...(isPlainObject(source.flags) ? source.flags : {}),
+      ...(legacyHarvestResolved ? { legacyHarvestResolved: true } : {})
+    },
+    gloryBonusPoints: clampInt(source.gloryBonusPoints, 0, 100, 0),
+    bonusSpent: clampInt(source.bonusSpent, 0, 100, 0),
     skippedWithConfirmation: isPlainObject(source.skippedWithConfirmation) ? source.skippedWithConfirmation : {},
     harvestModifier: clampInt(source.harvestModifier, -50, 50, 0),
     economy: {

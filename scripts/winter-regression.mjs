@@ -1,0 +1,155 @@
+import assert from 'node:assert/strict';
+import {
+  closeWinterYear,
+  collectSurvivalTargets,
+  ensureWinterState,
+  FAMILY_RELATION_TABLE,
+  PERSONAL_EVENT_TABLE,
+  resolveFamilyRelation,
+  resolveSurvivalRoll,
+  resolveWinterStep,
+  WINTER_STEPS
+} from '../src/rules/winterRules.js';
+
+const traitPairs = [
+  ['chaste', 'lustful'], ['energetic', 'lazy'], ['forgiving', 'vengeful'], ['generous', 'selfish'],
+  ['honest', 'deceitful'], ['just', 'arbitrary'], ['merciful', 'cruel'], ['modest', 'proud'],
+  ['prudent', 'reckless'], ['temperate', 'indulgent'], ['trusting', 'suspicious'], ['valorous', 'cowardly']
+];
+
+const makeCharacter = () => ({
+  personal: { name: 'Test Knight', age: 18, campaignYear: 767, maintenance: 'ordinary', personalClass: 'Knight', blessing: '' },
+  attributes: { siz: 12, dex: 12, str: 12, con: 12, app: 12, currentHp: 24 },
+  traits: Object.fromEntries(traitPairs.flatMap(([left, right]) => [[left, 10], [right, 10]])),
+  traitsChecked: {},
+  passions: { loveCharlemagne: 15, loveFamily: 15, honor: 15, loveGod: 15 },
+  passionsChecked: {},
+  standings: { charlemagne: 10, liegeLord: 10, family: 10, retinue: 10, church: 10, commoners: 10 },
+  standingsChecked: {},
+  skills: {
+    awareness: 8, firstAid: 10, folkLore: 8, horsemanship: 12, hunting: 8, stewardship: 10,
+    courtesy: 8, dancing: 8, eloquence: 8, battle: 10, sword: 12, lance: 10
+  },
+  skillsChecked: { awareness: true },
+  squire: { name: 'Test Squire', age: 15, firstAid: 8, horsemanship: 8, weapon: 8, status: '건강' },
+  horses: { warhorse: { type: 'Charger', age: 6, status: '건강', hp: 40, armor: 5 } },
+  gear: { cash: 10, gloryThisGame: 0, gloryTotal: 100, homePossessions: '장원', personalGear: '' },
+  family: {
+    name: 'Test House',
+    manors: 1,
+    members: [
+      { id: 'self', name: 'Test Knight', relation: '본인', generation: 3, status: '생존', lifeYears: '749~', gender: 'male' },
+      { id: 'father', name: 'Test Father', relation: '부친', generation: 2, status: '생존', lifeYears: '725~', gender: 'male' },
+      { id: 'mother', name: 'Test Mother', relation: '모친', generation: 2, status: '생존', lifeYears: '730~', gender: 'female' }
+    ]
+  },
+  journal: {},
+  campaign: {
+    schemaVersion: 5,
+    appliedEvents: {},
+    chronicleEvents: [],
+    lifecycle: { status: 'active', careerStatus: 'active', activeCharacterId: 'self', primaryCharacterId: 'self', events: [], unresolvedChoices: [] },
+    winter: null
+  }
+});
+
+const constantRng = value => () => value;
+
+assert.equal(WINTER_STEPS.length, 10, 'Winter must retain the ten printed steps.');
+assert.deepEqual(WINTER_STEPS.map(step => step.id), ['soloScenario', 'aging', 'economy', 'survival', 'personalEvent', 'family', 'experience', 'training', 'glory', 'gloryBonus']);
+
+assert.throws(
+  () => resolveWinterStep(makeCharacter(), { stepId: 'aging', input: {} }, constantRng(0.5)),
+  /printed order/,
+  'A later Winter step cannot run before Step 1.'
+);
+
+let character = makeCharacter();
+let result = resolveWinterStep(character, { stepId: 'soloScenario', input: { choice: 'not_applicable' } });
+assert.equal(result.applied, true);
+assert.equal(ensureWinterState(result.character).currentStep, 'aging');
+const duplicate = resolveWinterStep(result.character, { stepId: 'soloScenario', input: { choice: 'not_applicable' } });
+assert.equal(duplicate.applied, false, 'A completion ID prevents duplicate application.');
+
+character = JSON.parse(JSON.stringify(result.character));
+assert.equal(ensureWinterState(character).currentStep, 'aging', 'An in-progress Winter resumes after serialization.');
+
+result = resolveWinterStep(character, { stepId: 'aging', input: {} }, constantRng(0.99));
+character = result.character;
+assert.equal(character.personal.age, 19);
+assert.equal(character.squire.age, 16);
+assert.equal(character.horses.warhorse.age, 7);
+
+result = resolveWinterStep(character, { stepId: 'economy', input: { harvestRoll: 5, maintenanceGrade: 'ordinary', situationalModifier: 0 } });
+character = result.character;
+assert.equal(character.campaign.winter.annualLedger.grossIncome, 6);
+assert.equal(character.campaign.winter.annualLedger.requiredMaintenance, 6);
+assert.equal(character.campaign.winter.annualLedger.treasuryDelta, 0, 'Gross income is not added directly to cash.');
+assert.equal(character.gear.cash, 10);
+
+result = resolveWinterStep(character, { stepId: 'survival', input: {} }, constantRng(0.9));
+character = result.character;
+assert.equal(character.campaign.winter.survivalRecords.length, 4, 'Each family member, squire and mount receives a separate record.');
+assert.equal(character.campaign.winter.survivalRecords.find(item => item.targetId === 'warhorse').result, 'herd_replacement');
+assert.equal(character.campaign.winter.survivalRecords.every(item => item.appliedEffectId), true);
+
+result = resolveWinterStep(character, { stepId: 'personalEvent', input: { eventRoll: 13, checkRoll: 16 } });
+character = result.character;
+assert.equal(result.record.result.check.outcome, 'failure');
+assert.equal(result.awaitingChoice, false);
+
+result = resolveWinterStep(character, { stepId: 'family', input: { familyEventRoll: 3, relationRoll: 3, sexRoll: 2 } });
+character = result.character;
+assert.equal(result.record.result.relation.selectedTarget.id, 'father');
+assert.equal(result.awaitingChoice, false);
+
+result = resolveWinterStep(character, { stepId: 'experience', input: {} }, constantRng(0.99));
+character = result.character;
+assert.equal(character.skills.awareness, 9, 'Equal-or-higher experience resolution is applied once.');
+assert.equal(character.skillsChecked.awareness, undefined);
+
+result = resolveWinterStep(character, { stepId: 'training', input: { option: 'score', group: 'traits', key: 'chaste', amount: 1 } });
+character = result.character;
+assert.equal(character.traits.chaste, 11);
+assert.equal(character.traits.lustful, 9);
+
+result = resolveWinterStep(character, { stepId: 'glory', input: {} });
+character = result.character;
+assert.equal(result.record.result.entries.some(entry => entry.source === 'holdings'), true);
+assert.equal(character.gear.gloryThisGame, 0);
+
+result = resolveWinterStep(character, { stepId: 'gloryBonus', input: { allocations: [] } });
+character = result.character;
+assert.equal(ensureWinterState(character).currentStep, 'complete');
+const closed = closeWinterYear(character);
+assert.equal(closed.applied, true);
+assert.equal(closed.character.personal.campaignYear, 768);
+assert.equal(closed.character.campaign.winter.currentStep, 'soloScenario');
+assert.equal(closed.character.campaign.winterHistory.length, 1);
+
+const personalRows = Object.values(PERSONAL_EVENT_TABLE);
+assert.equal(personalRows.length, 20);
+personalRows.forEach(event => {
+  assert.equal(event.ruleId, 'WINTER-PERSONAL-001');
+  ['critical', 'success', 'failure', 'fumble'].forEach(outcomeKey => {
+    const outcome = event.outcomes[outcomeKey];
+    ['mandatoryEffect', 'optionalChoice', 'traitCheck', 'passionCheck', 'skillCheck', 'glory', 'standing', 'familyEffect', 'lifecycleEffect', 'unresolvedChoice', 'journalPrompt'].forEach(key => assert.equal(Object.hasOwn(outcome, key), true, `Event ${event.roll} ${outcomeKey} requires ${key}.`));
+  });
+});
+
+assert.equal(FAMILY_RELATION_TABLE.length, 8);
+for (let roll = 1; roll <= 20; roll += 1) {
+  const relation = resolveFamilyRelation({ relationRoll: roll, sexRoll: 2, members: makeCharacter().family.members });
+  assert.ok(relation.relationKey);
+  assert.equal(relation.gender, 'male');
+}
+
+assert.deepEqual(resolveSurvivalRoll({ roll: 1 }), { roll: 1, adjustedRoll: 1, result: 'death', consequence: '사망' });
+assert.equal(resolveSurvivalRoll({ roll: 2 }).result, 'illness');
+assert.equal(resolveSurvivalRoll({ roll: 3 }).result, 'healthy');
+
+const deadTargetCharacter = makeCharacter();
+deadTargetCharacter.family.members[1].status = '사망';
+assert.equal(collectSurvivalTargets(deadTargetCharacter).some(target => target.targetId === 'father'), false, 'Dead targets never return to next-year Survival.');
+
+console.log('Winter regression passed: 10-step order, persistence, idempotency, tables, economy, survival, progression and close.');

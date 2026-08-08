@@ -1,0 +1,50 @@
+import { useMemo, useState } from 'react';
+import { Focus, UsersRound } from 'lucide-react';
+import { FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import FamilyTree from '../../components/FamilyTree';
+
+const memberTone = status => {
+  if (status === '사망') return 'danger';
+  if (['질병', '행동 불능', '병상', '포로', '실종'].includes(status)) return 'warning';
+  if (['은퇴', '역사적'].includes(status)) return 'historical';
+  return 'active';
+};
+
+export default function FamilyRegister({ character, setCharacter }) {
+  const [focusGeneration, setFocusGeneration] = useState('all');
+  const members = character.family?.members || [];
+  const generations = useMemo(
+    () => [...new Set((character.family?.members || []).map(member => member.generation))].sort((a, b) => a - b),
+    [character.family?.members]
+  );
+  const visibleMembers = focusGeneration === 'all' ? members : members.filter(member => String(member.generation) === focusGeneration);
+
+  return (
+    <article className="folio-page family-register view-animate">
+      <FolioHeading eyebrow="REGISTRUM DOMUS · LINEA SUCCESSIONIS" title={`${character.family?.name || '무명'} 가문`} year={character.personal?.campaignYear || 767}>
+        {character.family?.motto || '표어 미기록'} · {members.length}명의 혈족과 혼인 관계
+      </FolioHeading>
+
+      <SectionHeader index="I" title="세대별 가문 원부" meta="MOBILE FOCUS REGISTER" />
+      <div className="generation-control" role="group" aria-label="세대 선택">
+        <Focus size={15} aria-hidden="true" />
+        <button type="button" className={focusGeneration === 'all' ? 'active' : ''} onClick={() => setFocusGeneration('all')}>전체</button>
+        {generations.map(generation => <button type="button" key={generation} className={focusGeneration === String(generation) ? 'active' : ''} onClick={() => setFocusGeneration(String(generation))}>{generation}대</button>)}
+      </div>
+      <div className="family-lineage-bands">
+        {visibleMembers.map(member => (
+          <article key={member.id} className="family-register-row">
+            <span className="family-register-row__generation">G{member.generation}</span>
+            <div><strong>{member.name}</strong><small>{member.relation} · {member.lifeYears || '연대 미상'}</small></div>
+            <StatusSeal tone={memberTone(member.status)}>{member.status}</StatusSeal>
+            <p>{member.note || '기록 없음'}</p>
+          </article>
+        ))}
+        {!visibleMembers.length && <div className="quiet-complete"><UsersRound size={18} aria-hidden="true" />이 세대에는 기록된 가문원이 없습니다.</div>}
+      </div>
+
+      <SectionHeader index="II" title="계보 편집과 조상 연대" meta="LINEAGE MAP · ANCESTOR HISTORY" />
+      <div className="legacy-surface legacy-surface--family"><FamilyTree character={character} setCharacter={setCharacter} /></div>
+    </article>
+  );
+}

@@ -695,7 +695,7 @@ const revertSaint = (char, saintName) => {
   } else if (oldSaint.name.includes("크리스토포로") || oldSaint.name.includes("Christopher")) {
     applyTraitAdjustment(char, 'modest', -3, Number.MAX_SAFE_INTEGER);
   } else if (oldSaint.name.includes("데니스") || oldSaint.name.includes("Denis")) {
-    char.standings.charlemagne = Math.max(0, (char.standings.charlemagne || 10) - 2);
+    char.passions.loveCharlemagne = Math.max(0, (char.passions.loveCharlemagne || 0) - 2);
   } else if (oldSaint.name.includes("엘리기오") || oldSaint.name.includes("Eligius")) {
     char.skills.firstAid = Math.max(0, (char.skills.firstAid || 0) - 5);
   } else if (oldSaint.name.includes("가브리엘") || oldSaint.name.includes("Gabriel")) {

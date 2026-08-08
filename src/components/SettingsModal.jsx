@@ -1,41 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import ProperNoun from './ProperNoun';
-import { X, Download, Upload, Settings, Lock } from 'lucide-react';
+import { useRef, useState } from 'react';
+import { X, Download, Upload, Settings } from 'lucide-react';
 import { validateCampaignImport } from '../utils/campaignState';
+import useDialogFocus from '../hooks/useDialogFocus';
 import './SettingsModal.css';
 
-export default function SettingsModal({ isOpen, onClose, character, setCharacter, firebaseStatus }) {
-  // Config inputs
-  const [apiKey, setApiKey] = useState('');
-  const [authDomain, setAuthDomain] = useState('');
-  const [projectId, setProjectId] = useState('');
-  const [storageBucket, setStorageBucket] = useState('');
-  const [messagingSenderId, setMessagingSenderId] = useState('');
-  const [appId, setAppId] = useState('');
+const readSavedConfig = () => {
+  try {
+    return JSON.parse(localStorage.getItem('paladin_firebase_config') || '{}');
+  } catch {
+    return {};
+  }
+};
 
-  // Load config from localStorage on mount
-  useEffect(() => {
-    try {
-      const savedConfig = localStorage.getItem('paladin_firebase_config');
-      if (savedConfig) {
-        const parsed = JSON.parse(savedConfig);
-        setApiKey(parsed.apiKey || '');
-        setAuthDomain(parsed.authDomain || '');
-        setProjectId(parsed.projectId || '');
-        setStorageBucket(parsed.storageBucket || '');
-        setMessagingSenderId(parsed.messagingSenderId || '');
-        setAppId(parsed.appId || '');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [isOpen]);
+export default function SettingsModal({ isOpen, onClose, character, setCharacter, firebaseStatus }) {
+  const dialogRef = useRef(null);
+  const [config, setConfig] = useState(readSavedConfig);
+  useDialogFocus(isOpen, dialogRef, onClose);
 
   if (!isOpen) return null;
 
   // Save config
   const saveFirebaseConfig = () => {
-    const config = { apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId };
     const missing = ['apiKey', 'authDomain', 'projectId', 'appId'].filter(field => !config[field]?.trim() || config[field] === 'YOUR_API_KEY');
     if (missing.length > 0) {
       alert(`Firebase 설정을 저장할 수 없습니다. 필수 항목 누락: ${missing.join(', ')}`);
@@ -86,7 +71,7 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
         } else {
           alert(`파일 포맷이 어긋납니다. 누락/손상된 섹션: ${validation.errors.join(', ')}`);
         }
-      } catch (err) {
+      } catch {
         alert("JSON 백업 파일 파싱에 실패했습니다.");
       }
     };
@@ -94,15 +79,15 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content-panel medieval-card" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay" role="presentation" onMouseDown={event => event.target === event.currentTarget && onClose()}>
+      <div ref={dialogRef} className="modal-content-panel medieval-card" role="dialog" aria-modal="true" aria-labelledby="settings-title">
         
         {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid var(--color-gold)', paddingBottom: '10px', marginBottom: '20px' }}>
-          <h3 style={{ color: 'var(--color-crimson)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <h3 id="settings-title" style={{ color: 'var(--color-crimson)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Settings size={20} /> 설정 및 데이터 백업
           </h3>
-          <button className="modal-close-btn" onClick={onClose}>
+          <button className="modal-close-btn" onClick={onClose} aria-label="설정 닫기">
             <X size={20} />
           </button>
         </div>
@@ -124,6 +109,7 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
                 type="file" 
                 accept=".json" 
                 onChange={handleJsonUpload}
+                aria-label="JSON 백업 파일 불러오기"
                 style={{ opacity: 0, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer' }}
               />
               <button className="btn-medieval" style={{ width: '100%', justifyContent: 'center' }}>
@@ -144,28 +130,28 @@ export default function SettingsModal({ isOpen, onClose, character, setCharacter
           
           <div className="medieval-form-grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>API Key</label>
-              <input type="password" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={apiKey} onChange={e => setApiKey(e.target.value)} />
+              <label htmlFor="firebase-api-key" className="form-label" style={{ fontSize: '0.8rem' }}>API Key</label>
+              <input id="firebase-api-key" type="password" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.apiKey || ''} onChange={e => setConfig(current => ({ ...current, apiKey: e.target.value }))} />
             </div>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>Auth Domain</label>
-              <input type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={authDomain} onChange={e => setAuthDomain(e.target.value)} />
+              <label htmlFor="firebase-auth-domain" className="form-label" style={{ fontSize: '0.8rem' }}>Auth Domain</label>
+              <input id="firebase-auth-domain" type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.authDomain || ''} onChange={e => setConfig(current => ({ ...current, authDomain: e.target.value }))} />
             </div>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>Project ID</label>
-              <input type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={projectId} onChange={e => setProjectId(e.target.value)} />
+              <label htmlFor="firebase-project-id" className="form-label" style={{ fontSize: '0.8rem' }}>Project ID</label>
+              <input id="firebase-project-id" type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.projectId || ''} onChange={e => setConfig(current => ({ ...current, projectId: e.target.value }))} />
             </div>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>Storage Bucket</label>
-              <input type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={storageBucket} onChange={e => setStorageBucket(e.target.value)} />
+              <label htmlFor="firebase-storage" className="form-label" style={{ fontSize: '0.8rem' }}>Storage Bucket</label>
+              <input id="firebase-storage" type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.storageBucket || ''} onChange={e => setConfig(current => ({ ...current, storageBucket: e.target.value }))} />
             </div>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>Messaging Sender ID</label>
-              <input type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={messagingSenderId} onChange={e => setMessagingSenderId(e.target.value)} />
+              <label htmlFor="firebase-sender" className="form-label" style={{ fontSize: '0.8rem' }}>Messaging Sender ID</label>
+              <input id="firebase-sender" type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.messagingSenderId || ''} onChange={e => setConfig(current => ({ ...current, messagingSenderId: e.target.value }))} />
             </div>
             <div className="form-group">
-              <label className="form-label" style={{ fontSize: '0.8rem' }}>App ID</label>
-              <input type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={appId} onChange={e => setAppId(e.target.value)} />
+              <label htmlFor="firebase-app-id" className="form-label" style={{ fontSize: '0.8rem' }}>App ID</label>
+              <input id="firebase-app-id" type="text" className="form-input" style={{ padding: '6px 10px', fontSize: '0.9rem' }} value={config.appId || ''} onChange={e => setConfig(current => ({ ...current, appId: e.target.value }))} />
             </div>
           </div>
 

@@ -72,3 +72,12 @@ Version 4 `pending_succession` is deliberately migrated to `historical` plus unr
 - Predecessor equipment receives provenance and cannot be copied by the same completion twice.
 - At most one permanent character has active status after completion.
 - The predecessor remains in Family Tree and Chronicle as deceased, retired or historical.
+
+## Winter and Shell Integration
+
+- Winter Aging calls `resolveAttributeLifecycle`; the Winter UI never writes lifecycle status directly.
+- A bedridden or deceased result is stored on the Aging transaction with its lifecycle event ID and remains visible in the persistent campaign strip.
+- Every Winter step has an independent completion ID, so a resumed save cannot age a character, squire or mount twice.
+- The year advances only after all ten printed Winter steps resolve and all Glory bonus points are spent.
+- App Shell navigation, Dashboard, Character dossier, Family register and Chronicle derive lifecycle labels from this canonical state; none owns a parallel successor flag.
+- Cloud conflicts compare schema-v5 save revisions and show both document versions before replacement. Choosing a version replaces the whole canonical campaign object through the sanitizer.

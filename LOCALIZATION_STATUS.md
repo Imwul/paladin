@@ -20,6 +20,10 @@
 - Character Sheet principal navigation and lifecycle section.
 - Family Tree lifecycle status labels.
 - Mobile lifecycle and creation action buttons.
+- Grand Remaster App Shell, persistent campaign strip and primary navigation.
+- Dashboard, Chronicle register, Character dossier and Family register summaries.
+- Winter ten-step ledger, source references, choices, unresolved records and annual close.
+- Standing and Glory ledgers, save state, import/export settings and document conflict dialog.
 
 At first explanatory use, rule terms may appear as Korean with the canonical English term: 영광(Glory), 성향(Trait), 열정(Passion), 지위(Standing), 구원(Salvation), 유산(Legacy). Repeated compact controls use Korean where space is limited.
 
@@ -30,13 +34,13 @@ At first explanatory use, rule terms may appear as Korean with the canonical Eng
 - `{parameter}` replacement is shared by both locales.
 - Phase 3 regression verifies default Korean, English fallback and missing-key reporting.
 - Buttons and status text were inspected at 390 CSS pixels; document `scrollWidth` equals `clientWidth`.
-- Korean headings use zero letter spacing in the new components and wrap without fixed viewport-scaled font sizes.
+- Korean headings and controls use the Eulyoo1945 web font with readable natural spacing and wrap without viewport-scaled font sizes.
 
 ## Remaining English
 
 - Rule IDs, source page labels, dice notation and internal score paths such as `traits.valorous` remain canonical/debug-facing English.
 - Large legacy Character Sheet editing sections still contain bilingual labels and some English headings.
-- Winter, oracles, lore/reference, adventure data and many Family Tree editing controls are not yet fully extracted.
+- Oracles, lore/reference, adventure data and many legacy Character/Family editing controls still contain bilingual or hard-coded strings.
 - User-authored character/family names and imported source text are preserved as entered.
 
 ## Missing Keys
@@ -45,7 +49,7 @@ No missing key was reported by the Phase 3 locale regression for its required sc
 
 ## Next Priority
 
-1. Phase 4 Winter wizard actions, errors, event choices and completion messages.
-2. Remaining Family Tree edit/status controls and Chronicle filters.
-3. Shared save/import/conflict messages once the cloud conflict workflow is exercised.
-4. Oracles and lore navigation, without translating or duplicating whole copyrighted source passages.
+1. Remaining Family Tree and Character Sheet editing controls.
+2. Oracles and lore content controls, without duplicating copyrighted source passages.
+3. Adventure and combat-related legacy widgets.
+4. Real Firebase conflict messages after an authenticated round-trip can be exercised.

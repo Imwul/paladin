@@ -1,4 +1,3 @@
-/* global console, structuredClone */
 import assert from 'node:assert/strict';
 import {
   applyOnce,
@@ -8,6 +7,7 @@ import {
 } from '../src/utils/campaignState.js';
 import { getFirebaseServices } from '../src/firebase.js';
 import { getFamilyCharacteristicIndexFromRoll } from '../src/utils/rulebookTables.js';
+import { resolveWinterStep } from '../src/rules/winterRules.js';
 
 const defaults = {
   personal: { name: '롤랑 경', age: 18, campaignYear: 768, maintenance: 'ordinary', features: [] },
@@ -69,6 +69,12 @@ corrupt.family.members = [
   { id: 'c', relation: '후계자', status: '불가능', generation: 1, parentId: 'missing', spouseId: 'missing', name: 'C' }
 ];
 corrupt.campaign.winter.steps = { aging: 'bogus', harvest: 'resolved' };
+corrupt.campaign.winter.economy = {
+  grossIncome: 7,
+  stewardshipTarget: 9,
+  stewardshipModifier: 1,
+  maintenancePending: true
+};
 corrupt.campaign.winter.unresolved = { wound: { label: 'unresolved wound', required: true } };
 corrupt.campaign.winter.skippedWithConfirmation = {
   familyEvent: { confirmedAt: '768-12-31T00:00:00.000Z', label: 'family event' }
@@ -110,9 +116,24 @@ assert.equal(sanitized.family.members.some(m => m.parentId === m.id || m.spouseI
 assert.equal(sanitized.family.members.some(m => m.status === '불가능'), false);
 assert.equal(sanitized.family.members.some(m => m.spouseId && sanitized.family.members.find(other => other.id === m.spouseId)?.parentId === m.id), false);
 assert.equal(sanitized.campaign.winter.steps.aging, 'pending');
-assert.equal(sanitized.campaign.winter.steps.harvest, 'resolved');
-assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'annualGlory'), true);
-assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'maintenance'), true);
+assert.equal(sanitized.campaign.winter.steps.economy, 'awaiting_choice');
+assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'glory'), true);
+assert.equal(Object.hasOwn(sanitized.campaign.winter.steps, 'gloryBonus'), true);
+assert.equal(sanitized.campaign.winter.economy.grossIncome, 7);
+assert.equal(sanitized.campaign.winter.flags.legacyHarvestResolved, true);
+const migratedEconomy = structuredClone(sanitized);
+migratedEconomy.family.manors = 1;
+migratedEconomy.campaign.winter.steps.soloScenario = 'resolved';
+migratedEconomy.campaign.winter.steps.aging = 'resolved';
+migratedEconomy.campaign.winter.currentStep = 'economy';
+const resumedEconomy = resolveWinterStep(
+  migratedEconomy,
+  { stepId: 'economy', input: { maintenanceGrade: 'ordinary' } },
+  () => { throw new Error('A migrated harvest must not roll again.'); }
+);
+assert.equal(resumedEconomy.character.campaign.winter.annualLedger.grossIncome, 7);
+assert.equal(resumedEconomy.character.gear.cash, 1);
+assert.equal(resumedEconomy.character.campaign.winter.flags.legacyHarvestResolved, false);
 assert.equal(sanitized.campaign.winter.unresolved.wound.required, true);
 assert.equal(sanitized.campaign.winter.skippedWithConfirmation.familyEvent.label, 'family event');
 assert.equal(sanitized.campaign.passionStates.length, 1);
@@ -192,7 +213,7 @@ assert.deepEqual(validateCampaignImport({ personal: {}, attributes: {}, skills: 
 globalThis.localStorage = {
   getItem: () => null
 };
-assert.equal(getFirebaseServices().isMock, true);
+assert.equal((await getFirebaseServices()).isMock, true);
 
 globalThis.localStorage = {
   getItem: () => JSON.stringify({
@@ -202,6 +223,6 @@ globalThis.localStorage = {
     appId: 'example'
   })
 };
-assert.equal(getFirebaseServices().isMock, true);
+assert.equal((await getFirebaseServices()).isMock, true);
 
 console.log('hostile regression passed');

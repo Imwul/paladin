@@ -1,98 +1,104 @@
-import ProperNoun from './ProperNoun';
-import { BookOpen } from 'lucide-react';
+import { Award, BookOpen, Crown, ScrollText, Snowflake, UsersRound } from 'lucide-react';
+import { FolioHeading, LedgerRow, PendingAction, SectionHeader, StatusSeal } from './ui/LedgerUI';
 
-export default function Dashboard({ setActiveTab }) {
+const getPendingActions = character => {
+  const actions = [];
+  const lifecycle = character.campaign?.lifecycle || {};
+  const winter = character.campaign?.winter || {};
+  if (lifecycle.status === 'pending_salvation') actions.push({ tab: 'character', title: '구원 판정', detail: '끝난 생애의 구원(Salvation) 판정이 남아 있습니다.' });
+  if (lifecycle.status === 'pending_legacy') actions.push({ tab: 'character', title: '유산 선택', detail: '다음 기사에게 전할 점수와 유산(Legacy)을 선택해야 합니다.' });
+  if (lifecycle.status === 'pending_successor') actions.push({ tab: 'family', title: '계승자 선택', detail: '가문의 연대를 이을 후계자를 지정해야 합니다.' });
+  const unresolvedWinter = Object.keys(winter.unresolved || {});
+  if (unresolvedWinter.length) actions.push({ tab: 'winter', title: '겨울 미결 항목', detail: `${unresolvedWinter.length}건의 선택 또는 판정이 기록에 남아 있습니다.` });
+  const completeSteps = Object.values(winter.steps || {}).filter(value => ['resolved', 'skipped'].includes(value)).length;
+  if (completeSteps < 10) actions.push({ tab: 'winter', title: `${character.personal?.campaignYear || 767}년 겨울 정산`, detail: `원문 순서 10단계 중 ${completeSteps}단계가 처리되었습니다.` });
+  return actions;
+};
+
+const getRecentChronicle = character => {
+  const structured = (character.campaign?.chronicleEvents || []).map(event => ({
+    year: event.year || character.personal?.campaignYear,
+    title: event.title || event.label || event.type || '연대기 사건',
+    meta: event.sourceRuleId || event.ruleId || event.type || 'CHRONICLE'
+  }));
+  const journal = Object.entries(character.journal || {}).map(([year, entry]) => ({
+    year: Number(year),
+    title: String(entry.text || '').split('\n')[0].slice(0, 72),
+    meta: 'JOURNAL'
+  }));
+  return [...structured, ...journal].sort((a, b) => b.year - a.year).slice(0, 5);
+};
+
+export default function Dashboard({ character, setActiveTab }) {
+  const year = character.personal?.campaignYear || 767;
+  const pending = getPendingActions(character);
+  const recent = getRecentChronicle(character);
+  const familyMembers = character.family?.members || [];
+  const livingFamily = familyMembers.filter(member => !['사망', '역사적'].includes(member.status)).length;
+  const winterComplete = Object.values(character.campaign?.winter?.steps || {}).filter(value => ['resolved', 'skipped'].includes(value)).length;
+
   return (
-    <div className="cs-page view-animate">
-      <h2 className="cs-page-title">
-        <BookOpen size={20} style={{ color: 'var(--color-gold-dark)' }} />
-        성기사 입문 기록부
-      </h2>
-      <div className="tutorial-banner">
-        <div>
-          <p style={{ margin: 0 }}>
-            <ProperNoun en="Paladin" ko="팔라딘" /> 모험 기록에 오신 것을 환영합니다. 이 연대기는 <ProperNoun en="Charlemagne" ko="샤를마뉴" /> 대제 시대의 성기사가 되어 가문의 역사와 무훈을 남길 수 있도록 돕습니다.
-            규칙에 익숙하지 않더라도 기록을 이어나갈 수 있도록 구성되어 있습니다.
-          </p>
+    <article className="folio-page dashboard-folio view-animate">
+      <FolioHeading eyebrow="CHRONICON PALATINI · FOLIO PRIMUM" title="왕실 연대기" year={year}>
+        {character.personal?.name}의 현행 기록과 가문의 미결 사항
+      </FolioHeading>
+
+      <section className="dashboard-register" aria-label="현재 기록 요약">
+        <div className="dashboard-register__identity">
+          <span className="serial-label">PERSONA ACTIVA</span>
+          <h2>{character.personal?.name}</h2>
+          <p>{character.personal?.personalClass} · {character.personal?.homeland} · {character.personal?.age}세</p>
+          <StatusSeal tone="active">현재 기사</StatusSeal>
         </div>
-      </div>
+        <dl className="dashboard-register__stats">
+          <div><dt><Award size={15} aria-hidden="true" />영광(Glory)</dt><dd>{(character.gear?.gloryTotal || 0).toLocaleString()}</dd></div>
+          <div><dt><Crown size={15} aria-hidden="true" />가문 지위</dt><dd>{character.standings?.family || 0}</dd></div>
+          <div><dt><UsersRound size={15} aria-hidden="true" />현존 가문원</dt><dd>{livingFamily}</dd></div>
+          <div><dt><Snowflake size={15} aria-hidden="true" />겨울 정산</dt><dd>{winterComplete}/10</dd></div>
+        </dl>
+      </section>
 
-      <div className="cs-row" style={{ marginTop: '12px' }}>
-        {/* Quick Start Card */}
-        <section className="cs-section">
-          <div className="sheet-ribbon"><h3>초심자 기록 안내</h3></div>
-          <div className="cs-section-inner">
-            <ol style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem' }}>
-              <li><strong>기사의 기록</strong> 탭으로 이동하여 인물을 창조합니다. 능력치를 기록하면 파생 스탯이 스스로 자리를 잡습니다.</li>
-              <li><strong>모험 연대기</strong> 탭에서 역사의 시작을 선택하고 첫 일지를 기록해 보십시오.</li>
-              <li>판정이 필요할 때는 <strong>운명의 신탁과 주사위</strong> 탭에서 성향과 무기를 휘두르십시오.</li>
-              <li>가문의 역사를 갱신하기 위해 겨울 정산 단계(가문의 계보 탭)를 진행하십시오.</li>
-            </ol>
-            <button className="btn-medieval btn-medieval-primary" onClick={() => setActiveTab('character')}
-              style={{ width: '100%', justifyContent: 'center', marginTop: '16px' }}>
-              기사의 기록 작성하기
-            </button>
+      <div className="dashboard-columns">
+        <section>
+          <SectionHeader index="I" title="처리할 기록" meta="ACTA PENDENTIA" />
+          <div className="pending-ledger">
+            {pending.length ? pending.slice(0, 4).map(item => (
+              <PendingAction key={`${item.tab}:${item.title}`} title={item.title} onClick={() => setActiveTab(item.tab)} actionLabel="계속">
+                {item.detail}
+              </PendingAction>
+            )) : (
+              <div className="quiet-complete"><BookOpen size={18} aria-hidden="true" /><span>현재 미결 기록이 없습니다.</span></div>
+            )}
           </div>
         </section>
 
-        {/* Chivalric Code Card */}
-        <section className="cs-section">
-          <div className="sheet-ribbon"><h3>핵심 대립 성향</h3></div>
-          <div className="cs-section-inner">
-            <p style={{ fontStyle: 'italic', color: 'var(--color-ink-light)', marginBottom: '12px', fontSize: '0.9rem' }}>
-              고결한 성기사는 명예와 신앙을 평생 수호해야 합니다. 다음 대립 성향들을 단련하여 하늘의 권능을 얻으십시오:
-            </p>
-            <ul style={{ listStyleType: 'none', paddingLeft: '0', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '0.9rem' }}>
-              <li><strong>정숙</strong> / 음탕</li>
-              <li><strong>열정</strong> / 나태</li>
-              <li><strong>관용</strong> / 복수</li>
-              <li><strong>관대</strong> / 이기</li>
-              <li><strong>정직</strong> / 기만</li>
-              <li><strong>정의</strong> / 독단</li>
-              <li><strong>자비</strong> / 잔혹</li>
-              <li><strong>겸손</strong> / 오만</li>
-              <li><strong>신중</strong> / 무모</li>
-              <li><strong>절제</strong> / 방종</li>
-              <li><strong>신뢰</strong> / 의심</li>
-              <li><strong>용맹</strong> / 겁쟁이</li>
-            </ul>
+        <section>
+          <SectionHeader index="II" title="최근 연대기" meta="ANNALIUM RECENS" action={<button className="text-command" type="button" onClick={() => setActiveTab('chronicle')}>전체 보기</button>} />
+          <div className="recent-chronicle">
+            {recent.length ? recent.map((entry, index) => (
+              <LedgerRow key={`${entry.year}:${index}`} label={entry.title || '제목 없는 기록'} meta={entry.meta} value={entry.year} accent={index === 0} />
+            )) : <p className="muted-copy">아직 작성된 연대기 사건이 없습니다.</p>}
           </div>
         </section>
       </div>
 
-      <div className="chronicle-divider" style={{ borderBottom: '1px solid var(--color-gold-light)', width: '100%', margin: '24px 0' }}></div>
-
-      {/* Mechanics */}
-      <section className="cs-section" style={{ marginTop: '4px' }}>
-        <div className="sheet-ribbon"><h3>연대기 규칙</h3></div>
-        <div className="cs-section-inner">
-          <div className="cs-row" style={{ gap: '20px' }}>
-            <div style={{ flex: '1 1 250px', minWidth: 0 }}>
-              <h4 style={{ color: 'var(--color-ink-light)', marginBottom: '6px', fontWeight: 700, fontSize: '0.95rem' }}>행동 판정 (d20)</h4>
-              <ul style={{ paddingLeft: '15px', display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
-                <li><strong>기술 수치와 일치:</strong> 대성공 (Critical)</li>
-                <li><strong>기술 수치 미만:</strong> 성공 (Success)</li>
-                <li><strong>기술 수치 초과:</strong> 실패 (Failure)</li>
-                <li><strong>주사위 20:</strong> 수정 수치가 20 미만이면 대실패, 20이면 대성공</li>
-                <li><strong>수정 수치 20 초과:</strong> 초과분을 주사위에 더하고 결과 20 이상은 대성공</li>
-              </ul>
-            </div>
-            <div style={{ flex: '1 1 250px', minWidth: 0 }}>
-              <h4 style={{ color: 'var(--color-ink-light)', marginBottom: '6px', fontWeight: 700, fontSize: '0.95rem' }}>대립 성향</h4>
-              <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
-                각 대립 성향 쌍의 합은 <strong>언제나 20</strong>입니다. 예컨대 정숙이 12가 되면 음탕은 자동으로 8이 됩니다.
-              </p>
-            </div>
-            <div style={{ flex: '1 1 250px', minWidth: 0 }}>
-              <h4 style={{ color: 'var(--color-ink-light)', marginBottom: '6px', fontWeight: 700, fontSize: '0.95rem' }}>기사도 권능</h4>
-              <p style={{ fontSize: '0.85rem', color: 'var(--color-ink-light)' }}>
-                기사도 성향 합이 <strong>90점 이상</strong>이고 명예가 <strong>16점 이상</strong>이면 <strong>+3 천연 아머</strong> 가호를 얻습니다.
-              </p>
-            </div>
-          </div>
+      <section className="dashboard-ledgers">
+        <SectionHeader index="III" title="가문의 현황" meta="STATUS DOMUS" />
+        <div className="dashboard-ledgers__grid">
+          <LedgerRow label="가문" meta="HOUSE" value={character.family?.name || '무명'} />
+          <LedgerRow label="표어" meta="MOTTO" value={character.family?.motto || '기록 없음'} />
+          <LedgerRow label="수호성인" meta="PATRON" value={character.family?.patronSaint || '미정'} />
+          <LedgerRow label="현재 모험" meta="ADVENTURE" value={character.campaign?.currentAdventure?.title || '기록 없음'} />
+          <LedgerRow label="현재 임무" meta="QUEST" value={character.campaign?.currentQuest?.title || '기록 없음'} />
+          <LedgerRow label="연간 영광" meta="ANNUAL" value={character.gear?.gloryThisGame || 0} />
         </div>
       </section>
 
-    </div>
+      <blockquote className="dashboard-motto">
+        <ScrollText size={22} aria-hidden="true" />
+        <p>“{character.family?.motto || '명예와 신조'}”</p>
+        <cite>{character.family?.battleCry || character.family?.name}</cite>
+      </blockquote>
+    </article>
   );
 }

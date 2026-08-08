@@ -10,7 +10,8 @@
     "test:rules": "node scripts/rule-audit-regression.mjs",
     "test:character-creation": "node scripts/character-creation-regression.mjs",
     "test:lifecycle": "node scripts/lifecycle-regression.mjs",
-    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && node scripts/hostile-regression.mjs",
+    "test:winter": "node scripts/winter-regression.mjs",
+    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && node scripts/hostile-regression.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
