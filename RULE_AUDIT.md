@@ -1,4 +1,4 @@
-# Paladin-apo Rule Audit
+# Paladin Rule Audit
 
 ## Audit scope
 

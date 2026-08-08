@@ -1,4 +1,4 @@
-# Paladin APO Design System
+# Paladin Design System
 
 ## Principles
 
@@ -15,12 +15,13 @@ The interface is a Carolingian royal register interpreted through modern editori
 
 ## Typography
 
-- Primary Korean and Latin family: `Eulyoo1945` Regular 400 and SemiBold 600.
+- Primary Korean family: `Eulyoo1945` Regular 400 and SemiBold 600.
+- English and Latin display family: `Black North` Regular 400.
 - Fallback: AppleMyungjo, Batang, serif.
 - Display: year, character name and folio title.
 - Register: section title and administrative heading.
 - Body: explanations and Chronicle narrative at 1.6-1.65 line height.
-- Data: Rule ID, page, roll, modifier and serial labels use the same family with tabular numerals.
+- Data: Rule ID, page, roll and modifier labels use Eulyoo1945 with tabular numerals; English and Latin register labels use Black North.
 - Script accents are not used for functional text.
 - Natural letter spacing is retained for legibility; headings wrap instead of shrinking with viewport width.
 
@@ -71,4 +72,4 @@ Color never carries state alone. Every state also has a label, icon, border styl
 
 ## Editorial Plate
 
-The lower index uses a public-domain 1352 manuscript plate of a knightly investiture. It replaces the former decorative APO seal and is treated as a cited archival object, not atmospheric stock art. See `ATTRIBUTIONS.md`.
+The lower index uses a public-domain 1352 manuscript plate of a knightly investiture. It replaces the former decorative letter seal and is treated as a cited archival object, not atmospheric stock art. See `ATTRIBUTIONS.md`.

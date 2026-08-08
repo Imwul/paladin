@@ -20,7 +20,7 @@ This phase reread Chapter 10 pp.174-183 and the Chapter 4 Glory passages before 
 - Replaced the tabbed launcher with `AppShell`, a persistent campaign strip and folio index.
 - Rebuilt Dashboard, Chronicle summary, Character dossier, Family register, Standing ledger, Glory ledger and Winter wizard around shared ledger components.
 - Added feature folders, shared UI components, dialog focus hook and engine-owned Winter module.
-- Replaced the lower APO stamp with a cited public-domain knightly investiture plate.
+- Replaced the lower letter stamp with a cited public-domain knightly investiture plate.
 - Unified Korean typography around Eulyoo1945 and changed the document language metadata to Korean.
 
 ## Localization and Accessibility

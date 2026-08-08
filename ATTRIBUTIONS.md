@@ -1,5 +1,12 @@
 # Asset and Font Attributions
 
+## Black North
+
+- File: `src/assets/fonts/BlackNorth.ttf`.
+- Source: supplied directly by the project owner for this remaster.
+- Use: the Paladin wordmark and English or Latin display labels.
+- Distribution: retained only as a project asset; no independent license claim is made here.
+
 ## Eulyoo1945
 
 - Typeface: Eulyoo1945 Regular and SemiBold.

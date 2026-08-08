@@ -110,9 +110,9 @@ export default function AppShell({
 
       <header className="royal-header">
         <div className="royal-header__identity">
-          <span className="serial-label">CODEX REGIUS · APO/0767</span>
-          <div className="royal-wordmark" aria-label="Paladin-apo">
-            <span>PALADIN</span><b>APO</b>
+          <span className="serial-label" lang="la">CODEX REGIUS · 0767</span>
+          <div className="royal-wordmark" aria-label="Paladin">
+            <span lang="en">PALADIN</span>
           </div>
           <p>샤를마뉴 대제의 기사 생애 기록부</p>
         </div>
@@ -170,7 +170,7 @@ export default function AppShell({
           aria-label="왕실 장부 목차"
         >
           <div className="folio-navigation__heading">
-            <span>INDEX GENERALIS</span>
+            <span lang="la">INDEX GENERALIS</span>
             <strong>장부 목차</strong>
           </div>
           <ol>
@@ -187,7 +187,7 @@ export default function AppShell({
                   >
                     <span className="folio-navigation__number">{String(index + 1).padStart(2, '0')}</span>
                     <Icon size={17} aria-hidden="true" />
-                    <span className="folio-navigation__label"><b>{item.label}</b><small>{item.meta}</small></span>
+                    <span className="folio-navigation__label"><b>{item.label}</b><small lang="en">{item.meta}</small></span>
                     <ChevronRight size={15} aria-hidden="true" />
                   </button>
                 </li>
@@ -209,14 +209,14 @@ export default function AppShell({
 
         <main id="main-content" className="folio-main" tabIndex="-1">
           <div className="folio-breadcrumb" aria-label="현재 위치">
-            <span>PALATINUM</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong><span>{activeItem.meta}</span>
+            <span lang="la">PALATINUM</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong><span lang="en">{activeItem.meta}</span>
           </div>
           {children}
         </main>
       </div>
 
       <footer className="royal-footer">
-        <span>PALADIN-APO · LIVING CHRONICLE</span>
+        <span lang="en">PALADIN · LIVING CHRONICLE</span>
         <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v5</span>
       </footer>
     </div>
