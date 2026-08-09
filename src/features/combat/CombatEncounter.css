@@ -188,6 +188,63 @@
 .combat-rule-tables__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding: 8px 0 20px; }
 .combat-rule-tables caption { padding: 8px 0; color: var(--seal-dark); font-family: var(--font-display); font-size: 1.1rem; text-align: left; }
 
+.chapter7-engine { display: grid; gap: 24px; margin-bottom: 40px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); padding: 24px 0 32px; }
+.chapter7-engine__header,
+.chapter7-pending header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.chapter7-engine__header h2,
+.chapter7-pending h3 { margin: 4px 0 0; font-size: clamp(1.35rem, 2vw, 2rem); line-height: 1.15; }
+.chapter7-setup-grid,
+.chapter7-opponent-setup,
+.chapter7-roster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.chapter7-opponent-setup { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.chapter7-engine fieldset { min-width: 0; margin: 0; border: 1px solid var(--rule); padding: 16px; }
+.chapter7-engine legend { padding: 0 6px; font-weight: 700; font-size: 0.95rem; }
+.chapter7-engine .combat-field span,
+.chapter7-engine .combat-check span,
+.chapter7-rule-line,
+.chapter7-engine p,
+.chapter7-engine dt,
+.chapter7-engine dd { font-size: 0.9rem; }
+.chapter7-ammo,
+.chapter7-action-options,
+.chapter7-gm,
+.chapter7-roll-grid,
+.chapter7-allocations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.chapter7-enemy-plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.chapter7-rule-line { margin: 4px 0 12px; color: var(--ink-muted); }
+.chapter7-phase-rail { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 0; padding: 0; border-block: 1px solid var(--rule); list-style: none; }
+.chapter7-phase-rail li { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 8px 12px; border-right: 1px solid var(--rule); color: var(--ink-muted); }
+.chapter7-phase-rail li:last-child { border-right: 0; }
+.chapter7-phase-rail li.active { color: var(--seal-dark); background: color-mix(in srgb, var(--seal-red) 7%, transparent); }
+.chapter7-phase-rail span { font-family: var(--font-display); font-size: 0.82rem; }
+.chapter7-phase-rail strong { font-size: 0.88rem; }
+.chapter7-roster { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.chapter7-combatant { min-width: 0; border-left: 3px solid var(--ink); padding: 12px 14px; background: var(--paper-bright); }
+.chapter7-combatant > div:first-child { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.chapter7-combatant > div:first-child span { color: var(--ink-muted); font-size: 0.84rem; }
+.chapter7-combatant dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 12px 0 0; }
+.chapter7-combatant dl div { border-right: 1px solid var(--rule); padding-right: 8px; }
+.chapter7-combatant dl div:last-child { border-right: 0; }
+.chapter7-combatant dt { color: var(--ink-muted); }
+.chapter7-combatant dd { margin: 3px 0 0; font-weight: 700; overflow-wrap: anywhere; }
+.chapter7-combatant p { margin: 12px 0 0; border-top: 1px solid var(--rule); padding-top: 8px; }
+.chapter7-declaration,
+.chapter7-resolution,
+.chapter7-pending,
+.chapter7-movement,
+.chapter7-conclusion,
+.chapter7-horse-damage > div { display: grid; gap: 16px; }
+.chapter7-targets { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.chapter7-exchanges { border-block: 1px solid var(--rule); }
+.chapter7-exchanges div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.chapter7-exchanges div:last-child { border-bottom: 0; }
+.chapter7-pending > p { display: flex; align-items: center; gap: 8px; margin: 0; }
+.chapter7-conclusion { grid-template-columns: minmax(150px, 0.6fr) minmax(220px, 1.6fr) auto; align-items: end; border-top: 1px solid var(--rule); padding-top: 20px; }
+.chapter7-horse-damage { border-block: 1px solid var(--rule); padding: 14px 0; }
+.chapter7-horse-damage summary { cursor: pointer; font-size: 0.95rem; font-weight: 700; }
+.chapter7-horse-damage > div { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; }
+.chapter7-return { display: flex; align-items: center; gap: 8px; color: var(--seal-dark); }
+
 @media (max-width: 1100px) {
   .health-register { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .health-register > div:nth-child(4) { border-left: 0; }
@@ -196,6 +253,10 @@
 }
 
 @media (max-width: 820px) {
+  .chapter7-opponent-setup,
+  .chapter7-horse-damage > div { grid-template-columns: 1fr 1fr; }
+  .chapter7-conclusion { grid-template-columns: 1fr 1fr; }
+  .chapter7-conclusion button { grid-column: 1 / -1; }
   .combat-setup__columns { grid-template-columns: 1fr; }
   .combatants { grid-template-columns: 1fr; }
   .combatants__versus { min-height: 42px; border-top: 0; border-bottom: 0; }
@@ -212,6 +273,22 @@
 }
 
 @media (max-width: 560px) {
+  .chapter7-engine { gap: 20px; padding-top: 20px; }
+  .chapter7-setup-grid,
+  .chapter7-opponent-setup,
+  .chapter7-ammo,
+  .chapter7-action-options,
+  .chapter7-gm,
+  .chapter7-roll-grid,
+  .chapter7-allocations,
+  .chapter7-enemy-plans,
+  .chapter7-horse-damage > div,
+  .chapter7-conclusion { grid-template-columns: 1fr; }
+  .chapter7-phase-rail { grid-template-columns: repeat(5, minmax(0, 1fr)); max-width: 100%; overflow: hidden; }
+  .chapter7-phase-rail li { min-width: 0; flex-direction: column; justify-content: center; gap: 2px; padding: 6px 2px; text-align: center; }
+  .chapter7-phase-rail strong { max-width: 100%; overflow-wrap: anywhere; font-size: 0.78rem; }
+  .chapter7-combatant dl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 0; }
+  .chapter7-combatant dl div:nth-child(2) { border-right: 0; }
   .health-register { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .health-register > div:nth-child(odd) { border-left: 0; }
   .health-register > div:nth-child(n + 3) { border-top: 1px solid var(--rule-dark); }

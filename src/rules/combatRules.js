@@ -234,7 +234,7 @@ const rollAttributeLoss = (attributes, count, suppliedRolls, rng) => {
   return { rolls, losses };
 };
 
-const applyDamageState = (attributes, healthValue, input, rng) => {
+export const applyDamageState = (attributes, healthValue, input, rng) => {
   const health = sanitizeHealthState(healthValue, attributes);
   const before = getDerivedHealth(attributes);
   const rolledDamage = Math.max(0, asInt(input.rolledDamage));
@@ -403,7 +403,7 @@ export const startCombat = (characterValue, input = {}, now) => {
   character.campaign = character.campaign || {};
   character.campaign.health = sanitizeHealthState(character.campaign.health, character.attributes);
   character.campaign.combat = createCombatEncounter(character, input, now);
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return character;
 };
 
@@ -424,7 +424,7 @@ export const resolveMajorWoundCourage = (characterValue, input = {}, rng = Math.
   };
   character.traitsChecked = { ...(character.traitsChecked || {}), valorous: true };
   character.campaign.health = health;
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return { character, courage: { check, status } };
 };
 
@@ -731,7 +731,7 @@ export const resolveCombatRound = (characterValue, input = {}, rng = Math.random
   encounter.rounds = [...encounter.rounds, round].slice(-100);
   encounter.updatedAt = timestamp;
   character.campaign.combat = encounter;
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return { character, round };
 };
 
@@ -776,7 +776,7 @@ export const resolveFirstAid = (characterValue, input = {}, rng = Math.random) =
   } else if (wound.classification !== 'mortal') health.unconscious = false;
   health.lastUpdatedAt = iso(input.now);
   character.campaign.health = health;
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return {
     character,
     treatment: { woundId: wound.id, check, amount: recovered, currentHpBefore: before, currentHpAfter: character.attributes.currentHp, mortalAttributeLoss }
@@ -843,7 +843,7 @@ export const resolveWeeklyRecovery = (characterValue, input = {}, rng = Math.ran
   health.weeklyCare = [...health.weeklyCare, record].slice(-100);
   health.lastUpdatedAt = record.createdAt;
   character.campaign.health = health;
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return { character, recovery: record };
 };
 
@@ -942,7 +942,7 @@ export const concludeCombat = (characterValue, input = {}, now) => {
     sourcePage: 'Ch.7 pp.116-117',
     createdAt: timestamp
   });
-  character.campaign.schemaVersion = 8;
+  character.campaign.schemaVersion = 9;
   return character;
 };
 

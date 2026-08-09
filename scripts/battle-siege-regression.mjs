@@ -67,7 +67,7 @@ const makeCharacter = (followers = 10) => ({
     ]
   },
   campaign: {
-    schemaVersion: 8, saveRevision: 0, chronicleEvents: [], familyTimeline: [], gloryLedger: [], standingLedger: [],
+    schemaVersion: 9, saveRevision: 0, chronicleEvents: [], familyTimeline: [], gloryLedger: [], standingLedger: [],
     captives: [], pendingEconomy: [], conditions: [], fortresses: [],
     health: { wounds: [], surgeryNeeded: false, unconscious: false, pendingDeath: null, majorWoundCourage: null, weeklyCare: [] },
     lifecycle: { status: 'active', careerStatus: 'active', activeCharacterId: 'self', primaryCharacterId: 'self', events: [], unresolvedChoices: [] }
@@ -287,9 +287,9 @@ simpleSiege = resolveSiegeTactic(simpleSiege, { attackerEquipment: 10, defenderE
 assert.equal(simpleSiege.campaign.siege.phase, 'aftermath');
 assert.equal(sanitizeSiegeState(JSON.parse(JSON.stringify(simpleSiege.campaign.siege))).phase, 'aftermath');
 
-// Whole-campaign migration keeps each Chapter 8 state and history in schema v8.
+// Whole-campaign migration keeps each Chapter 8 state and history in schema v9.
 const reloadedCampaign = sanitizeCampaignState(JSON.parse(JSON.stringify(simpleSiege)), makeCharacter(0));
-assert.equal(reloadedCampaign.campaign.schemaVersion, 8);
+assert.equal(reloadedCampaign.campaign.schemaVersion, 9);
 assert.equal(reloadedCampaign.campaign.siege.phase, 'aftermath');
 
 // Blockade persists to the next month; treachery can force surrender.

@@ -239,7 +239,7 @@ export default function AppShell({
 
       <footer className="royal-footer">
         <span lang="en">Paladin · Living Chronicle</span>
-        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v8</span>
+        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v9</span>
       </footer>
     </div>
   );

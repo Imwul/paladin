@@ -46,4 +46,4 @@
 
 ## Test Link
 
-`scripts/battle-siege-regression.mjs` verifies Tables 8-1 through 8-16, every Battle Enemy table boundary, legal state transitions, follower identity and casualty persistence, injury/death/capture, retreat/pursuit, assault/blockade/treachery/morale, fortress persistence, and schema v8 reload behavior.
+`scripts/battle-siege-regression.mjs` verifies Tables 8-1 through 8-16, every Battle Enemy table boundary, legal state transitions, follower identity and casualty persistence, injury/death/capture, retreat/pursuit, assault/blockade/treachery/morale, fortress persistence, and schema v9 reload behavior.

@@ -1,6 +1,7 @@
 import { sanitizeCharacterCreationSession } from '../rules/characterCreationRules.js';
 import { sanitizeMassBattleState, sanitizeSiegeState, sanitizeSkirmishState } from '../rules/battleRules.js';
-import { sanitizeCombatState, sanitizeHealthState } from '../rules/combatRules.js';
+import { sanitizeHealthState } from '../rules/combatRules.js';
+import { sanitizeChapter7CombatState } from '../rules/chapter7CombatRules.js';
 import { sanitizeLifecycleState } from '../rules/lifecycleRules.js';
 import { normalizeOpposedTraits } from '../rules/personalityRules.js';
 
@@ -411,7 +412,7 @@ export const sanitizeCampaignState = (data, defaults) => {
     journal: sanitizeJournal(source.journal, defaults.journal),
     campaign: {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
-      schemaVersion: 8,
+      schemaVersion: 9,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
       saveRevision: clampInt(source.campaign?.saveRevision, 0, Number.MAX_SAFE_INTEGER, 0),
       chronicleEvents: Array.isArray(source.campaign?.chronicleEvents)
@@ -430,7 +431,8 @@ export const sanitizeCampaignState = (data, defaults) => {
           : clampInt(defaults.campaign?.gloryBonusClaimedThreshold, 0, 10000, 0),
       passionStates: sanitizePassionStates(source.campaign?.passionStates),
       health,
-      combat: sanitizeCombatState(source.campaign?.combat),
+      combat: sanitizeChapter7CombatState(source.campaign?.combat, { ...defaults, ...source }),
+      combatHistory: sanitizeLedgerEntries(source.campaign?.combatHistory, 250),
       skirmish: sanitizeSkirmishState(source.campaign?.skirmish),
       massBattle: sanitizeMassBattleState(source.campaign?.massBattle),
       siege: sanitizeSiegeState(source.campaign?.siege),
@@ -463,7 +465,7 @@ export const hasAppliedEvent = (character, eventId) => Boolean(character?.campai
 
 export const markAppliedEvent = (character, eventId, label) => ({
   ...(character.campaign || {}),
-  schemaVersion: 8,
+  schemaVersion: 9,
   appliedEvents: {
     ...(character.campaign?.appliedEvents || {}),
     [eventId]: {
@@ -490,7 +492,7 @@ export const appendWinterLog = (character, message) => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 8,
+    schemaVersion: 9,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {
@@ -506,7 +508,7 @@ export const markWinterStep = (character, step, status = 'resolved') => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 8,
+    schemaVersion: 9,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {

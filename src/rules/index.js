@@ -5,6 +5,8 @@ export * from './characterCreationData.js';
 export * from './characterCreationRules.js';
 export * from './characterRules.js';
 export * from './combatRules.js';
+export * from './chapter7CombatRules.js';
+export * from './combatIntegrationRules.js';
 export * from './coreRules.js';
 export * from './lifecycleRules.js';
 export * from './ledgerRules.js';

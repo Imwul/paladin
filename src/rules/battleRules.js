@@ -764,10 +764,15 @@ export const resolveFirstCharge = (characterValue, input = {}, rng = Math.random
   const timestamp = iso(input.now);
   let exchange = null;
   if (participates) {
-    const result = resolvePersonalExchange(character, battle, { ...input, weaponModifier: battle.command?.chargeModifier, now: timestamp }, { charge: true }, rng);
-    character = result.character;
-    exchange = result.exchange;
-    if (exchange.playerCheck.success && exchange.playerCheck.roll % 2 === 1) battle.player.lanceIntact = false;
+    if (input.chapter7Resolution) {
+      exchange = { ...clone(input.chapter7Resolution), resolvedBy: 'chapter_7_combat' };
+      if (input.lanceBroken) battle.player.lanceIntact = false;
+    } else {
+      const result = resolvePersonalExchange(character, battle, { ...input, weaponModifier: battle.command?.chargeModifier, now: timestamp }, { charge: true }, rng);
+      character = result.character;
+      exchange = result.exchange;
+      if (exchange.playerCheck.success && exchange.playerCheck.roll % 2 === 1) battle.player.lanceIntact = false;
+    }
   }
   battle.round = 1;
   battle.rounds.push({
@@ -868,11 +873,14 @@ export const completeBattleMeleeRound = (characterValue, input = {}, rng = Math.
   if (action === 'engage') {
     if (battle.player.holdingPrisonerId && !input.prisonerEscorted) throw new Error('포로를 후방으로 호송하거나 종자에게 맡기기 전에는 교전할 수 없습니다.');
     if (battle.player.holdingPrisonerId && input.prisonerEscorted) battle.player.holdingPrisonerId = null;
-    const resolved = resolvePersonalExchange(character, battle, {
-      ...input, enemyOverride: pending.enemy, weaponModifier: asInt(pending.unitRoll?.modifier), now: iso(input.now)
-    }, {}, rng);
-    character = resolved.character;
-    exchange = resolved.exchange;
+    if (input.chapter7Resolution) exchange = { ...clone(input.chapter7Resolution), resolvedBy: 'chapter_7_combat' };
+    else {
+      const resolved = resolvePersonalExchange(character, battle, {
+        ...input, enemyOverride: pending.enemy, weaponModifier: asInt(pending.unitRoll?.modifier), now: iso(input.now)
+      }, {}, rng);
+      character = resolved.character;
+      exchange = resolved.exchange;
+    }
   } else if (action === 'special_event') {
     specialEvent = pending.specialEvent;
     if (!specialEvent) throw new Error('먼저 Table 8-5 특별 조우와 상대를 결정하세요.');

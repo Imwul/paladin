@@ -1342,7 +1342,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const base = deepClone(initialCharacterState || character);
       base.campaign = {
         ...base.campaign,
-        schemaVersion: 8,
+        schemaVersion: 9,
         appliedEvents: {
           'character_creation:preset': {
             appliedAt: new Date().toISOString(),
@@ -1698,7 +1698,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     if (saint.name.includes('St. Mary')) newChar.passions.loveGod += 2;
     newChar.standings = deriveStartingStandings({ traits: newChar.traits, passions: newChar.passions });
     newChar.campaign = {
-      schemaVersion: 8,
+      schemaVersion: 9,
       lifecycle: {
         careerStatus: 'active',
         activeCharacterId: newChar.family?.members?.find(member => member.relation === '본인')?.id || null,

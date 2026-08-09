@@ -31,14 +31,14 @@ Tables 8-3 through 8-16 are source verified, exposed as pure executors, called b
 
 ## Campaign Integration
 
-Persistent schema v8 fields include `skirmish`, `massBattle`, `siege`, their histories, health wounds and pending death, `captivity`, canonical follower status, family timeline, horse state, Glory ledger, Honor, captives, `pendingEconomy`, chronicle events, and fortress control. Sanitizers preserve every valid active phase and prevent a completed award from being applied twice.
+Persistent schema v9 fields include `skirmish`, `massBattle`, `siege`, their histories, health wounds and pending death, `captivity`, canonical follower status, family timeline, horse state, Glory ledger, Honor, captives, `pendingEconomy`, chronicle events, and fortress control. Sanitizers preserve every valid active phase and prevent a completed award from being applied twice.
 
 ## Remaining Gaps
 
 - Chapter 8 has no omitted executable table or phase in the implemented scope.
 - Ransom settlement amount remains a Chapter 12 task; the claim itself is persistent and visible.
 - The source assigns some outcomes to the Gamemaster, including loot amount, skirmish narrative result, follower selection and rescue, and single-combat winner. The app requires an explicit choice and does not invent a roll.
-- Full Chapter 7 advanced/multiple/ranged combat, Chapter 12 economy, Chapter 17 cultures, Chapter 18 bestiary, and Chapter 19 adventures remain release-wide gaps, not Chapter 8 substitutions.
+- Chapter 7 advanced, multiple-opponent and ranged combat was completed in the following Phase 8. Chapter 12 economy, Chapter 17 cultures, Chapter 18 bestiary, and Chapter 19 adventures remain release-wide gaps, not Chapter 8 substitutions.
 
 ## Verification
 

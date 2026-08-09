@@ -12,7 +12,7 @@ const CharacterDossier = lazy(() => import('./features/character/CharacterDossie
 const FamilyRegister = lazy(() => import('./features/family/FamilyRegister'));
 const ChronicleLedger = lazy(() => import('./features/chronicle/ChronicleLedger'));
 const WinterPhase = lazy(() => import('./features/winter/WinterPhase'));
-const CombatEncounter = lazy(() => import('./features/combat/CombatEncounter'));
+const CombatEncounter = lazy(() => import('./features/combat/CombatEncounterRemaster'));
 const BattleSiege = lazy(() => import('./features/battle/BattleSiege'));
 const ChronologyJournal = lazy(() => import('./components/ChronologyJournal'));
 const SoloOracles = lazy(() => import('./components/SoloOracles'));
@@ -140,7 +140,7 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 8,
+    schemaVersion: 9,
     saveRevision: 0,
     characterCreationSession: null,
     completedCreationIds: [],
@@ -162,6 +162,7 @@ const initialCharacterState = {
       lastUpdatedAt: null
     },
     combat: null,
+    combatHistory: [],
     skirmish: null,
     massBattle: null,
     siege: null,
@@ -386,8 +387,8 @@ export default function App() {
     if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
     if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} />;
     if (activeTab === 'adventure') return <ChronologyJournal character={character} setCharacter={setCharacter} />;
-    if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} />;
-    if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
+    if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
     if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;
