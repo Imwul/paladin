@@ -3350,15 +3350,15 @@ export default function FamilyTree({ character, setCharacter }) {
           logs.push(`👰 745년: [가문] ${event} -> 주사위 ${roll} - 라이벌 영주의 딸인 어머니를 납치하여 혼인하셨습니다. (+400 Glory)`);
         }
       } else if (yr === 746) {
-        const event = "롤랑 경의 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
+        const event = "가문의 후계자 탄생 및 셉티마니아 원정: 무어인들의 셉티마니아 습격에 동참하거나, 알레마니아 반란을 피의 숙청으로 다스린 혹독한 군무에 참전했습니다.";
         const roll = rollD20();
         if (roll === 1) {
           fDead = true;
           fDeathYr = yr;
           fCause = "전역사 (Illness)";
-          logs.push(`💀 746년: [역사] ${event} -> 주사위 ${roll} - 무서운 군영 내 돌림병에 걸려 롤랑 경의 탄생 소식만을 듣고 서거하셨습니다.`);
+          logs.push(`💀 746년: [역사] ${event} -> 주사위 ${roll} - 무서운 군영 내 돌림병에 걸려 후계자의 탄생 소식만을 듣고 서거하셨습니다.`);
         } else if (roll <= 10) {
-          logs.push(`🏰 746년: [가문] ${event} -> 주사위 ${roll} - 기쁜 롤랑 경의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`);
+          logs.push(`🏰 746년: [가문] ${event} -> 주사위 ${roll} - 후계자의 탄생을 전장에서 전해 듣고 가문의 축배를 올렸습니다.`);
         } else if (roll <= 15) {
           const res = runCombatSurvival(yr, event + " (셉티마니아 무어인 방어전)", false, -1, false, 25);
           if (!res.dead) {
@@ -3372,7 +3372,7 @@ export default function FamilyTree({ character, setCharacter }) {
           logs.push(`🪓 746년: [역사] ${event} -> 주사위 ${roll} - 알레마니아 반역자들을 징벌하는 피핀의 대숙청 대열에 참여하셨습니다. 잔혹성(Cruel) +${cVal} 기질 획득! (누적: ${fCruel})`);
         } else {
           fGlory += 50;
-          logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 롤랑 경의 장엄한 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
+          logs.push(`✝️ 746년: [가문] ${event} -> 주사위 ${roll} - 마침내 후계자의 탄생을 직접 보고 기사로서 성인 묘비에 참배하며 믿음을 다짐했습니다. (+1 Love God, +50 Glory)`);
         }
       } else if (yr === 747) {
         const event = "카를로만 공의 순례 동행: 궁정의 번잡함을 떠나 카를로만 공을 모시고 롬바르디아를 거쳐 로마로 순례 여행을 다녀오거나, 신앙의 부름을 받았습니다.";
