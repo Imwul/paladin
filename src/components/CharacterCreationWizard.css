@@ -41,7 +41,7 @@
 
 .cc-kicker {
   color: var(--color-gold-dark);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   font-weight: 800;
   text-transform: none;
   letter-spacing: 0;
@@ -77,7 +77,7 @@
 
 .cc-wizard-header p {
   color: var(--color-grey);
-  font-size: 0.74rem;
+  font-size: var(--text-small);
 }
 
 .cc-save-state {
@@ -99,11 +99,11 @@
 
 .cc-save-state span {
   color: var(--color-grey);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
 }
 
 .cc-save-state strong {
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
 }
 
 .cc-progress {
@@ -157,14 +157,14 @@
   height: 26px;
   border: 1px solid var(--color-grey-light);
   font-family: var(--font-serif);
-  font-size: 0.72rem;
+  font-size: var(--text-micro);
   font-weight: 800;
 }
 
 .cc-step-nav button em {
   min-width: 0;
   overflow: hidden;
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   font-style: normal;
   font-weight: 700;
   text-overflow: ellipsis;
@@ -217,7 +217,7 @@
 .cc-control > span,
 .cc-fieldset legend {
   color: var(--color-ink-light);
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
   font-weight: 800;
 }
 
@@ -248,7 +248,7 @@
 
 .cc-control small {
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-fieldset {
@@ -278,7 +278,7 @@
   background: rgba(255, 255, 255, 0.56);
   color: var(--color-ink-light);
   cursor: pointer;
-  font-size: 0.78rem;
+  font-size: var(--text-caption);
   font-weight: 700;
 }
 
@@ -367,7 +367,7 @@
 
 .cc-manual-rolls span {
   min-width: 0;
-  font-size: 0.74rem;
+  font-size: var(--text-caption);
   font-weight: 700;
 }
 
@@ -398,7 +398,7 @@
   min-height: 40px;
   color: var(--color-ink-light);
   cursor: pointer;
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
   font-weight: 800;
 }
 
@@ -427,19 +427,19 @@
 .cc-ledger span,
 .cc-year-log span {
   min-width: 0;
-  font-size: 0.75rem;
+  font-size: var(--text-caption);
 }
 
 .cc-roll-list code,
 .cc-modifier-list code {
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-roll-list strong {
   grid-column: 1 / -1;
   color: var(--color-crimson);
-  font-size: 0.74rem;
+  font-size: var(--text-caption);
 }
 
 .cc-rule-note {
@@ -455,7 +455,7 @@
 
 .cc-rule-note span {
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-warning,
@@ -468,7 +468,7 @@
   border-left: 3px solid var(--color-danger);
   background: rgba(139, 32, 32, 0.06);
   color: var(--color-danger);
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
 }
 
 .cc-notice {
@@ -492,7 +492,7 @@
 }
 
 .cc-issues p {
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
 }
 
 .cc-source-facts,
@@ -508,7 +508,7 @@
   border: 1px solid var(--gold-light, var(--color-gold-light));
   background: rgba(255, 255, 255, 0.5);
   color: var(--color-ink-light);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   font-weight: 700;
 }
 
@@ -531,7 +531,7 @@
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--color-grey);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   text-align: right;
 }
 
@@ -561,7 +561,7 @@
   min-width: 0;
   overflow-wrap: anywhere;
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-result-grid strong,
@@ -618,7 +618,7 @@
 
 .cc-attribute-table em {
   color: var(--color-grey);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
 }
 
 .cc-attribute-table input {
@@ -639,7 +639,7 @@
   justify-content: flex-end;
   gap: 12px;
   color: var(--color-grey);
-  font-size: 0.74rem;
+  font-size: var(--text-caption);
 }
 
 .cc-allocation-status strong {
@@ -665,7 +665,7 @@
   align-items: center;
   min-height: 42px;
   border-bottom: 1px dashed rgba(107, 93, 78, 0.24);
-  font-size: 0.74rem;
+  font-size: var(--text-caption);
 }
 
 .cc-trait-pairs span:last-child {
@@ -714,7 +714,7 @@
 
 .cc-formula-list small {
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-skill-group > div {
@@ -730,7 +730,7 @@
   align-items: center;
   min-height: 44px;
   border-bottom: 1px dashed rgba(107, 93, 78, 0.2);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
 }
 
 .cc-skill-group label span {
@@ -776,7 +776,7 @@
 
 .cc-qualification span {
   color: var(--color-grey);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
 }
 
 .cc-requirements {
@@ -791,7 +791,7 @@
   gap: 7px;
   min-height: 36px;
   color: var(--color-danger);
-  font-size: 0.74rem;
+  font-size: var(--text-caption);
 }
 
 .cc-requirements > div.is-met {
@@ -819,7 +819,7 @@
   padding: 8px 10px;
   border: 1px solid var(--color-grey-light);
   background: rgba(255, 255, 255, 0.54);
-  font-size: 0.72rem;
+  font-size: var(--text-caption);
   font-weight: 700;
 }
 
@@ -833,7 +833,7 @@
 .cc-year-log em {
   grid-column: 2;
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
   font-style: normal;
 }
 
@@ -870,7 +870,7 @@
 
 .cc-ledger small {
   color: var(--color-grey);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
 }
 
 .cc-ledger strong {
@@ -883,7 +883,7 @@
   margin: 0;
   padding-left: 18px;
   color: var(--color-ink-light);
-  font-size: 0.76rem;
+  font-size: var(--text-small);
   line-height: 1.7;
 }
 
@@ -906,12 +906,12 @@
 .cc-gift-list span,
 .cc-gift-list small {
   color: var(--color-grey);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
 }
 
 .cc-gift-list strong {
   overflow-wrap: anywhere;
-  font-size: 0.78rem;
+  font-size: var(--text-caption);
 }
 
 .cc-review {
@@ -948,13 +948,13 @@
 
 .cc-review dt {
   color: var(--color-grey);
-  font-size: 0.7rem;
+  font-size: var(--text-micro);
 }
 
 .cc-review dd {
   margin: 0;
   overflow-wrap: anywhere;
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
   font-weight: 700;
 }
 
@@ -994,7 +994,7 @@
   gap: 12px;
   min-width: 0;
   color: var(--color-grey);
-  font-size: 0.68rem;
+  font-size: var(--text-micro);
 }
 
 .cc-wizard-footer > div span {

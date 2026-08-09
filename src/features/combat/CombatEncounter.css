@@ -20,9 +20,9 @@
 
 .health-register > div:first-child { border-left: 0; }
 .health-register svg { color: var(--seal-dark); }
-.health-register span { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.58rem; }
+.health-register span { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .health-register strong { grid-column: 1 / -1; font-family: var(--font-numeral); font-size: 1.8rem; line-height: 1; }
-.health-register strong small { color: var(--ink-muted); font-size: 0.72rem; }
+.health-register strong small { color: var(--ink-muted); font-size: var(--text-caption); }
 .health-register .status-seal { grid-column: 1 / -1; justify-self: start; }
 
 .combat-critical-notice {
@@ -38,7 +38,7 @@
 }
 
 .combat-critical-notice strong { display: block; }
-.combat-critical-notice p { margin: 3px 0 0; color: var(--ink-soft); font-size: 0.78rem; }
+.combat-critical-notice p { margin: 3px 0 0; color: var(--ink-soft); font-size: var(--text-small); }
 
 .combat-setup,
 .combat-active,
@@ -92,7 +92,7 @@
 }
 
 .combat-field { min-width: 0; display: grid; gap: 5px; }
-.combat-field > span { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.6rem; font-weight: 700; }
+.combat-field > span { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); font-weight: 700; }
 .combat-field input,
 .combat-field select {
   width: 100%;
@@ -111,7 +111,7 @@
   align-items: center;
   gap: 9px;
   padding: 8px 0;
-  font-size: 0.76rem;
+  font-size: var(--text-caption);
 }
 .combat-check input { width: 18px; height: 18px; accent-color: var(--seal-dark); }
 
@@ -127,8 +127,8 @@
 }
 .combat-phases li { min-height: 68px; display: grid; align-content: center; gap: 3px; padding: 10px 12px; border-left: 1px solid var(--rule-dark); }
 .combat-phases li:first-child { border-left: 0; }
-.combat-phases span { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.56rem; }
-.combat-phases b { font-size: 0.75rem; }
+.combat-phases span { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
+.combat-phases b { font-size: var(--text-caption); }
 
 .combatants { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr); align-items: stretch; margin-bottom: 32px; }
 .combatants__versus { display: grid; place-items: center; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); color: var(--seal-dark); font-family: var(--font-display); font-size: 1.3rem; }
@@ -136,13 +136,13 @@
 .combatant-summary > header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--rule-dark); }
 .combatant-summary > header strong { font-family: var(--font-display); font-size: 1.25rem; }
 .combatant-summary__hp { min-height: 80px; display: flex; align-items: baseline; gap: 6px; padding: 12px 0; }
-.combatant-summary__hp span { margin-right: auto; color: var(--ink-muted); font-family: var(--font-data); font-size: 0.6rem; }
+.combatant-summary__hp span { margin-right: auto; color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .combatant-summary__hp b { color: var(--seal-dark); font-family: var(--font-numeral); font-size: 3rem; line-height: 1; }
 .combatant-summary__hp small { color: var(--ink-muted); font-family: var(--font-numeral); }
 .combatant-summary dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--rule); }
 .combatant-summary dl > div { min-width: 0; padding: 8px; border-left: 1px solid var(--rule); }
 .combatant-summary dl > div:first-child { border-left: 0; }
-.combatant-summary dt { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.53rem; }
+.combatant-summary dt { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .combatant-summary dd { margin: 3px 0 0; font-family: var(--font-numeral); font-size: 1rem; }
 
 .combat-round-form { padding: 24px 0; border-top: 2px solid var(--ink); }
@@ -153,38 +153,38 @@
 .combat-round-result { margin: 24px 0; padding: 20px 0; border-top: 4px solid var(--seal); border-bottom: 2px solid var(--ink); }
 .combat-round-result dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 18px 0 0; border-top: 1px solid var(--rule); }
 .combat-round-result dl > div { min-height: 62px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
-.combat-round-result dt { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.58rem; }
-.combat-round-result dd { margin: 4px 0 0; font-size: 0.76rem; }
-.combat-result-note { display: flex; align-items: flex-start; gap: 8px; color: var(--seal-dark); font-size: 0.74rem; }
+.combat-round-result dt { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
+.combat-round-result dd { margin: 4px 0 0; font-size: var(--text-caption); }
+.combat-result-note { display: flex; align-items: flex-start; gap: 8px; color: var(--seal-dark); font-size: var(--text-caption); }
 
 .combat-conclusion { display: grid; grid-template-columns: 180px minmax(220px, 1fr) auto; gap: 12px; align-items: end; padding-top: 18px; border-top: 1px solid var(--rule-dark); }
 
 .wound-table-wrap { overflow-x: auto; }
 .wound-ledger table,
-.combat-rule-tables table { width: 100%; border-collapse: collapse; background: var(--paper-bright); font-size: 0.72rem; }
+.combat-rule-tables table { width: 100%; border-collapse: collapse; background: var(--paper-bright); font-size: var(--text-caption); }
 .wound-ledger th,
 .wound-ledger td,
 .combat-rule-tables th,
 .combat-rule-tables td { padding: 10px; border-bottom: 1px solid var(--rule-dark); text-align: left; }
 .wound-ledger th,
-.combat-rule-tables th { border-top: 2px solid var(--ink); font-family: var(--font-ui); font-size: 0.64rem; }
+.combat-rule-tables th { border-top: 2px solid var(--ink); font-family: var(--font-ui); font-size: var(--text-micro); }
 .wound-ledger td:nth-child(1),
 .wound-ledger td:nth-child(3) { font-family: var(--font-numeral); }
 .combat-empty { min-height: 100px; display: grid; place-items: center; margin: 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); color: var(--ink-muted); text-align: center; }
 .first-aid-controls { display: grid; grid-template-columns: 180px 180px minmax(0, 1fr); gap: 12px; align-items: end; padding-top: 16px; }
-.first-aid-controls p { margin: 0 0 9px; color: var(--ink-muted); font-size: 0.72rem; }
+.first-aid-controls p { margin: 0 0 9px; color: var(--ink-muted); font-size: var(--text-caption); }
 
 .recovery-workspace__form,
 .hazard-workspace { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 12px; align-items: end; }
 .recovery-result { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 24px 0 0; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule-dark); }
 .recovery-result > div { min-height: 64px; padding: 10px; border-left: 1px solid var(--rule); }
 .recovery-result > div:first-child { border-left: 0; }
-.recovery-result dt { color: var(--ink-muted); font-family: var(--font-data); font-size: 0.56rem; }
+.recovery-result dt { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .recovery-result dd { margin: 4px 0 0; font-family: var(--font-numeral); font-size: 1.1rem; }
 
 .combat-rule-tables { margin-top: 24px; border-top: 1px solid var(--rule-dark); border-bottom: 1px solid var(--rule-dark); }
 .combat-rule-tables summary { min-height: 48px; display: flex; align-items: center; gap: 8px; font-weight: 800; cursor: pointer; }
-.combat-rule-tables summary span { margin-left: auto; color: var(--ink-muted); font-family: var(--font-data); font-size: 0.58rem; }
+.combat-rule-tables summary span { margin-left: auto; color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .combat-rule-tables__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; padding: 8px 0 20px; }
 .combat-rule-tables caption { padding: 8px 0; color: var(--seal-dark); font-family: var(--font-display); font-size: 1.1rem; text-align: left; }
 
