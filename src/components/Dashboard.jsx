@@ -6,6 +6,14 @@ const getPendingActions = character => {
   const actions = [];
   const lifecycle = character.campaign?.lifecycle || {};
   const winter = character.campaign?.winter || {};
+  const health = character.campaign?.health || {};
+  const combat = character.campaign?.combat;
+  if (health.pendingDeath) actions.push({ tab: 'combat', title: '자정 전 생명 위기', detail: '생명력이 0 이하입니다. 응급처치로 양수까지 회복하거나 사망을 확정해야 합니다.' });
+  else if (health.majorWoundCourage?.status === 'pending') actions.push({ tab: 'combat', title: '큰 부상 뒤 용기 판정', detail: '의식을 유지했지만 전투를 계속하려면 Valorous 판정이 필요합니다.' });
+  else if (health.majorWoundCourage?.status === 'blocked') actions.push({ tab: 'combat', title: '전투 재진입 제한', detail: 'Valorous 판정 실패로, 외부 상황에 강제되지 않는 한 다시 교전할 수 없습니다.' });
+  else if (health.majorWoundCourage?.status === 'must_withdraw') actions.push({ tab: 'combat', title: '도주 또는 항복', detail: 'Valorous 대실패 결과를 전투 결말에 기록해야 합니다.' });
+  else if (health.surgeryNeeded) actions.push({ tab: 'combat', title: '외과 치료 필요', detail: '불건강 상태입니다. 이번 주 외과 치료와 자연 회복을 처리해야 합니다.' });
+  if (combat?.status === 'active') actions.push({ tab: 'combat', title: `${combat.opponent?.name || '적'}와 교전 중`, detail: `${combat.round || 0}라운드까지 기록되었습니다. 다음 결정 단계부터 이어갑니다.` });
   if (lifecycle.status === 'pending_salvation') actions.push({ tab: 'character', title: '구원 판정', detail: '끝난 생애의 구원(Salvation) 판정이 남아 있습니다.' });
   if (lifecycle.status === 'pending_legacy') actions.push({ tab: 'character', title: '유산 선택', detail: '다음 기사에게 전할 점수와 유산(Legacy)을 선택해야 합니다.' });
   if (lifecycle.status === 'pending_successor') actions.push({ tab: 'family', title: '계승자 선택', detail: '가문의 연대를 이을 후계자를 지정해야 합니다.' });

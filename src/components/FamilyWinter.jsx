@@ -6,6 +6,7 @@ import { birthGiftsTable } from './CharacterSheet';
 import { applyOnce, appendWinterLog, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
 import {
   adjustOpposedTrait,
+  applyCharacterDamage,
   getAgingRollCount,
   getHarvestModifier,
   LIFECYCLE_SCHEMA_VERSION,
@@ -634,7 +635,19 @@ export default function FamilyWinter({ character, setCharacter }) {
           if (key === 'loveGod') addPassion('loveGod', -1);
           if (key === 'standingLord') addPassion('honor', -1);
           if (key === 'standingChurch') addStanding('church', -1);
-          if (key === 'standingCommoners') updated.derived.currentHp = Math.max(0, (updated.derived?.currentHp || updated.derived?.maxHp || 0) - (rollDie(6)) - (rollDie(6)) - (rollDie(6)));
+          if (key === 'standingCommoners') {
+            const damage = rollDie(6) + rollDie(6) + rollDie(6);
+            const applied = applyCharacterDamage(updated, {
+              rolledDamage: damage,
+              direct: true,
+              skipKnockdown: true,
+              year: currentYear,
+              source: '겨울 개인 사건 · 평민 지위 대실패',
+              sourceRuleId: 'WINTER-PERSONAL-001',
+              sourcePage: 'Ch.10 pp.176-179'
+            });
+            Object.assign(updated, applied.character);
+          }
           if (key === 'loveCharlemagne') addStanding('charlemagne', -1);
           if (key === 'energetic') updated.campaign.winter.steps.training = 'skipped';
         }

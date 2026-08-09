@@ -1,4 +1,5 @@
 import { getAgingRollCount, getHarvestModifier, resolveHarvest } from './campaignRules.js';
+import { applyCharacterDamage } from './combatRules.js';
 import { resolveD20Roll, rollDice, rollDie } from './coreRules.js';
 import { resolveAttributeLifecycle } from './lifecycleRules.js';
 import { appendChronicleEvent, appendFamilyTimeline, postAnnualGlory, recordGloryAward, recordStandingChange } from './ledgerRules.js';
@@ -418,8 +419,24 @@ const applyOutcome = (character, winter, outcome, rng, context = {}) => {
     if (effect.type === 'wound') {
       const damage = rollDice(effect.dice[0], effect.dice[1], rng);
       const before = Number(character.attributes?.currentHp || 0);
-      character.attributes.currentHp = Math.max(0, before - damage);
-      stateChanges.push({ path: 'attributes.currentHp', before, after: character.attributes.currentHp, roll: `${effect.dice[0]}d${effect.dice[1]}=${damage}` });
+      const applied = applyCharacterDamage(character, {
+        rolledDamage: damage,
+        direct: true,
+        skipKnockdown: true,
+        year: context.year,
+        source: context.title || '겨울 사건 부상',
+        sourceRuleId: context.sourceRuleId || 'WINTER-PERSONAL-001',
+        sourcePage: context.sourcePage || 'Ch.10 pp.176-179'
+      }, rng);
+      Object.assign(character, applied.character);
+      stateChanges.push({
+        path: 'attributes.currentHp',
+        before,
+        after: character.attributes.currentHp,
+        roll: `${effect.dice[0]}d${effect.dice[1]}=${damage}`,
+        woundId: applied.injury.woundId,
+        classification: applied.injury.classification
+      });
     }
     if (effect.type === 'gearNote') {
       const before = character.gear?.[effect.key] || '';

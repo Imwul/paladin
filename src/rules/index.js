@@ -2,6 +2,7 @@ export * from './campaignRules.js';
 export * from './characterCreationData.js';
 export * from './characterCreationRules.js';
 export * from './characterRules.js';
+export * from './combatRules.js';
 export * from './coreRules.js';
 export * from './lifecycleRules.js';
 export * from './ledgerRules.js';

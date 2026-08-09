@@ -48,7 +48,7 @@ const makeCharacter = () => ({
   },
   journal: {},
   campaign: {
-    schemaVersion: 6,
+    schemaVersion: 7,
     appliedEvents: {},
     chronicleEvents: [],
     gloryLedger: [], standingLedger: [], familyTimeline: [], gloryBonusClaimedThreshold: 0,
@@ -74,6 +74,17 @@ assert.equal(result.applied, true);
 assert.equal(ensureWinterState(result.character).currentStep, 'aging');
 const duplicate = resolveWinterStep(result.character, { stepId: 'soloScenario', input: { choice: 'not_applicable' } });
 assert.equal(duplicate.applied, false, 'A completion ID prevents duplicate application.');
+
+let woundedInWinter = makeCharacter();
+woundedInWinter = resolveWinterStep(woundedInWinter, { stepId: 'soloScenario', input: { choice: 'not_applicable' } }).character;
+woundedInWinter = resolveWinterStep(woundedInWinter, { stepId: 'aging', input: {} }, constantRng(0.5)).character;
+woundedInWinter = resolveWinterStep(woundedInWinter, { stepId: 'economy', input: { harvestRoll: 5, maintenanceGrade: 'ordinary' } }).character;
+woundedInWinter = resolveWinterStep(woundedInWinter, { stepId: 'survival', input: {} }, constantRng(0.5)).character;
+const woundResult = resolveWinterStep(woundedInWinter, { stepId: 'personalEvent', input: { eventRoll: 15, checkRoll: 15 } }, constantRng(0.5));
+assert.equal(woundResult.character.attributes.currentHp, 12, 'The printed armorless 3d6 Winter wound applies actual damage.');
+assert.equal(woundResult.character.campaign.health.wounds.length, 1, 'Winter wounds enter the shared wound ledger.');
+assert.equal(woundResult.character.campaign.health.wounds[0].classification, 'major');
+assert.equal(woundResult.record.stateChanges.some(change => Boolean(change.woundId)), true);
 
 character = JSON.parse(JSON.stringify(result.character));
 assert.equal(ensureWinterState(character).currentStep, 'aging', 'An in-progress Winter resumes after serialization.');

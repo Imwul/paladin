@@ -53,7 +53,7 @@ const makeCharacter = () => ({
   },
   journal: {},
   campaign: {
-    schemaVersion: 6, saveRevision: 0, appliedEvents: {}, chronicleEvents: [], passionStates: [], characterCreationSession: null, completedCreationIds: [], characterArchives: [],
+    schemaVersion: 7, saveRevision: 0, appliedEvents: {}, chronicleEvents: [], passionStates: [], characterCreationSession: null, completedCreationIds: [], characterArchives: [],
     lifecycle: { status: 'active', careerStatus: 'active', activeCharacterId: 'adalhart', primaryCharacterId: 'adalhart', pendingSuccession: false, events: [], unresolvedChoices: [] },
     winter: { year: 790, steps: {}, logs: [], unresolved: {} }
   }
@@ -249,7 +249,7 @@ test('CHAR-KNIGHT-QUAL-001', 'successor age uses 15 rather than a fixed 18 gate'
   assert.equal(context.context.candidate.age, 15);
 });
 
-test('SAVE-IMPORT-001', 'schema v4 migrates to v6 without manufacturing a blessing grant', () => {
+test('SAVE-IMPORT-001', 'schema v4 migrates to v7 without manufacturing a blessing grant', () => {
   const defaults = makeCharacter();
   const old = structuredClone(defaults);
   old.campaign.schemaVersion = 4;
@@ -258,7 +258,7 @@ test('SAVE-IMPORT-001', 'schema v4 migrates to v6 without manufacturing a blessi
   delete old.campaign.lifecycle.salvation;
   delete old.campaign.lifecycle.legacy;
   const migrated = sanitizeCampaignState(old, defaults);
-  assert.equal(migrated.campaign.schemaVersion, 6);
+  assert.equal(migrated.campaign.schemaVersion, 7);
   assert.equal(migrated.campaign.lifecycle.legacy.blessingGrant.consumed, true);
   assert.equal(migrated.campaign.lifecycle.legacy.blessingGrant.count, 0);
 });

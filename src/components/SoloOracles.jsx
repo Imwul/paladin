@@ -5,6 +5,7 @@ import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
 import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
 import {
+  applyCharacterDamage,
   compareOpposedD20,
   getsAutomaticExperienceCheck,
   LIFECYCLE_SCHEMA_VERSION,
@@ -1872,7 +1873,16 @@ export default function SoloOracles({ character, setCharacter }) {
         updated.gear.gloryTotal = (updated.gear?.gloryTotal || 1000) + settlementGlory;
         updated.gear.cash = Math.max(0, (updated.gear?.cash || 0) + settlementLoot);
         if (pursuitResult?.damage) {
-          updated.attributes.currentHp = Math.max(0, (updated.attributes?.currentHp || 0) - pursuitResult.damage);
+          const applied = applyCharacterDamage(updated, {
+            rolledDamage: pursuitResult.damage,
+            direct: true,
+            skipKnockdown: true,
+            year: updated.personal?.campaignYear,
+            source: `전투 추격 · ${pursuitResult.outcome}`,
+            sourceRuleId: 'BATTLE-PURSUIT-001',
+            sourcePage: 'Ch.8'
+          });
+          Object.assign(updated, applied.character);
         }
 
         // Apply battle follower fate roll <= 2 injuries/death to character sheet

@@ -54,7 +54,7 @@ const makeCampaign = () => ({
   },
   journal: {},
   campaign: {
-    schemaVersion: 6, saveRevision: 0, appliedEvents: {}, chronicleEvents: [], gloryLedger: [], standingLedger: [], familyTimeline: [], gloryBonusClaimedThreshold: 1,
+    schemaVersion: 7, saveRevision: 0, appliedEvents: {}, chronicleEvents: [], gloryLedger: [], standingLedger: [], familyTimeline: [], gloryBonusClaimedThreshold: 1,
     passionStates: [], completedCreationIds: [], characterArchives: [],
     lifecycle: { status: 'active', careerStatus: 'active', activeCharacterId: 'gerold', primaryCharacterId: 'gerold', pendingSuccession: false, events: [], unresolvedChoices: [] },
     winter: null

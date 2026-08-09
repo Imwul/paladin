@@ -2,9 +2,9 @@
 
 ## Build
 
-- Date: 2026-08-08
+- Date: 2026-08-09
 - Public URL: `https://imwul.github.io/paladin/`
-- Verified commit: `4ff1d43`
+- Verified source: Phase 5 release candidate, 2026-08-09
 - Browsers: deployed GitHub Pages build in the Codex in-app browser.
 
 ## Responsive Matrix
@@ -20,10 +20,13 @@
 
 ## Interaction Checks
 
-- All ten primary ledger screens load through the persistent index without an error state.
+- All eleven primary ledger screens load through the persistent index without an error state.
 - Mobile index opens at 320px, traps focus on the first navigation command, and closes after navigation.
 - Settings dialog receives focus, is labelled, and returns focus to the settings command when closed.
 - Winter renders ten source-ordered steps and does not overflow at desktop or mobile widths.
+- Combat renders the five source-ordered phases, two combatants, round inputs, wound ledger and recovery controls without horizontal overflow at 360, 1440 or 1920 CSS pixels.
+- Combat controls have programmatic labels, visible 44px targets, no duplicate IDs and no console warnings or errors.
+- A conscious Major Wound exposes its required Valorous continuation check without displacing the combat ledger; failure, forced re-entry and withdrawal remain keyboard-operable.
 - Current-character display is derived from the lifecycle active character ID. Regression coverage confirms that death or retirement clears the current name and exposes the predecessor separately.
 
 ## Typography and Assets
@@ -42,3 +45,5 @@
 - `docs/screenshots/grand-remaster-character-390.png`
 - `docs/screenshots/grand-remaster-winter-1440.png`
 - `docs/screenshots/grand-remaster-reference-1024.png`
+- `docs/screenshots/final-combat-360.png`
+- `docs/screenshots/final-combat-1440.png`

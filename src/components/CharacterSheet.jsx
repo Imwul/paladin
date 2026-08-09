@@ -1237,7 +1237,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const otherTotal = Object.entries(prev).reduce((sum, [attrKey, val]) => (
         attrKey === key ? sum : sum + (Number(val) || 0)
       ), 0);
-      const preservedName = character?.personal?.name || '';
       return {
         ...prev,
         [key]: Math.min(nextRequested, Math.max(0, 5 - otherTotal))
@@ -1309,6 +1308,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const handleApplyPreset = () => {
     const preset = presets[selectedPreset];
+    const preservedName = character?.personal?.name || '';
 
     // Mapping of family characteristics corresponding to each preset knight
     const presetCharacteristics = [
@@ -1342,7 +1342,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       const base = deepClone(initialCharacterState || character);
       base.campaign = {
         ...base.campaign,
-        schemaVersion: 6,
+        schemaVersion: 7,
         appliedEvents: {
           'character_creation:preset': {
             appliedAt: new Date().toISOString(),
@@ -1698,7 +1698,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     if (saint.name.includes('St. Mary')) newChar.passions.loveGod += 2;
     newChar.standings = deriveStartingStandings({ traits: newChar.traits, passions: newChar.passions });
     newChar.campaign = {
-      schemaVersion: 6,
+      schemaVersion: 7,
       lifecycle: {
         careerStatus: 'active',
         activeCharacterId: newChar.family?.members?.find(member => member.relation === '본인')?.id || null,

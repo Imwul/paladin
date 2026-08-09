@@ -258,7 +258,7 @@ test('SAVE-MIG-001', 'legacy passions and winter economy migrate', () => {
   oldSave.campaign.winter.economy = { grossIncome: 18, stewardshipTarget: 12, stewardshipModifier: 2, treasuryDelta: -4, maintenancePending: true };
   const migrated = sanitizeCampaignState(oldSave, defaults);
   assert.equal(migrated.passions.loveCharlemagne, 17);
-  assert.equal(migrated.campaign.schemaVersion, 6);
+  assert.equal(migrated.campaign.schemaVersion, 7);
   assert.equal(migrated.campaign.winter.harvestModifier, -3);
   assert.deepEqual(migrated.campaign.winter.economy, oldSave.campaign.winter.economy);
 });
@@ -275,6 +275,7 @@ test('SAVE-LIFE-001', 'dead characters stay dead', () => {
   assert.equal(migrated.attributes.siz, 0);
   assert.equal(migrated.campaign.lifecycle.careerStatus, 'deceased');
   assert.equal(migrated.campaign.lifecycle.activeCharacterId, null);
+  assert.equal(migrated.campaign.health.pendingDeath, null);
   assert.equal(migrated.family.members.some(member => member.relation === '본인' && member.status === '생존'), false);
 });
 

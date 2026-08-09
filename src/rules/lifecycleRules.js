@@ -3,7 +3,7 @@ import { RELIGIOUS_TRAITS } from './personalityRules.js';
 import { getSuccessorEligibility } from './campaignRules.js';
 import { appendChronicleEvent, appendFamilyTimeline } from './ledgerRules.js';
 
-export const LIFECYCLE_SCHEMA_VERSION = 6;
+export const LIFECYCLE_SCHEMA_VERSION = 7;
 
 export const LIFECYCLE_STATES = Object.freeze([
   'active',

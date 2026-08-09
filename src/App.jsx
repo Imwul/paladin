@@ -12,6 +12,7 @@ const CharacterDossier = lazy(() => import('./features/character/CharacterDossie
 const FamilyRegister = lazy(() => import('./features/family/FamilyRegister'));
 const ChronicleLedger = lazy(() => import('./features/chronicle/ChronicleLedger'));
 const WinterPhase = lazy(() => import('./features/winter/WinterPhase'));
+const CombatEncounter = lazy(() => import('./features/combat/CombatEncounter'));
 const ChronologyJournal = lazy(() => import('./components/ChronologyJournal'));
 const SoloOracles = lazy(() => import('./components/SoloOracles'));
 const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
@@ -138,7 +139,7 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 6,
+    schemaVersion: 7,
     saveRevision: 0,
     characterCreationSession: null,
     completedCreationIds: [],
@@ -150,6 +151,16 @@ const initialCharacterState = {
     familyTimeline: [],
     gloryBonusClaimedThreshold: 0,
     passionStates: [],
+    health: {
+      wounds: [],
+      surgeryNeeded: false,
+      unconscious: false,
+      pendingDeath: null,
+      majorWoundCourage: null,
+      weeklyCare: [],
+      lastUpdatedAt: null
+    },
+    combat: null,
     lifecycle: {
       status: 'active',
       careerStatus: 'active',
@@ -363,6 +374,7 @@ export default function App() {
     if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
     if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} />;
     if (activeTab === 'adventure') return <ChronologyJournal character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
     if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;
