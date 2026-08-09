@@ -1,4 +1,5 @@
 import { sanitizeCharacterCreationSession } from '../rules/characterCreationRules.js';
+import { sanitizeMassBattleState, sanitizeSiegeState, sanitizeSkirmishState } from '../rules/battleRules.js';
 import { sanitizeCombatState, sanitizeHealthState } from '../rules/combatRules.js';
 import { sanitizeLifecycleState } from '../rules/lifecycleRules.js';
 import { normalizeOpposedTraits } from '../rules/personalityRules.js';
@@ -410,7 +411,7 @@ export const sanitizeCampaignState = (data, defaults) => {
     journal: sanitizeJournal(source.journal, defaults.journal),
     campaign: {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
-      schemaVersion: 7,
+      schemaVersion: 8,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
       saveRevision: clampInt(source.campaign?.saveRevision, 0, Number.MAX_SAFE_INTEGER, 0),
       chronicleEvents: Array.isArray(source.campaign?.chronicleEvents)
@@ -430,6 +431,17 @@ export const sanitizeCampaignState = (data, defaults) => {
       passionStates: sanitizePassionStates(source.campaign?.passionStates),
       health,
       combat: sanitizeCombatState(source.campaign?.combat),
+      skirmish: sanitizeSkirmishState(source.campaign?.skirmish),
+      massBattle: sanitizeMassBattleState(source.campaign?.massBattle),
+      siege: sanitizeSiegeState(source.campaign?.siege),
+      skirmishHistory: sanitizeLedgerEntries(source.campaign?.skirmishHistory, 100),
+      battleHistory: sanitizeLedgerEntries(source.campaign?.battleHistory, 100),
+      siegeHistory: sanitizeLedgerEntries(source.campaign?.siegeHistory, 100),
+      captives: sanitizeLedgerEntries(source.campaign?.captives, 1000),
+      pendingEconomy: sanitizeLedgerEntries(source.campaign?.pendingEconomy, 1000),
+      conditions: sanitizeLedgerEntries(source.campaign?.conditions, 100),
+      fortresses: sanitizeLedgerEntries(source.campaign?.fortresses, 100),
+      captivity: isPlainObject(source.campaign?.captivity) ? source.campaign.captivity : null,
       lifecycle,
       characterCreationSession: sanitizeCharacterCreationSession(source.campaign?.characterCreationSession),
       completedCreationIds: Array.isArray(source.campaign?.completedCreationIds)
@@ -451,7 +463,7 @@ export const hasAppliedEvent = (character, eventId) => Boolean(character?.campai
 
 export const markAppliedEvent = (character, eventId, label) => ({
   ...(character.campaign || {}),
-  schemaVersion: 7,
+  schemaVersion: 8,
   appliedEvents: {
     ...(character.campaign?.appliedEvents || {}),
     [eventId]: {
@@ -478,7 +490,7 @@ export const appendWinterLog = (character, message) => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 7,
+    schemaVersion: 8,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {
@@ -494,7 +506,7 @@ export const markWinterStep = (character, step, status = 'resolved') => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 7,
+    schemaVersion: 8,
     appliedEvents: character.campaign?.appliedEvents || {},
     passionStates: character.campaign?.passionStates || [],
     winter: {

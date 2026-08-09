@@ -14,6 +14,8 @@ import {
   rollDie
 } from '../rules';
 
+const isLegacyMassCombatEnabled = () => false;
+
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
   const activeDotsMap = {
@@ -3764,8 +3766,8 @@ export default function SoloOracles({ character, setCharacter }) {
             </div>
           </section>
 
-          {/* Section 4: 대규모 집단 전투 시뮬레이터 (Chapter 8) */}
-          <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
+          {/* Chapter 8 now has one canonical route in BattleSiege. */}
+          {isLegacyMassCombatEnabled() && <section className="cs-section" style={{ width: '100%', marginTop: '16px' }}>
             <div className="sheet-ribbon" style={{ background: 'var(--color-crimson)' }}>
               <h3>⚔️ 대규모 집단 전투 및 전술 시뮬레이터 (Mass Combat &amp; Battle)</h3>
             </div>
@@ -3981,7 +3983,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
               </div>
             </div>
-          </section>
+          </section>}
         </>
       )}
 

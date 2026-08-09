@@ -1,4 +1,6 @@
 export * from './campaignRules.js';
+export * from './battleEnemyTables.js';
+export * from './battleRules.js';
 export * from './characterCreationData.js';
 export * from './characterCreationRules.js';
 export * from './characterRules.js';

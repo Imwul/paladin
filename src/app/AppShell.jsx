@@ -35,6 +35,7 @@ export const NAV_ITEMS = [
   { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake },
   { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass },
   { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords },
+  { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield },
   { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
   { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
   { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
@@ -83,6 +84,8 @@ export default function AppShell({
   const winterDone = Object.values(winterSteps).filter(value => value === 'resolved' || value === 'skipped').length;
   const activeItem = NAV_ITEMS.find(item => item.id === activeTab) || NAV_ITEMS[0];
   const activeCharacter = getActiveCharacterIdentity(character);
+  const captive = character.campaign?.captivity?.status === 'active';
+  const blockedWhileCaptive = new Set(['winter', 'adventure', 'combat', 'oracles']);
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
@@ -201,6 +204,8 @@ export default function AppShell({
                     className={active ? 'active' : ''}
                     onClick={() => navigate(item.id)}
                     aria-current={active ? 'page' : undefined}
+                    disabled={captive && blockedWhileCaptive.has(item.id)}
+                    title={captive && blockedWhileCaptive.has(item.id) ? '포로 상태를 먼저 해결해야 합니다.' : undefined}
                   >
                     <span className="folio-navigation__number">{String(index + 1).padStart(2, '0')}</span>
                     <Icon size={17} aria-hidden="true" />
@@ -234,7 +239,7 @@ export default function AppShell({
 
       <footer className="royal-footer">
         <span lang="en">Paladin · Living Chronicle</span>
-        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v7</span>
+        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v8</span>
       </footer>
     </div>
   );

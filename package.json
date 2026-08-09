@@ -13,7 +13,8 @@
     "test:winter": "node scripts/winter-regression.mjs",
     "test:campaign": "node scripts/campaign-validation.mjs",
     "test:combat": "node scripts/combat-regression.mjs",
-    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:campaign && node scripts/hostile-regression.mjs",
+    "test:battle": "node scripts/battle-siege-regression.mjs",
+    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:battle && npm run test:campaign && node scripts/hostile-regression.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

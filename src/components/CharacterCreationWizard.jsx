@@ -258,7 +258,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
       ...previous,
       campaign: {
         ...(previous.campaign || {}),
-        schemaVersion: 7,
+        schemaVersion: 8,
         characterCreationSession: persistedSession,
         lifecycle: blessing && previous.campaign?.lifecycle?.legacy?.blessingGrant ? {
           ...previous.campaign.lifecycle,

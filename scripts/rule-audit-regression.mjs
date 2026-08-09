@@ -258,7 +258,7 @@ test('SAVE-MIG-001', 'legacy passions and winter economy migrate', () => {
   oldSave.campaign.winter.economy = { grossIncome: 18, stewardshipTarget: 12, stewardshipModifier: 2, treasuryDelta: -4, maintenancePending: true };
   const migrated = sanitizeCampaignState(oldSave, defaults);
   assert.equal(migrated.passions.loveCharlemagne, 17);
-  assert.equal(migrated.campaign.schemaVersion, 7);
+  assert.equal(migrated.campaign.schemaVersion, 8);
   assert.equal(migrated.campaign.winter.harvestModifier, -3);
   assert.deepEqual(migrated.campaign.winter.economy, oldSave.campaign.winter.economy);
 });
