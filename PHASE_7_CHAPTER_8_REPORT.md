@@ -44,7 +44,7 @@ Persistent schema v8 fields include `skirmish`, `massBattle`, `siege`, their his
 
 - Typecheck: **N/A** (repository has no TypeScript/typecheck script)
 - Chapter 8 module lint: **PASS**
-- Repository-wide lint: **FAIL** (136 errors and 3 warnings in legacy `CharacterSheet`, `FamilyRegister`, `SoloOracles`, and related files; outside the Chapter 8 scope)
+- Repository-wide lint: **FAIL** (135 errors and 3 warnings in legacy `CharacterSheet`, `FamilyRegister`, `SoloOracles`, and related files; outside the Chapter 8 scope)
 - Unit tests: **PASS**
 - Integration tests: **PASS**
 - Existing combat/winter/lifecycle/campaign regressions: **PASS**
