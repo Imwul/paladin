@@ -177,7 +177,7 @@ campaign = finalizeMassBattle(campaign, '2026-08-09T00:00:08.000Z').character;
 assert.equal(campaign.campaign.massBattle.status, 'complete');
 assert.equal(campaign.gear.cash, 24);
 assert.ok(campaign.gear.gloryThisGame > 0);
-assert.equal(campaign.campaign.pendingEconomy.some(item => item.type === 'ransom'), true);
+assert.equal(campaign.campaign.economy.ransoms.some(item => item.direction === 'receivable'), true);
 assert.equal(campaign.campaign.battleHistory.length, 1);
 
 // A disengaged First Aid action uses the shared Chapter 7 health ledger rather than a battle-only wound model.
@@ -233,8 +233,8 @@ captive = resolveBattlePreparation(captive, { armyRoll: 5, battalionRoll: 5 }).c
 captive = resolveFirstCharge(captive, { participates: false, surrender: true }).character;
 assert.equal(captive.campaign.captivity.status, 'active');
 captive = resolvePlayerCaptivity(captive, { resolution: 'ransomed', amount: 6 }).character;
-assert.equal(captive.campaign.captivity.status, 'resolved');
-assert.equal(captive.campaign.pendingEconomy.at(-1).amount, 6);
+assert.equal(captive.campaign.captivity.status, 'awaiting_ransom');
+assert.equal(captive.campaign.economy.ransoms.at(-1).amountDeniers, 6 * 240);
 
 // Rout stand, enemy rout, and both pursuit rounds.
 let routed = makeCharacter(0);
@@ -287,9 +287,9 @@ simpleSiege = resolveSiegeTactic(simpleSiege, { attackerEquipment: 10, defenderE
 assert.equal(simpleSiege.campaign.siege.phase, 'aftermath');
 assert.equal(sanitizeSiegeState(JSON.parse(JSON.stringify(simpleSiege.campaign.siege))).phase, 'aftermath');
 
-// Whole-campaign migration keeps each Chapter 8 state and history in schema v9.
+// Whole-campaign migration keeps each Chapter 8 state and history in schema v10.
 const reloadedCampaign = sanitizeCampaignState(JSON.parse(JSON.stringify(simpleSiege)), makeCharacter(0));
-assert.equal(reloadedCampaign.campaign.schemaVersion, 9);
+assert.equal(reloadedCampaign.campaign.schemaVersion, 10);
 assert.equal(reloadedCampaign.campaign.siege.phase, 'aftermath');
 
 // Blockade persists to the next month; treachery can force surrender.

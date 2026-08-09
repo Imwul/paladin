@@ -75,13 +75,15 @@ export const getDerivedHealth = attributes => {
   const siz = Math.max(0, asInt(attributes?.siz));
   const con = Math.max(0, asInt(attributes?.con));
   const str = Math.max(0, asInt(attributes?.str));
-  const totalHp = siz + con;
+  const hpBonus = Math.max(0, asInt(attributes?.hpBonus));
+  const totalHp = siz + con + hpBonus;
   const currentHp = asInt(attributes?.currentHp, totalHp);
   const lostHp = Math.max(0, totalHp - currentHp);
-  const woundPenalty = lostHp > totalHp / 2 ? -10 : lostHp >= totalHp / 4 ? -5 : 0;
+  const woundPenalty = attributes?.ignoreHealthPenalties ? 0 : lostHp > totalHp / 2 ? -10 : lostHp >= totalHp / 4 ? -5 : 0;
   return {
     siz,
     con,
+    hpBonus,
     totalHp,
     currentHp,
     lostHp,
@@ -296,7 +298,7 @@ export const applyDamageState = (attributes, healthValue, input, rng) => {
     });
   }
 
-  if (classification === 'major') {
+  if (classification === 'major' && !attributes.ignoreMajorWoundEffects) {
     health.surgeryNeeded = true;
     const consciousnessRoll = input.consciousnessRoll || rollDie(20, rng);
     const stayedConscious = attributes.currentHp > 0 && consciousnessRoll <= attributes.currentHp;
@@ -403,7 +405,7 @@ export const startCombat = (characterValue, input = {}, now) => {
   character.campaign = character.campaign || {};
   character.campaign.health = sanitizeHealthState(character.campaign.health, character.attributes);
   character.campaign.combat = createCombatEncounter(character, input, now);
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return character;
 };
 
@@ -412,7 +414,8 @@ export const resolveMajorWoundCourage = (characterValue, input = {}, rng = Math.
   const health = sanitizeHealthState(character.campaign?.health, character.attributes);
   if (health.majorWoundCourage?.status !== 'pending') throw new RangeError('A conscious Major Wound requiring a Valorous roll was not found.');
   const roll = input.roll || rollDie(20, rng);
-  const check = resolveD20Roll(roll, asInt(input.target ?? character.traits?.valorous));
+  const target = input.target ?? asInt(character.traits?.valorous) + asInt(character.attributes?.magicValorousBonus);
+  const check = resolveD20Roll(roll, asInt(target));
   const status = check.success ? 'continued' : check.fumble ? 'must_withdraw' : 'blocked';
   health.majorWoundCourage = {
     ...health.majorWoundCourage,
@@ -424,7 +427,7 @@ export const resolveMajorWoundCourage = (characterValue, input = {}, rng = Math.
   };
   character.traitsChecked = { ...(character.traitsChecked || {}), valorous: true };
   character.campaign.health = health;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, courage: { check, status } };
 };
 
@@ -731,7 +734,7 @@ export const resolveCombatRound = (characterValue, input = {}, rng = Math.random
   encounter.rounds = [...encounter.rounds, round].slice(-100);
   encounter.updatedAt = timestamp;
   character.campaign.combat = encounter;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, round };
 };
 
@@ -776,7 +779,7 @@ export const resolveFirstAid = (characterValue, input = {}, rng = Math.random) =
   } else if (wound.classification !== 'mortal') health.unconscious = false;
   health.lastUpdatedAt = iso(input.now);
   character.campaign.health = health;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return {
     character,
     treatment: { woundId: wound.id, check, amount: recovered, currentHpBefore: before, currentHpAfter: character.attributes.currentHp, mortalAttributeLoss }
@@ -843,7 +846,7 @@ export const resolveWeeklyRecovery = (characterValue, input = {}, rng = Math.ran
   health.weeklyCare = [...health.weeklyCare, record].slice(-100);
   health.lastUpdatedAt = record.createdAt;
   character.campaign.health = health;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, recovery: record };
 };
 
@@ -864,14 +867,16 @@ export const resolveHazard = (characterValue, input = {}, rng = Math.random) => 
   } else if (type === 'fire') {
     const rounds = clamp(input.rounds, 1, 20, 1);
     const intensity = clamp(input.intensityDice, 1, 10, 1);
-    const armorDice = armor > 0 ? 1 : 0;
-    rolledDamage = Array.from({ length: rounds }, (_, index) => Math.max(0, intensity * (index + 1) - armorDice))
+    const fireImmune = Boolean(characterValue.attributes?.fireImmune);
+    const magicFireArmor = asInt(characterValue.attributes?.magicFireArmor);
+    const armorDice = armor > 0 && !magicFireArmor ? 1 : 0;
+    rolledDamage = fireImmune ? 0 : Array.from({ length: rounds }, (_, index) => Math.max(0, intensity * (index + 1) - armorDice))
       .reduce((sum, dice) => sum + (dice ? rollDamageDice(dice, rng).total : 0), 0);
-    armor = 0;
+    armor = magicFireArmor;
     source = `${rounds}라운드 화염`;
   } else if (type === 'poison') {
     const potency = clamp(input.potencyDice, 1, 30, 1);
-    rolledDamage = Math.max(0, rollDamageDice(potency, rng, input.damageTotal).total - asInt(characterValue.attributes?.con));
+    rolledDamage = characterValue.attributes?.poisonImmune ? 0 : Math.max(0, rollDamageDice(potency, rng, input.damageTotal).total - asInt(characterValue.attributes?.con));
     armor = 0;
     direct = true;
     source = `${potency}d6 독`;
@@ -902,6 +907,8 @@ export const resolveHazard = (characterValue, input = {}, rng = Math.random) => 
   } else {
     throw new RangeError('Unknown hazard type.');
   }
+  const halfDamageSources = Array.isArray(characterValue.attributes?.magicHalfDamageSources) ? characterValue.attributes.magicHalfDamageSources : [];
+  if ((type === 'fire' && halfDamageSources.includes('fire')) || (type === 'suffocation' && halfDamageSources.includes('drowning'))) rolledDamage = roundPaladin(rolledDamage / 2);
   const resolved = applyCharacterDamage(characterValue, {
     ...input,
     rolledDamage,
@@ -942,7 +949,7 @@ export const concludeCombat = (characterValue, input = {}, now) => {
     sourcePage: 'Ch.7 pp.116-117',
     createdAt: timestamp
   });
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return character;
 };
 

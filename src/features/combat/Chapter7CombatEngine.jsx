@@ -15,6 +15,8 @@ import {
   getChapter7LegalActions,
   getDerivedHealth,
   getEncumbrance,
+  getEquippedMarketCombat,
+  getMagicCombatEffects,
   getMovementRate,
   resolveChapter7Action,
   startChapter7Combat
@@ -33,6 +35,11 @@ const weaponOptions = Object.entries(WEAPON_PROFILES).map(([value, item]) => ({ 
 const missileOptions = Object.entries(MISSILE_PROFILES).map(([value, item]) => ({ value, label: item.label }));
 const horseOptions = Object.entries(HORSE_PROFILES).map(([value, item]) => ({ value, label: `${item.label} (${item.type})` }));
 const armorOptions = [{ value: 'none', label: '없음' }, { value: 'leather', label: '가죽' }, { value: 'chainmail', label: '사슬갑옷' }, { value: 'plate', label: '판금갑옷' }];
+const armorDexDefaults = { none: 0, leather: -2, chainmail: -5, plate: -10 };
+const horseArmorValues = {
+  none: { armor: 0, moveDex: 0 }, caparison: { armor: 2, moveDex: 0 }, trapper: { armor: 4, moveDex: 0 },
+  cuirbouilli: { armor: 6, moveDex: 0 }, barding: { armor: 10, moveDex: -1 }, plate_barding: { armor: 12, moveDex: -2 }
+};
 const resultOptions = [{ value: 'victory', label: '승리' }, { value: 'capture', label: '상대 생포' }, { value: 'defeat', label: '패배' }, { value: 'surrender', label: '항복' }, { value: 'flight', label: '도주' }, { value: 'truce', label: '휴전·중단' }];
 const targetActions = new Set(['attack', 'double_feint', 'grapple', 'uncontrolled', 'ranged', 'lance_charge', 'joust']);
 const movementActions = new Set(['move', 'evade']);
@@ -44,7 +51,7 @@ const horseStatusLabels = { healthy: '건강', wounded: '부상', broken: '중�
 const blankOpponent = index => ({
   id: `enemy:${index + 1}`, name: `상대 ${index + 1}`, skill: 12, unarmed: 10, rangedSkill: 12, horsemanship: 10,
   dex: 10, siz: 12, con: 12, str: 12, damageDice: 4, weaponId: 'axe', missileWeaponId: 'bow',
-  armor: 6, armorType: 'chainmail', shield: 6, mounted: false, horseProfileKey: 'rouncy', distance: index ? 1 : 1
+  armor: 6, armorType: 'chainmail', armorDexModifier: -5, shield: 6, mounted: false, horseProfileKey: 'rouncy', distance: index ? 1 : 1
 });
 
 const CombatantLine = ({ name, hp, maxHp, armor, shield, distance, mounted, status, horse }) => (
@@ -66,10 +73,17 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
   const active = combat?.engineVersion === 2 && combat.status === 'active';
   const [error, setError] = useState('');
   const [rollMode, setRollMode] = useState('automatic');
-  const [setup, setSetup] = useState({
-    playerWeapon: 'sword', missileWeapon: 'bow', armor: 10, armorType: 'chainmail', shield: 6,
-    carriedPounds: Math.max(0, Number(character.attributes?.str || 10) * 3), mounted: false, horseProfileKey: 'charger', horseArmorType: 'none', horseArmorBonus: 0,
-    arrows: 12, bolts: 12, javelins: 3, stones: 12, opponents: [blankOpponent(0)]
+  const [setup, setSetup] = useState(() => {
+    const loadout = getEquippedMarketCombat(character);
+    return {
+      playerWeapon: loadout.weaponId || 'sword', missileWeapon: loadout.missileWeaponId || 'bow', armor: loadout.armor ?? 10,
+      armorType: loadout.armorType || 'chainmail', armorDexModifier: loadout.armorDexModifier ?? -5, shield: loadout.shield ?? 6,
+      equipmentSkillBonus: loadout.weaponSkillBonus || 0, weaponBreakOnTie: loadout.weaponBreakOnTie, weaponUnbreakable: loadout.weaponUnbreakable,
+      carriedPounds: Math.max(0, Number(character.attributes?.str || 10) * 3), mounted: Boolean(loadout.mount),
+      horseProfileKey: loadout.mount?.combat?.profileKey || 'charger', horseArmorType: loadout.horseArmor?.combat?.armorType || 'none',
+      horseArmorBonus: loadout.horseArmor?.combat?.armor || 0, horseArmorMoveDex: loadout.horseArmor?.combat?.moveDex || 0,
+      arrows: 12, bolts: 12, javelins: 3, stones: 12, magicUseContext: 'chivalrous', knowinglyUsesMagic: true, firstRoundArmorEligible: true, opponents: [blankOpponent(0)]
+    };
   });
   const [declaration, setDeclaration] = useState({
     action: 'attack', targetIds: ['enemy:1'], allocations: {}, allyEngagedIds: [], gmModifier: 0, gmNote: '',
@@ -98,22 +112,27 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
   const updateRoll = (key, value) => setRolls(previous => ({ ...previous, [key]: value }));
 
   const legalActions = useMemo(() => active ? getChapter7LegalActions(character) : [], [active, character]);
+  const equippedMagic = useMemo(() => getMagicCombatEffects(character), [character]);
   const activeOpponents = active ? combat.opponents.filter(opponent => opponent.currentHp > 0 && !opponent.health?.unconscious) : [];
   const engagedOpponents = activeOpponents.filter(opponent => opponent.distance <= 1 && !declaration.allyEngagedIds.includes(opponent.id));
   const playerProfile = active ? WEAPON_PROFILES[combat.player.weaponId] : WEAPON_PROFILES[setup.playerWeapon];
   const skillBase = active ? (
     declaration.action === 'dodge' ? Number(character.attributes?.dex || 0)
-      : declaration.action === 'evade' ? Number(combat.player.mounted ? character.skills?.horsemanship : character.attributes?.dex || 0)
+      : declaration.action === 'evade' ? Number(combat.player.mounted ? Number(character.skills?.horsemanship || 0) + Number(combat.player.magicEffects?.horsemanshipBonus || 0) : character.attributes?.dex || 0)
         : declaration.action === 'lance_charge' || declaration.action === 'joust' ? Number(character.skills?.lance || 0)
           : Number(character.skills?.[playerProfile.skillKey] || 0)
   ) : 0;
 
   const begin = () => run(() => setCharacter(previous => startChapter7Combat(previous, {
     player: {
-      weaponId: setup.playerWeapon, missileWeaponId: setup.missileWeapon, armor: setup.armor, armorType: setup.armorType,
+      weaponId: setup.playerWeapon, missileWeaponId: setup.missileWeapon, armor: setup.armor, armorType: setup.armorType, armorDexModifier: setup.armorDexModifier,
+      equipmentSkillBonus: setup.equipmentSkillBonus, weaponBreakOnTie: setup.weaponBreakOnTie, weaponUnbreakable: setup.weaponUnbreakable,
       shield: WEAPON_PROFILES[setup.playerWeapon].hands > 1 ? 0 : setup.shield, carriedPounds: setup.carriedPounds,
-      mounted: setup.mounted, horse: { profileKey: setup.horseProfileKey, armorBonus: setup.horseArmorBonus, armorType: setup.horseArmorType },
-      ammo: { arrows: setup.arrows, bolts: setup.bolts, javelins: setup.javelins, stones: setup.stones, objects: 3 }
+      mounted: setup.mounted, horse: { profileKey: setup.horseProfileKey, armorBonus: setup.horseArmorBonus, armorType: setup.horseArmorType, movementDexPenalty: setup.horseArmorMoveDex },
+      ammo: { arrows: setup.arrows, bolts: setup.bolts, javelins: setup.javelins, stones: setup.stones, objects: 3 },
+      magicUseContext: setup.magicUseContext,
+      knowinglyUsesMagic: setup.knowinglyUsesMagic,
+      firstRoundArmorEligible: setup.firstRoundArmorEligible
     },
     opponents: setup.opponents.map(opponent => ({ ...opponent, horse: { profileKey: opponent.horseProfileKey } }))
   })));
@@ -158,13 +177,16 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
       <div className="chapter7-setup-grid">
         <fieldset><legend>기사와 장비</legend>
           <SelectField label="근접 무기" value={setup.playerWeapon} onChange={value => updateSetup('playerWeapon', value)} options={weaponOptions} />
+          {setup.equipmentSkillBonus!==0&&<p className="chapter7-rule-line">장착 무기 기술 수정 {setup.equipmentSkillBonus>0?'+':''}{setup.equipmentSkillBonus}{setup.weaponBreakOnTie?' · 비김에 파손':''}{setup.weaponUnbreakable?' · 파손되지 않음':''}</p>}
           <SelectField label="원거리 무기" value={setup.missileWeapon} onChange={value => updateSetup('missileWeapon', value)} options={missileOptions} />
-          <NumberField label="갑옷" value={setup.armor} onChange={value => updateSetup('armor', value)} /><SelectField label="갑옷 종류" value={setup.armorType} onChange={value => updateSetup('armorType', value)} options={armorOptions} />
+          <NumberField label="갑옷" value={setup.armor} onChange={value => updateSetup('armor', value)} /><SelectField label="갑옷 종류" value={setup.armorType} onChange={value => setSetup(previous => ({ ...previous, armorType: value, armorDexModifier: armorDexDefaults[value] }))} options={armorOptions} />
+          <NumberField label="갑옷 DEX 수정" value={setup.armorDexModifier} min={-20} max={0} onChange={value => updateSetup('armorDexModifier', value)} />
           <NumberField label="방패" value={WEAPON_PROFILES[setup.playerWeapon].hands > 1 ? 0 : setup.shield} disabled={WEAPON_PROFILES[setup.playerWeapon].hands > 1} onChange={value => updateSetup('shield', value)} />
           <NumberField label="휴대 중량 · 파운드" value={setup.carriedPounds} max={Number(character.attributes?.str || 10) * 16} onChange={value => updateSetup('carriedPounds', value)} />
           <p className="chapter7-rule-line">{getEncumbrance(character.attributes?.str, setup.carriedPounds).label} · 이동 {getMovementRate(character.attributes, setup.carriedPounds)}야드</p>
           <label className="combat-check"><input type="checkbox" checked={setup.mounted} onChange={event => updateSetup('mounted', event.target.checked)} /><span>기마 상태</span></label>
-          {setup.mounted && <><SelectField label="말" value={setup.horseProfileKey} onChange={value => updateSetup('horseProfileKey', value)} options={horseOptions} /><SelectField label="마갑" value={setup.horseArmorType} onChange={value => { updateSetup('horseArmorType', value); if (value === 'caparison') updateSetup('horseArmorBonus', 2); }} options={[{ value: 'none', label: '없음' }, { value: 'caparison', label: 'Caparison · +2' }, { value: 'trapper', label: 'Trapper · GM 방어값' }, { value: 'barding', label: 'Barding · Charger/Destrier' }, { value: 'plate_barding', label: 'Plate barding · Destrier만' }]} /><NumberField label="마갑 추가 방어" value={setup.horseArmorBonus} max={10} disabled={setup.horseArmorType === 'caparison'} onChange={value => updateSetup('horseArmorBonus', value)} /></>}
+          {setup.mounted && <><SelectField label="말" value={setup.horseProfileKey} onChange={value => updateSetup('horseProfileKey', value)} options={horseOptions} /><SelectField label="마갑" value={setup.horseArmorType} onChange={value => setSetup(previous => ({ ...previous, horseArmorType: value, horseArmorBonus: horseArmorValues[value].armor, horseArmorMoveDex: horseArmorValues[value].moveDex }))} options={[{ value: 'none', label: '없음' }, { value: 'caparison', label: '카파리슨 · 방어 +2' }, { value: 'trapper', label: '트래퍼 · 방어 +4' }, { value: 'cuirbouilli', label: '경화 가죽 마갑 · 방어 +6' }, { value: 'barding', label: '사슬 마갑 · 방어 +10 · 이동/DEX -1' }, { value: 'plate_barding', label: '부분 판금 마갑 · 방어 +12 · 이동/DEX -2' }]} /><NumberField label="마갑 추가 방어" value={setup.horseArmorBonus} max={12} onChange={value => updateSetup('horseArmorBonus', value)} /><NumberField label="말 이동·DEX 수정" value={setup.horseArmorMoveDex} min={-2} max={0} onChange={value => updateSetup('horseArmorMoveDex', value)} /></>}
+          {equippedMagic.itemIds.length > 0 && <div className="chapter7-magic-loadout"><p className="chapter7-rule-line">착용 중인 마법 물품 · {equippedMagic.itemIds.join(', ')}</p><SelectField label="마법 사용 맥락" value={setup.magicUseContext} onChange={value => updateSetup('magicUseContext', value)} options={[{ value: 'chivalrous', label: '기사도적 상대와 전투' }, { value: 'evil_or_dishonorable', label: '악하거나 불명예스러운 상대' }, { value: 'unknown', label: '성질을 모른 채 사용' }]} /><label className="combat-check"><input type="checkbox" checked={setup.knowinglyUsesMagic} onChange={event => updateSetup('knowinglyUsesMagic', event.target.checked)} /><span>마법 성질을 알고 사용</span></label>{equippedMagic.firstRoundArmorBonus>0&&<label className="combat-check"><input type="checkbox" checked={setup.firstRoundArmorEligible} onChange={event => updateSetup('firstRoundArmorEligible', event.target.checked)} /><span>오늘의 첫 근접전·전투 라운드</span></label>}</div>}
           <div className="chapter7-ammo"><NumberField label="화살" value={setup.arrows} max={999} onChange={value => updateSetup('arrows', value)} /><NumberField label="볼트" value={setup.bolts} max={999} onChange={value => updateSetup('bolts', value)} /><NumberField label="투창" value={setup.javelins} max={99} onChange={value => updateSetup('javelins', value)} /><NumberField label="돌" value={setup.stones} max={999} onChange={value => updateSetup('stones', value)} /></div>
         </fieldset>
         <fieldset><legend>상대 전투원</legend><p className="chapter7-rule-line">현재 {setup.opponents.length}명 · 근접은 보병 3명, 기마 2명 또는 기마 1명과 보병 2명까지입니다. 사거리 밖 원거리 사수는 더 등록할 수 있습니다.</p><button type="button" className="secondary-command" onClick={addOpponent}><Plus size={17} aria-hidden="true" />전투원 추가</button></fieldset>
@@ -174,7 +196,7 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
         <SelectField label="근접 무기" value={opponent.weaponId} onChange={value => updateOpponent(index, 'weaponId', value)} options={weaponOptions} /><NumberField label="전투 기술" value={opponent.skill} onChange={value => updateOpponent(index, 'skill', value)} /><NumberField label="Unarmed" value={opponent.unarmed} onChange={value => updateOpponent(index, 'unarmed', value)} />
         <SelectField label="원거리 무기" value={opponent.missileWeaponId} onChange={value => updateOpponent(index, 'missileWeaponId', value)} options={missileOptions} /><NumberField label="원거리 기술" value={opponent.rangedSkill} onChange={value => updateOpponent(index, 'rangedSkill', value)} />
         <NumberField label="DEX" value={opponent.dex} onChange={value => updateOpponent(index, 'dex', value)} /><NumberField label="SIZ" value={opponent.siz} onChange={value => updateOpponent(index, 'siz', value)} /><NumberField label="CON" value={opponent.con} onChange={value => updateOpponent(index, 'con', value)} />
-        <NumberField label="피해 d6" value={opponent.damageDice} max={30} onChange={value => updateOpponent(index, 'damageDice', value)} /><NumberField label="갑옷" value={opponent.armor} onChange={value => updateOpponent(index, 'armor', value)} /><NumberField label="방패" value={opponent.shield} onChange={value => updateOpponent(index, 'shield', value)} />
+        <NumberField label="피해 d6" value={opponent.damageDice} max={30} onChange={value => updateOpponent(index, 'damageDice', value)} /><NumberField label="갑옷" value={opponent.armor} onChange={value => updateOpponent(index, 'armor', value)} /><NumberField label="갑옷 DEX 수정" value={opponent.armorDexModifier} min={-20} max={0} onChange={value => updateOpponent(index, 'armorDexModifier', value)} /><NumberField label="방패" value={opponent.shield} onChange={value => updateOpponent(index, 'shield', value)} />
         <NumberField label="거리 · 야드" value={opponent.distance} max={1000} onChange={value => updateOpponent(index, 'distance', value)} /><label className="combat-check"><input type="checkbox" checked={opponent.mounted} onChange={event => updateOpponent(index, 'mounted', event.target.checked)} /><span>기마 상태</span></label>
         {opponent.mounted && <SelectField label="상대 말" value={opponent.horseProfileKey} onChange={value => updateOpponent(index, 'horseProfileKey', value)} options={horseOptions} />}
         <button type="button" className="secondary-command" disabled={setup.opponents.length === 1} onClick={() => removeOpponent(opponent.id)} title="상대 전투원 제거"><Trash2 size={16} aria-hidden="true" />전투원 제거</button>

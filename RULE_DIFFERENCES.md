@@ -145,6 +145,16 @@ The default Loyalty/Hospitality passion set and natural-1 critical wording resem
 - Save migration: schema v6 preserves unknown fields and all old journal text. Existing pre-v6 Glory totals mark already-passed 1,000-point thresholds as claimed because the old save cannot prove whether those points were spent; this prevents duplicate benefits.
 - User confirmation: Not required. This changes presentation and provenance, not a printed game result.
 
+### Chapter 12 economy and narrative boundary
+
+- Source: Chapter 12 pp.193-209.
+- Implemented interpretation: Coin, ransom, market, land, buildings, loans, deposits, taxes, retainers and equipment use one canonical Economy state. Legacy `gear.cash` and `family.manors` remain compatibility projections only.
+- Market availability: The book supplies phase gates and foreign comparison marks, but no rarity or stock roll. Standard city goods are available unless the GM explicitly marks a temporary shortage; no rarity system was invented.
+- Investments and buildings: Chapter 12 gives purchase or spending costs but no general return rate or annual building-maintenance formula. The app records the expenditure and structure without inventing returns or upkeep.
+- Enchanted items: Deterministic combat, battle, health and aging effects are engine-owned. Prophecy, illusion, divination and GM-selected targets remain explicit narrative records.
+- Attack-trained mounts: The x2 acquisition cost is Chapter 12 and is recorded. The actual horse attack is Chapter 18 and remains outside this phase.
+- User confirmation: Not required; these are direct printed boundaries.
+
 ## Offline fallback finding
 
 The app has no network-fetched rule tables or event outcomes. Firebase only stores and loads the complete local character object. Therefore online and offline modes currently execute the same local rules and random calls, and there is no stale fallback table to compare. The remaining risk is synchronization behavior, not probability drift: real Firebase save/load was not testable without the user's project configuration.

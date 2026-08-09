@@ -4,9 +4,11 @@ import {
   applyCharacterDamage,
   applyDamageState,
   getDerivedHealth,
+  resolveFirstAid,
   sanitizeHealthState
 } from './combatRules.js';
 import { appendChronicleEvent } from './ledgerRules.js';
+import { getMagicCombatEffects } from './economyRules.js';
 
 export const CHAPTER_7_PHASES = Object.freeze([
   { id: 'determination', label: '행동 선언', page: 115 },
@@ -118,7 +120,13 @@ export const getRangeModifier = (distance, maximum) => {
   return -10;
 };
 
-const armorDexModifier = armorType => armorType === 'leather' ? -5 : ['chainmail', 'plate'].includes(armorType) ? -10 : 0;
+const armorDexModifier = combatant => {
+  if (Number.isFinite(Number(combatant?.armorDexModifier))) return asInt(combatant.armorDexModifier);
+  if (combatant?.armorType === 'leather') return -2;
+  if (combatant?.armorType === 'chainmail') return -5;
+  if (combatant?.armorType === 'plate') return -10;
+  return 0;
+};
 
 const createHorse = (input = {}) => {
   const profileKey = Object.hasOwn(HORSE_PROFILES, input.profileKey) ? input.profileKey : 'charger';
@@ -126,14 +134,18 @@ const createHorse = (input = {}) => {
   const siz = clamp(input.siz, 1, 100, profile.siz);
   const con = clamp(input.con, 1, 100, profile.con);
   const totalHp = siz + con;
-  const armorType = ['none', 'caparison', 'trapper', 'barding', 'plate_barding'].includes(input.armorType) ? input.armorType : asInt(input.armorBonus) === 2 ? 'caparison' : 'none';
+  const armorType = ['none', 'caparison', 'trapper', 'cuirbouilli', 'barding', 'plate_barding'].includes(input.armorType) ? input.armorType : asInt(input.armorBonus) === 2 ? 'caparison' : 'none';
   const armorBonus = Math.max(0, asInt(input.armorBonus, armorType === 'caparison' ? 2 : 0));
+  const movementDexPenalty = Math.min(0, asInt(input.movementDexPenalty));
+  const applyArmorPenalty = !input.armorMoveDexApplied;
+  const dex = clamp(input.dex, 0, 100, profile.dex);
+  const move = clamp(input.move, 0, 100, profile.move);
   return {
     id: String(input.id || `horse:${profileKey}`), profileKey, name: String(input.name || profile.label), type: String(input.type || profile.type),
-    siz, dex: clamp(input.dex, 0, 100, profile.dex), str: clamp(input.str, 0, 100, profile.str), con,
-    damageDice: clamp(input.damageDice, 1, 30, profile.damageDice), move: clamp(input.move, 0, 100, profile.move),
+    siz, dex: Math.max(0, dex + (applyArmorPenalty ? movementDexPenalty : 0)), str: clamp(input.str, 0, 100, profile.str), con,
+    damageDice: clamp(input.damageDice, 1, 30, profile.damageDice), move: Math.max(0, move + (applyArmorPenalty ? movementDexPenalty : 0)),
     baseArmor: clamp(input.baseArmor, 0, 30, profile.armor), armorBonus, armor: clamp(input.baseArmor, 0, 30, profile.armor) + armorBonus,
-    armorType,
+    armorType, movementDexPenalty, armorMoveDexApplied: true,
     currentHp: clamp(input.currentHp ?? input.hp, -1000, totalHp, totalHp), maxHp: totalHp,
     status: ['healthy', 'wounded', 'broken', 'unconscious', 'dead', 'fallen'].includes(input.status) ? input.status : 'healthy',
     combatTrained: input.combatTrained !== undefined ? Boolean(input.combatTrained) : profile.combatTrained,
@@ -155,6 +167,7 @@ const createOpponent = (input = {}, index = 0) => {
     weaponId: validMeleeWeapon(input.weaponId), missileWeaponId: validMissileWeapon(input.missileWeaponId),
     armor: clamp(input.armor, 0, 100, 6), armorMax: clamp(input.armorMax, 0, 100, input.armor ?? 6),
     armorType: ['none', 'leather', 'chainmail', 'plate'].includes(input.armorType) ? input.armorType : 'chainmail',
+    armorDexModifier: Number.isFinite(Number(input.armorDexModifier)) ? asInt(input.armorDexModifier) : undefined,
     shield: clamp(input.shield, 0, 100, 6), shieldMax: clamp(input.shieldMax, 0, 100, input.shield ?? 6),
     mounted: Boolean(input.mounted), horse: input.horse ? createHorse(input.horse) : input.mounted ? createHorse({ profileKey: input.horseProfileKey || 'rouncy' }) : null,
     distance: Math.max(0, asNumber(input.distance, 1)), movementRate: clamp(input.movementRate, 0, 100, roundPaladin((siz + clamp(input.dex, 0, 100, 10)) / 10)),
@@ -171,11 +184,16 @@ const createOpponent = (input = {}, index = 0) => {
 
 const sanitizePlayer = (input = {}, character = {}) => {
   const weaponId = validMeleeWeapon(input.weaponId);
-  const armor = clamp(input.armor, 0, 100, 10);
+  const magicEffects = getMagicCombatEffects(character);
+  if (input.firstRoundArmorEligible === false) magicEffects.firstRoundArmorBonus = 0;
+  const baseArmor = clamp(input.armor, 0, 100, 10);
+  const armor = clamp((magicEffects.armorOverride ?? baseArmor) + magicEffects.armorBonus, 0, 100, 10);
   const shield = WEAPON_PROFILES[weaponId]?.hands > 1 ? 0 : clamp(input.shield, 0, 100, 6);
   return {
     weaponId, missileWeaponId: validMissileWeapon(input.missileWeaponId), armor, armorMax: clamp(input.armorMax, 0, 100, armor),
     armorType: ['none', 'leather', 'chainmail', 'plate'].includes(input.armorType) ? input.armorType : 'chainmail',
+    armorDexModifier: Number.isFinite(Number(input.armorDexModifier)) ? asInt(input.armorDexModifier) : undefined,
+    equipmentSkillBonus: asInt(input.equipmentSkillBonus), weaponBreakOnTie: Boolean(input.weaponBreakOnTie), weaponUnbreakable: Boolean(input.weaponUnbreakable),
     shield, shieldMax: clamp(input.shieldMax, 0, 100, shield), mounted: Boolean(input.mounted),
     horse: input.horse ? createHorse(input.horse) : input.mounted ? createHorse(character.horses?.warhorse || {}) : null,
     carriedPounds: Math.max(0, asNumber(input.carriedPounds, asInt(character.attributes?.str) * 3)),
@@ -184,7 +202,10 @@ const sanitizePlayer = (input = {}, character = {}) => {
     prone: Boolean(input.prone), knockedDownRound: input.knockedDownRound == null ? null : Math.max(0, asInt(input.knockedDownRound)),
     weaponStatus: ['ready', 'dropped', 'broken'].includes(input.weaponStatus) ? input.weaponStatus : 'ready',
     grapple: input.grapple && typeof input.grapple === 'object' ? input.grapple : null,
-    chargeFollowThrough: Boolean(input.chargeFollowThrough), position: asNumber(input.position)
+    chargeFollowThrough: Boolean(input.chargeFollowThrough), position: asNumber(input.position),
+    magicEffects,
+    magicUseContext: ['chivalrous', 'evil_or_dishonorable', 'unknown'].includes(input.magicUseContext) ? input.magicUseContext : 'chivalrous',
+    knowinglyUsesMagic: input.knowinglyUsesMagic !== false, firstRoundArmorEligible: input.firstRoundArmorEligible !== false
   };
 };
 
@@ -249,7 +270,20 @@ export const startChapter7Combat = (characterValue, input = {}, now) => {
   character.campaign = character.campaign || {};
   character.campaign.health = sanitizeHealthState(character.campaign.health, character.attributes);
   character.campaign.combat = createChapter7Combat(character, input, now);
-  character.campaign.schemaVersion = 9;
+  const magicEffects = character.campaign.combat.player.magicEffects;
+  const chivalrousTotal = ['energetic', 'generous', 'just', 'merciful', 'modest', 'valorous']
+    .reduce((sum, key) => sum + asInt(character.traits?.[key]), 0);
+  if (magicEffects.itemIds.length && chivalrousTotal >= 90 && asInt(character.passions?.honor) >= 16
+    && character.campaign.combat.player.knowinglyUsesMagic
+    && character.campaign.combat.player.magicUseContext === 'chivalrous'
+    && !magicEffects.personalityBasedOnly) {
+    const conditionId = `magic-natural-armor:${character.personal?.campaignYear || 767}`;
+    character.campaign.conditions = [
+      ...(character.campaign.conditions || []).filter(condition => condition.id !== conditionId),
+      { id: conditionId, type: 'natural_armor_lost', year: character.personal?.campaignYear || 767, expiresAfterWinter: true, sourceRuleId: 'ITEM-MAGIC-001', sourcePage: 'Ch.12 p.205' }
+    ].slice(-100);
+  }
+  character.campaign.schemaVersion = 10;
   return character;
 };
 
@@ -394,7 +428,7 @@ export const declareChapter7Action = (characterValue, input = {}, now) => {
   state.phase = 'resolution';
   state.updatedAt = declaration.createdAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, declaration };
 };
 
@@ -413,10 +447,12 @@ const playerCombatant = (character, state) => {
   const derived = getDerivedHealth(character.attributes);
   return {
     side: 'player', id: 'player', name: character.personal?.name || '기사', ...state.player,
-    skill: asInt(character.skills?.[profile.lance ? 'spear' : profile.skillKey]),
+    armor: state.player.armor + (state.round === 1 ? asInt(state.player.magicEffects?.firstRoundArmorBonus) : 0),
+    skill: asInt(character.skills?.[profile.lance ? 'spear' : profile.skillKey]) + asInt(state.player.magicEffects?.skillBonus) + asInt(state.player.equipmentSkillBonus),
     spearSkill: asInt(character.skills?.spear), unarmed: asInt(character.skills?.unarmed),
     dex: asInt(character.attributes?.dex), str: asInt(character.attributes?.str), siz: asInt(character.attributes?.siz),
-    con: asInt(character.attributes?.con), damageDice: derived.damageDice, healthPenalty: derived.physicalPenalty,
+    con: asInt(character.attributes?.con), damageDice: derived.damageDice,
+    healthPenalty: state.player.magicEffects?.ignoreHealthPenalties ? 0 : derived.physicalPenalty,
     movementRate: getMovementRate(character.attributes, state.player.carriedPounds),
     encumbrance: getEncumbrance(character.attributes?.str, state.player.carriedPounds)
   };
@@ -456,19 +492,20 @@ const resolveWeaponCheck = (roll, base, modifiers) => {
 
 const damagePacket = ({ attacker, defender, check, weaponId, charging = false, diceBonus = 0, suppliedDamage, suppliedRolls, nonlethal = 'full', shieldApplies = false, source }) => {
   const dice = meleeDamageDice(attacker, defender, weaponId, charging, diceBonus);
+  const magicBonus = Math.max(0, asInt(attacker.magicEffects?.damageBonus));
   const damage = check.critical
-    ? maximumDamage(dice)
+    ? maximumDamage(dice, magicBonus)
     : suppliedDamage !== undefined && suppliedDamage !== ''
-      ? { dice, rolls: [], bonus: 0, total: Math.max(0, asInt(suppliedDamage)), manual: true }
-      : { dice, rolls: [], bonus: 0, total: 0, pending: true };
+      ? { dice, rolls: [], bonus: magicBonus, total: Math.max(0, asInt(suppliedDamage)) + magicBonus, manual: true }
+      : { dice, rolls: [], bonus: magicBonus, total: 0, pending: true };
   if (Array.isArray(suppliedRolls) && suppliedRolls.length) {
     damage.rolls = suppliedRolls.map(value => clamp(value, 1, 6));
-    damage.total = suppliedDamage !== undefined && suppliedDamage !== '' ? Math.max(0, asInt(suppliedDamage)) : damage.rolls.reduce((sum, value) => sum + value, 0);
+    damage.total = (suppliedDamage !== undefined && suppliedDamage !== '' ? Math.max(0, asInt(suppliedDamage)) : damage.rolls.reduce((sum, value) => sum + value, 0)) + magicBonus;
   }
   return {
     targetType: defender.side, targetId: defender.id, damage, rolledDamage: damage.total,
-    armor: asInt(defender.armor), shield: asInt(defender.shield), shieldApplies,
-    damageFraction: nonlethal === 'quarter' ? 0.25 : nonlethal === 'half' ? 0.5 : 1,
+    armor: attacker.magicEffects?.halveArmor ? roundPaladin(asInt(defender.armor) / 2) : asInt(defender.armor), shield: asInt(defender.shield), shieldApplies,
+    damageFraction: (nonlethal === 'quarter' ? 0.25 : nonlethal === 'half' ? 0.5 : 1) * (defender.magicEffects?.halfDamageSources?.includes('steel') ? 0.5 : 1),
     weaponId, source: source || `${WEAPON_PROFILES[weaponId]?.label || '무기'} 공격`,
     sourcePage: 'Ch.7 pp.116-125'
   };
@@ -477,7 +514,12 @@ const damagePacket = ({ attacker, defender, check, weaponId, charging = false, d
 const rngDamagePacket = (args, rng) => {
   const packet = damagePacket(args);
   if (!args.check.critical && args.suppliedDamage === undefined) {
-    packet.damage = rollDice(meleeDamageDice(args.attacker, args.defender, args.weaponId, args.charging, args.diceBonus), rng);
+    packet.damage = rollDice(
+      meleeDamageDice(args.attacker, args.defender, args.weaponId, args.charging, args.diceBonus),
+      rng,
+      undefined,
+      Math.max(0, asInt(args.attacker.magicEffects?.damageBonus))
+    );
     packet.rolledDamage = packet.damage.total;
   }
   return packet;
@@ -542,8 +584,8 @@ const makeUnopposedAttack = (attacker, defender, input, rng, options = {}) => {
 
 const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkill, action) => {
   const actorModifiers = action === 'dodge' ? {
-    modifier: actor.healthPenalty + armorDexModifier(actor.armorType) + actor.encumbrance.dexModifier + declaration.sourceModifier + declaration.gmModifier,
-    reasons: [{ value: actor.healthPenalty, label: '부상' }, { value: armorDexModifier(actor.armorType), label: '갑옷' }, { value: actor.encumbrance.dexModifier, label: '하중' }, { value: declaration.sourceModifier, label: declaration.sourceModifierLabel || '연결 절차 수정' }, { value: declaration.gmModifier, label: 'GM 상황 판정' }].filter(reason => reason.value)
+    modifier: actor.healthPenalty + armorDexModifier(actor) + actor.encumbrance.dexModifier + declaration.sourceModifier + declaration.gmModifier,
+    reasons: [{ value: actor.healthPenalty, label: '부상' }, { value: armorDexModifier(actor), label: '갑옷' }, { value: actor.encumbrance.dexModifier, label: '하중' }, { value: declaration.sourceModifier, label: declaration.sourceModifierLabel || '연결 절차 수정' }, { value: declaration.gmModifier, label: 'GM 상황 판정' }].filter(reason => reason.value)
   } : combatModifiers(actor, opponent, {
     defend: action === 'defend', uncontrolled: action === 'uncontrolled', charging: action === 'lance_charge',
     opponentCharging: declaration.enemyPlans?.[opponent.id] === 'lance_charge', sourceModifier: declaration.sourceModifier,
@@ -561,7 +603,7 @@ const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkil
   let feint = null;
   if (action === 'double_feint') {
     const encumbrance = actor.encumbrance?.dexModifier || 0;
-    const target = actor.dex + armorDexModifier(actor.armorType) + encumbrance;
+    const target = actor.dex + armorDexModifier(actor) + encumbrance;
     feint = resolveD20Roll(input.feintRoll || rollDie(20, rng), target);
     if (opponent.armor <= 0 && feint.success) {
       const bonus = feint.critical ? 10 : 5;
@@ -614,10 +656,15 @@ const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkil
     exchange.effects.push({ type: 'self_hit', side: 'opponent', targetId: opponent.id });
   }
   const grappleTie = opponentPlan === 'grapple';
-  const actorMishap = actorCheck.forcedMishap || weaponMishap(actor.weaponId, actorCheck, !grappleTie && opposed.winner === 'tie' && WEAPON_PROFILES[opponent.weaponId]?.sword);
+  const actorMishap = actor.magicEffects?.unbreakable || actor.weaponUnbreakable ? null
+    : actorCheck.forcedMishap || (actor.weaponBreakOnTie && opposed.winner === 'tie' ? 'broken' : weaponMishap(actor.weaponId, actorCheck, !grappleTie && opposed.winner === 'tie' && WEAPON_PROFILES[opponent.weaponId]?.sword));
   const opponentMishap = grappleTie ? null : weaponMishap(opponent.weaponId, opponentCheck, opposed.winner === 'tie' && WEAPON_PROFILES[actor.weaponId]?.sword);
   if (actorMishap) exchange.effects.push(actor.weaponId === 'shield' ? { type: 'shield_drop', side: 'player', targetId: 'player' } : { type: 'weapon', side: 'player', targetId: 'player', status: actorMishap });
   if (opponentMishap) exchange.effects.push(opponent.weaponId === 'shield' ? { type: 'shield_drop', side: 'opponent', targetId: opponent.id } : { type: 'weapon', side: 'opponent', targetId: opponent.id, status: opponentMishap });
+  if (opposed.winner === 'actor' && actorCanDamage && actor.magicEffects?.automaticUnhorse && opponent.mounted) {
+    exchange.effects.push({ type: 'dismount', side: 'opponent', targetId: opponent.id, source: 'Golden Lance' });
+    exchange.effects.push({ type: 'prone', side: 'opponent', targetId: opponent.id, value: true });
+  }
   if (opponentPlan === 'grapple' && opponentCheck.fumble) {
     exchange.effects.push({ type: 'prone', side: 'opponent', targetId: opponent.id, value: true });
     if (opponent.mounted) {
@@ -641,7 +688,8 @@ const resolveRangedAction = (character, state, declaration, input, rng) => {
   const shieldModifier = declaration.shieldUse === 'active' ? -target.shield : declaration.shieldUse === 'passive' && target.shield > 0 ? -3 : 0;
   const mountedModifier = actor.mounted && ['bow', 'compoundBow', 'longbow'].includes(state.player.missileWeaponId) ? -5 : 0;
   const aimModifier = state.player.aimed ? 5 : 0;
-  const baseSkill = asInt(character.skills?.[profile.skillKey]);
+  const arrowBonus = profile.skillKey === 'bow' ? asInt(state.player.magicEffects?.firstShotBowBonus) : 0;
+  const baseSkill = asInt(character.skills?.[profile.skillKey]) + arrowBonus;
   const rapid = declaration.fireMode === 'rapid';
   const attackBase = rapid ? Math.trunc(baseSkill / 2) : baseSkill;
   const modifier = rangeModifier + weatherModifier(declaration.weather) + shieldModifier + mountedModifier + aimModifier + actor.healthPenalty + actor.encumbrance.weaponModifier + declaration.sourceModifier + declaration.gmModifier;
@@ -670,6 +718,7 @@ const resolveRangedAction = (character, state, declaration, input, rng) => {
   exchange.effects.push({ type: 'ammo', side: 'player', ammoKey: profile.ammoKey, amount: -shots });
   if (profile.reloadRounds) exchange.effects.push({ type: 'reload', side: 'player', rounds: profile.reloadRounds });
   exchange.effects.push({ type: 'aim', side: 'player', value: false });
+  if (arrowBonus) exchange.effects.push({ type: 'magic_item_use', side: 'player', magicItemId: 'griffin_arrow' });
   exchange.gloryMultiplier = 0.1;
   return exchange;
 };
@@ -725,7 +774,7 @@ const resolveDexAction = (character, state, declaration, input, rng) => {
     if (!horse || !state.player.mounted) throw new RangeError('말을 탄 상태에서만 말 도약을 시도할 수 있습니다.');
     target = horse.dex;
   }
-  else modifier += armorDexModifier(actor.armorType) + actor.encumbrance.dexModifier;
+  else modifier += armorDexModifier(actor) + actor.encumbrance.dexModifier;
   if (type === 'climb') {
     if (dexAction.aid === 'rope') modifier += 5;
     if (dexAction.aid === 'ladder') modifier += 10;
@@ -769,7 +818,7 @@ const resolveDexAction = (character, state, declaration, input, rng) => {
     exchange.baseHeightFeet = horse.move;
     exchange.baseDistanceYards = horse.move;
     if (dexAction.extended) {
-      exchange.horsemanshipCheck = resolveD20Roll(input.horsemanshipRoll || rollDie(20, rng), asInt(character.skills?.horsemanship));
+      exchange.horsemanshipCheck = resolveD20Roll(input.horsemanshipRoll || rollDie(20, rng), asInt(character.skills?.horsemanship) + asInt(state.player.magicEffects?.horsemanshipBonus));
       exchange.success = exchange.success && exchange.horsemanshipCheck.success;
       if (exchange.success) {
         exchange.heightFeet = exchange.baseHeightFeet + 1;
@@ -944,7 +993,7 @@ const resolveEvasion = (character, state, declaration, input, rng) => {
   const actor = playerCombatant(character, state);
   const enemies = livingOpponents(state).filter(isEngaged);
   if (enemies.length > 1 && !declaration.movement?.gmMultipleApproved) throw new RangeError('다수 상대에게서 이탈하려면 GM 승인이 필요합니다.');
-  const base = actor.mounted ? asInt(character.skills?.horsemanship) : actor.dex;
+  const base = actor.mounted ? asInt(character.skills?.horsemanship) + asInt(state.player.magicEffects?.horsemanshipBonus) : actor.dex;
   validateAllocations(declaration, base, enemies.map(enemy => enemy.id), 'evade');
   const exchanges = enemies.map((enemy, index) => {
     const opponent = opponentCombatant(enemy);
@@ -1009,7 +1058,7 @@ const horseFallEffects = (character, state, exchanges, input, rng) => {
     for (const packet of exchange.packets || []) {
       if (packet.weaponId !== 'lance' || packet.rolledDamage <= 0) continue;
       if (packet.targetType === 'player' && state.player.mounted && state.player.horse && packet.rolledDamage > state.player.horse.siz) {
-        const riding = resolveD20Roll(input.actorHorsemanshipRoll || rollDie(20, rng), asInt(character.skills?.horsemanship));
+        const riding = resolveD20Roll(input.actorHorsemanshipRoll || rollDie(20, rng), asInt(character.skills?.horsemanship) + asInt(state.player.magicEffects?.horsemanshipBonus));
         if (riding.success) {
           const horseDex = resolveD20Roll(input.actorHorseDexRoll || rollDie(20, rng), state.player.horse.dex);
           exchange.horseCheck = { side: 'player', riding, horseDex };
@@ -1125,7 +1174,7 @@ export const resolveChapter7Action = (characterValue, input = {}, rng = Math.ran
   state.phase = 'winner';
   state.updatedAt = pending.createdAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, pending };
 };
 
@@ -1241,6 +1290,11 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
       }, rng);
       character = applied.character;
       injuries.push({ side: 'player', injury: applied.injury, packet });
+      if (state.player.magicEffects?.automaticFirstAid && applied.injury.actualDamage > 0 && applied.injury.woundId) {
+        const treated = resolveFirstAid(character,{woundId:applied.injury.woundId,skill:19,roll:1,healingRoll:input.automaticFirstAidHealing,now:input.now},rng);
+        character = treated.character;
+        injuries.push({side:'player',treatment:treated.treatment,source:'Otuel’s Gambeson'});
+      }
       if (applied.injury.knockedDown) {
         state.player.prone = true;
         state.player.knockedDownRound = state.round;
@@ -1296,6 +1350,15 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
     if (equipment) wear.push({ side: packet.targetType, targetId: packet.targetId, ...equipment });
   }
   state.pending.effects.forEach(effect => applyEffect(state, effect));
+  state.pending.effects.filter(effect => effect.type === 'magic_item_use').forEach(effect => {
+    const owned = (character.campaign?.economy?.magicItems || []).find(item => item.magicItemId === effect.magicItemId && item.equipped && !item.consumed);
+    if (owned) {
+      owned.used = true;
+      owned.useCount = asInt(owned.useCount) + 1;
+      owned.lastUsedYear = state.year;
+      state.player.magicEffects = getMagicCombatEffects(character);
+    }
+  });
   if (state.pending.declaration.experienceApproved) {
     const notableWin = state.pending.exchanges.some(exchange => exchange.actorCheck?.success && exchange.opposed?.winner === 'actor');
     if (notableWin) {
@@ -1311,7 +1374,7 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
   state.phase = 'movement';
   state.updatedAt = iso(input.now);
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, injuries, wear, pending: state.pending };
 };
 
@@ -1423,7 +1486,7 @@ export const completeChapter7Movement = (characterValue, input = {}, now) => {
   state.pending = null;
   state.updatedAt = roundRecord.completedAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, round: roundRecord };
 };
 
@@ -1450,7 +1513,7 @@ export const applyChapter7HorseDamage = (characterValue, input = {}, rng = Math.
   if (side === 'opponent') setOpponent(state, owner);
   state.updatedAt = iso(input.now);
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, horse: owner.horse, injury: applied.injury };
 };
 
@@ -1473,6 +1536,6 @@ export const concludeChapter7Combat = (characterValue, input = {}, now) => {
     narrative: `${state.opponents.map(opponent => opponent.name).join(', ')}와의 전투가 ${state.rounds.length}라운드 만에 끝났습니다.${input.note ? ` ${input.note}` : ''}`,
     sourceRuleId: 'COMBAT-SEQUENCE-001', sourcePage: 'Ch.7 pp.115-128', createdAt: timestamp
   });
-  character.campaign.schemaVersion = 9;
+  character.campaign.schemaVersion = 10;
   return { character, combat: state, returnContext: state.returnContext };
 };

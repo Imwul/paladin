@@ -123,6 +123,15 @@ assert.equal(sanitized.campaign.winter.economy.grossIncome, 7);
 assert.equal(sanitized.campaign.winter.flags.legacyHarvestResolved, true);
 const migratedEconomy = structuredClone(sanitized);
 migratedEconomy.family.manors = 1;
+migratedEconomy.campaign.economy.estates = [{
+  id: 'estate:hostile-regression',
+  name: '이관 장원',
+  type: 'manor',
+  annualIncomeDeniers: 1440,
+  status: 'active',
+  acquiredYear: 768,
+  source: 'legacy_migration'
+}];
 migratedEconomy.campaign.winter.steps.soloScenario = 'resolved';
 migratedEconomy.campaign.winter.steps.aging = 'resolved';
 migratedEconomy.campaign.winter.currentStep = 'economy';

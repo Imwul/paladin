@@ -1497,7 +1497,7 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
   }
   next.campaign = {
     ...(next.campaign || {}),
-    schemaVersion: 9,
+    schemaVersion: 10,
     saveRevision: Number(next.campaign?.saveRevision || 0) + 1,
     characterCreationSession: completedSession,
     completedCreationIds: [...new Set([...(next.campaign?.completedCreationIds || []), completionId])],

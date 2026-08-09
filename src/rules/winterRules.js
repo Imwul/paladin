@@ -5,6 +5,7 @@ import { resolveAttributeLifecycle } from './lifecycleRules.js';
 import { appendChronicleEvent, appendFamilyTimeline, postAnnualGlory, recordGloryAward, recordStandingChange } from './ledgerRules.js';
 import { adjustOpposedTrait, RELIGIOUS_TRAITS } from './personalityRules.js';
 import { resolveExperienceChecks, resolveTraitExperienceChecks } from './progressionRules.js';
+import { addEstate, applyAnnualEconomy, ensureEconomy, getMagicCombatEffects, getRetainerSkill, recordEconomyTransfer, toDeniers } from './economyRules.js';
 
 export const WINTER_STEPS = [
   { id: 'soloScenario', number: 1, ruleId: 'WINTER-ORDER-001', sourcePage: 'Ch.10 p.173', label: '개인 모험', english: 'Solo Scenario', summary: '필요한 개인 모험을 먼저 마치거나 해당 없음으로 기록합니다.' },
@@ -253,8 +254,17 @@ export const FAMILY_EVENT_TABLE = {
 const clone = value => JSON.parse(JSON.stringify(value));
 
 const getManorCount = character => {
+  if (Array.isArray(character.campaign?.economy?.estates)) {
+    return character.campaign.economy.estates.filter(estate => estate.status === 'active').length;
+  }
   if (Number.isFinite(Number(character.family?.manors))) return Math.max(0, Number(character.family.manors));
   return character.family?.hasEstate || String(character.gear?.homePossessions || '').includes('장원') ? 1 : 0;
+};
+
+const applyCashInPlace = (character, amountLivres, entry = {}) => {
+  const result = recordEconomyTransfer(character, { ...entry, amountLivres });
+  Object.assign(character, result.character);
+  return result;
 };
 
 const getSpouse = character => (character.family?.members || []).find(member => ['부인', '남편', '배우자', 'wife', 'husband', 'spouse'].some(label => String(member.relation).toLowerCase().includes(label)) && member.status !== '사망');
@@ -403,8 +413,15 @@ const applyOutcome = (character, winter, outcome, rng, context = {}) => {
       unresolved.push({ type: 'insufficient_cash', label: `£${Math.abs(amount)} 지출을 위한 재산 정리 필요` });
       return;
     }
-    character.gear.cash = after;
-    stateChanges.push({ path: 'gear.cash', before, after });
+    applyCashInPlace(character, amount, {
+      id: `${context.id || `winter:${context.year || character.personal?.campaignYear}`}:cash:${stateChanges.length + 1}`,
+      year: context.year,
+      type: amount >= 0 ? 'winter_event_income' : 'winter_event_expense',
+      label: context.title || '겨울 사건 재정 변화',
+      sourceRuleId: context.sourceRuleId || 'WINTER-PERSONAL-001',
+      sourcePage: context.sourcePage || 'Ch.10 pp.176-179'
+    });
+    stateChanges.push({ path: 'campaign.economy.coinDeniers', before: toDeniers(before), after: character.campaign.economy.coinDeniers });
   };
 
   (outcome.mandatoryEffect || []).forEach(effect => {
@@ -586,6 +603,11 @@ const resolveAging = (character, winter, record, input, rng) => {
     character.horses.warhorse.age = before + 1;
     record.stateChanges.push({ path: 'horses.warhorse.age', before, after: before + 1 });
   }
+  if (getMagicCombatEffects(character).agingImmune) {
+    record.result = { age: character.personal.age, agingRollRequired: false, protectedBy: 'Ogier’s Ring' };
+    record.journalEntry = `${character.personal.age}세가 되었으나 오지에의 반지가 모든 자연 노화 판정을 막았습니다.`;
+    return;
+  }
   const agingStartsAt = hasBlessing(character, 'eternalYouth', 'eternal youth') ? 35 : 30;
   if (character.personal.age < agingStartsAt) {
     record.result = { age: character.personal.age, agingRollRequired: false, agingStartsAt };
@@ -621,6 +643,7 @@ const resolveAging = (character, winter, record, input, rng) => {
 };
 
 const resolveEconomy = (character, winter, record, input, rng) => {
+  Object.assign(character, ensureEconomy(character));
   const manors = getManorCount(character);
   const gradeKey = input.maintenanceGrade || character.personal?.maintenance || 'ordinary';
   const grade = MAINTENANCE_GRADES[gradeKey];
@@ -638,13 +661,14 @@ const resolveEconomy = (character, winter, record, input, rng) => {
       };
     } else {
       const harvestRoll = input.harvestRoll || rollDie(20, rng);
+      const stewardship = getRetainerSkill(character, 'steward', 'Stewardship') ?? character.skills?.stewardship ?? 0;
       const modifier = getHarvestModifier({
         year: record.year,
         standings: character.standings,
         prosperity: hasBlessing(character, 'prosperity', 'prosperity'),
         situationalModifier: Number(input.situationalModifier || 0)
       });
-      harvest = resolveHarvest({ roll: harvestRoll, stewardship: character.skills?.stewardship || 0, modifier, manors });
+      harvest = resolveHarvest({ roll: harvestRoll, stewardship, modifier, manors });
     }
   }
   const requiredMaintenance = householdKnight ? 0 : grade.minimum;
@@ -656,9 +680,18 @@ const resolveEconomy = (character, winter, record, input, rng) => {
   if (cashBefore + surplus < 0) {
     record.unresolvedChoice = { type: 'maintenance_deficit', label: `£${Math.abs(surplus)} 적자를 충당할 매각 또는 유지 수준 변경`, required: true };
   } else {
-    character.gear.cash = cashBefore + surplus;
-    record.stateChanges.push({ path: 'gear.cash', before: cashBefore, after: character.gear.cash });
+    if (surplus) applyCashInPlace(character, surplus, {
+      id: `winter:${record.year}:estate-net`, year: record.year, type: 'winter_estate_net',
+      label: '장원 수입과 유지비 순정산', sourceRuleId: 'WINTER-HARVEST-001 / WINTER-MAINT-001 / WEALTH-INCOME-001',
+      sourcePage: 'Ch.10 pp.174-176; Ch.12 pp.193-196'
+    });
+    record.stateChanges.push({ path: 'campaign.economy.coinDeniers', before: toDeniers(cashBefore), after: character.campaign.economy.coinDeniers });
     character.personal.maintenance = gradeKey;
+  }
+  let annualFinance = null;
+  if (!record.unresolvedChoice) {
+    annualFinance = applyAnnualEconomy(character, record.year, { rng, retainerRolls: input.retainerRolls });
+    Object.assign(character, annualFinance.character);
   }
   const baseExpenses = householdKnight ? { knightAndSquire: 0, family: 0, horses: 0, additionalMaintenance: 0 } : {
     knightAndSquire: 2,
@@ -681,10 +714,15 @@ const resolveEconomy = (character, winter, record, input, rng) => {
     treasuryDelta: record.unresolvedChoice ? 0 : surplus,
     harvest,
     wardIncome,
+    annualFinance: annualFinance ? {
+      interestDeniers: annualFinance.interestDeniers,
+      depositFeesDeniers: annualFinance.feesDeniers,
+      retainerCostDeniers: annualFinance.retainerDeniers
+    } : null,
     completionId: record.completionId
   };
   record.roll = harvest.roll;
-  record.modifiers = [{ label: 'Stewardship', value: character.skills?.stewardship || 0 }, { label: 'Harvest modifiers', value: harvest.modifier || 0 }];
+  record.modifiers = [{ label: 'Stewardship', value: getRetainerSkill(character, 'steward', 'Stewardship') ?? character.skills?.stewardship ?? 0 }, { label: 'Harvest modifiers', value: harvest.modifier || 0 }];
   record.result = winter.annualLedger;
   record.journalEntry = householdKnight
     ? `${record.year}년은 주군이 보통 수준의 생활을 제공하는 가신 기사로 기록했습니다.`
@@ -707,7 +745,8 @@ const resolveSurvival = (character, winter, record, _input, rng) => {
     }
     const roll = rollDie(20, rng);
     const ageModifier = target.type.includes('mount') ? getHorseAgeModifier(target.age) : getNpcAgeModifier(target.age);
-    const maintenanceModifier = target.type.includes('mount') ? grade.horseSurvival : grade.childSurvival;
+    const groomBonus = target.type.includes('mount') ? Number(character.campaign?.economy?.annualRetainerEffects?.[record.year]?.horseSurvivalBonus || 0) : 0;
+    const maintenanceModifier = target.type.includes('mount') ? grade.horseSurvival + groomBonus : grade.childSurvival;
     const illnessModifier = target.priorIllness ? -5 : 0;
     const resolution = resolveSurvivalRoll({ roll, ageModifier, maintenanceModifier, illnessModifier });
     if (target.type === 'family') {
@@ -856,12 +895,24 @@ const resolveMarriage = (character, winter, record, input, rng) => {
   const spouse = createSpouse(character, { year: record.year, name: input.spouseName, rank: result.label || result.rank, age: input.spouseAge });
   result.spouse = spouse;
   const cashBefore = Number(character.gear?.cash || 0);
-  character.gear.cash = cashBefore + Number(result.dowry || result.dowryAmount || 0);
   result.dowry = Number(result.dowry || result.dowryAmount || 0);
-  record.stateChanges.push({ path: 'gear.cash', before: cashBefore, after: character.gear.cash });
+  if (result.dowry) applyCashInPlace(character, result.dowry, {
+    id: `${record.completionId}:dowry`, year: record.year, type: 'dowry_income', label: '혼인 지참금',
+    sourceRuleId: 'WINTER-MARRIAGE-001 / WEALTH-INCOME-001', sourcePage: 'Ch.10 pp.179-180; Ch.12 p.198'
+  });
+  record.stateChanges.push({ path: 'campaign.economy.coinDeniers', before: toDeniers(cashBefore), after: character.campaign.economy.coinDeniers });
   if (result.manors) {
     const before = getManorCount(character);
-    character.family.manors = before + Number(result.manors);
+    Array.from({ length: Number(result.manors) }, (_, index) => index).forEach(index => {
+      const acquired = addEstate(character, {
+        id: `${record.completionId}:estate:${index + 1}`,
+        name: `${spouse.name}의 지참 장원 ${index + 1}`,
+        source: 'marriage_dowry',
+        gmApproved: true,
+        note: 'Table 10 혼인 결과로 취득'
+      });
+      Object.assign(character, acquired.character);
+    });
     record.stateChanges.push({ path: 'family.manors', before, after: character.family.manors });
   }
   if (result.glory) {
@@ -894,8 +945,11 @@ const resolveChildbirths = (character, record, input, rng) => {
         results.push({ status: 'departed_unpaid', motherId: mother?.id || null, motherName: request.motherName || mother?.name || '기록되지 않은 여성' });
         return;
       }
-      character.gear.cash = before - 0.5;
-      record.stateChanges.push({ path: 'gear.cash', before, after: character.gear.cash });
+      applyCashInPlace(character, -0.5, {
+        id: `${record.completionId}:childbirth-support:${requestIndex + 1}`, year: record.year, type: 'family_expense', label: '출산 부양비',
+        sourceRuleId: 'WINTER-CHILDBIRTH-001', sourcePage: 'Ch.10 pp.179-181'
+      });
+      record.stateChanges.push({ path: 'campaign.economy.coinDeniers', before: toDeniers(before), after: character.campaign.economy.coinDeniers });
     }
     const fertility = hasBlessing(character, 'fertility', 'fertility') ? 5 : 0;
     const modifier = grade.childbirth + fertility;

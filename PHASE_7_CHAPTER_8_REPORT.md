@@ -12,7 +12,7 @@
 - Battle setup, command chain, situation modifiers, first charge, mounted and missile consequences, 3d6 melee events, fresh per-round enemies, unit actions, personal exchanges, rally and Chapter 7-returning special events.
 - Retreat, rout stand, opposed escape, surrender/capture, two-round pursuit, final result, force fate, loot, ransom claims and battle Glory.
 - Separate simple and advanced siege models with DV rings, natural defenses, equipment, health, assault, blockade, treachery, single combat result, morale chains, withdrawal and capture.
-- Shared character wounds, pending death, lifecycle death confirmation, horse state, family/follower state, Honor, Glory ledger, chronicle, captives, economy queue and fortress history.
+- Shared character wounds, pending death, lifecycle death confirmation, horse state, family/follower state, Honor, Glory ledger, chronicle, captives, canonical Economy ledger and fortress history.
 
 ## Tables
 
@@ -23,7 +23,7 @@ Tables 8-3 through 8-16 are source verified, exposed as pure executors, called b
 - Skirmish: setup -> failed command -> two Chapter 7 melee-result records -> follower failure -> exact killed/wounded/captured assignment -> victory and prisoner rescue -> chronicle/history.
 - Mass battle: setup -> two command rolls -> first charge -> follower fate -> melee event and exchange -> follower fate -> decisive victory -> loot/ransom/Glory -> campaign history.
 - Injury/death: enemy charge damage -> shared HP/wound state -> same-day pending death -> shared lifecycle Salvation gate.
-- Capture: surrender -> activity lock -> explicit ransom resolution -> Chapter 12 pending economy record.
+- Capture: surrender -> activity lock -> Chapter 12 ransom claim -> coin settlement -> campaign release.
 - Retreat/pursuit: battalion rout -> stand -> enemy rout -> pursuit decision -> melee pursuit -> Hunting pursuit -> aftermath.
 - Siege assault: monthly health -> assault through final DV ring -> defender morale -> castle capture -> Glory, captives and fortress control.
 - Siege blockade/treachery: blockade to next month -> health -> paid treachery -> defender morale surrender.
@@ -31,14 +31,14 @@ Tables 8-3 through 8-16 are source verified, exposed as pure executors, called b
 
 ## Campaign Integration
 
-Persistent schema v9 fields include `skirmish`, `massBattle`, `siege`, their histories, health wounds and pending death, `captivity`, canonical follower status, family timeline, horse state, Glory ledger, Honor, captives, `pendingEconomy`, chronicle events, and fortress control. Sanitizers preserve every valid active phase and prevent a completed award from being applied twice.
+Persistent schema v10 fields include `skirmish`, `massBattle`, `siege`, their histories, health wounds and pending death, `captivity`, canonical follower status, family timeline, horse state, Glory ledger, Honor, captives, Economy transactions and ransoms, chronicle events, and fortress control. Sanitizers preserve every valid active phase and prevent a completed award or economic result from being applied twice.
 
 ## Remaining Gaps
 
 - Chapter 8 has no omitted executable table or phase in the implemented scope.
-- Ransom settlement amount remains a Chapter 12 task; the claim itself is persistent and visible.
+- Ransom settlement is now complete through the Chapter 12 Economy engine; legacy pending claims migrate once.
 - The source assigns some outcomes to the Gamemaster, including loot amount, skirmish narrative result, follower selection and rescue, and single-combat winner. The app requires an explicit choice and does not invent a roll.
-- Chapter 7 advanced, multiple-opponent and ranged combat was completed in the following Phase 8. Chapter 12 economy, Chapter 17 cultures, Chapter 18 bestiary, and Chapter 19 adventures remain release-wide gaps, not Chapter 8 substitutions.
+- Chapter 7 advanced, multiple-opponent and ranged combat was completed in Phase 8, and Chapter 12 economy in Phase 9. Chapter 17 cultures, Chapter 18 bestiary, and Chapter 19 adventures remain release-wide gaps, not Chapter 8 substitutions.
 
 ## Verification
 
@@ -62,4 +62,4 @@ Persistent schema v9 fields include `skirmish`, `massBattle`, `siege`, their his
 
 Can Chapter 8 now be played from beginning to end without reopening the rulebook? **YES.**
 
-The only stops are choices the printed chapter itself gives to the Gamemaster or economic settlement explicitly belonging to Chapter 12; both are surfaced and persisted instead of being silently fabricated or lost.
+The only stops are choices the printed chapter itself gives to the Gamemaster; Chapter 12 economic settlement is surfaced, executable and persisted without fabricated outcomes.

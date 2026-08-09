@@ -5,6 +5,7 @@ import { LoadingState } from './components/ui/LedgerUI';
 import SaveConflictDialog from './components/SaveConflictDialog';
 import { getFirebaseServices } from './firebase';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
+import { createEconomyState, toDeniers } from './rules/economyRules';
 import './components/SettingsModal.css';
 import './styles/remaster.css';
 
@@ -14,6 +15,7 @@ const ChronicleLedger = lazy(() => import('./features/chronicle/ChronicleLedger'
 const WinterPhase = lazy(() => import('./features/winter/WinterPhase'));
 const CombatEncounter = lazy(() => import('./features/combat/CombatEncounterRemaster'));
 const BattleSiege = lazy(() => import('./features/battle/BattleSiege'));
+const EconomyLedger = lazy(() => import('./features/economy/EconomyLedger'));
 const ChronologyJournal = lazy(() => import('./components/ChronologyJournal'));
 const SoloOracles = lazy(() => import('./components/SoloOracles'));
 const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
@@ -140,7 +142,7 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 9,
+    schemaVersion: 10,
     saveRevision: 0,
     characterCreationSession: null,
     completedCreationIds: [],
@@ -219,6 +221,8 @@ const initialCharacterState = {
 
 const createInitialCharacterState = () => deepClone(initialCharacterState);
 
+initialCharacterState.campaign.economy = createEconomyState(initialCharacterState);
+
 const mergeWithDefault = (data) => sanitizeCampaignState(data, createInitialCharacterState());
 
 const getInitialFirebaseStatus = () => {
@@ -255,7 +259,17 @@ export default function App() {
   const character = rawCharacter;
   const setCharacter = useCallback((newData) => {
     setRawCharacter(prev => {
-      const resolved = typeof newData === 'function' ? newData(prev) : newData;
+      let resolved = typeof newData === 'function' ? newData(prev) : newData;
+      const legacyCashChanged = Number(resolved?.gear?.cash) !== Number(prev?.gear?.cash)
+        && Number(resolved?.campaign?.economy?.coinDeniers) === Number(prev?.campaign?.economy?.coinDeniers);
+      if (legacyCashChanged) {
+        resolved = deepClone(resolved);
+        resolved.campaign = resolved.campaign || {};
+        resolved.campaign.economy = {
+          ...(resolved.campaign.economy || createEconomyState(resolved)),
+          coinDeniers: toDeniers(resolved.gear.cash)
+        };
+      }
       const merged = mergeWithDefault(resolved);
       return {
         ...merged,
@@ -389,6 +403,7 @@ export default function App() {
     if (activeTab === 'adventure') return <ChronologyJournal character={character} setCharacter={setCharacter} />;
     if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
+    if (activeTab === 'economy') return <EconomyLedger character={character} setCharacter={setCharacter} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
     if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;

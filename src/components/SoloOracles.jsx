@@ -2645,12 +2645,6 @@ export default function SoloOracles({ character, setCharacter }) {
           >
             <Heart size={14} /> 신앙 기적과 사법 재판 및 연애
           </button>
-          <button
-            className={`sub-tab-btn ${activeSubTab === 'wealth_armory' ? 'active' : ''}`}
-            onClick={() => setActiveSubTab('wealth_armory')}
-          >
-            <Coins size={14} /> 재정 생활 수준 및 무구 상점
-          </button>
         </div>
       </div>
 

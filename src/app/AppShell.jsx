@@ -8,6 +8,7 @@ import {
   Cloud,
   CloudDownload,
   CloudUpload,
+  Coins,
   Compass,
   Crown,
   Dices,
@@ -36,6 +37,7 @@ export const NAV_ITEMS = [
   { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass },
   { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords },
   { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield },
+  { id: 'economy', label: '재산과 보물', meta: 'Wealth and Treasure', icon: Coins },
   { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
   { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
   { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
@@ -78,13 +80,14 @@ export default function AppShell({
           : getLifecycleLabel(lifecycle);
   const unresolvedCount = Object.values(character.campaign?.winter?.unresolved || {}).filter(Boolean).length
     + (character.campaign?.lifecycle?.unresolvedChoices?.length || 0)
+    + (character.campaign?.economy?.ransoms?.filter(claim => claim.status !== 'settled').length || 0)
     + (character.campaign?.health?.pendingDeath ? 1 : 0)
     + (['pending', 'blocked', 'must_withdraw'].includes(character.campaign?.health?.majorWoundCourage?.status) ? 1 : 0);
   const winterSteps = character.campaign?.winter?.steps || {};
   const winterDone = Object.values(winterSteps).filter(value => value === 'resolved' || value === 'skipped').length;
   const activeItem = NAV_ITEMS.find(item => item.id === activeTab) || NAV_ITEMS[0];
   const activeCharacter = getActiveCharacterIdentity(character);
-  const captive = character.campaign?.captivity?.status === 'active';
+  const captive = ['active', 'awaiting_ransom'].includes(character.campaign?.captivity?.status);
   const blockedWhileCaptive = new Set(['winter', 'adventure', 'combat', 'oracles']);
 
   useEffect(() => {
@@ -239,7 +242,7 @@ export default function AppShell({
 
       <footer className="royal-footer">
         <span lang="en">Paladin · Living Chronicle</span>
-        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v9</span>
+        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v10</span>
       </footer>
     </div>
   );

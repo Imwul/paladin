@@ -8,6 +8,7 @@ import {
 import { applyCharacterDamage, confirmHealthDeath, resolveFirstAid } from './combatRules.js';
 import { appendChronicleEvent, appendFamilyTimeline, recordGloryAward } from './ledgerRules.js';
 import { BATTLE_ENEMY_TABLES, lookupBattleEnemy } from './battleEnemyTables.js';
+import { ensureEconomy, getMagicCombatEffects, recordEconomyTransfer } from './economyRules.js';
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const asNumber = (value, fallback = 0) => Number.isFinite(Number(value)) ? Number(value) : fallback;
@@ -373,7 +374,7 @@ const activeFollowerRefs = (character, refs, excludedRefs = []) => {
 
 const followerFateCheck = (character, battle, roll) => {
   const activeRefs = activeFollowerRefs(character, battle.followerRefs, battle.routedFollowerRefs);
-  const target = asInt(character.skills?.battle) + asInt(battle.command?.chargeModifier) + asInt(battle.nextBattleModifier);
+  const target = asInt(character.skills?.battle) + asInt(battle.player?.magicBattleBonus) + asInt(battle.command?.chargeModifier) + asInt(battle.nextBattleModifier);
   const check = resolveD20Roll(roll, target);
   return { check, fate: executeTable88({ outcome: check.outcome, followerCount: activeRefs.length }), activeRefs };
 };
@@ -637,17 +638,19 @@ export const startMassBattle = (characterValue, input = {}, now) => {
   const lifecycle = character.campaign?.lifecycle?.careerStatus;
   if (['deceased', 'retired', 'historical'].includes(lifecycle)) throw new Error('현재 기사는 전투에 참가할 수 없습니다.');
   const timestamp = iso(now);
+  const magicBattleBonus = getMagicCombatEffects(character).battleBonus;
+  const playerRole = ['lone', 'unit', 'battalion', 'army'].includes(input.playerRole) ? input.playerRole : 'unit';
   const battle = sanitizeMassBattleState({
     id: safeId(input.id || `battle:${character.personal?.campaignYear || 767}:${timestamp}`),
     year: character.personal?.campaignYear || 767, name: String(input.name || '이름 없는 전투'), status: 'active', phase: 'pre_battle',
     scale: Object.hasOwn(BATTLE_SCALE_GLORY, input.scale) ? input.scale : 'small', duration: clamp(input.duration, 0, 12, 8), round: 0,
     sides: {
-      player: { name: String(input.playerSideName || '아군'), size: Math.max(1, asInt(input.playerArmySize, 200)), armyBattle: clamp(input.playerArmyBattle, 0, 100, 10), battalionBattle: clamp(input.battalionBattle, 0, 100, character.skills?.battle || 10) },
+      player: { name: String(input.playerSideName || '아군'), size: Math.max(1, asInt(input.playerArmySize, 200)), armyBattle: clamp(asInt(input.playerArmyBattle, 10) + (playerRole === 'army' ? magicBattleBonus : 0), 0, 100, 10), battalionBattle: clamp(asInt(input.battalionBattle, character.skills?.battle || 10) + magicBattleBonus, 0, 100, character.skills?.battle || 10) },
       enemy: { name: String(input.enemySideName || '적군'), size: Math.max(1, asInt(input.enemyArmySize, 200)), armyBattle: clamp(input.enemyArmyBattle, 0, 100, 10) }
     },
     battlefield: { ownHomeland: Boolean(input.ownHomeland), enemyHomeland: Boolean(input.enemyHomeland), playerRetreated: false, playerRouted: false, enemyRetreated: false, enemyRouted: false },
     player: {
-      role: ['lone', 'unit', 'battalion', 'army'].includes(input.playerRole) ? input.playerRole : 'unit',
+      role: playerRole, magicBattleBonus,
       isUnitCommander: Boolean(input.unitCommander || input.playerRole === 'battalion' || input.playerRole === 'army' || input.followerRefs?.length),
       mounted: Boolean(input.mounted), hasHorse: Boolean(input.mounted), hasLance: Boolean(input.hasLance), lanceIntact: Boolean(input.hasLance),
       armor: clamp(input.armor, 0, 100, 10), shield: clamp(input.shield, 0, 100, 6), holdingPrisonerId: null, unitState: input.playerRole === 'lone' ? 'alone' : 'attached'
@@ -815,7 +818,7 @@ export const beginBattleMeleeRound = (characterValue, input = {}, rng = Math.ran
   const enemyRow = lookupBattleEnemy(battle.enemyTableId, enemyTableRoll);
   const roundEnemy = battleEnemy({ ...enemyRow, name: `${enemyRow.quality} · ${enemyRow.weapon}` });
   const unitRoll = resolveUnitBattleRoll({
-    roll: input.battleRoll || rollDie(20, rng), skill: character.skills?.battle,
+    roll: input.battleRoll || rollDie(20, rng), skill: asInt(character.skills?.battle) + asInt(battle.player?.magicBattleBonus),
     modifiers: [event.modifier, isolation, lone ? -10 : 0, battle.nextBattleModifier],
     playerMounted: battle.player.mounted, enemyMounted: roundEnemy.mounted, lone, meleeEventTotal: event.total
   });
@@ -1151,7 +1154,7 @@ export const resolveBattleAftermath = (characterValue, input = {}, rng = Math.ra
 };
 
 export const finalizeMassBattle = (characterValue, now) => {
-  const character = clone(characterValue);
+  let character = ensureEconomy(characterValue);
   const battle = sanitizeMassBattleState(character.campaign?.massBattle);
   requirePhase(battle, ['aftermath']);
   if (!battle.aftermath) throw new Error('먼저 전투 결과와 군 전체 피해를 확정하세요.');
@@ -1163,9 +1166,30 @@ export const finalizeMassBattle = (characterValue, now) => {
     narrative: `${battle.round}라운드 동안 대규모 전투에 참여했습니다.`, amount: glory,
     sourceRuleId: 'BATTLE-GLORY-001', sourcePage: 'Chapter 8 pp.148-149', createdAt: timestamp
   });
-  if (battle.aftermath.loot) character.gear.cash = asNumber(character.gear?.cash) + battle.aftermath.loot;
+  if (battle.aftermath.loot) {
+    character = recordEconomyTransfer(character, {
+      id: `${battle.id}:loot`, year: battle.year, type: 'battle_loot', amountLivres: battle.aftermath.loot,
+      label: `${battle.name} 전리품`, sourceRuleId: 'BATTLE-AFTERMATH-001 / WEALTH-INCOME-001',
+      sourcePage: 'Chapter 8 pp.148-149; Chapter 12 p.197', createdAt: timestamp
+    }).character;
+  }
   character.campaign.captives = [...(character.campaign.captives || []), ...battle.captives].slice(-1000);
-  character.campaign.pendingEconomy = [...(character.campaign.pendingEconomy || []), ...battle.aftermath.ransomClaims.map(claim => ({ ...claim, sourceId: battle.id, year: battle.year, type: 'ransom' }))].slice(-1000);
+  const existingRansomIds = new Set(character.campaign.economy.ransoms.map(claim => claim.id));
+  character.campaign.economy.ransoms = [
+    ...character.campaign.economy.ransoms,
+    ...battle.aftermath.ransomClaims
+      .map((claim, index) => ({
+        ...claim,
+        id: claim.id || `${battle.id}:ransom:${index + 1}`,
+        sourceId: battle.id,
+        year: battle.year,
+        sourceType: 'battle_ransom',
+        direction: 'receivable',
+        status: 'pending'
+      }))
+      .filter(claim => !existingRansomIds.has(claim.id))
+  ].slice(-1000);
+  character.campaign.pendingEconomy = [];
   appendChronicleEvent(character, {
     id: `${battle.id}:chronicle`, year: battle.year, type: 'battle', title: battle.name,
     narrative: `${battle.sides.player.name}은 ${battle.sides.enemy.name}과 맞섰고, 전투는 ${battle.aftermath.result.result === 'decisive_victory' ? '결정적 승리' : battle.aftermath.result.result === 'decisive_defeat' ? '결정적 패배' : '결정되지 않은 채'} 끝났습니다.`,
@@ -1183,23 +1207,28 @@ export const finalizeMassBattle = (characterValue, now) => {
 export const confirmMassBattleDeath = (characterValue, now) => confirmHealthDeath(characterValue, { timestamp: now });
 
 export const resolvePlayerCaptivity = (characterValue, input = {}, now) => {
-  const character = clone(characterValue);
+  const character = ensureEconomy(characterValue);
   const captivity = character.campaign?.captivity;
   if (!captivity || captivity.status !== 'active') throw new Error('해결할 포로 상태가 없습니다.');
   const timestamp = iso(now);
   const resolution = ['ransomed', 'released', 'escaped'].includes(input.resolution) ? input.resolution : 'released';
   const amount = input.amount === '' || input.amount == null ? null : Math.max(0, asNumber(input.amount));
-  character.campaign.captivity = { ...captivity, status: 'resolved', resolution, ransom: amount, resolvedAt: timestamp };
+  character.campaign.captivity = { ...captivity, status: resolution === 'ransomed' ? 'awaiting_ransom' : 'resolved', resolution, ransom: amount, resolvedAt: resolution === 'ransomed' ? null : timestamp };
   if (resolution === 'ransomed') {
-    character.campaign.pendingEconomy = [...(character.campaign.pendingEconomy || []), {
-      id: `${captivity.sourceId}:player-ransom`, type: 'player_ransom', status: 'pending_chapter_12',
-      amount, sourceId: captivity.sourceId, year: captivity.year, sourceRuleId: 'BATTLE-SURRENDER-001'
-    }].slice(-1000);
+    const claimId = `${captivity.sourceId}:player-ransom`;
+    if (!character.campaign.economy.ransoms.some(claim => claim.id === claimId)) {
+      character.campaign.economy.ransoms.push({
+        id: claimId, sourceType: 'player_ransom', direction: 'payable', status: 'pending',
+        amountDeniers: amount == null ? null : Math.round(amount * 240), sourceId: captivity.sourceId,
+        year: captivity.year, sourceRuleId: 'BATTLE-SURRENDER-001'
+      });
+    }
+    character.campaign.pendingEconomy = [];
   }
   appendChronicleEvent(character, {
-    id: `${captivity.sourceId}:captivity:${resolution}`, year: captivity.year, type: 'captivity', title: '포로 생활이 끝나다',
+    id: `${captivity.sourceId}:captivity:${resolution}`, year: captivity.year, type: 'captivity', title: resolution === 'ransomed' ? '몸값 조건이 정해지다' : '포로 생활이 끝나다',
     narrative: resolution === 'escaped' ? `${captivity.captor}의 포로 상태에서 탈출했습니다.`
-      : resolution === 'ransomed' ? `${captivity.captor}에게서 몸값 조건으로 풀려났습니다.`
+      : resolution === 'ransomed' ? `${captivity.captor}와 몸값 조건을 정했으며, Chapter 12 정산 뒤 석방됩니다.`
         : `${captivity.captor}에게서 석방되었습니다.`,
     sourceRuleId: 'BATTLE-SURRENDER-001', sourcePage: 'Chapter 8 p.146', createdAt: timestamp
   });
@@ -1324,7 +1353,7 @@ export const resolveSimpleSiege = (characterValue, input = {}, rng = Math.random
 };
 
 export const resolveSiegeTactic = (characterValue, input = {}, rng = Math.random) => {
-  const character = clone(characterValue);
+  let character = ensureEconomy(characterValue);
   const siege = sanitizeSiegeState(character.campaign?.siege);
   requirePhase(siege, ['tactic']);
   if (siege.mode === 'simple') return resolveSimpleSiege(character, input, rng);
@@ -1365,7 +1394,11 @@ export const resolveSiegeTactic = (characterValue, input = {}, rng = Math.random
   } else if (tactic === 'treachery') {
     const bribe = Math.max(0, asInt(input.bribe));
     if (siege.playerSide === 'attacker' && bribe > asNumber(character.gear?.cash)) throw new Error('보유 현금보다 많은 뇌물을 쓸 수 없습니다.');
-    if (siege.playerSide === 'attacker') character.gear.cash -= bribe;
+    if (siege.playerSide === 'attacker' && bribe) character = recordEconomyTransfer(character, {
+      id: `${siege.id}:treachery:${siege.month}`, year: siege.year, type: 'siege_bribe', amountLivres: -bribe,
+      label: `${siege.fortress} 공성 뇌물`, sourceRuleId: 'BATTLE-SIEGE-TREACHERY-001 / WEALTH-MARKET-001',
+      sourcePage: 'Chapter 8 pp.155-156; Chapter 12 p.198'
+    }).character;
     const result = executeTable814({ roll: input.roll || rollDie(20, rng), intrigue: siege.sides.attacker.intrigue + siege.sides.attacker.ongoingSiegeModifier, bribe, target: input.target || 'commander' });
     if (result.moraleRequired) siege.moraleRequired.defender = { modifier: 0, reason: 'treachery', target: result.target, targetModifier: result.targetModifier };
     if (result.nextTargetModifier) {

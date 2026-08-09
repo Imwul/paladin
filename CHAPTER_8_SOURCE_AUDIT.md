@@ -41,9 +41,9 @@
 
 - Skirmish personal attacks and siege single combat use Chapter 7 combat results. Chapter 8 adds no replacement damage rule.
 - Gamemaster-decided skirmish result, captured-follower rescue, battle duration, clear narrative victory, single-combat winner, and loot amount remain visible choices.
-- Ransom claims are retained in `pendingEconomy` until Chapter 12 supplies the amount and settlement procedure.
+- Ransom claims are created directly in the canonical Chapter 12 Economy ledger; settlement changes coin and releases a captured player exactly once.
 - Nobles captured with a castle remain structured as pending GM escape/death outcomes, as required by the source.
 
 ## Test Link
 
-`scripts/battle-siege-regression.mjs` verifies Tables 8-1 through 8-16, every Battle Enemy table boundary, legal state transitions, follower identity and casualty persistence, injury/death/capture, retreat/pursuit, assault/blockade/treachery/morale, fortress persistence, and schema v9 reload behavior.
+`scripts/battle-siege-regression.mjs` verifies Tables 8-1 through 8-16, every Battle Enemy table boundary, legal state transitions, follower identity and casualty persistence, injury/death/capture, retreat/pursuit, assault/blockade/treachery/morale, fortress persistence, Chapter 12 Economy handoff, and schema v10 reload behavior.

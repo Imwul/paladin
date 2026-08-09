@@ -8,6 +8,7 @@ export * from './combatRules.js';
 export * from './chapter7CombatRules.js';
 export * from './combatIntegrationRules.js';
 export * from './coreRules.js';
+export * from './economyRules.js';
 export * from './lifecycleRules.js';
 export * from './ledgerRules.js';
 export * from './personalityRules.js';

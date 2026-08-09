@@ -249,7 +249,7 @@ test('CHAR-KNIGHT-QUAL-001', 'successor age uses 15 rather than a fixed 18 gate'
   assert.equal(context.context.candidate.age, 15);
 });
 
-test('SAVE-IMPORT-001', 'schema v4 migrates to v9 without manufacturing a blessing grant', () => {
+test('SAVE-IMPORT-001', 'schema v4 migrates to v10 without manufacturing a blessing grant', () => {
   const defaults = makeCharacter();
   const old = structuredClone(defaults);
   old.campaign.schemaVersion = 4;
@@ -258,7 +258,7 @@ test('SAVE-IMPORT-001', 'schema v4 migrates to v9 without manufacturing a blessi
   delete old.campaign.lifecycle.salvation;
   delete old.campaign.lifecycle.legacy;
   const migrated = sanitizeCampaignState(old, defaults);
-  assert.equal(migrated.campaign.schemaVersion, 9);
+  assert.equal(migrated.campaign.schemaVersion, 10);
   assert.equal(migrated.campaign.lifecycle.legacy.blessingGrant.consumed, true);
   assert.equal(migrated.campaign.lifecycle.legacy.blessingGrant.count, 0);
 });
