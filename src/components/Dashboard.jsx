@@ -1,6 +1,7 @@
 import { Award, BookOpen, Crown, ScrollText, Snowflake, UsersRound } from 'lucide-react';
 import { FolioHeading, LedgerRow, PendingAction, SectionHeader, StatusSeal } from './ui/LedgerUI';
 import { getActiveCharacterIdentity } from '../rules/lifecycleRules';
+import bookOfHoursBorder from '../assets/book-of-hours-border.jpg';
 
 const getPendingActions = character => {
   const actions = [];
@@ -55,6 +56,15 @@ export default function Dashboard({ character, setActiveTab }) {
       </FolioHeading>
 
       <section className="dashboard-register" aria-label="현재 기록 요약">
+        <figure className="dashboard-register__illumination">
+          <img
+            src={bookOfHoursBorder}
+            alt="푸른 아칸서스와 금박 덩굴로 장식된 15세기 기도서 필사본"
+            loading="eager"
+            decoding="async"
+          />
+          <figcaption><span lang="la">Liber Horarum</span> · Paris, 1455</figcaption>
+        </figure>
         <div className="dashboard-register__identity">
           <span className="serial-label">{activeCharacter.active ? 'Persona Activa' : 'Sedes Vacans'}</span>
           <h2>{activeCharacter.name}</h2>

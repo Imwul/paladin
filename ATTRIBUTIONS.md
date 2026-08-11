@@ -24,3 +24,13 @@
 - Source: https://commons.wikimedia.org/wiki/File:BNF_Fr_4274_8v_knight_detail.jpg
 - License: Public Domain Mark; faithful reproduction of a public-domain two-dimensional work.
 - UI treatment: cropped with CSS only; the downloaded source pixels are unmodified.
+
+## Book of Hours Border
+
+- File: `src/assets/book-of-hours-border.jpg`.
+- Work: *Leaf from a Book of Hours: Angel Chasing a Devil (recto) and Two Devils (verso)*.
+- Artist: Coetivy Master; Paris, circa 1455.
+- Collection: Cleveland Museum of Art, accession 2005.206.
+- Source: https://commons.wikimedia.org/wiki/File:Co%C3%ABtivy_Master_-_Leaf_from_a_Book_of_Hours-_Angel_Chasing_a_Devil_(recto)_and_Two_Devils_(ve_-_2005.206_-_Cleveland_Museum_of_Art.jpg
+- License: CC0 1.0 Universal Public Domain Dedication.
+- UI treatment: the dashboard uses a responsive CSS crop of the original open-access scan; no generated imagery is used.
