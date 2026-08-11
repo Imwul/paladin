@@ -679,6 +679,64 @@ const calculateScoreLedger = (draft, appliedAtStep = 'glory') => {
 
 const giftForRoll = roll => findByRange(BIRTH_GIFTS, roll);
 
+export const resolveStandaloneBirthGift = (input = {}) => {
+  const entries = [];
+  const pending = [];
+  let outfitUpgrades = 0;
+  const extraRolls = Array.isArray(input.extraRolls) ? [...input.extraRolls] : [];
+  const duplicateRerolls = Array.isArray(input.duplicateRerolls) ? [...input.duplicateRerolls] : [];
+
+  const resolve = (rollValue, path, ignoreNineteen = false) => {
+    const roll = asInt(rollValue, 0);
+    const gift = giftForRoll(roll);
+    if (!gift) {
+      pending.push({ path, type: 'roll', notation: '1d20', label: 'Frankish Birth Gift roll' });
+      return;
+    }
+    if (gift.special === 'rollTwice') {
+      if (ignoreNineteen) {
+        resolve(extraRolls.shift(), `${path}.ignore19`, true);
+        return;
+      }
+      resolve(extraRolls.shift(), `${path}.a`, true);
+      resolve(extraRolls.shift(), `${path}.b`, true);
+      return;
+    }
+    if (gift.key === 'playerChoice') {
+      const choiceRoll = asInt(input.choiceRoll, 0);
+      if (choiceRoll < 1 || choiceRoll > 19) {
+        pending.push({ path, type: 'choice', label: 'Choose one printed Frankish Birth Gift result (1-19).' });
+        return;
+      }
+      resolve(choiceRoll, `${path}.choice`);
+      return;
+    }
+    if (gift.special === 'outfitUpgrade') {
+      if (outfitUpgrades > 0) {
+        resolve(duplicateRerolls.shift(), `${path}.duplicate15`, ignoreNineteen);
+        return;
+      }
+      outfitUpgrades += 1;
+    }
+    const resolved = { path, roll, ...gift };
+    if (gift.key === 'sacredRelic') {
+      const relicRoll = asInt(input.relicRoll, 0);
+      if (relicRoll < 1 || relicRoll > 6) pending.push({ path, type: 'roll', notation: '1d6', label: 'Sacred relic type' });
+      else resolved.relicType = RELIC_TYPES[relicRoll - 1];
+      if (!RELIGIOUS_TRAITS.includes(input.religiousTrait)) pending.push({ path, type: 'choice', label: 'Choose one printed Religious trait.' });
+      else resolved.religiousTrait = input.religiousTrait;
+    }
+    if (gift.key === 'exceptionalWeapon') {
+      if (!MELEE_WEAPON_SKILLS.includes(input.weapon)) pending.push({ path, type: 'choice', label: 'Choose an exceptional melee weapon.' });
+      else resolved.weapon = input.weapon;
+    }
+    entries.push(resolved);
+  };
+
+  resolve(input.roll, 'gift.1');
+  return { entries, pending, outfitUpgrades, complete: pending.length === 0 };
+};
+
 const resolveGiftTree = (session, draft, path, roll, state, options = {}) => {
   const gift = giftForRoll(roll);
   if (!gift) return;
@@ -1497,7 +1555,7 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
   }
   next.campaign = {
     ...(next.campaign || {}),
-    schemaVersion: 10,
+    schemaVersion: 12,
     saveRevision: Number(next.campaign?.saveRevision || 0) + 1,
     characterCreationSession: completedSession,
     completedCreationIds: [...new Set([...(next.campaign?.completedCreationIds || []), completionId])],

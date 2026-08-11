@@ -19,15 +19,20 @@
   --seal-dark: #7d201c;
   --pale-blue-grey: #dce1e2;
   --focus: #155b85;
-  --font-medieval: 'Black North', 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-korean-ui: 'Hahmlet', 'AppleMyungjo', 'Noto Serif KR', serif;
+  --font-medieval: 'Black North', var(--font-korean-ui);
   --font-display: var(--font-medieval);
-  --font-body: var(--font-medieval);
-  --font-ui: var(--font-medieval);
-  --font-data: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-numeral: 'Black North', 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --text-micro: 0.75rem;
-  --text-caption: 0.8125rem;
-  --text-small: 0.875rem;
+  --font-body: var(--font-korean-ui);
+  --font-ui: var(--font-korean-ui);
+  --font-data: var(--font-korean-ui);
+  --font-numeral: 'Black North', var(--font-korean-ui);
+  --text-micro: 0.8rem;
+  --text-caption: 0.9rem;
+  --text-small: 0.95rem;
+  --sidebar-width: 248px;
+  --page-max: 1460px;
+  --page-gutter: 40px;
+  --shell-gutter: 32px;
   --color-parchment: var(--paper);
   --color-parchment-dark: var(--paper-grey);
   --color-ink: var(--ink);
@@ -42,8 +47,8 @@
   --color-grey: var(--ink-muted);
   --color-grey-light: var(--paper-grey);
   --color-success: #285e53;
-  --font-korean: var(--font-medieval);
-  --font-korean-serif: var(--font-medieval);
+  --font-korean: var(--font-korean-ui);
+  --font-korean-serif: var(--font-korean-ui);
   --font-heading: var(--font-display);
   --font-serif: var(--font-display);
   --font-gothic: var(--font-display);
@@ -58,6 +63,7 @@
 .remaster-app *,
 .remaster-app *::before,
 .remaster-app *::after {
+  font-synthesis: none;
   letter-spacing: 0 !important;
   text-transform: none !important;
 }
@@ -67,11 +73,14 @@
 .remaster-app .latin-register,
 .remaster-app .proper-noun-en {
   font-family: var(--font-medieval) !important;
+  font-weight: 400 !important;
+  font-synthesis: none !important;
 }
 
 html {
   background: var(--ink);
   color-scheme: light;
+  font-size: 18px;
   scroll-behavior: smooth;
 }
 
@@ -79,6 +88,7 @@ body {
   background: var(--ink);
   color: var(--ink);
   font-family: var(--font-body) !important;
+  font-weight: 500;
   line-height: 1.62;
   overflow-x: clip;
 }
@@ -116,6 +126,11 @@ a:focus-visible,
 
 .skip-link:focus { transform: translateY(0); }
 
+.folio-main:focus,
+.folio-main:focus-visible {
+  outline: none !important;
+}
+
 .remaster-app {
   min-height: 100vh;
   background: var(--paper);
@@ -127,7 +142,7 @@ a:focus-visible,
   grid-template-columns: minmax(320px, 1fr) auto;
   gap: 32px;
   align-items: center;
-  padding: 20px 32px 18px;
+  padding: 20px var(--shell-gutter) 18px;
   background: var(--paper-bright);
   border-top: 12px solid var(--ink);
   border-bottom: 2px solid var(--ink);
@@ -140,7 +155,7 @@ a:focus-visible,
   color: var(--ink-muted);
   font-family: var(--font-medieval);
   font-size: var(--text-caption);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1.3;
 }
 
@@ -159,7 +174,7 @@ a:focus-visible,
 .royal-header__identity p {
   margin: 7px 0 0;
   color: var(--ink-soft);
-  font-size: 0.88rem;
+  font-size: var(--text-small);
 }
 
 .royal-header__registry {
@@ -219,7 +234,7 @@ a:focus-visible,
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 0 32px;
+  padding: 0 var(--shell-gutter);
   overflow: auto hidden;
   background: var(--ink);
   color: white;
@@ -245,7 +260,7 @@ a:focus-visible,
 .remaster-frame {
   min-height: calc(100vh - 209px);
   display: grid;
-  grid-template-columns: 248px minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
   align-items: stretch;
 }
 
@@ -294,7 +309,7 @@ a:focus-visible,
 .folio-navigation__number { font-family: var(--font-data); font-size: var(--text-micro); color: var(--ink-muted); }
 .folio-navigation__label { min-width: 0; }
 .folio-navigation__label b, .folio-navigation__label small { display: block; }
-.folio-navigation__label b { font-size: 0.84rem; }
+.folio-navigation__label b { font-size: 0.94rem; }
 .folio-navigation__label small { overflow: hidden; color: var(--ink-muted); font-family: var(--font-medieval); font-size: var(--text-micro); text-overflow: ellipsis; white-space: nowrap; }
 
 .folio-navigation__plate {
@@ -331,7 +346,8 @@ a:focus-visible,
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0 40px;
+  padding-right: var(--page-gutter);
+  padding-left: max(var(--page-gutter), calc((100% - var(--page-max)) / 2 + var(--page-gutter)));
   border-bottom: 1px solid var(--rule-dark);
   background: var(--paper-bright);
   color: var(--ink-muted);
@@ -347,9 +363,9 @@ a:focus-visible,
 .journal-container,
 .oracles-container,
 .lore-container {
-  width: min(100%, 1460px);
+  width: min(100%, var(--page-max));
   margin: 0 auto;
-  padding: 40px;
+  padding: var(--page-gutter);
 }
 
 .folio-heading {
@@ -369,12 +385,12 @@ a:focus-visible,
   color: var(--ink);
   font-family: var(--font-display);
   font-size: 4rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.02;
   word-break: keep-all;
 }
 
-.folio-heading p { max-width: 680px; margin: 0; color: var(--ink-soft); font-size: 0.94rem; }
+.folio-heading p { max-width: 760px; margin: 0; color: var(--ink-soft); font-size: var(--text-small); }
 
 .folio-heading__year {
   color: var(--seal);
@@ -397,7 +413,7 @@ a:focus-visible,
   border-bottom: 1px solid var(--rule-dark);
 }
 
-.register-heading > span { color: var(--seal); font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; }
+.register-heading > span { color: var(--seal); font-family: var(--font-display); font-size: 1.15rem; font-weight: 400; }
 .register-heading h2 { margin: 0; font-size: 1rem; line-height: 1.3; }
 .register-heading small { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
 .register-heading__action { justify-self: end; }
@@ -442,7 +458,7 @@ a:focus-visible,
   color: var(--ink-soft);
   font-family: var(--font-ui);
   font-size: var(--text-caption);
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1.2;
 }
 
@@ -697,6 +713,8 @@ a:focus-visible,
 
 /* Display-scale numerals use the same engraved face as the main Latin titles. */
 .folio-heading__year,
+.royal-header__registry > div:not(.save-state) strong,
+.folio-navigation__number,
 .dashboard-register__stats dd,
 .chronicle-year > header strong,
 .glory-totals strong,
@@ -718,10 +736,47 @@ a:focus-visible,
 
 .modal-content-panel { width: min(820px, 100%) !important; max-height: calc(100vh - 48px) !important; overflow: auto !important; background: var(--paper-bright) !important; border: 2px solid var(--ink) !important; border-radius: 0 !important; }
 
-.royal-footer { min-height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; background: var(--ink); color: #ccc; font-family: var(--font-medieval); font-size: var(--text-micro); }
+.royal-footer { min-height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--shell-gutter); background: var(--ink); color: #ccc; font-family: var(--font-medieval); font-size: var(--text-micro); }
 .royal-footer span { display: inline-flex; align-items: center; gap: 6px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (min-width: 2200px) {
+  :root {
+    --sidebar-width: 336px;
+    --page-max: 2400px;
+    --page-gutter: 64px;
+    --shell-gutter: 48px;
+  }
+
+  html { font-size: 22px; }
+  .royal-header { min-height: 164px; padding-block: 28px 24px; }
+  .royal-wordmark { font-size: 3.35rem; }
+  .royal-header__registry > div { min-width: 96px; padding: 11px 14px 10px; }
+  .campaign-strip, .campaign-strip span { min-height: 52px; }
+  .campaign-strip span { padding-inline: 22px; }
+  .remaster-frame { min-height: calc(100vh - 268px); }
+  .folio-navigation { min-height: calc(100vh - 52px); padding: 32px 24px; }
+  .folio-navigation__heading { padding: 0 12px 24px; }
+  .folio-navigation button {
+    min-height: 72px;
+    grid-template-columns: 28px 24px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding: 10px 12px;
+  }
+  .folio-navigation__plate { margin-top: 36px; }
+  .folio-breadcrumb { min-height: 52px; }
+  .folio-heading { min-height: 230px; gap: 48px; padding-block: 36px 32px; }
+  .folio-heading h1 { max-width: 1320px; }
+  .folio-heading p { max-width: 920px; }
+  .register-heading { min-height: 64px; margin-top: 40px; }
+  .dashboard-register { gap: 44px; padding-block: 32px; }
+  .dashboard-columns { gap: 44px; }
+  .dashboard-ledgers__grid { column-gap: 40px; }
+  .primary-command, .secondary-command, .text-command { min-height: 54px; }
+  input, select, textarea { min-height: 52px; }
+  .royal-footer { min-height: 52px; }
+}
 
 @media (max-width: 1100px) {
   .royal-header { grid-template-columns: 1fr; gap: 16px; }
@@ -749,7 +804,7 @@ a:focus-visible,
   .icon-command { border: 1px solid var(--ink); }
   .campaign-strip { padding: 0 18px; }
   .remaster-frame { display: block; min-height: calc(100vh - 164px); }
-  .folio-navigation { position: fixed; inset: 0 auto 0 0; z-index: 90; width: min(320px, 86vw); min-height: 100vh; overflow-y: auto; transform: translateX(-105%); transition: transform 180ms ease; box-shadow: 8px 0 0 rgba(0, 0, 0, 0.12); }
+  .folio-navigation { position: fixed; inset: 0 auto 0 0; z-index: 90; width: min(320px, 86vw); height: 100dvh; min-height: 0; max-height: 100dvh; overflow-y: auto; overscroll-behavior: contain; transform: translateX(-105%); transition: transform 180ms ease; box-shadow: 8px 0 0 rgba(0, 0, 0, 0.12); }
   .folio-navigation.is-open { transform: translateX(0); }
   .navigation-scrim { position: fixed; inset: 0; z-index: 80; display: block; width: 100%; height: 100%; border: 0; border-radius: 0; background: rgba(0, 0, 0, 0.55); }
   .folio-breadcrumb { padding: 0 20px; }
@@ -768,6 +823,7 @@ a:focus-visible,
 }
 
 @media (max-width: 560px) {
+  html { font-size: 16px; }
   .royal-header { padding-inline: 14px; }
   .royal-wordmark { gap: 7px; font-size: 1.45rem; }
   .campaign-strip { min-height: 64px; display: grid; grid-template-columns: auto auto minmax(0, 1fr); padding-inline: 8px; overflow: hidden; }

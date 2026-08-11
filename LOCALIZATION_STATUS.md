@@ -34,7 +34,7 @@ At first explanatory use, rule terms may appear as Korean with the canonical Eng
 - `{parameter}` replacement is shared by both locales.
 - Phase 3 regression verifies default Korean, English fallback and missing-key reporting.
 - Buttons and status text were inspected at 390 CSS pixels; document `scrollWidth` equals `clientWidth`.
-- Korean headings and controls use the Eulyoo1945 web font with readable natural spacing and wrap without viewport-scaled font sizes.
+- Korean headings and controls use the locally bundled Hahmlet variable font with kerning, readable natural spacing, and wrapping without viewport-scaled font sizes.
 
 ## Remaining English
 

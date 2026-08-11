@@ -1,0 +1,275 @@
+.personality-workbench {
+  --personality-rule: color-mix(in srgb, var(--color-ink) 28%, transparent);
+}
+
+.personality-workbench button,
+.personality-workbench input,
+.personality-workbench select {
+  font: inherit;
+}
+
+.personality-tabs {
+  display: flex;
+  gap: 0;
+  margin: 0 0 24px;
+  border-block: 2px solid var(--color-ink);
+  overflow-x: auto;
+}
+
+.personality-tabs button {
+  flex: 1 0 160px;
+  min-height: 48px;
+  border: 0;
+  border-right: 1px solid var(--personality-rule);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.personality-tabs button.active {
+  color: var(--color-crimson);
+  box-shadow: inset 0 -3px var(--color-crimson);
+}
+
+.personality-bridge-note,
+.personality-return,
+.personality-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-block: 1px solid var(--personality-rule);
+}
+
+.personality-bridge-note > div,
+.personality-return > div {
+  flex: 1;
+}
+
+.personality-bridge-note span {
+  color: var(--color-crimson);
+  font-size: .82rem;
+}
+
+.personality-bridge-note p,
+.personality-return span {
+  margin: 4px 0 0;
+}
+
+.personality-stack {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.personality-section {
+  border-top: 2px solid var(--color-ink);
+}
+
+.personality-section > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.personality-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.personality-section > summary small,
+.personality-field > span,
+.personality-amor-facts span,
+.personality-task span {
+  color: var(--color-muted);
+  font-size: .8rem;
+}
+
+.personality-section__body {
+  display: grid;
+  gap: 14px;
+  padding: 4px 0 20px;
+  border-bottom: 1px solid var(--personality-rule);
+}
+
+.personality-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.personality-grid--five {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.personality-field {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.personality-field input,
+.personality-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--personality-rule);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-paper) 94%, white);
+  color: var(--color-ink);
+}
+
+.personality-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  color: var(--color-muted);
+  font-size: .84rem;
+}
+
+.personality-check input {
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.personality-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.personality-record,
+.personality-condition-ledger article {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border-bottom: 1px solid var(--personality-rule);
+}
+
+.personality-record > span,
+.personality-condition-ledger article > div {
+  flex: 1;
+}
+
+.personality-condition-ledger article p {
+  margin: 4px 0 0;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.personality-resolution,
+.personality-task {
+  padding: 14px;
+  border-left: 3px solid var(--color-crimson);
+  background: color-mix(in srgb, var(--color-crimson) 5%, transparent);
+}
+
+.personality-resolution > div:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.personality-resolution strong {
+  color: var(--color-crimson);
+  font-size: 1.25rem;
+}
+
+.personality-amor-status,
+.personality-condition-ledger {
+  border-top: 2px solid var(--color-ink);
+}
+
+.personality-amor-facts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border-block: 1px solid var(--personality-rule);
+}
+
+.personality-amor-facts > div {
+  display: grid;
+  gap: 6px;
+  min-height: 68px;
+  padding: 12px;
+  border-right: 1px solid var(--personality-rule);
+}
+
+.personality-amor-facts > div:last-child {
+  border-right: 0;
+}
+
+.personality-resume {
+  margin-top: 12px;
+}
+
+.personality-task p {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+}
+
+.personality-source-warning {
+  margin: 0;
+  padding: 10px 0;
+  border-block: 1px solid var(--color-warning);
+  color: var(--color-warning);
+  line-height: 1.6;
+}
+
+.personality-return {
+  margin-top: 28px;
+  border-top-width: 2px;
+}
+
+.personality-message {
+  margin-top: 12px;
+  color: var(--color-success);
+}
+
+.personality-message--error {
+  color: var(--color-danger);
+}
+
+.personality-empty {
+  color: var(--color-muted);
+}
+
+@media (max-width: 960px) {
+  .personality-grid,
+  .personality-grid--five {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .personality-amor-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .personality-grid,
+  .personality-grid--five,
+  .personality-amor-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .personality-section > summary {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .personality-section > summary small {
+    grid-column: 2;
+  }
+
+  .personality-condition-ledger article,
+  .personality-return {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

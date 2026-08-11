@@ -288,9 +288,9 @@ simpleSiege = resolveSiegeTactic(simpleSiege, { attackerEquipment: 10, defenderE
 assert.equal(simpleSiege.campaign.siege.phase, 'aftermath');
 assert.equal(sanitizeSiegeState(JSON.parse(JSON.stringify(simpleSiege.campaign.siege))).phase, 'aftermath');
 
-// Whole-campaign migration keeps each Chapter 8 state and history in schema v10.
+// Whole-campaign migration keeps each Chapter 8 state and history in schema v12.
 const reloadedCampaign = sanitizeCampaignState(JSON.parse(JSON.stringify(simpleSiege)), makeCharacter(0));
-assert.equal(reloadedCampaign.campaign.schemaVersion, 10);
+assert.equal(reloadedCampaign.campaign.schemaVersion, 12);
 assert.equal(reloadedCampaign.campaign.siege.phase, 'aftermath');
 
 // Blockade persists to the next month; treachery can force surrender.

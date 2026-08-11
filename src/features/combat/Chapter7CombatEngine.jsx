@@ -6,10 +6,14 @@ import {
   CHAPTER_7_PHASES,
   HORSE_PROFILES,
   MISSILE_PROFILES,
+  advanceChapter18Round,
   applyChapter7Consequences,
   applyChapter7HorseDamage,
+  applyChapter18RoundEffects,
+  completeAdventureCombat,
   completeChapter7Movement,
   completeChapter8PersonalCombat,
+  completeChapter18Encounter,
   concludeChapter7Combat,
   declareChapter7Action,
   getChapter7LegalActions,
@@ -99,8 +103,9 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
   const [conclusion, setConclusion] = useState({ result: 'victory', note: '', combatGlory: 0 });
 
   const run = action => {
-    try { setError(''); action(); } catch (caught) { setError(caught.message || '전투 절차를 완료하지 못했습니다.'); }
+    try { setError(''); action(); return true; } catch (caught) { setError(caught.message || '전투 절차를 완료하지 못했습니다.'); return false; }
   };
+  const commitCharacter = resolver => run(() => setCharacter(resolver(character)));
   const updateSetup = (key, value) => setSetup(previous => ({ ...previous, [key]: value }));
   const updateOpponent = (index, key, value) => setSetup(previous => ({ ...previous, opponents: previous.opponents.map((opponent, opponentIndex) => opponentIndex === index ? { ...opponent, [key]: value } : opponent) }));
   const addOpponent = () => setSetup(previous => ({ ...previous, opponents: [...previous.opponents, blankOpponent(previous.opponents.length)] }));
@@ -123,7 +128,7 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
           : Number(character.skills?.[playerProfile.skillKey] || 0)
   ) : 0;
 
-  const begin = () => run(() => setCharacter(previous => startChapter7Combat(previous, {
+  const begin = () => commitCharacter(previous => startChapter7Combat(previous, {
     player: {
       weaponId: setup.playerWeapon, missileWeaponId: setup.missileWeapon, armor: setup.armor, armorType: setup.armorType, armorDexModifier: setup.armorDexModifier,
       equipmentSkillBonus: setup.equipmentSkillBonus, weaponBreakOnTie: setup.weaponBreakOnTie, weaponUnbreakable: setup.weaponUnbreakable,
@@ -135,7 +140,7 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
       firstRoundArmorEligible: setup.firstRoundArmorEligible
     },
     opponents: setup.opponents.map(opponent => ({ ...opponent, horse: { profileKey: opponent.horseProfileKey } }))
-  })));
+  }));
 
   const toggleTarget = id => setDeclaration(previous => {
     const single = ['uncontrolled', 'grapple', 'ranged', 'lance_charge', 'joust'].includes(previous.action);
@@ -152,24 +157,42 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
     return allocationIds.reduce((values, id, index) => ({ ...values, [id]: base + (index === 0 ? skillBase - base * allocationIds.length : 0) }), {});
   };
 
-  const declare = () => run(() => setCharacter(previous => declareChapter7Action(previous, { ...declaration, action: legalActions.includes(declaration.action) ? declaration.action : legalActions[0], allocations: normalizedAllocations() }).character));
+  const declare = () => commitCharacter(previous => declareChapter7Action(previous, { ...declaration, action: legalActions.includes(declaration.action) ? declaration.action : legalActions[0], allocations: normalizedAllocations() }).character);
   const resolve = () => run(() => {
     const values = Object.fromEntries(Object.entries(rolls).map(([key, value]) => {
       if (rollMode !== 'manual' || value === '') return [key, undefined];
       if (key.endsWith('DamageRolls')) return [key, String(value).split(',').map(item => Number(item.trim())).filter(item => item >= 1 && item <= 6)];
       return [key, Number(value)];
     }));
-    setCharacter(previous => resolveChapter7Action(previous, values).character);
+    setCharacter(resolveChapter7Action(character, values).character);
   });
-  const apply = () => run(() => setCharacter(previous => applyChapter7Consequences(previous).character));
-  const completeMovement = () => run(() => setCharacter(previous => completeChapter7Movement(previous).character));
-  const damageHorse = () => run(() => setCharacter(previous => applyChapter7HorseDamage(previous, { ...horseDamage, rolledDamage: Number(horseDamage.rolledDamage) }).character));
-  const finish = () => run(() => {
-    setCharacter(previous => previous.campaign?.combat?.returnContext
-      ? completeChapter8PersonalCombat(previous, conclusion).character
-      : concludeChapter7Combat(previous, conclusion).character);
-    if (combat?.returnContext && onNavigate) onNavigate('battle');
+  const apply = () => commitCharacter(previous => {
+    const applied = applyChapter7Consequences(previous).character;
+    return applied.campaign?.chapter18?.active ? applyChapter18RoundEffects(applied).character : applied;
   });
+  const completeMovement = () => commitCharacter(previous => {
+    const moved = completeChapter7Movement(previous).character;
+    return moved.campaign?.chapter18?.active ? advanceChapter18Round(moved).character : moved;
+  });
+  const damageHorse = () => commitCharacter(previous => applyChapter7HorseDamage(previous, { ...horseDamage, rolledDamage: Number(horseDamage.rolledDamage) }).character);
+  const finish = () => {
+    const succeeded = commitCharacter(previous => {
+      if (previous.campaign?.combat?.returnContext?.type === 'adventure') return completeAdventureCombat(previous, conclusion).character;
+      if (previous.campaign?.chapter18?.active && previous.campaign?.combat?.returnContext?.type === 'chapter_18') {
+        return completeChapter18Encounter(previous, conclusion).character;
+      }
+      if (previous.campaign?.chapter18?.active && previous.campaign?.combat?.returnContext) {
+        const settled = completeChapter18Encounter(previous, conclusion).character;
+        return completeChapter8PersonalCombat(settled, conclusion).character;
+      }
+      if (previous.campaign?.chapter18?.active) return completeChapter18Encounter(previous, conclusion).character;
+      if (previous.campaign?.combat?.returnContext) return completeChapter8PersonalCombat(previous, conclusion).character;
+      return concludeChapter7Combat(previous, conclusion).character;
+    });
+    if (!succeeded) return;
+    if (combat?.returnContext?.type === 'adventure' && onNavigate) onNavigate('adventure');
+    else if (combat?.returnContext && combat.returnContext.type !== 'chapter_18' && onNavigate) onNavigate('battle');
+  };
 
   if (!active) return (
     <section className="chapter7-engine" aria-labelledby="chapter7-setup-title">
@@ -213,9 +236,9 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
       <header className="chapter7-engine__header"><div><span className="serial-label">Melee Round {combat.round}</span><h2>개인 전투 절차</h2></div><StatusSeal tone="active">{CHAPTER_7_PHASES.find(phase => phase.id === combat.phase)?.label}</StatusSeal></header>
       {combat.round === 1 && combat.openingModifier !== 0 && <p className="chapter7-return"><Crosshair size={16} aria-hidden="true" />{combat.openingModifierSource || '연결 절차'} {combat.openingModifier > 0 ? '+' : ''}{combat.openingModifier}가 이번 첫 라운드에만 적용됩니다.</p>}
       <PhaseRail current={combat.phase} />
-      <div className="chapter7-roster"><CombatantLine name={character.personal?.name || '기사'} hp={playerHealth.currentHp} maxHp={playerHealth.totalHp} armor={combat.player.armor} shield={combat.player.shield} mounted={combat.player.mounted} status={combat.player.prone ? '넘어짐' : combat.player.grapple ? '붙잡기' : '교전 가능'} horse={combat.player.horse} />{combat.opponents.map(opponent => <CombatantLine key={opponent.id} name={opponent.name} hp={opponent.currentHp} maxHp={opponent.siz + opponent.con} armor={opponent.armor} shield={opponent.shield} distance={opponent.distance} mounted={opponent.mounted} status={opponent.prone ? '넘어짐' : opponent.grapple ? '붙잡힘' : combatStatusLabels[opponent.status] || opponent.status} horse={opponent.horse} />)}</div>
+      <div className="chapter7-roster"><CombatantLine name={character.personal?.name || '기사'} hp={playerHealth.currentHp} maxHp={playerHealth.totalHp} armor={combat.player.armor} shield={combat.player.shield} mounted={combat.player.mounted} status={combat.player.prone ? '넘어짐' : combat.player.grapple ? '붙잡기' : '교전 가능'} horse={combat.player.horse} />{combat.opponents.map(opponent => <CombatantLine key={opponent.id} name={opponent.name} hp={opponent.currentHp} maxHp={opponent.maxHp} armor={opponent.armor} shield={opponent.shield} distance={opponent.distance} mounted={opponent.mounted} status={opponent.prone ? '넘어짐' : opponent.grapple ? '붙잡힘' : combatStatusLabels[opponent.status] || opponent.status} horse={opponent.horse} />)}</div>
 
-      {combat.phase === 'determination' && <div className="chapter7-declaration">
+      {combat.phase === 'determination' && legalActions.length > 0 && <div className="chapter7-declaration">
         <SelectField label="기사 행동" value={legalActions.includes(declaration.action) ? declaration.action : legalActions[0]} onChange={value => updateDeclaration('action', value)} options={legalActions.map(value => ({ value, label: `${CHAPTER_7_ACTIONS[value].label}${CHAPTER_7_ACTIONS[value].optional ? ' · 선택 규칙' : ''}` }))} />
         {(targetActions.has(declaration.action) || grappleActions.has(declaration.action)) && <fieldset className="chapter7-targets"><legend>대상</legend>{activeOpponents.map(opponent => <label key={opponent.id} className="combat-check"><input type={['uncontrolled', 'grapple', 'ranged', 'lance_charge', 'joust'].includes(declaration.action) ? 'radio' : 'checkbox'} name="combat-target" checked={declaration.targetIds.includes(opponent.id)} onChange={() => toggleTarget(opponent.id)} /><span>{opponent.name} · {opponent.distance}야드</span></label>)}</fieldset>}
         {activeOpponents.length > 1 && <fieldset className="chapter7-targets"><legend>아군 지원과 교전</legend>{activeOpponents.map(opponent => <label key={opponent.id} className="combat-check"><input type="checkbox" checked={declaration.allyEngagedIds.includes(opponent.id)} onChange={() => toggleSupport(opponent.id)} /><span>아군이 {opponent.name}을 상대함</span></label>)}</fieldset>}
@@ -249,7 +272,11 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
       <details className="chapter7-horse-damage"><summary>말 피해와 낙마 직접 처리</summary><div><SelectField label="말 소유자" value={horseDamage.side} onChange={value => setHorseDamage(previous => ({ ...previous, side: value }))} options={[{ value: 'player', label: '기사의 말' }, { value: 'opponent', label: '상대의 말' }]} />{horseDamage.side === 'opponent' && <SelectField label="상대" value={horseDamage.targetId} onChange={value => setHorseDamage(previous => ({ ...previous, targetId: value }))} options={combat.opponents.filter(opponent => opponent.horse).map(opponent => ({ value: opponent.id, label: opponent.name }))} />}<NumberField label="굴림 피해" value={horseDamage.rolledDamage} max={999} onChange={value => setHorseDamage(previous => ({ ...previous, rolledDamage: value }))} /><label className="combat-check"><input type="checkbox" checked={horseDamage.direct} onChange={event => setHorseDamage(previous => ({ ...previous, direct: event.target.checked }))} /><span>마갑을 무시하는 직접 피해</span></label><label className="combat-check"><input type="checkbox" checked={horseDamage.fall} onChange={event => setHorseDamage(previous => ({ ...previous, fall: event.target.checked }))} /><span>말이 쓰러짐</span></label><button type="button" className="secondary-command" onClick={damageHorse}><HeartCrack size={17} aria-hidden="true" />말 피해 적용</button></div></details>
 
       <div className="chapter7-conclusion"><SelectField label="전투 결말" value={conclusion.result} onChange={value => setConclusion(previous => ({ ...previous, result: value }))} options={resultOptions} />{combat.returnContext?.type === 'mass_battle_special' && <NumberField label="특별 조우 개인 Glory" value={conclusion.combatGlory} max={10000} onChange={value => setConclusion(previous => ({ ...previous, combatGlory: value }))} />}<label className="combat-field"><span>연대기 메모</span><input value={conclusion.note} onChange={event => setConclusion(previous => ({ ...previous, note: event.target.value }))} /></label><button type="button" className="secondary-command" onClick={finish} disabled={combat.phase === 'winner'}><Check size={17} aria-hidden="true" />전투 종료</button></div>
-      {combat.returnContext && <p className="chapter7-return"><Crosshair size={16} aria-hidden="true" />이 교전은 Chapter 8 절차에서 시작되었습니다. 종료 결과가 원래 전쟁 장부로 돌아갑니다.</p>}
+      {combat.returnContext && <p className="chapter7-return"><Crosshair size={16} aria-hidden="true" />{combat.returnContext.type === 'adventure'
+        ? '이 교전은 모험 절차에서 시작되었습니다. 종료 결과가 원래 모험 단계에 한 번만 반영됩니다.'
+        : combat.returnContext.type === 'chapter_18'
+          ? '이 교전은 Chapter 18 원문 상대 절차에서 시작되었습니다. 종료 결과가 조우 기록과 영광 장부에 한 번만 반영됩니다.'
+          : '이 교전은 Chapter 8 절차에서 시작되었습니다. 종료 결과가 원래 전쟁 장부로 돌아갑니다.'}</p>}
       {error && <div className="winter-error" role="alert"><AlertTriangle size={17} aria-hidden="true" />{error}</div>}
     </section>
   );

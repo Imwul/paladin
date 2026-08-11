@@ -55,13 +55,13 @@ export const MARKET_CATALOG = [
   market('wine_frankish', 'food', '프랑크산 와인 한 병', 1, { consumable: true }),
   market('wine_exotic', 'food', '외래 와인 한 병', 2, { consumable: true }),
 
-  market('donkey', 'mount', '당나귀', 40, { combat: { damage: '4d6', move: 5, armor: 3, str: 20, con: 15 } }),
+  market('donkey', 'mount', '당나귀', 40, { combat: { damage: '5d6', move: 5, armor: 3, str: 20, con: 15 } }),
   market('cart_horse', 'mount', '짐수레 말', 60, { combat: { damage: '2d6', move: 4, armor: 3, str: 15, con: 10 } }),
   market('mule', 'mount', '노새', 80, { combat: { damage: '6d6', move: 6, armor: 4, str: 25, con: 18 } }),
   market('sumpter', 'mount', '짐말', 80, { combat: { damage: '3d6', move: 5, armor: 3, str: 15, con: 16 } }),
   market('camel', 'mount', '낙타', 0, { foreign: true, referenceOnly: true, note: '사라센·페르시아만. 말 상대 높이 우위 +5.', combat: { damage: '6d6', move: 6, armor: 5, str: 20, con: 12 } }),
   market('pony', 'mount', '조랑말', 960, { combat: { damage: '2d6', move: 4, armor: 3, str: 20, con: 15 } }),
-  market('basque_pony', 'mount', '바스크 조랑말', 0, { foreign: true, referenceOnly: true, combat: { damage: '2d6', move: 4, armor: 3, str: 15, con: 14 } }),
+  market('basque_pony', 'mount', '바스크 조랑말', 0, { foreign: true, referenceOnly: true, combat: { damage: '5d6', move: 7, armor: 4, str: 15, con: 14 } }),
   market('war_pony', 'mount', '전투 조랑말', 2880, { combat: { damage: '5d6', move: 6, armor: 4, str: 20, con: 14 } }),
   market('steppe_pony', 'mount', '초원 조랑말', 0, { foreign: true, referenceOnly: true, combat: { damage: '5d6', move: 7, armor: 4, str: 20, con: 10 } }),
   market('rouncy', 'mount', '승용마', 240, { combat: { profileKey: 'rouncy', damage: '4d6', move: 6, armor: 4, str: 18, con: 14 } }),
@@ -774,11 +774,11 @@ export const getMagicScoreModifiers = character => {
 export const getMagicCombatEffects = character => {
   const owned=list(character.campaign?.economy?.magicItems).filter(entry=>entry.equipped&&!entry.consumed);
   const scoreModifiers=getMagicScoreModifiers(character);
-  const effects={itemIds:[],skillBonus:0,damageBonus:0,armorBonus:0,armorOverride:null,hpBonus:0,battleBonus:0,agingImmune:false,fireImmune:false,fireArmor:0,halfDamageSources:[],automaticFirstAid:false,halveArmor:false,automaticUnhorse:false,unbreakable:false,ignoreHealthPenalties:false,ignoreMajorWoundEffects:false,poisonImmune:false,firstShotBowBonus:0,firstRoundArmorBonus:0,horsemanshipBonus:asInt(scoreModifiers.skills.horsemanship),valorousBonus:asInt(scoreModifiers.traits.valorous),scoreModifiers,personalityBasedOnly:true};
+  const effects={itemIds:[],weaponItemIds:[],skillBonus:0,damageBonus:0,armorBonus:0,armorOverride:null,hpBonus:0,battleBonus:0,agingImmune:false,fireImmune:false,fireArmor:0,halfDamageSources:[],automaticFirstAid:false,halveArmor:false,automaticUnhorse:false,unbreakable:false,ignoreHealthPenalties:false,ignoreMajorWoundEffects:false,poisonImmune:false,firstShotBowBonus:0,firstRoundArmorBonus:0,horsemanshipBonus:asInt(scoreModifiers.skills.horsemanship),valorousBonus:asInt(scoreModifiers.traits.valorous),scoreModifiers,personalityBasedOnly:true};
   const lowestReligious=Math.min(...CHRISTIAN_RELIGIOUS_TRAITS.map(key=>asInt(character.traits?.[key])+asInt(scoreModifiers.traits[key])));
   for(const ownedItem of owned){
     const item=catalogById(MAGIC_ITEM_CATALOG,ownedItem.magicItemId); if(!item) continue;
-    effects.itemIds.push(item.id); effects.personalityBasedOnly=effects.personalityBasedOnly&&item.personalityBased;
+    effects.itemIds.push(item.id); if(item.kind==='weapon')effects.weaponItemIds.push(item.id); effects.personalityBasedOnly=effects.personalityBasedOnly&&item.personalityBased;
     const e=item.effects;
     if(e.hpBonus) effects.hpBonus+=e.hpBonus;
     if(e.hpFromLoveFamily) effects.hpBonus+=Math.max(0,asInt(character.passions?.loveFamily)-10);
@@ -870,7 +870,7 @@ export const getEquippedMarketCombat = character => {
     }
     if (item.combat.dex !== undefined && (item.combat.armor !== undefined || item.combat.shield !== undefined)) result.armorDexModifier = (result.armorDexModifier ?? 0) + asInt(item.combat.dex);
     if (item.combat.shield !== undefined) result.shield = item.combat.shield;
-    if (item.category === 'mount') result.mount = item;
+    if (item.category === 'mount') result.mount = { ...item, attackTrained: Boolean(entry.attackTrained) };
     if (item.category === 'horseArmor') result.horseArmor = item;
   });
   return result;

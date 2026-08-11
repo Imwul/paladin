@@ -4,6 +4,7 @@ import { maleNames, femaleNames, surnames, locations, titles } from '../data/nam
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
 import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
 import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
+import PersonalityMagicPanel from '../features/personality/PersonalityMagicPanel';
 import {
   applyCharacterDamage,
   compareOpposedD20,
@@ -15,6 +16,8 @@ import {
 } from '../rules';
 
 const isLegacyMassCombatEnabled = () => false;
+const LEGACY_PERSONALITY_MAGIC_ENABLED = import.meta.env.DEV
+  && import.meta.env.VITE_LEGACY_PERSONALITY_MAGIC === 'true';
 
 // D6 Tactile Dice Face Component
 const DiceFace = ({ value, isRolling }) => {
@@ -2834,7 +2837,8 @@ export default function SoloOracles({ character, setCharacter }) {
       {/* ========================================================
           SUB-TAB 2: CHAPTER 3 PERSONALITY TRAITS & PASSIONS
           ======================================================== */}
-      {activeSubTab === 'personality' && (
+      {activeSubTab === 'personality' && <PersonalityMagicPanel character={character} setCharacter={setCharacter} mode="personality" />}
+      {LEGACY_PERSONALITY_MAGIC_ENABLED && activeSubTab === 'personality' && (
         <>
           {activePassionStates.length > 0 && (
             <section className="cs-section" style={{ marginBottom: '14px' }}>
@@ -3984,7 +3988,8 @@ export default function SoloOracles({ character, setCharacter }) {
       {/* ========================================================
           SUB-TAB 5: PRAYER, DIVINE MIRACLES, TRIALS & COURTSHIP
           ======================================================== */}
-      {activeSubTab === 'miracles_amor' && (
+      {activeSubTab === 'miracles_amor' && <PersonalityMagicPanel character={character} setCharacter={setCharacter} mode="magic" />}
+      {LEGACY_PERSONALITY_MAGIC_ENABLED && activeSubTab === 'miracles_amor' && (
         <>
           <div className="cs-row">
             {/* 1. 성스러운 기도와 기적 (Prayers & Miracles) */}

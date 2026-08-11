@@ -42,6 +42,7 @@ export const WEAPON_PROFILES = Object.freeze({
   morningStar: { label: '모닝스타', skillKey: 'bludgeon', dice: 1, hands: 2, bonusVsChainmail: 1 },
   warflail: { label: '전투 도리깨', skillKey: 'bludgeon', dice: 1, hands: 2, ignoresShield: true, bonusVsChainmail: 1, selfHitOnOne: true },
   lance: { label: '마상창', skillKey: 'lance', dice: 0, hands: 1, lance: true },
+  natural: { label: '자연 무기', skillKey: 'unarmed', dice: 0, hands: 0, natural: true },
   unarmed: { label: '맨손', skillKey: 'unarmed', dice: -2, hands: 0 },
   shield: { label: '방패 밀치기', skillKey: 'unarmed', dice: -1, hands: 1, shieldAttack: true }
 });
@@ -89,8 +90,8 @@ export const getDerivedHealth = attributes => {
     lostHp,
     damageDice: Math.max(1, roundPaladin((str + siz) / 6)),
     healingRate: Math.max(0, roundPaladin((str + con) / 10)),
-    unconsciousThreshold: Math.max(0, roundPaladin(totalHp / 4)),
-    majorWoundThreshold: con,
+    unconsciousThreshold: Math.max(0, attributes?.unconsciousThreshold == null ? roundPaladin(totalHp / 4) : asInt(attributes.unconsciousThreshold)),
+    majorWoundThreshold: Math.max(0, attributes?.majorWoundThreshold == null ? con : asInt(attributes.majorWoundThreshold)),
     woundPenalty,
     physicalPenalty: woundPenalty,
     allSkillsPenalty: woundPenalty === -10 ? -10 : 0
@@ -405,7 +406,7 @@ export const startCombat = (characterValue, input = {}, now) => {
   character.campaign = character.campaign || {};
   character.campaign.health = sanitizeHealthState(character.campaign.health, character.attributes);
   character.campaign.combat = createCombatEncounter(character, input, now);
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return character;
 };
 
@@ -427,7 +428,7 @@ export const resolveMajorWoundCourage = (characterValue, input = {}, rng = Math.
   };
   character.traitsChecked = { ...(character.traitsChecked || {}), valorous: true };
   character.campaign.health = health;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, courage: { check, status } };
 };
 
@@ -734,7 +735,7 @@ export const resolveCombatRound = (characterValue, input = {}, rng = Math.random
   encounter.rounds = [...encounter.rounds, round].slice(-100);
   encounter.updatedAt = timestamp;
   character.campaign.combat = encounter;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, round };
 };
 
@@ -779,7 +780,7 @@ export const resolveFirstAid = (characterValue, input = {}, rng = Math.random) =
   } else if (wound.classification !== 'mortal') health.unconscious = false;
   health.lastUpdatedAt = iso(input.now);
   character.campaign.health = health;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return {
     character,
     treatment: { woundId: wound.id, check, amount: recovered, currentHpBefore: before, currentHpAfter: character.attributes.currentHp, mortalAttributeLoss }
@@ -846,7 +847,7 @@ export const resolveWeeklyRecovery = (characterValue, input = {}, rng = Math.ran
   health.weeklyCare = [...health.weeklyCare, record].slice(-100);
   health.lastUpdatedAt = record.createdAt;
   character.campaign.health = health;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, recovery: record };
 };
 
@@ -949,7 +950,7 @@ export const concludeCombat = (characterValue, input = {}, now) => {
     sourcePage: 'Ch.7 pp.116-117',
     createdAt: timestamp
   });
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return character;
 };
 

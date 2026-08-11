@@ -12,6 +12,7 @@ import {
   Compass,
   Crown,
   Dices,
+  HeartHandshake,
   Menu,
   LogIn,
   LogOut,
@@ -38,6 +39,7 @@ export const NAV_ITEMS = [
   { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords },
   { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield },
   { id: 'economy', label: '재산과 보물', meta: 'Wealth and Treasure', icon: Coins },
+  { id: 'personality', label: '성격과 신앙', meta: 'Personality and Faith', icon: HeartHandshake },
   { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
   { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
   { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
@@ -83,6 +85,7 @@ export default function AppShell({
     + (character.campaign?.economy?.ransoms?.filter(claim => claim.status !== 'settled').length || 0)
     + (character.campaign?.health?.pendingDeath ? 1 : 0)
     + (['pending', 'blocked', 'must_withdraw'].includes(character.campaign?.health?.majorWoundCourage?.status) ? 1 : 0);
+  const adventurePending = character.campaign?.adventures?.active;
   const winterSteps = character.campaign?.winter?.steps || {};
   const winterDone = Object.values(winterSteps).filter(value => value === 'resolved' || value === 'skipped').length;
   const activeItem = NAV_ITEMS.find(item => item.id === activeTab) || NAV_ITEMS[0];
@@ -178,11 +181,11 @@ export default function AppShell({
 
       <div className="campaign-strip" aria-label="캠페인 현재 상태">
         <span><CalendarDays size={14} aria-hidden="true" /> {year}년</span>
-        <span><Shield size={14} aria-hidden="true" /> Phase {phase?.number ?? 0}</span>
+        <span lang="en"><Shield size={14} aria-hidden="true" /> Phase {phase?.number ?? 0}</span>
         <span><UserRound size={14} aria-hidden="true" /> {activeCharacter.name}</span>
         <span>{healthLabel}</span>
         <span><Snowflake size={14} aria-hidden="true" /> 겨울 {winterDone}/10</span>
-        <span className={unresolvedCount ? 'campaign-strip__warning' : ''}>미결 {unresolvedCount}</span>
+        <span className={unresolvedCount || adventurePending ? 'campaign-strip__warning' : ''}>미결 {unresolvedCount + (adventurePending ? 1 : 0)}</span>
       </div>
 
       <div className="remaster-frame">
@@ -242,7 +245,7 @@ export default function AppShell({
 
       <footer className="royal-footer">
         <span lang="en">Paladin · Living Chronicle</span>
-        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v10</span>
+        <span><Cloud size={13} aria-hidden="true" /> 오프라인 우선 기록 · Schema v12</span>
       </footer>
     </div>
   );

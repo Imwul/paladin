@@ -145,14 +145,16 @@ assert.equal(resumedEconomy.character.gear.cash, 1);
 assert.equal(resumedEconomy.character.campaign.winter.flags.legacyHarvestResolved, false);
 assert.equal(sanitized.campaign.winter.unresolved.wound.required, true);
 assert.equal(sanitized.campaign.winter.skippedWithConfirmation.familyEvent.label, 'family event');
-assert.equal(sanitized.campaign.passionStates.length, 1);
-assert.equal(sanitized.campaign.passionStates[0].type, 'shock');
-assert.equal(sanitized.campaign.passionStates[0].status, 'active');
-assert.equal(sanitized.campaign.passionStates[0].year, 1200);
+assert.equal(sanitized.campaign.passionStates, undefined);
+assert.equal(sanitized.campaign.personalityMagic.conditions.length, 1);
+assert.equal(sanitized.campaign.personalityMagic.conditions[0].type, 'shock');
+assert.equal(sanitized.campaign.personalityMagic.conditions[0].status, 'active');
+assert.equal(sanitized.campaign.personalityMagic.conditions[0].startedYear, 1200);
 assert.equal(saveLoadRoundTrip.family.members.filter(m => m.relation === '본인' && m.status === '생존').length, 1);
 assert.equal(saveLoadRoundTrip.campaign.winter.unresolved.wound.required, true);
 assert.equal(saveLoadRoundTrip.campaign.winter.skippedWithConfirmation.familyEvent.label, 'family event');
-assert.equal(saveLoadRoundTrip.campaign.passionStates[0].type, 'shock');
+assert.equal(saveLoadRoundTrip.campaign.passionStates, undefined);
+assert.equal(saveLoadRoundTrip.campaign.personalityMagic.conditions[0].type, 'shock');
 
 const legacyMaintenance = structuredClone(defaults);
 legacyMaintenance.personal.maintenance = 'miserly';
@@ -171,7 +173,8 @@ assert.equal(firstApply.applied, true);
 assert.equal(secondApply.applied, false);
 assert.equal(hasAppliedEvent(secondApply.character, 'reward:test'), true);
 assert.equal(secondApply.character.gear.cash, firstApply.character.gear.cash);
-assert.equal(secondApply.character.campaign.passionStates[0].type, 'shock');
+assert.equal(secondApply.character.campaign.passionStates, undefined);
+assert.equal(secondApply.character.campaign.personalityMagic.conditions[0].type, 'shock');
 
 const successionGuard = applyOnce(secondApply.character, 'succession:self-to-heir:790', character => {
   character.personal.age = 15;

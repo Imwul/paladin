@@ -10,6 +10,7 @@ import {
   resolveWeeklyRecovery
 } from '../../rules/combatRules';
 import Chapter7CombatEngine from './Chapter7CombatEngine';
+import Chapter18Encounter from './Chapter18Encounter';
 import './CombatEncounter.css';
 
 const checkLabel = { critical: '대성공', success: '성공', failure: '실패', fumble: '대실패' };
@@ -59,6 +60,7 @@ export default function CombatEncounterRemaster({ character, setCharacter, onNav
     {healthState.pendingDeath && <div className="combat-critical-notice" role="alert"><Skull size={22} aria-hidden="true" /><div><strong>생명력이 0 이하입니다.</strong><p>같은 날 자정 전에 양수로 회복하지 못하면 사망합니다. 치명상은 1시간 안에 응급처치를 받아야 합니다.</p></div><button type="button" className="secondary-command" onClick={confirmDeath}>자정 사망 확정</button></div>}
     {healthState.majorWoundCourage?.status === 'pending' && <div className="combat-critical-notice" role="alert"><AlertTriangle size={22} aria-hidden="true" /><div><strong>큰 부상 뒤 용기 판정</strong><p>계속 싸우려면 Valorous 판정에 성공해야 합니다.</p></div>{rollMode === 'manual' && <NumberField label="Valorous d20" value={courageRoll} min={1} max={20} onChange={setCourageRoll} />}<button type="button" className="secondary-command" onClick={resolveCourage}>용기 판정</button></div>}
     <SectionHeader index="I" title="개인 전투" meta="Determination to Movement" />
+    <Chapter18Encounter character={character} setCharacter={setCharacter} />
     <Chapter7CombatEngine character={character} setCharacter={setCharacter} onNavigate={onNavigate} />
     <SectionHeader index="II" title="상처와 응급처치" meta="Wounds · First Aid" />
     <section className="wound-ledger">{healthState.wounds?.length ? <div className="wound-table-wrap"><table><thead><tr><th>연도</th><th>상처</th><th>피해</th><th>분류</th><th>처치</th></tr></thead><tbody>{[...healthState.wounds].reverse().map(wound => <tr key={wound.id}><td>{wound.year}</td><td>{wound.source}</td><td>{wound.actualDamage}</td><td>{woundLabel[wound.classification]}</td><td>{wound.treated ? `${checkLabel[wound.firstAid?.outcome] || '완료'}${wound.firstAid ? ` · ${wound.firstAid.amount >= 0 ? '+' : ''}${wound.firstAid.amount}` : ''}` : <button type="button" className="text-command" onClick={() => treatWound(wound.id)}>응급처치</button>}</td></tr>)}</tbody></table></div> : <p className="combat-empty">기록된 상처가 없습니다.</p>}{untreatedWounds.length > 0 && <div className="first-aid-controls"><NumberField label="상처 경과 시간" value={firstAid.ageInHours} max={24} onChange={value => setFirstAid(previous => ({ ...previous, ageInHours: value }))} />{rollMode === 'manual' && <NumberField label="응급처치 d20" value={firstAid.roll} min={1} max={20} onChange={value => setFirstAid(previous => ({ ...previous, roll: value }))} />}<p>상처마다 하루 안에 한 번, 치명상은 1시간 안에 시도합니다.</p></div>}</section>

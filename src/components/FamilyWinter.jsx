@@ -1598,7 +1598,7 @@ export default function FamilyWinter({ character, setCharacter }) {
             }
           } : {})
         },
-        passionStates: updated.campaign?.passionStates || [],
+        passionStates: undefined,
         winter: {
           year: endingYear + 1,
           steps: nextSteps,

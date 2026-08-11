@@ -141,29 +141,43 @@ const createHorse = (input = {}) => {
   const dex = clamp(input.dex, 0, 100, profile.dex);
   const move = clamp(input.move, 0, 100, profile.move);
   return {
-    id: String(input.id || `horse:${profileKey}`), profileKey, name: String(input.name || profile.label), type: String(input.type || profile.type),
+    id: String(input.id || `horse:${profileKey}`), profileKey, chapter18Id: typeof input.chapter18Id === 'string' ? input.chapter18Id : null,
+    name: String(input.name || profile.label), type: String(input.type || profile.type),
     siz, dex: Math.max(0, dex + (applyArmorPenalty ? movementDexPenalty : 0)), str: clamp(input.str, 0, 100, profile.str), con,
     damageDice: clamp(input.damageDice, 1, 30, profile.damageDice), move: Math.max(0, move + (applyArmorPenalty ? movementDexPenalty : 0)),
     baseArmor: clamp(input.baseArmor, 0, 30, profile.armor), armorBonus, armor: clamp(input.baseArmor, 0, 30, profile.armor) + armorBonus,
     armorType, movementDexPenalty, armorMoveDexApplied: true,
     currentHp: clamp(input.currentHp ?? input.hp, -1000, totalHp, totalHp), maxHp: totalHp,
+    majorWoundThreshold: input.majorWoundThreshold == null ? null : Math.max(0, asInt(input.majorWoundThreshold)),
+    unconsciousThreshold: input.unconsciousThreshold == null ? null : Math.max(0, asInt(input.unconsciousThreshold)),
     status: ['healthy', 'wounded', 'broken', 'unconscious', 'dead', 'fallen'].includes(input.status) ? input.status : 'healthy',
     combatTrained: input.combatTrained !== undefined ? Boolean(input.combatTrained) : profile.combatTrained,
-    health: sanitizeHealthState(input.health, { siz, con, str: input.str ?? profile.str, currentHp: input.currentHp ?? input.hp ?? totalHp })
+    huntTrained: Boolean(input.huntTrained), attackTrained: Boolean(input.attackTrained),
+    lanceAttackModifier: asInt(input.lanceAttackModifier),
+    lanceDamageDice: input.lanceDamageDice == null ? null : clamp(input.lanceDamageDice, 1, 30, 1),
+    ruinApplied: Boolean(input.ruinApplied),
+    control: input.control && typeof input.control === 'object' ? clone(input.control) : null,
+    health: sanitizeHealthState(input.health, {
+      siz, con, str: input.str ?? profile.str, currentHp: input.currentHp ?? input.hp ?? totalHp,
+      majorWoundThreshold: input.majorWoundThreshold, unconsciousThreshold: input.unconsciousThreshold
+    })
   };
 };
 
 const createOpponent = (input = {}, index = 0) => {
   const siz = clamp(input.siz, 1, 100, 12);
   const con = clamp(input.con, 1, 100, 12);
-  const maxHp = siz + con;
+  const maxHp = clamp(input.maxHp ?? input.hp, 1, 1000, siz + con);
+  const hpBonus = maxHp - siz - con;
   return {
     id: safeId(input.id || `enemy:${index + 1}`), name: String(input.name || `상대 ${index + 1}`),
     skill: clamp(input.skill, 0, 100, 12), unarmed: clamp(input.unarmed, 0, 100, input.skill ?? 12),
     rangedSkill: clamp(input.rangedSkill, 0, 100, input.skill ?? 12),
     horsemanship: clamp(input.horsemanship, 0, 100, input.dex ?? 10),
     dex: clamp(input.dex, 0, 100, 10), str: clamp(input.str, 0, 100, siz), siz, con,
-    currentHp: clamp(input.currentHp, -1000, maxHp, maxHp), damageDice: clamp(input.damageDice, 1, 30, 4),
+    currentHp: clamp(input.currentHp, -1000, maxHp, maxHp), maxHp, hpBonus, damageDice: clamp(input.damageDice, 1, 30, 4),
+    majorWoundThreshold: input.majorWoundThreshold == null ? null : Math.max(0, asInt(input.majorWoundThreshold)),
+    unconsciousThreshold: input.unconsciousThreshold == null ? null : Math.max(0, asInt(input.unconsciousThreshold)),
     weaponId: validMeleeWeapon(input.weaponId), missileWeaponId: validMissileWeapon(input.missileWeaponId),
     armor: clamp(input.armor, 0, 100, 6), armorMax: clamp(input.armorMax, 0, 100, input.armor ?? 6),
     armorType: ['none', 'leather', 'chainmail', 'plate'].includes(input.armorType) ? input.armorType : 'chainmail',
@@ -178,7 +192,20 @@ const createOpponent = (input = {}, index = 0) => {
     supportedByAlly: Boolean(input.supportedByAlly), ammo: { arrows: 12, bolts: 12, javelins: 3, stones: 12, objects: 3, ...(input.ammo || {}) },
     reloadRemaining: Math.max(0, asInt(input.reloadRemaining)), aimed: Boolean(input.aimed), missileStatus: String(input.missileStatus || 'ready'),
     chargeFollowThrough: Boolean(input.chargeFollowThrough),
-    health: sanitizeHealthState(input.health, { siz, con, str: input.str ?? siz, currentHp: input.currentHp ?? maxHp })
+    chapter18Id: typeof input.chapter18Id === 'string' ? input.chapter18Id : null,
+    sourcePage: input.sourcePage == null ? null : Number(input.sourcePage),
+    attackOptions: Array.isArray(input.attackOptions) ? clone(input.attackOptions) : [],
+    selectedAttackId: typeof input.selectedAttackId === 'string' ? input.selectedAttackId : null,
+    attackProfile: input.attackProfile && typeof input.attackProfile === 'object' ? clone(input.attackProfile) : null,
+    immunities: Array.isArray(input.immunities) ? input.immunities.filter(value => typeof value === 'string') : [],
+    vulnerabilities: Array.isArray(input.vulnerabilities) ? clone(input.vulnerabilities) : [],
+    combatRestrictions: Array.isArray(input.combatRestrictions) ? input.combatRestrictions.filter(value => typeof value === 'string') : [],
+    healingRate: input.healingRate ?? null,
+    lastStandUntilRound: input.lastStandUntilRound == null ? null : Math.max(1, asInt(input.lastStandUntilRound)),
+    health: sanitizeHealthState(input.health, {
+      siz, con, str: input.str ?? siz, hpBonus, currentHp: input.currentHp ?? maxHp,
+      majorWoundThreshold: input.majorWoundThreshold, unconsciousThreshold: input.unconsciousThreshold
+    })
   };
 };
 
@@ -205,20 +232,26 @@ const sanitizePlayer = (input = {}, character = {}) => {
     chargeFollowThrough: Boolean(input.chargeFollowThrough), position: asNumber(input.position),
     magicEffects,
     magicUseContext: ['chivalrous', 'evil_or_dishonorable', 'unknown'].includes(input.magicUseContext) ? input.magicUseContext : 'chivalrous',
-    knowinglyUsesMagic: input.knowinglyUsesMagic !== false, firstRoundArmorEligible: input.firstRoundArmorEligible !== false
+    knowinglyUsesMagic: input.knowinglyUsesMagic !== false, firstRoundArmorEligible: input.firstRoundArmorEligible !== false,
+    attackTrainedMount: Boolean(input.attackTrainedMount)
   };
 };
 
 export const createChapter7Combat = (character, input = {}, now) => {
   const timestamp = iso(now);
   const opponents = (Array.isArray(input.opponents) && input.opponents.length ? input.opponents : [input.opponent || {}]).map(createOpponent);
+  const player = sanitizePlayer(input.player, character);
   return {
     engineVersion: 2,
     id: safeId(input.id || `combat:${character?.personal?.campaignYear || 767}:${timestamp}`),
     year: clamp(input.year ?? character?.personal?.campaignYear, 700, 1200, 767), status: 'active', phase: 'determination', round: 1,
-    player: sanitizePlayer(input.player, character), opponents, declaration: null, pending: null, rounds: [], outcome: null,
+    player, opponents, declaration: null, pending: null, rounds: [], outcome: null,
+    horseControl: player.mounted && player.horse && !player.horse.combatTrained
+      ? { status: 'pending', round: 1, check: null, sourcePage: 378 }
+      : null,
     appliedResolutionIds: [], openingModifier: asInt(input.openingModifier),
     openingModifierSource: String(input.openingModifierSource || ''),
+    externalGate: input.externalGate && typeof input.externalGate === 'object' ? clone(input.externalGate) : null,
     initiativeOrder: [], returnContext: input.returnContext && typeof input.returnContext === 'object' ? clone(input.returnContext) : null,
     source: String(input.source || 'chapter_7'), createdAt: timestamp, updatedAt: timestamp
   };
@@ -251,6 +284,8 @@ export const sanitizeChapter7CombatState = (value, character = {}) => {
     outcome: value.outcome && typeof value.outcome === 'object' ? value.outcome : null,
     appliedResolutionIds: Array.isArray(value.appliedResolutionIds) ? value.appliedResolutionIds.filter(id => typeof id === 'string').slice(-500) : [],
     openingModifier: asInt(value.openingModifier), openingModifierSource: String(value.openingModifierSource || ''),
+    externalGate: value.externalGate && typeof value.externalGate === 'object' ? clone(value.externalGate) : null,
+    horseControl: value.horseControl && typeof value.horseControl === 'object' ? clone(value.horseControl) : null,
     initiativeOrder: Array.isArray(value.initiativeOrder) ? value.initiativeOrder.filter(id => typeof id === 'string') : [],
     returnContext: value.returnContext && typeof value.returnContext === 'object' ? value.returnContext : null,
     source: String(value.source || 'chapter_7'), createdAt: typeof value.createdAt === 'string' ? value.createdAt : null,
@@ -283,7 +318,7 @@ export const startChapter7Combat = (characterValue, input = {}, now) => {
       { id: conditionId, type: 'natural_armor_lost', year: character.personal?.campaignYear || 767, expiresAfterWinter: true, sourceRuleId: 'ITEM-MAGIC-001', sourcePage: 'Ch.12 p.205' }
     ].slice(-100);
   }
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return character;
 };
 
@@ -293,7 +328,10 @@ const activeState = character => {
   return state;
 };
 
-const livingOpponents = state => state.opponents.filter(opponent => opponent.currentHp > 0 && !opponent.health?.unconscious && opponent.status !== 'defeated');
+const livingOpponents = state => state.opponents.filter(opponent => (
+  (opponent.lastStandUntilRound != null && state.round <= opponent.lastStandUntilRound)
+  || (opponent.currentHp > 0 && !opponent.health?.unconscious && opponent.status !== 'defeated')
+));
 const opponentById = (state, id) => state.opponents.find(opponent => opponent.id === id);
 const isEngaged = opponent => asNumber(opponent.distance) <= 1 && !opponent.supportedByAlly;
 
@@ -308,6 +346,11 @@ const allowedOpponentCount = opponents => {
 export const getChapter7LegalActions = (characterValue) => {
   const state = sanitizeChapter7CombatState(characterValue.campaign?.combat, characterValue);
   if (!state || state.status !== 'active' || state.phase !== 'determination') return [];
+  if (['pending', 'blocked'].includes(state.externalGate?.status)) return [];
+  if (state.horseControl?.round === state.round) {
+    if (['pending', 'bolted'].includes(state.horseControl.status)) return [];
+    if (state.horseControl.status === 'failure') return ['evade'];
+  }
   if (state.player.chargeFollowThrough) return ['follow_through'];
   if (state.player.grapple?.heldBy) return ['grapple_break', 'grapple_reverse', 'grapple_rearm'];
   if (state.player.grapple?.holding) return ['grapple_pin', 'grapple_rearm', 'grapple_strike', 'grapple_throw'];
@@ -326,6 +369,10 @@ export const declareChapter7Action = (characterValue, input = {}, now) => {
   const character = clone(characterValue);
   const state = activeState(character);
   if (state.phase !== 'determination') throw new RangeError('행동 선언 단계가 아닙니다.');
+  if (['pending', 'blocked'].includes(state.externalGate?.status)) throw new RangeError('연결된 원문 판정을 먼저 해결하거나 전투를 종료해야 합니다.');
+  if (state.horseControl?.round === state.round && ['pending', 'bolted'].includes(state.horseControl.status)) {
+    throw new RangeError('전투 훈련을 받지 않은 말의 Horsemanship 판정을 먼저 해결해야 합니다.');
+  }
   const health = sanitizeHealthState(character.campaign?.health, character.attributes);
   if (health.unconscious || asInt(character.attributes?.currentHp) <= 0) throw new RangeError('의식을 잃었거나 죽어가는 기사는 새 행동을 선언할 수 없습니다.');
   if (health.majorWoundCourage?.status === 'pending') throw new RangeError('큰 부상 뒤 전투를 계속할지 Valorous 판정을 먼저 해결하세요.');
@@ -428,13 +475,19 @@ export const declareChapter7Action = (characterValue, input = {}, now) => {
   state.phase = 'resolution';
   state.updatedAt = declaration.createdAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, declaration };
 };
 
 const meleeDamageDice = (combatant, defender, weaponId, charging = false, diceBonus = 0) => {
+  const attackProfile = combatant.attackProfile;
+  if (attackProfile) {
+    const base = Number.isFinite(Number(attackProfile.damageDice)) ? asInt(attackProfile.damageDice) : asInt(combatant.damageDice, 1);
+    const metalModifier = ['chainmail', 'plate'].includes(defender.armorType) ? asInt(attackProfile.damageDiceModifierVsMetal) : 0;
+    return Math.max(1, base + asInt(attackProfile.damageDiceModifier) + metalModifier + asInt(diceBonus));
+  }
   const profile = WEAPON_PROFILES[validMeleeWeapon(weaponId)];
-  if (charging && profile.lance) return Math.max(1, asInt(combatant.horse?.damageDice, combatant.horseDamageDice || 6));
+  if (charging && profile.lance) return Math.max(1, asInt(combatant.horse?.lanceDamageDice ?? combatant.horse?.damageDice ?? combatant.horseDamageDice ?? 6));
   let dice = Math.max(1, asInt(combatant.damageDice, 1) + asInt(profile.dice));
   if (profile.bonusVsChainmail && defender.armorType === 'chainmail') dice += profile.bonusVsChainmail;
   if (profile.bonusVsPlate && defender.armorType === 'plate') dice += profile.bonusVsPlate;
@@ -448,7 +501,8 @@ const playerCombatant = (character, state) => {
   return {
     side: 'player', id: 'player', name: character.personal?.name || '기사', ...state.player,
     armor: state.player.armor + (state.round === 1 ? asInt(state.player.magicEffects?.firstRoundArmorBonus) : 0),
-    skill: asInt(character.skills?.[profile.lance ? 'spear' : profile.skillKey]) + asInt(state.player.magicEffects?.skillBonus) + asInt(state.player.equipmentSkillBonus),
+    skill: asInt(character.skills?.[profile.lance ? 'spear' : profile.skillKey]) + asInt(state.player.magicEffects?.skillBonus) + asInt(state.player.equipmentSkillBonus)
+      + (state.player.mounted && state.player.attackTrainedMount && !profile.lance ? 5 : 0),
     spearSkill: asInt(character.skills?.spear), unarmed: asInt(character.skills?.unarmed),
     dex: asInt(character.attributes?.dex), str: asInt(character.attributes?.str), siz: asInt(character.attributes?.siz),
     con: asInt(character.attributes?.con), damageDice: derived.damageDice,
@@ -460,7 +514,11 @@ const playerCombatant = (character, state) => {
 
 const opponentCombatant = opponent => ({
   side: 'opponent', ...opponent, unarmed: opponent.unarmed, spearSkill: opponent.skill,
-  healthPenalty: getDerivedHealth({ siz: opponent.siz, con: opponent.con, str: opponent.str, currentHp: opponent.currentHp }).physicalPenalty,
+  healthPenalty: getDerivedHealth({
+    siz: opponent.siz, con: opponent.con, str: opponent.str, hpBonus: opponent.hpBonus,
+    currentHp: opponent.currentHp, majorWoundThreshold: opponent.majorWoundThreshold,
+    unconsciousThreshold: opponent.unconsciousThreshold
+  }).physicalPenalty,
   encumbrance: { id: 'light', weaponModifier: 0, dexModifier: 0, awarenessModifier: 0, moveModifier: 0 }
 });
 
@@ -505,7 +563,7 @@ const damagePacket = ({ attacker, defender, check, weaponId, charging = false, d
   return {
     targetType: defender.side, targetId: defender.id, damage, rolledDamage: damage.total,
     armor: attacker.magicEffects?.halveArmor ? roundPaladin(asInt(defender.armor) / 2) : asInt(defender.armor), shield: asInt(defender.shield), shieldApplies,
-    damageFraction: (nonlethal === 'quarter' ? 0.25 : nonlethal === 'half' ? 0.5 : 1) * (defender.magicEffects?.halfDamageSources?.includes('steel') ? 0.5 : 1),
+    damageFraction: (nonlethal === 'quarter' ? 0.25 : nonlethal === 'half' ? 0.5 : 1) * (defender.magicEffects?.halfDamageSources?.includes('steel') ? 0.5 : 1) * Math.max(1, asNumber(attacker.attackProfile?.damageMultiplier, 1)),
     weaponId, source: source || `${WEAPON_PROFILES[weaponId]?.label || '무기'} 공격`,
     sourcePage: 'Ch.7 pp.116-125'
   };
@@ -591,6 +649,18 @@ const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkil
     opponentCharging: declaration.enemyPlans?.[opponent.id] === 'lance_charge', sourceModifier: declaration.sourceModifier,
     sourceModifierLabel: declaration.sourceModifierLabel, gmModifier: declaration.gmModifier
   });
+  if (action === 'lance_charge' && asInt(actor.horse?.lanceAttackModifier)) {
+    actorModifiers.modifier += asInt(actor.horse.lanceAttackModifier);
+    actorModifiers.reasons.push({ value: asInt(actor.horse.lanceAttackModifier), label: 'Chapter 18 특수 탈것 마상창' });
+  }
+  if (asInt(opponent.attackProfile?.defenderModifier)) {
+    actorModifiers.modifier += asInt(opponent.attackProfile.defenderModifier);
+    actorModifiers.reasons.push({ value: asInt(opponent.attackProfile.defenderModifier), label: 'Chapter 18 공격 방식' });
+  }
+  if (actor.mounted && actor.horse?.chapter18Id === 'camel' && opponent.mounted && opponent.horse?.chapter18Id !== 'camel') {
+    actorModifiers.modifier += 5;
+    actorModifiers.reasons.push({ value: 5, label: 'Camel 대 horseback' });
+  }
   if (declaration.twoHandedStrike && WEAPON_PROFILES[actor.weaponId]?.hands === 1) {
     actorModifiers.modifier -= 5;
     actorModifiers.reasons.push({ value: -5, label: '한손 무기 양손 타격' });
@@ -600,6 +670,18 @@ const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkil
     defend: opponentPlan === 'defend', uncontrolled: opponentPlan === 'uncontrolled', charging: opponentPlan === 'lance_charge',
     opponentCharging: action === 'lance_charge', grapple: opponentPlan === 'grapple'
   });
+  if (opponentPlan === 'lance_charge' && asInt(opponent.horse?.lanceAttackModifier)) {
+    opponentModifiers.modifier += asInt(opponent.horse.lanceAttackModifier);
+    opponentModifiers.reasons.push({ value: asInt(opponent.horse.lanceAttackModifier), label: 'Chapter 18 특수 탈것 마상창' });
+  }
+  if (asInt(opponent.attackProfile?.attackModifier)) {
+    opponentModifiers.modifier += asInt(opponent.attackProfile.attackModifier);
+    opponentModifiers.reasons.push({ value: asInt(opponent.attackProfile.attackModifier), label: 'Chapter 18 공격 방식' });
+  }
+  if (opponent.mounted && opponent.horse?.chapter18Id === 'camel' && actor.mounted && actor.horse?.chapter18Id !== 'camel') {
+    opponentModifiers.modifier += 5;
+    opponentModifiers.reasons.push({ value: 5, label: 'Camel 대 horseback' });
+  }
   let feint = null;
   if (action === 'double_feint') {
     const encumbrance = actor.encumbrance?.dexModifier || 0;
@@ -640,12 +722,20 @@ const resolveMeleeExchange = (actor, opponent, declaration, input, rng, baseSkil
     exchange.effects.push({ type: 'weapon', side: 'opponent', targetId: opponent.id, status: 'dropped' });
     exchange.effects.push({ type: 'shield_drop', side: 'opponent', targetId: opponent.id });
     exchange.effects.push({ type: 'weapon', side: 'player', targetId: 'player', status: 'dropped' });
-  } else if (opposed.winner === 'opponent' && opponentCanDamage) {
-    exchange.packets.push(rngDamagePacket({
-      attacker: opponent, defender: actor, check: opponentCheck, weaponId: opponent.weaponId,
-      charging: opponentPlan === 'lance_charge', suppliedDamage: input.opponentDamageTotal,
-      suppliedRolls: input.opponentDamageRolls, shieldApplies: !declaration.twoHandedStrike && opposed.actorOutcome === 'partial' && !WEAPON_PROFILES[opponent.weaponId]?.ignoresShield
-    }, rng));
+  } else if (opposed.winner === 'opponent' && opponentCanDamage && !opponent.attackProfile?.noDamage) {
+    const packetCount = Math.max(1, asInt(opponent.attackProfile?.packetCount, 1));
+    for (let packetIndex = 0; packetIndex < packetCount; packetIndex += 1) {
+      const packet = rngDamagePacket({
+        attacker: opponent, defender: actor, check: opponentCheck, weaponId: opponent.weaponId,
+        charging: opponentPlan === 'lance_charge', suppliedDamage: input.opponentDamageTotals?.[packetIndex] ?? input.opponentDamageTotal,
+        suppliedRolls: input.opponentDamageRollSets?.[packetIndex] ?? input.opponentDamageRolls, shieldApplies: !declaration.twoHandedStrike && opposed.actorOutcome === 'partial' && !WEAPON_PROFILES[opponent.weaponId]?.ignoresShield
+      }, rng);
+      if (opponent.attackProfile?.target === 'mount_if_mounted' && actor.mounted && actor.horse) packet.targetType = 'player_horse';
+      exchange.packets.push(packet);
+    }
+  }
+  if (opposed.winner === 'opponent' && opponent.attackProfile?.effect) {
+    exchange.specialHit = { attackerId: opponent.id, attackId: opponent.selectedAttackId, effect: opponent.attackProfile.effect };
   }
   if (actorSelfHit) {
     exchange.packets.push(flailSelfHitPacket(actor, { damageTotal: input.actorDamageTotal, damageRolls: input.actorDamageRolls }, rng));
@@ -727,7 +817,8 @@ const resolveOpponentRangedAction = (character, state, declaration, opponentValu
   const player = playerCombatant(character, state);
   const opponent = opponentCombatant(opponentValue);
   const profile = MISSILE_PROFILES[opponent.missileWeaponId];
-  const maximum = profile.maxRange || declaration.gmMaximumRange;
+  const naturalRanged = opponent.attackProfile?.kind === 'ranged' && !opponent.attackProfile?.missileWeaponId;
+  const maximum = opponent.attackProfile?.range || profile.maxRange || declaration.gmMaximumRange;
   const rangeModifier = getRangeModifier(opponent.distance, maximum);
   const shieldModifier = declaration.playerShieldUse === 'active' ? -player.shield : declaration.playerShieldUse === 'passive' && player.shield > 0 ? -3 : 0;
   const mountedModifier = opponent.mounted && ['bow', 'compoundBow', 'longbow'].includes(opponent.missileWeaponId) ? -5 : 0;
@@ -740,8 +831,8 @@ const resolveOpponentRangedAction = (character, state, declaration, opponentValu
     const roll = input.enemyRolls?.[opponent.id]?.[index] || input.enemyRolls?.[opponent.id] || rollDie(20, rng);
     const check = resolveD20Roll(roll, attackBase + modifier);
     exchange.shots.push({ index: index + 1, check });
-    if (check.success) {
-      const dice = profile.damage.dice || Math.max(1, opponent.damageDice + asInt(profile.damage.baseDiceModifier));
+    if (check.success && !opponent.attackProfile?.noDamage) {
+      const dice = opponent.attackProfile?.damageDice || profile.damage.dice || Math.max(1, opponent.damageDice + asInt(profile.damage.baseDiceModifier));
       const supplied = input.enemyDamageTotals?.[opponent.id]?.[index] ?? input.enemyDamageTotals?.[opponent.id];
       const damage = check.critical ? maximumDamage(dice, profile.damage.bonus) : rollDice(dice, rng, supplied, profile.damage.bonus);
       exchange.packets.push({
@@ -750,13 +841,16 @@ const resolveOpponentRangedAction = (character, state, declaration, opponentValu
         source: `${opponent.name}의 ${profile.label} 원거리 공격`, sourcePage: 'Ch.5 pp.104-105; Ch.7 p.126'
       });
     }
-    if (check.fumble) exchange.effects.push({ type: 'missile_mishap', side: 'opponent', targetId: opponent.id, status: 'broken', note: '대실패' });
-    if (profile.bowstring && declaration.weather === 'rain_snow' && [1, 2].includes(check.roll)) {
+    if (check.success && opponent.attackProfile?.effect && !exchange.specialHit) {
+      exchange.specialHit = { attackerId: opponent.id, attackId: opponent.selectedAttackId, effect: opponent.attackProfile.effect };
+    }
+    if (!naturalRanged && check.fumble) exchange.effects.push({ type: 'missile_mishap', side: 'opponent', targetId: opponent.id, status: 'broken', note: '대실패' });
+    if (!naturalRanged && profile.bowstring && declaration.weather === 'rain_snow' && [1, 2].includes(check.roll)) {
       exchange.effects.push({ type: 'missile_mishap', side: 'opponent', targetId: opponent.id, status: 'broken_string', note: '비나 눈 속 자연 1 또는 2' });
     }
   }
-  exchange.effects.push({ type: 'ammo', side: 'opponent', targetId: opponent.id, ammoKey: profile.ammoKey, amount: -shots });
-  if (profile.reloadRounds) exchange.effects.push({ type: 'reload', side: 'opponent', targetId: opponent.id, rounds: profile.reloadRounds });
+  if (!naturalRanged) exchange.effects.push({ type: 'ammo', side: 'opponent', targetId: opponent.id, ammoKey: profile.ammoKey, amount: -shots });
+  if (!naturalRanged && profile.reloadRounds) exchange.effects.push({ type: 'reload', side: 'opponent', targetId: opponent.id, rounds: profile.reloadRounds });
   exchange.effects.push({ type: 'aim', side: 'opponent', targetId: opponent.id, value: false });
   return exchange;
 };
@@ -993,17 +1087,18 @@ const resolveEvasion = (character, state, declaration, input, rng) => {
   const actor = playerCombatant(character, state);
   const enemies = livingOpponents(state).filter(isEngaged);
   if (enemies.length > 1 && !declaration.movement?.gmMultipleApproved) throw new RangeError('다수 상대에게서 이탈하려면 GM 승인이 필요합니다.');
+  const normalHorseEvasion = state.horseControl?.round === state.round && state.horseControl.status === 'failure';
   const base = actor.mounted ? asInt(character.skills?.horsemanship) + asInt(state.player.magicEffects?.horsemanshipBonus) : actor.dex;
   validateAllocations(declaration, base, enemies.map(enemy => enemy.id), 'evade');
   const exchanges = enemies.map((enemy, index) => {
     const opponent = opponentCombatant(enemy);
     const actorBase = allocationFor(declaration, enemy.id, base, enemies.length, 'evade');
-    const actorModifier = -5 + (actor.mounted ? 0 : actor.encumbrance.dexModifier) + declaration.sourceModifier + declaration.gmModifier;
+    const actorModifier = (normalHorseEvasion ? 0 : -5 + (actor.mounted ? 0 : actor.encumbrance.dexModifier)) + declaration.sourceModifier + declaration.gmModifier;
     const opponentModifier = 5 + opponent.healthPenalty;
     const actorCheck = resolveD20Roll(input.actorRolls?.[enemy.id] || (index === 0 ? input.actorRoll : null) || rollDie(20, rng), actorBase + actorModifier);
     const opponentCheck = resolveD20Roll(input.opponentRolls?.[enemy.id] || (index === 0 ? input.opponentRoll : null) || rollDie(20, rng), opponent.skill + opponentModifier);
     const opposed = opposedWinner(actorCheck, opponentCheck);
-    const exchange = { type: 'evasion', actorId: 'player', opponentId: enemy.id, actorCheck, opponentCheck, opposed, packets: [], effects: [] };
+    const exchange = { type: 'evasion', actorId: 'player', opponentId: enemy.id, actorCheck, opponentCheck, opposed, normalHorseEvasion, packets: [], effects: [] };
     if (opposed.winner === 'opponent') {
       exchange.packets.push(rngDamagePacket({ attacker: opponent, defender: actor, check: opponentCheck, weaponId: opponent.weaponId, suppliedDamage: input.enemyDamageTotals?.[enemy.id] ?? input.opponentDamageTotal, shieldApplies: opposed.actorOutcome === 'partial' }, rng));
     }
@@ -1174,7 +1269,7 @@ export const resolveChapter7Action = (characterValue, input = {}, rng = Math.ran
   state.phase = 'winner';
   state.updatedAt = pending.createdAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, pending };
 };
 
@@ -1203,7 +1298,11 @@ const applyEquipmentWear = (state, packet) => {
 
 const applyHorsePacket = (horseValue, packet, rng) => {
   const horse = createHorse(horseValue);
-  const attributes = { siz: horse.siz, dex: horse.dex, str: horse.str, con: horse.con, currentHp: horse.currentHp };
+  const alreadyRuined = Boolean(horse.ruinApplied || horse.status === 'broken');
+  const attributes = {
+    siz: horse.siz, dex: horse.dex, str: horse.str, con: horse.con, currentHp: horse.currentHp,
+    majorWoundThreshold: horse.majorWoundThreshold, unconsciousThreshold: horse.unconsciousThreshold
+  };
   const applied = applyDamageState(attributes, horse.health, {
     rolledDamage: packet.rolledDamage, armor: packet.direct ? 0 : horse.armor, shield: 0, shieldApplies: false,
     direct: Boolean(packet.direct), year: packet.year, source: packet.source || '말의 부상', sourceRuleId: 'COMBAT-HORSE-001',
@@ -1217,7 +1316,21 @@ const applyHorsePacket = (horseValue, packet, rng) => {
   horse.health = applied.health;
   if (horse.currentHp <= 0) horse.status = 'dead';
   else if (applied.health.unconscious) horse.status = 'unconscious';
-  else if (['major', 'mortal'].includes(applied.result.classification)) horse.status = 'broken';
+  else if (['major', 'mortal'].includes(applied.result.classification)) {
+    horse.status = 'broken';
+    if (!alreadyRuined) {
+      horse.str = Math.max(1, horse.str - 2);
+      horse.con = Math.max(1, horse.con - 2);
+      horse.move = Math.max(0, horse.move - 1);
+      horse.maxHp = Math.max(1, horse.maxHp - 2);
+      horse.currentHp = Math.min(horse.currentHp, horse.maxHp);
+      horse.ruinApplied = true;
+      horse.health = sanitizeHealthState(horse.health, {
+        siz: horse.siz, con: horse.con, str: horse.str, currentHp: horse.currentHp,
+        majorWoundThreshold: horse.majorWoundThreshold, unconsciousThreshold: horse.unconsciousThreshold
+      });
+    }
+  }
   else if (applied.result.actualDamage > 0) horse.status = 'wounded';
   return { horse, injury: applied.result };
 };
@@ -1308,9 +1421,13 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
     } else if (packet.targetType === 'opponent') {
       const opponent = opponentById(state, packet.targetId);
       if (!opponent) continue;
-      const attributes = { siz: opponent.siz, dex: opponent.dex, str: opponent.str, con: opponent.con, currentHp: opponent.currentHp };
+      const attributes = {
+        siz: opponent.siz, dex: opponent.dex, str: opponent.str, con: opponent.con, hpBonus: opponent.hpBonus, currentHp: opponent.currentHp,
+        majorWoundThreshold: opponent.majorWoundThreshold, unconsciousThreshold: opponent.unconsciousThreshold
+      };
+      const immuneToNormalWeapons = opponent.immunities.includes('normal_weapons') && !state.player.magicEffects?.weaponItemIds?.length;
       const applied = applyDamageState(attributes, opponent.health, {
-        ...packet, rolledDamage: packet.rolledDamage, year: state.year, sourceRuleId: 'COMBAT-DAMAGE-001', requiresValorousToContinue: false, now: input.now
+        ...packet, rolledDamage: immuneToNormalWeapons ? 0 : packet.rolledDamage, year: state.year, sourceRuleId: 'COMBAT-DAMAGE-001', requiresValorousToContinue: false, now: input.now
       }, rng);
       opponent.currentHp = applied.attributes.currentHp;
       opponent.siz = applied.attributes.siz;
@@ -1318,7 +1435,12 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
       opponent.str = applied.attributes.str;
       opponent.con = applied.attributes.con;
       opponent.health = applied.health;
-      if (applied.health.unconscious || opponent.currentHp <= 0) opponent.status = 'defeated';
+      if (applied.health.unconscious || opponent.currentHp <= 0) {
+        if (opponent.attackOptions.some(option => option.actsAfterIncapacitation)) {
+          opponent.lastStandUntilRound = state.round + 1;
+          opponent.status = 'active';
+        } else opponent.status = 'defeated';
+      }
       if (applied.result.knockedDown) {
         opponent.prone = true;
         opponent.knockedDownRound = state.round;
@@ -1374,7 +1496,7 @@ export const applyChapter7Consequences = (characterValue, input = {}, rng = Math
   state.phase = 'movement';
   state.updatedAt = iso(input.now);
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, injuries, wear, pending: state.pending };
 };
 
@@ -1399,6 +1521,7 @@ export const completeChapter7Movement = (characterValue, input = {}, now) => {
   const character = clone(characterValue);
   const state = activeState(character);
   if (state.phase !== 'movement' || !state.pending) throw new RangeError('이동 단계가 아닙니다.');
+  if (character.campaign?.chapter18?.active?.pendingSpecial) throw new RangeError('Chapter 18 특수 결과를 먼저 확정해야 합니다.');
   const declaration = state.pending.declaration;
   const player = playerCombatant(character, state);
   const movementOrder = [
@@ -1484,9 +1607,12 @@ export const completeChapter7Movement = (characterValue, input = {}, now) => {
   state.phase = 'determination';
   state.declaration = null;
   state.pending = null;
+  if (state.player.mounted && state.player.horse && !state.player.horse.combatTrained && state.horseControl?.status !== 'exempt') {
+    state.horseControl = { status: 'pending', round: state.round, check: null, sourcePage: 378 };
+  }
   state.updatedAt = roundRecord.completedAt;
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, round: roundRecord };
 };
 
@@ -1513,7 +1639,7 @@ export const applyChapter7HorseDamage = (characterValue, input = {}, rng = Math.
   if (side === 'opponent') setOpponent(state, owner);
   state.updatedAt = iso(input.now);
   character.campaign.combat = state;
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, horse: owner.horse, injury: applied.injury };
 };
 
@@ -1536,6 +1662,6 @@ export const concludeChapter7Combat = (characterValue, input = {}, now) => {
     narrative: `${state.opponents.map(opponent => opponent.name).join(', ')}와의 전투가 ${state.rounds.length}라운드 만에 끝났습니다.${input.note ? ` ${input.note}` : ''}`,
     sourceRuleId: 'COMBAT-SEQUENCE-001', sourcePage: 'Ch.7 pp.115-128', createdAt: timestamp
   });
-  character.campaign.schemaVersion = 10;
+  character.campaign.schemaVersion = 12;
   return { character, combat: state, returnContext: state.returnContext };
 };

@@ -7,13 +7,13 @@
 - Use: the Paladin wordmark and English or Latin display labels.
 - Distribution: retained only as a project asset; no independent license claim is made here.
 
-## Eulyoo1945
+## Hahmlet
 
-- Typeface: Eulyoo1945 Regular and SemiBold.
-- Publisher: Eulyoo Publishing Co., Ltd.
-- Web stylesheet: pinned `0xd669/eulyoo1945` revision `c226f4d74f7b2495eaa92ec2137631c3f9bad2ac` through jsDelivr.
-- Use: website typography. The font file is not copied into this repository.
-- Information: https://www.eulyoo.co.kr/member/font.html
+- File: `src/assets/fonts/Hahmlet-Variable.woff2`.
+- Copyright: 2020 The Hahmlet Project Authors.
+- Source: the project owner's Gloam application asset, originally from https://github.com/google/fonts/tree/main/ofl/hahmlet.
+- Use: Korean and mixed-language body, controls, headings, and compact data.
+- License: SIL Open Font License 1.1; bundled at `src/assets/fonts/OFL-Hahmlet.txt`.
 
 ## Knightly Investiture Plate
 

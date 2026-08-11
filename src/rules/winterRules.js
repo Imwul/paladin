@@ -396,6 +396,39 @@ const applyScore = (character, group, key, amount, context = {}) => {
   return { path: `${group}.${key}`, before, after: Number(character[group][key] || 0) };
 };
 
+export const resolveAgingTableEffect = (characterValue, input = {}, rng = Math.random) => {
+  const character = clone(characterValue);
+  const agingRoll = input.agingRoll || rollDie(20, rng);
+  const count = getAgingRollCount(agingRoll);
+  const attributeRolls = Array.from(
+    { length: count },
+    (_, index) => input.attributeRolls?.[index] || rollDie(6, rng)
+  );
+  const keys = ['siz', 'dex', 'str', 'con', 'app'];
+  const stateChanges = [];
+  attributeRolls.forEach(roll => {
+    if (roll <= 5) stateChanges.push(applyScore(character, 'attributes', keys[roll - 1], -1));
+  });
+  const lifecycleResolution = resolveAttributeLifecycle(character, {
+    eventId: input.eventId || `lifecycle:aging-table:${character.personal?.campaignYear || 767}:${agingRoll}`,
+    cause: input.cause || 'Table 10-1 노화 능력치 하락',
+    year: character.personal?.campaignYear,
+    sourceRuleId: input.sourceRuleId || 'WINTER-AGING-001',
+    sourcePage: input.sourcePage || 'Ch.10 p.174',
+    triggeringEvent: input.triggeringEvent || 'aging_table'
+  });
+  Object.assign(character, lifecycleResolution.character);
+  return {
+    character,
+    agingRoll,
+    attributeRolls,
+    affected: count,
+    losses: attributeRolls.filter(roll => roll <= 5).map(roll => keys[roll - 1]),
+    stateChanges,
+    lifecycleEffect: character.campaign?.lifecycle?.careerStatus
+  };
+};
+
 const addCheck = (character, group, key) => {
   const mapName = group === 'traits' ? 'traitsChecked' : group === 'passions' ? 'passionsChecked' : group === 'standings' ? 'standingsChecked' : 'skillsChecked';
   character[mapName] = character[mapName] || {};
@@ -614,29 +647,25 @@ const resolveAging = (character, winter, record, input, rng) => {
     record.journalEntry = `${character.personal.age}세가 되었으며 ${agingStartsAt}세 미만이므로 노화 표 판정은 없습니다.`;
     return;
   }
-  const agingRoll = input.agingRoll || rollDie(20, rng);
-  const count = getAgingRollCount(agingRoll);
-  const attributeRolls = Array.from({ length: count }, (_, index) => input.attributeRolls?.[index] || rollDie(6, rng));
-  const keys = ['siz', 'dex', 'str', 'con', 'app'];
-  attributeRolls.forEach(roll => {
-    if (roll <= 5) record.stateChanges.push(applyScore(character, 'attributes', keys[roll - 1], -1));
-  });
-  record.roll = { aging: agingRoll, attributes: attributeRolls };
-  record.result = { affected: count, losses: attributeRolls.filter(roll => roll <= 5).map(roll => keys[roll - 1]) };
-  const lifecycleResolution = resolveAttributeLifecycle(character, {
+  const aging = resolveAgingTableEffect(character, {
+    agingRoll: input.agingRoll,
+    attributeRolls: input.attributeRolls,
     eventId: `lifecycle:winter-aging:${record.year}`,
     cause: '겨울 노화 능력치 하락',
     year: record.year,
     sourceRuleId: 'WINTER-AGING-001',
     sourcePage: 'Ch.10 p.174',
     triggeringEvent: 'winter_aging'
-  });
-  Object.assign(character, lifecycleResolution.character);
-  record.lifecycleEffect = character.campaign?.lifecycle?.careerStatus;
+  }, rng);
+  Object.assign(character, aging.character);
+  record.stateChanges.push(...aging.stateChanges);
+  record.roll = { aging: aging.agingRoll, attributes: aging.attributeRolls };
+  record.result = { affected: aging.affected, losses: aging.losses };
+  record.lifecycleEffect = aging.lifecycleEffect;
   if (['deceased', 'bedridden'].includes(record.lifecycleEffect)) {
     record.unresolvedChoice = { type: 'lifecycle_transition', label: record.lifecycleEffect === 'deceased' ? '사망 후 구원과 계승 절차' : '병상 상태와 활동 제한 확인', required: true };
   }
-  record.journalEntry = `${character.personal.age}세 노화 d20 ${agingRoll}: ${record.result.losses.length ? record.result.losses.join(', ').toUpperCase() + ' 감소' : '능력치 감소 없음'}. 생애 상태 ${record.lifecycleEffect || 'active'}.`;
+  record.journalEntry = `${character.personal.age}세 노화 d20 ${aging.agingRoll}: ${record.result.losses.length ? record.result.losses.join(', ').toUpperCase() + ' 감소' : '능력치 감소 없음'}. 생애 상태 ${record.lifecycleEffect || 'active'}.`;
   record.isMeaningful = record.result.losses.length > 0 || ['deceased', 'bedridden'].includes(record.lifecycleEffect);
   record.chronicleType = ['deceased', 'bedridden'].includes(record.lifecycleEffect) ? 'death' : 'winter';
   record.chronicleTitle = record.lifecycleEffect === 'deceased' ? '노화로 생을 마치다' : record.lifecycleEffect === 'bedridden' ? '병상에 들다' : '세월의 흔적';

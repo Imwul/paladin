@@ -8,6 +8,7 @@ The interface is a Carolingian royal register interpreted through modern editori
 
 - Base spacing unit: 8px; compact metadata may use 4px subdivisions.
 - Desktop content: up to 1460px inside the folio, with a 248px register index.
+- Wide desktop (2200px+): 22px root type, up to 2400px folio, 336px register index, and 64px page gutters.
 - Tablet index: 208px; content grids collapse before labels become unreadable.
 - Mobile: one-column folio, off-canvas index and vertical ledger rows.
 - Fixed-format controls use stable 44px minimum targets and explicit grid tracks.
@@ -15,16 +16,16 @@ The interface is a Carolingian royal register interpreted through modern editori
 
 ## Typography
 
-- Primary Korean glyph family: `Eulyoo1945` Regular 400 and SemiBold 600.
+- Primary Korean and body family: local `Hahmlet Variable` 100-900, normally 500 with 700-800 hierarchy.
 - English and Latin glyph family: `Black North` Regular 400.
-- Content stacks Black North before Eulyoo1945, so mixed Korean-English strings select the intended font for each script without splitting the saved text.
-- Fallback: AppleMyungjo, Batang, serif.
+- English/Latin register labels and display numerals explicitly use Black North; Korean and mixed prose use Hahmlet.
+- Fallback: AppleMyungjo, Noto Serif KR, serif.
 - Display: year, character name and folio title.
 - Register: section title and administrative heading.
 - Body: explanations and Chronicle narrative at 1.6-1.65 line height.
-- Data: Rule ID, page, roll and modifier labels use Eulyoo1945 with tabular numerals; English and Latin register labels use Black North.
+- Data: Rule ID, page, roll and modifier labels use Hahmlet with tabular numerals; large display numerals use Black North.
 - Script accents are not used for functional text.
-- Natural letter spacing is retained for legibility; headings wrap instead of shrinking with viewport width.
+- Natural letter spacing with kerning and optical shaping is retained for legibility; headings wrap instead of shrinking with viewport width.
 - English and Latin register labels use title case. All caps are reserved for canonical rules abbreviations and identifiers.
 
 ## Color
@@ -68,7 +69,7 @@ Color never carries state alone. Every state also has a label, icon, border styl
 
 - 44px minimum interactive targets.
 - Semantic headings, navigation landmarks, status live regions and labelled dialogs.
-- Mobile navigation traps focus while open and returns focus to its command.
+- Mobile navigation traps focus while open, scrolls inside `100dvh`, exposes every chapter, and returns focus to its command.
 - Tables remain tables; long ledgers switch column structure rather than becoming decorative cards.
 - No viewport-scaled font sizes, horizontal document overflow or text/image overlap is permitted.
 

@@ -4,7 +4,10 @@ import { sanitizeHealthState } from '../rules/combatRules.js';
 import { sanitizeChapter7CombatState } from '../rules/chapter7CombatRules.js';
 import { sanitizeLifecycleState } from '../rules/lifecycleRules.js';
 import { sanitizeEconomyState, toLivres } from '../rules/economyRules.js';
+import { sanitizeAdventureLedger } from '../rules/adventureRules.js';
+import { sanitizeChapter18Ledger } from '../rules/chapter18Rules.js';
 import { normalizeOpposedTraits } from '../rules/personalityRules.js';
+import { sanitizePersonalityMagicState } from '../rules/personalityMagicRules.js';
 
 const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병', '포로', '행동 불능', '병상', '역사적']);
 const VALID_GENDERS = new Set(['male', 'female', 'unknown']);
@@ -237,25 +240,6 @@ const sanitizeWinter = (value, campaignYear) => {
   };
 };
 
-const sanitizePassionStates = (value) => {
-  if (!Array.isArray(value)) return [];
-  const validTypes = new Set(['shock', 'melancholy', 'madness']);
-  const validStatuses = new Set(['active', 'resolved']);
-  return value
-    .filter(isPlainObject)
-    .map((entry, index) => ({
-      id: sanitizeString(entry.id, `passion_state_${index + 1}`),
-      type: validTypes.has(entry.type) ? entry.type : 'shock',
-      status: validStatuses.has(entry.status) ? entry.status : 'active',
-      passionKey: typeof entry.passionKey === 'string' ? entry.passionKey : '',
-      passionLabel: typeof entry.passionLabel === 'string' ? entry.passionLabel : '',
-      year: clampInt(entry.year, 700, 1200, 767),
-      note: typeof entry.note === 'string' ? entry.note : '',
-      createdAt: typeof entry.createdAt === 'string' ? entry.createdAt : new Date().toISOString()
-    }))
-    .slice(-50);
-};
-
 const sanitizeLedgerEntries = (value, limit) => (
   Array.isArray(value) ? value.filter(isPlainObject).slice(-limit) : []
 );
@@ -420,7 +404,7 @@ export const sanitizeCampaignState = (data, defaults) => {
     journal: sanitizeJournal(source.journal, defaults.journal),
     campaign: {
       ...(isPlainObject(source.campaign) ? source.campaign : {}),
-      schemaVersion: 10,
+      schemaVersion: 12,
       appliedEvents: sanitizeAppliedEvents(source.campaign?.appliedEvents),
       saveRevision: clampInt(source.campaign?.saveRevision, 0, Number.MAX_SAFE_INTEGER, 0),
       chronicleEvents: Array.isArray(source.campaign?.chronicleEvents)
@@ -431,13 +415,15 @@ export const sanitizeCampaignState = (data, defaults) => {
         1000
       ),
       standingLedger: sanitizeLedgerEntries(source.campaign?.standingLedger, 1000),
+      honorLedger: sanitizeLedgerEntries(source.campaign?.honorLedger, 1000),
       familyTimeline: sanitizeLedgerEntries(source.campaign?.familyTimeline, 500),
       gloryBonusClaimedThreshold: source.campaign?.gloryBonusClaimedThreshold !== undefined
         ? clampInt(source.campaign.gloryBonusClaimedThreshold, 0, 10000, 0)
         : sourceSchemaVersion < 6
           ? Math.floor(gear.gloryTotal / 1000)
           : clampInt(defaults.campaign?.gloryBonusClaimedThreshold, 0, 10000, 0),
-      passionStates: sanitizePassionStates(source.campaign?.passionStates),
+      passionStates: undefined,
+      personalityMagic: sanitizePersonalityMagicState(source.campaign?.personalityMagic, source.campaign?.passionStates),
       health,
       combat: sanitizeChapter7CombatState(source.campaign?.combat, { ...defaults, ...source }),
       combatHistory: sanitizeLedgerEntries(source.campaign?.combatHistory, 250),
@@ -450,6 +436,8 @@ export const sanitizeCampaignState = (data, defaults) => {
       captives: sanitizeLedgerEntries(source.campaign?.captives, 1000),
       pendingEconomy: [],
       economy,
+      adventures: sanitizeAdventureLedger(source.campaign?.adventures),
+      chapter18: sanitizeChapter18Ledger(source.campaign?.chapter18),
       conditions: sanitizeLedgerEntries(source.campaign?.conditions, 100),
       fortresses: sanitizeLedgerEntries(source.campaign?.fortresses, 100),
       captivity: isPlainObject(source.campaign?.captivity) ? source.campaign.captivity : null,
@@ -474,7 +462,7 @@ export const hasAppliedEvent = (character, eventId) => Boolean(character?.campai
 
 export const markAppliedEvent = (character, eventId, label) => ({
   ...(character.campaign || {}),
-  schemaVersion: 10,
+  schemaVersion: 12,
   appliedEvents: {
     ...(character.campaign?.appliedEvents || {}),
     [eventId]: {
@@ -483,7 +471,8 @@ export const markAppliedEvent = (character, eventId, label) => ({
       label: label || eventId
     }
   },
-  passionStates: character.campaign?.passionStates || [],
+  personalityMagic: sanitizePersonalityMagicState(character.campaign?.personalityMagic, character.campaign?.passionStates),
+  passionStates: undefined,
   winter: character.campaign?.winter
 });
 
@@ -501,9 +490,10 @@ export const appendWinterLog = (character, message) => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 10,
+    schemaVersion: 12,
     appliedEvents: character.campaign?.appliedEvents || {},
-    passionStates: character.campaign?.passionStates || [],
+    personalityMagic: sanitizePersonalityMagicState(character.campaign?.personalityMagic, character.campaign?.passionStates),
+    passionStates: undefined,
     winter: {
       ...winter,
       year,
@@ -517,9 +507,10 @@ export const markWinterStep = (character, step, status = 'resolved') => {
   const winter = sanitizeWinter(character.campaign?.winter, year);
   return {
     ...(character.campaign || {}),
-    schemaVersion: 10,
+    schemaVersion: 12,
     appliedEvents: character.campaign?.appliedEvents || {},
-    passionStates: character.campaign?.passionStates || [],
+    personalityMagic: sanitizePersonalityMagicState(character.campaign?.personalityMagic, character.campaign?.passionStates),
+    passionStates: undefined,
     winter: {
       ...winter,
       year,

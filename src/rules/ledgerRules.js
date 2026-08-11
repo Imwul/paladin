@@ -4,6 +4,7 @@ const ensureCampaign = character => {
   character.campaign = character.campaign || {};
   character.campaign.gloryLedger = Array.isArray(character.campaign.gloryLedger) ? character.campaign.gloryLedger : [];
   character.campaign.standingLedger = Array.isArray(character.campaign.standingLedger) ? character.campaign.standingLedger : [];
+  character.campaign.honorLedger = Array.isArray(character.campaign.honorLedger) ? character.campaign.honorLedger : [];
   character.campaign.familyTimeline = Array.isArray(character.campaign.familyTimeline) ? character.campaign.familyTimeline : [];
   character.campaign.chronicleEvents = Array.isArray(character.campaign.chronicleEvents) ? character.campaign.chronicleEvents : [];
 };
@@ -83,6 +84,56 @@ export const recordStandingChange = (character, entry) => {
     after
   };
   character.campaign.standingLedger = appendUnique(character.campaign.standingLedger, normalized, 1000);
+  return normalized;
+};
+
+export const recordHonorChange = (character, entry) => {
+  ensureCampaign(character);
+  const normalizedBase = baseEntry(character, entry);
+  const existing = character.campaign.honorLedger.find(item => item.id === normalizedBase.id);
+  if (existing) return existing;
+  character.passions = character.passions || {};
+  const amount = Number(entry.amount || 0);
+  const before = Number(character.passions.honor || 0);
+  const after = Math.max(0, before + amount);
+  character.passions.honor = after;
+  const normalized = { ...normalizedBase, ...clone(entry), amount, before, after };
+  character.campaign.honorLedger = appendUnique(character.campaign.honorLedger, normalized, 1000);
+  if (after <= 5) {
+    const current = character.campaign.honorStatus || {};
+    character.campaign.honorStatus = {
+      ...current,
+      state: after === 0 ? 'out_of_play' : current.state === 'outlawed' || current.state === 'degraded'
+        ? current.state
+        : 'pending_lord_judgment',
+      honor: after,
+      triggeredBy: normalized.id,
+      sourcePage: 'Ch.3 pp.74-75',
+      pendingLordJudgment: after > 0 && !['outlawed', 'degraded'].includes(current.state),
+      activePlayRemoved: after === 0
+    };
+    if (after === 0) {
+      character.campaign.lifecycle = {
+        ...(character.campaign.lifecycle || {}),
+        status: 'historical',
+        careerStatus: 'historical',
+        activeCharacterId: null,
+        honorRemoval: {
+          transactionId: normalized.id,
+          reason: 'Honor reached 0; recovery is not possible and the character leaves active play.',
+          gmCharacterEligible: true,
+          sourcePage: 'Ch.3 p.74'
+        }
+      };
+      const priorActiveId = normalized.characterId;
+      character.family = character.family || {};
+      character.family.members = Array.isArray(character.family.members)
+        ? character.family.members.map(member => member.id === priorActiveId || (!priorActiveId && member.relation === '본인')
+          ? { ...member, lifecycleStatus: 'historical', honorRemovalYear: normalized.year }
+          : member)
+        : [];
+    }
+  }
   return normalized;
 };
 

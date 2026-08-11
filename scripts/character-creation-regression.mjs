@@ -349,13 +349,13 @@ test('CHAR-STORY-001/SAVE-MIG-001', 'in-progress sessions survive schema migrati
   assert.equal(first.character.family.patronSaintBenefit, 'skills.firstAid +5');
   assert.equal(first.character.journal[766].text, 'Legacy record');
   assert.equal(first.character.journal[767].text.includes('earned his spurs'), true);
-  assert.equal(first.character.campaign.schemaVersion, 10);
+  assert.equal(first.character.campaign.schemaVersion, 12);
   const duplicate = completeCharacterCreation(first.character, first.session, '2026-08-01T12:01:00.000Z');
   assert.equal(duplicate.completed, false);
   assert.equal(duplicate.duplicate, true);
   assert.equal(duplicate.character.campaign.completedCreationIds.length, 1);
   const migrated = sanitizeCampaignState(first.character, defaults);
-  assert.equal(migrated.campaign.schemaVersion, 10);
+  assert.equal(migrated.campaign.schemaVersion, 12);
   assert.equal(migrated.campaign.characterCreationSession.status, 'completed');
   const repaired = sanitizeCampaignState({
     ...first.character,

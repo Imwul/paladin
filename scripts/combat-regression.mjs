@@ -286,7 +286,7 @@ test('HEALTH-HAZARD-001', 'falls create wounds while poison bypasses armor and F
   assert.equal(visibleDisease.character.campaign.health.wounds.length, 1);
 });
 
-test('SAVE-IMPORT-001', 'schema v6 saves migrate to v10 and preserve negative HP', () => {
+test('SAVE-IMPORT-001', 'schema v6 saves migrate to v12 and preserve negative HP', () => {
   const defaults = makeCharacter();
   const old = makeCharacter();
   old.campaign.schemaVersion = 6;
@@ -294,7 +294,7 @@ test('SAVE-IMPORT-001', 'schema v6 saves migrate to v10 and preserve negative HP
   delete old.campaign.health;
   delete old.campaign.combat;
   const migrated = sanitizeCampaignState(old, defaults);
-  assert.equal(migrated.campaign.schemaVersion, 10);
+  assert.equal(migrated.campaign.schemaVersion, 12);
   assert.equal(migrated.attributes.currentHp, -2);
   assert.equal(migrated.campaign.health.pendingDeath.due, 'same_day_midnight');
   assert.equal(migrated.campaign.combat, null);

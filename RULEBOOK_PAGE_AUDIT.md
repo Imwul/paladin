@@ -3,7 +3,7 @@
 ## 기준
 
 - 권위 원본: paladin_core_rulebook.pdf, 463 PDF pages
-- 재검토일: 2026-08-09 (Chapter 7·8·12 재감사)
+- 재검토일: 2026-08-12 (Chapter 19 Final Completion Pass)
 - 방법: PDF 1쪽부터 463쪽까지 추출 텍스트와 렌더링된 전 페이지 contact sheet를 순서대로 확인했습니다.
 - 판정: 구현은 해당 페이지 절차를 끝까지 실행, 부분은 핵심은 있으나 외부 절차·GM 선택·하위 체계가 남음, 참조는 조회 중심, 미구현은 실제 플레이 절차가 없음, 해당 없음은 표지·백지·도판입니다.
 - Rule ID 집계가 아닌 페이지 순서 감사이며 표·사이드바·예시·디자이너 노트·선택 규칙·각주·도판 캡션을 함께 확인했습니다.
@@ -13,12 +13,49 @@
 | 상태 | PDF 쪽 수 |
 |---|---:|
 | 해당 없음 | 36 |
-| 참조 | 166 |
-| 부분 | 172 |
-| 구현 | 69 |
-| 미구현 | 20 |
+| 참조 | 149 |
+| 부분 | 137 |
+| 구현 | 140 |
+| 구현/참조 | 1 |
+| 미구현 | 0 |
 
-완전한 규칙서 등가물로 판정하지 않습니다. Chapter 7 개인 전투, Chapter 8 소규모 교전·대규모 전투·공성, Chapter 12 경제는 종단 실행할 수 있지만, 외국 문화 생성, 적·생물 실행, Chapter 19 완전 모험은 출시 차단 범위입니다. 겨울과 경제는 원문 순서를 실행하며 GM 판단이 필요한 결과는 명시적 선택 또는 기록 상태로 남깁니다.
+완전한 규칙서 전체와 등가물로 판정하지는 않습니다. 다만 Chapter 3/9의 현재 gameplay dependency는 canonical subsystem으로 완료했고, Chapter 19는 두 장편, 18개 Short Form, 14개 Solo Procedure, 36개 표의 결정 가능한 절차를 종단 실행하며 Chapter 7·8·12·18과 Chapter 3/9 canonical subsystem으로 복귀합니다. Chapter 3/9와 Chapter 19에 남은 것은 원문상 GM/Narrative 판단과 source ambiguity뿐입니다. 저장소 전체 범위에는 Chapter 17 외국 문화 생성과 Hippogriff 원문 내부 충돌 등 별도 장의 잔여 사항이 있습니다.
+
+## Chapter 3 / 9 Current Superseding Audit
+
+아래 판정은 과거 페이지별 기록 중 PDF 66-82와 164-172의 PARTIAL 행을 대체합니다. 과거 행은 감사 이력을 위해 유지하며 현재 상태 판단에는 사용하지 않습니다.
+
+| PDF | 인쇄 | 범위 | 현재 구현 여부 | 남은 항목 | 검증 |
+|---:|---:|---|---|---|---|
+| 66-69 | 65-68 | Traits, Passions, contrary action | **구현** | 원문이 상황 선택을 GM에게 맡김 | 24 Traits·12 pairs·Passion -1 |
+| 70-73 | 69-72 | Directed Trait, Trait results/conflict | **구현** | Directed 맥락과 값의 GM 판단 | Table 3-1·save/reload |
+| 74-75 | 73-74 | Honor, Dishonorable Acts | **구현** | 실제 불명예 trigger의 table judgment | Table 3-2·Honor <=5/0 |
+| 76-78 | 75-77 | Amor, Directed Passion, Fear | **구현** | 시작값 합의와 Fear 기회 GM 판단 | Love/Hate/Fear·pagan Amor |
+| 79-82 | 78-81 | Passion aftermath, Madness, Melancholy, Winter -3, Oath | **구현** | Melancholy 기간 source ambiguity와 서사 | Table 3-4·recovery·Oath |
+| 164-165 | 163-164 | Magic and eligibility | **구현/참조** | 마법의 서사적 의미 | Prayer gate |
+| 166-169 | 165-168 | Prayer and Miracles | **구현** | miracle 성격의 GM 판단 | Tables 9-1/2·Adventure return |
+| 170 | 169 | Dreams | **구현** | 꿈 내용과 해석 | sourced/GM dream state |
+| 171 | 170 | Relics and pagan lover betrayal | **구현/참조** | 성물의 원문상 서사 | relic modifier·Amor→Hate·-5/-5 |
+| 172 | 171 | Pagan Lady Amor | **구현** | NPC 수치·관계 맥락의 GM 판단 | APP vs Chaste/Honor·external Passion |
+
+상세 procedure, table, save/resume와 Chapter 19 복귀 증거는 `CHAPTER3_9_DEPENDENCY_AUDIT.md`에 기록했습니다.
+
+## Chapter 19 Final Superseding Audit
+
+아래 판정은 2026-08-11 전 페이지 기록 중 PDF 392-439의 PARTIAL 행을 대체합니다. 과거 행은 감사 이력을 위해 그대로 두며 현재 상태 판단에는 사용하지 않습니다.
+
+| PDF | 인쇄 | 범위 | 현재 구현 여부 | 남은 항목 | 검증 |
+|---:|---:|---|---|---|---|
+| 392-394 | 391-393 | Chapter 19 introduction and Adventure model | **구현** | 원문 GM/Narrative 판단 | 공용 상태 머신·save/resume |
+| 395-400 | 394-399 | The Adventure of the Jewel | **구현** | 원문 GM/Narrative 판단 | UI 완주·Chapter 7/12 복귀 |
+| 401-410 | 400-409 | The Adventure of the Humble Squires | **구현** | 원문 GM/Narrative 판단 | UI 완주·Hunt·Chapter 7/8·서임 |
+| 411-424 | 410-423 | 18 Short Form Scenarios | **구현** | Table 19-7 source ambiguity | 18/18 UI 완료 |
+| 425-427 | 424-426 | Hunt and Tables 19-8 to 19-12 | **구현** | Table 19-11 source ambiguity | Search-to-stop UI 완료 |
+| 428-433 | 427-432 | Challenges through Mallus | **구현** | Table 19-24 source ambiguity | 반복·nested table·stop 완료 |
+| 434-436 | 433-435 | Pilgrimage and Romance | **구현** | 원문 GM/Narrative 판단 | Winter 포함 UI 완료 |
+| 437-439 | 436-438 | Royal Court through Your Manor | **구현** | 원문 GM/Narrative 판단 | 반복·Chapter 7/12 복귀 완료 |
+
+Chapter 19 페이지 변화는 PARTIAL 42쪽을 구현으로 전환한 것입니다. Table 19-7, 19-11, 19-24의 인쇄 모호성은 구현 누락으로 세지 않고 GM/source record로 보존합니다.
 
 ## 전 페이지 기록
 
@@ -89,23 +126,23 @@
 | 63 | 62 | Chapter Two: The Past | **부분** · 선대 역사와 연표 자료를 가문·연대 참고에 반영 | 모든 연도별 부친 사건의 완전 실행 | 참고·부분 자동화 |
 | 64 | 63 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
 | 65 | 64 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
-| 66 | 65 | Chapter Three: Personality: | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 67 | 66 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 68 | 67 | T | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 69 | 68 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 70 | 69 | Traits | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 71 | 70 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 72 | 71 | Traits | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 73 | 72 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 74 | 73 | Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 75 | 74 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 76 | 75 | Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 77 | 76 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 78 | 77 | Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 79 | 78 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 80 | 79 | Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 81 | 80 | Chapter Three: Personality: Traits and Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
-| 82 | 81 | Passions | **부분** · 대립 성향·열정·경험과 후유 상태를 공통 엔진으로 처리 | Directed Trait·맹세·불명예·완전한 Amor 단계 | GM 선택은 명시적 미결 |
+| 66 | 65 | Chapter Three: Personality: | **부분** · 24 Traits·12 대립쌍과 공용 Personality/Magic 상태 | Table 3-2 전역 자동 탐지, Winter 자발적 Passion -3, Fear 기회 | Chapter 19 직접 의존은 닫힘 |
+| 67 | 66 | Chapter Three: Personality: Traits and Passions | **부분** · Trait·Passion·경험·강제 행동을 canonical resolver로 처리 | Table 3-2 전역 자동 탐지와 독립 Winter/Fear 절차 | GM·서술 판단은 명시적 입력 |
+| 68 | 67 | T | **부분** · 12개 대립쌍과 Trait test·conflict 실행 | 모든 불명예 원인의 자동 감지 | 단일 `character.traits` 사용 |
+| 69 | 68 | Chapter Three: Personality: Traits and Passions | **부분** · Trait check와 반대 Trait 결과 실행 | 모든 캠페인 사건의 자동 Trait trigger | 앱이 상황을 창작하지 않음 |
+| 70 | 69 | Traits | **부분** · Directed Trait 대상·modifier·기원·GM 제거 실행 | 모든 맥락의 자동 Directed trigger | 합의 modifier와 source 저장 |
+| 71 | 70 | Chapter Three: Personality: Traits and Passions | **부분** · Table 3-1 생성과 1개 계승 Directed Trait 실행 | 다른 생성 문화 전체 | 기존 생성 흐름과 연결 |
+| 72 | 71 | Traits | **부분** · Trait 경험 체크와 대립값 보존 | 모든 캠페인 원인의 자동 경험 부여 | canonical 값 사용 |
+| 73 | 72 | Chapter Three: Personality: Traits and Passions | **부분** · Trait 관련 선택·결과·source ledger 제공 | Table 3-2 전역 탐지 | explicit Honor 거래 유지 |
+| 74 | 73 | Passions | **부분** · 초기·공통 Passion, 일반·의무·부적절 사용 실행 | Winter 자발적 -3, Fear 극복 기회 | Chapter 19 직접 의존은 닫힘 |
+| 75 | 74 | Chapter Three: Personality: Traits and Passions | **부분** · Honor·Oath와 Table 3-2 reference/거래 연결 | 20개 행의 앱 전체 자동 감지 | 한 번에 하나의 Oath 보존 |
+| 76 | 75 | Passions | **부분** · Amor 하나, 최대 modifier +10, 16+ 제약 실행 | NPC 관계 전체 자동 판정 | 원문 밖 관계 규칙 없음 |
+| 77 | 76 | Chapter Three: Personality: Traits and Passions | **부분** · 일반 Passion 발동·행동 완료·경험 처리 | Fear 기회의 모든 자동 제시 | player/GM 선택 저장 |
+| 78 | 77 | Passions | **부분** · Table 3-4 결과와 Inspiration 실행 | 모든 외부 행동의 자동 보정 소비 | modifier transaction 고정 |
+| 79 | 78 | Chapter Three: Personality: Traits and Passions | **부분** · Shock는 Table 10-1 Aging을 재사용 | 원문이 GM에 맡긴 Shock 상황 자동 판단 | Wrathful Lord 특수 역전 포함 |
+| 80 | 79 | Passions | **부분** · Melancholy·Madness·Snap Out·연간 회복 실행 | Madness 기간의 서사 자동 생성 | 모호한 두 Melancholy 기간 보존 |
+| 81 | 80 | Chapter Three: Personality: Traits and Passions | **부분** · Introspection·Group Inspiration 실행 | 모든 게임 그룹의 참가자 자동 편성 | frivolous/mandatory 구분 |
+| 82 | 81 | Passions | **부분** · Oath·Honor stakes와 후유 상태 종료 실행 | 모든 명예 위반 자동 탐지 | Chapter 19 직접 의존은 닫힘 |
 | 83 | 82 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
 | 84 | 83 | Chapter Four: Reputation: | **부분** · 영광·지위 계산과 연도·원인·출처 원장 제공 | 모든 전투·토너먼트·명예 원천 자동 산정 | 기록된 획득은 겨울에 게시 |
 | 85 | 84 | Chapter Four: Reputation: Glory and Standing | **부분** · 영광·지위 계산과 연도·원인·출처 원장 제공 | 모든 전투·토너먼트·명예 원천 자동 산정 | 기록된 획득은 겨울에 게시 |
@@ -187,15 +224,15 @@
 | 161 | 160 | Chapter Eight: Mass Combat | **구현** · Table 8-15·8-16 수비·공격 사기 연쇄 실행 | 없음 | 항복·반란·철수 종료 조건 반영 |
 | 162 | 161 | Siege | **구현** · 요새 함락·유지, 포로, 공성 Glory, 연대기와 fortress 상태 확정 | 포로의 도주·사망은 GM/후속 장 판단 | 구조화된 미결 상태로 보존 |
 | 163 | 162 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
-| 164 | 163 | Chapter Nine: Magic | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 165 | 164 | Chapter Nine: Magic | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 166 | 165 | Magic for Player-knights | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 167 | 166 | Chapter Nine: Magic | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 168 | 167 | 1. The Player-knight must be in a position to talk. In | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 169 | 168 | Chapter Nine: Magic | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 170 | 169 | Magic for Player-knights | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 171 | 170 | Chapter Nine: Magic | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
-| 172 | 171 | Magic for Player-knights | **부분** · 기도·꿈·Amor 일부 판정과 참고 제공 | 모든 마법 결과와 완전한 Amor 상태 처리 | 원문 밖 자동 선택 없음 |
+| 164 | 163 | Chapter Nine: Magic | **부분** · Prayer·Miracle·Dream 공용 상태와 source record 제공 | 신명재판·악한 마법·성물별 전체 서사 | Chapter 19 직접 의존은 닫힘 |
+| 165 | 164 | Chapter Nine: Magic | **부분** · 원문 eligibility와 청원 대상 판정 실행 | 마법의 모든 narrative consequence | 자동 서사 생성 없음 |
+| 166 | 165 | Magic for Player-knights | **부분** · 자신의 Love [Charlemagne], 타인의 Love [God] 기도 실행 | 모든 캠페인 장면의 자동 기도 trigger | prayer transaction 저장 |
+| 167 | 166 | Chapter Nine: Magic | **부분** · Table 9-1 결과와 Table 9-2 선택 여부 실행 | Table 9-2를 자동 선택할 GM 기준 | GM 선택을 침범하지 않음 |
+| 168 | 167 | 1. The Player-knight must be in a position to talk. In | **부분** · 대상·상황·허용 입력을 검증하고 결과 적용 | 모든 비정형 대상 효과 | explicit source effect 사용 |
+| 169 | 168 | Chapter Nine: Magic | **부분** · critical Prayer 뒤 miracle 성격을 GM decision으로 저장 | 기적의 서사적 내용 자동 생성 | 결정 후 Adventure 복귀 |
+| 170 | 169 | Magic for Player-knights | **부분** · sourced Dream과 Love Passion test 실행 | 꿈 내용·해석 자동 생성 | 원문 prompt와 결과 보존 |
+| 171 | 170 | Chapter Nine: Magic | **부분** · relic Prayer modifier와 Adventure 효과 연결 | 성물 전체 catalog의 개별 효과 | Jewel Eingar -5 정확히 연결 |
+| 172 | 171 | Magic for Player-knights | **부분** · 장기 상태와 save/reload transaction 보존 | judicial ordeal·evil magic 전체 | Chapter 19 직접 의존은 닫힘 |
 | 173 | 172 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
 | 174 | 173 | Chapter Ten: | **구현** · 겨울 10단계를 고정 순서 마법사로 제공 | 없음 | 선실행·미완료 마감 차단 |
 | 175 | 174 | Chapter Ten: The Winter Phase | **부분** · 나이·노화·수확 판정 실행 | 연대기 기반 모든 지역 재난 자동 적용 | 외부 사건 수정치는 입력 |
@@ -397,72 +434,72 @@
 | 371 | 370 | Chapter Seventeen: Foreign Cultures | **참조** · 외국 문화 자료 제공 | 문화별 완전한 캐릭터 생성·수정치 적용 | Frankish Ardennes만 완전 경로 |
 | 372 | 371 | S | **참조** · 외국 문화 자료 제공 | 문화별 완전한 캐릭터 생성·수정치 적용 | Frankish Ardennes만 완전 경로 |
 | 373 | 372 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
-| 374 | 373 | Chapter Eighteen: | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 375 | 374 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 376 | 375 | SIZ 12, DEX 14, STR 15, CON 15, APP 13 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 377 | 376 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 378 | 377 | SIZ 15, DEX 10, STR 15, CON 10 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 379 | 378 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 380 | 379 | SIZ 55, DEX 17, STR 20, CON 12 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 381 | 380 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 382 | 381 | SIZ 25, DEX 10, STR 25, CON 18 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 383 | 382 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 384 | 383 | SIZ 5, DEX 25, STR 10, CON 50 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 385 | 384 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 386 | 385 | SIZ 6, DEX 30, STR 16, CON 20 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 387 | 386 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 388 | 387 | SIZ 3, DEX 10, STR 30, CON 15 | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 389 | 388 | Chapter Eighteen: Opponents and Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
-| 390 | 389 | Enchanted Creatures | **참조** · 적·생물 통계와 설명 제공 | 특수능력·전투 조우 엔진 | 전투 엔진 미구현 영향 |
+| 374 | 373 | Chapter Eighteen: | **구현** · Glory Won·Movement와 표준 기사 statblock registry | 없음 | Chapter 7 adapter와 원문 page 보존 |
+| 375 | 374 | Chapter Eighteen: Opponents and Creatures | **구현** · 기사·병사·외국 전사와 공격·탈것 선택 | 없음 | 범위 없는 값은 exact |
+| 376 | 375 | SIZ 12, DEX 14, STR 15, CON 15, APP 13 | **구현** · 외국 전사·일반인 stat/skill/Glory | 없음 | Chapter 7 participant |
+| 377 | 376 | Chapter Eighteen: Opponents and Creatures | **구현** · 일반인·여성 NPC statblock | 없음 | 공격 없는 NPC도 reference participant 지원 |
+| 378 | 377 | SIZ 15, DEX 10, STR 15, CON 10 | **구현** · 12종 일반 말 stat·HP·DEX·Armor·Move | 없음 | Economy v2 mount identity 재사용 |
+| 379 | 378 | Chapter Eighteen: Opponents and Creatures | **구현** · Hunt/Combat/Attack Training, Table 18-1, Ruining Horses, Bayard | 없음 | 매 라운드 통제·도주·+5·파손 수치 실행 |
+| 380 | 379 | SIZ 55, DEX 17, STR 20, CON 12 | **구현** · Camel·Elephant·Pony·trained animal | Table 10-8 Camel 추위는 외부 참조 | Elephant Prudent/throw 실행 |
+| 381 | 380 | Chapter Eighteen: Opponents and Creatures | **구현** · Avoidance와 Discretion/Valor gate, Aurochs | 없음 | 주저·도주·재시도·Prudent 회피 저장 |
+| 382 | 381 | SIZ 25, DEX 10, STR 25, CON 18 | **구현** · Bear·Boar·Deer·Lions 다중/조건 공격 | 없음 | mount-first·last round 포함 |
+| 383 | 382 | Chapter Eighteen: Opponents and Creatures | **구현** · Panther·Wolf·Ogre와 monster partial Glory | 없음 | 행동 노트·Glory 분배 |
+| 384 | 383 | SIZ 5, DEX 25, STR 10, CON 50 | **구현** · Giants·Basilisk·Centaur의 범위/특수 공격 | 없음 | gaze·독·배타 공격 state |
+| 385 | 384 | Chapter Eighteen: Opponents and Creatures | **구현** · Demon·Dragon·Ghost reference | Ghost는 원문상 narrative | 재생·GM fire·Christian magic record |
+| 386 | 385 | SIZ 6, DEX 30, STR 16, CON 20 | **구현** · Goblin virtue와 Griffin fly-by/grapple/drop | 없음 | source ability transaction |
+| 387 | 386 | Chapter Eighteen: Opponents and Creatures | **부분** · Harpy·Hippogriff | Hippogriff Hoofs와 fly-by claw/bite 원문 충돌 | Harpy 면역 실행, Hippogriff TODO/GM record |
+| 388 | 387 | SIZ 3, DEX 10, STR 30, CON 15 | **구현** · Manticore·Nuton·Orc·Pegasus | 없음 | 면역·재생·capture/Honor·lance -5/12d6 |
+| 389 | 388 | Chapter Eighteen: Opponents and Creatures | **구현** · Siren·Unicorn·Will-o-wisp/Faerie reference | 서사 마법은 GM 판단 | song·Cruel·uncapturable 실행 |
+| 390 | 389 | Enchanted Creatures | **구현/참조** · Faerie Enchantress GM state와 named faerie/Other Monsters reference | 원문이 GM 생성 요구 | 원문 없는 stat을 창작하지 않음 |
 | 391 | 390 | 390 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 책 구조 확인 |
-| 392 | 391 | Chapter Nineteen: | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 393 | 392 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 394 | 393 | S | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 395 | 394 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 396 | 395 | The Adventure of the Jewel | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 397 | 396 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 398 | 397 | The Adventure of the Jewel | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 399 | 398 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 400 | 399 | The Adventure of the Jewel | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 401 | 400 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 402 | 401 | The Adventure of the Humble Squires | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 403 | 402 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 404 | 403 | Table 19–2: Rumors During a short religious ceremony, Archbishop Turpin | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 405 | 404 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 406 | 405 | Table 19–4: Random Battle Enemy in the back: 100. | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 407 | 406 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 408 | 407 | The Adventure of the Humble Squires | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 409 | 408 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 410 | 409 | T | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 411 | 410 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 412 | 411 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 413 | 412 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 414 | 413 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 415 | 414 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 416 | 415 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 417 | 416 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 418 | 417 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 419 | 418 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 420 | 419 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 421 | 420 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 422 | 421 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 423 | 422 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 424 | 423 | Short Form Scenarios | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 425 | 424 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 426 | 425 | Table 19–8: Hunting Terrain Modifiers | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 427 | 426 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 428 | 427 | Table 19–13: Challenge Encounters | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 429 | 428 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 430 | 429 | Paladin: A Player-knight may attempt to cure a melan- | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 431 | 430 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 432 | 431 | Table 19–20: Mad Acts | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 433 | 432 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 434 | 433 | Table 19–27: Amor Modifiers | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 435 | 434 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 436 | 435 | Table 19–29: Sample Discovery Factors | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 437 | 436 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 438 | 437 | Table 19–33: | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
-| 439 | 438 | Chapter Nineteen: Adventures | **부분** · 일부 모험 표·솔로 오라클·연대 기록 제공 | Chapter 19 완전 시나리오 엔진 | 원문 모험 종단 완주 불가 |
+| 392 | 391 | Chapter Nineteen: | **부분** · Chapter 19 원문 범위와 모험 유형을 앱 목록에 반영 | 완전 장편·Short Form 분기 | 34개 절차 catalog 진입점 |
+| 393 | 392 | Chapter Nineteen: Adventures | **부분** · 저장 가능한 Adventure state와 GM/player decision 제공 | 모든 장면별 전용 resolver | 공용 engine은 구현 |
+| 394 | 393 | S | **부분** · 모험 시작·참가자·연도·단계 상태 보존 | 원문 예시 전체의 실행 소비 | narrative는 GM 기록 |
+| 395 | 394 | Chapter Nineteen: Adventures | **부분** · Jewel setup과 판정 stage 구현 | 도적 추격 Hunt 분기 | Chapter 7 복귀 지원 |
+| 396 | 395 | The Adventure of the Jewel | **부분** · 순례자 선택, relic Prayer, Brigands 전투 구현 | 추격·자비의 모든 후속 체크 | 기도 결과는 canonical 복귀 |
+| 397 | 396 | Chapter Nineteen: Adventures | **부분** · route 선택, Hermit GM 결정, sourced Dream 구현 | route별 세부 이동 반복 | 선택하지 않은 Dream 자동 skip |
+| 398 | 397 | The Adventure of the Jewel | **부분** · Beaver Dam과 Esneux 원문 판정 구현 | 모든 실패 후속을 전용 state로 분리 | 공용 test 사용 |
+| 399 | 398 | Chapter Nineteen: Adventures | **부분** · Eingarstein 결정과 Chapter 7 전투 구현 | Eingar의 모든 서사 분기 | relic Prayer 성공 시 Eingar 전 행동 -5 |
+| 400 | 399 | The Adventure of the Jewel | **부분** · 귀환, Glory·Treasure ledger 연결 | 조건별 Glory preset 자동화 | Economy v2 사용 |
+| 401 | 400 | Chapter Nineteen: Adventures | **부분** · Humble Squires setup과 원정 참가자 보존 | 전체 원정 세부 분기 | 다인 참가자 명시 |
+| 402 | 401 | The Adventure of the Humble Squires | **부분** · Mountain Dangers와 White Deer Hunt 구현 | 산악 위험의 모든 피해 자동 연결 | Hunt는 종단 실행 |
+| 403 | 402 | Chapter Nineteen: Adventures | **부분** · Rumors와 canonical blessing·Passion conflict·Dream 구현 | 소문별 후속 서술 | Personality/Magic 복귀 고정 |
+| 404 | 403 | Table 19–2: Rumors During a short religious ceremony, Archbishop Turpin | **부분** · Passion conflict 후 Rome battle을 Chapter 8로 호출 | 전투 전 세부 지휘 분기 | Chapter 8 복귀 지원 |
+| 405 | 404 | Chapter Nineteen: Adventures | **부분** · Table 19-3 적 결과와 Chapter 7 연결 | 모든 round 반복·종료 자동화 | 표 결과 재추첨 방지 |
+| 406 | 405 | Table 19–4: Random Battle Enemy in the back: 100. | **부분** · 3라운드 적과 포로·약탈 선택 구현 | 선택별 전체 후속 수치 preset | Economy 연결 가능 |
+| 407 | 406 | Chapter Nineteen: Adventures | **부분** · 서임 dependency, Mount Bitter 표와 개인전 연결 | 전투 전체 round 자동 진행 | Chapter 1·18 의존 보존 |
+| 408 | 407 | The Adventure of the Humble Squires | **부분** · 선택적 challenge·ambush 전투 구현 | Aumont·Floripas 세부 분기 | Chapter 7 사용 |
+| 409 | 408 | Chapter Nineteen: Adventures | **부분** · 결말과 Chronicle/ledger 후속 stage 구현 | 조건별 Glory preset 자동화 | 의미 있는 결말 기록 |
+| 410 | 409 | T | **부분** · Humble Squires 완료·보류·재개 지원 | 모든 장기 후속 자동화 | active state 정상 종료 |
+| 411 | 410 | Chapter Nineteen: Adventures | **부분** · 18개 Short Form 공통 source 구조 구현 | 각 시나리오의 개별 branch state | Secrets는 GM decision |
+| 412 | 411 | Short Form Scenarios | **부분** · Adulterous Prayer와 Angry Merchant Snap Out 실행 | 세부 후속 자동화 | Personality/Magic·Chapter 7·Standing 연결 |
+| 413 | 412 | Chapter Nineteen: Adventures | **부분** · Blue Heaven·Devil's Bridge Prayer/Dream·Faerie Castle 흐름 | 시나리오별 전용 반복 | Chapter 18·Personality/Magic 연결 |
+| 414 | 413 | Short Form Scenarios | **부분** · Bayard·Foreign Embassy 흐름 | Bayard 특수 상태 전용 resolver | Economy·Standing 연결 |
+| 415 | 414 | Chapter Nineteen: Adventures | **부분** · Greedy Abbot 원문 접근·판정·결말 기록 | 마법·적 특수능력 | GM 결정 보존 |
+| 416 | 415 | Short Form Scenarios | **부분** · Guarding Maugis 흐름 | 추격과 마법 가루 전용 state | Chapter 7 연결 |
+| 417 | 416 | Chapter Nineteen: Adventures | **부분** · Love Conquers All의 accelerated Amor와 세 과업 실행 | 다른 조우 세부 branch | Chapter 3/9 직접 의존 닫힘 |
+| 418 | 417 | Short Form Scenarios | **부분** · Melancholic Paladin Snap Out와 양쪽 후유 상태 실행 | 시나리오 세부 설득 branch | Chapter 3·18 직접 의존 닫힘 |
+| 419 | 418 | Chapter Nineteen: Adventures | **부분** · Miracle of Truth Prayer·miracle decision·Standing 연결 | 기적의 원문상 GM 서술 | Chapter 9 직접 의존 닫힘 |
+| 420 | 419 | Short Form Scenarios | **부분** · Noble Hostage miracle·Pagan Lady Amor 변환 실행 | 인질 세부 branch | Economy v2 몸값 |
+| 421 | 420 | Chapter Nineteen: Adventures | **부분** · Pagan Prison NPC Amor와 전투·공성·경제 bridge | 탈출 세부 branch | Chapter 7·8·12·18 재사용 |
+| 422 | 421 | Short Form Scenarios | **부분** · Rebellious Baron 흐름 | 모든 잠입·결투 후속 자동화 | Standing·Glory 연결 |
+| 423 | 422 | Chapter Nineteen: Adventures | **부분** · Small Knight 흐름과 Chapter 7 연결 | NPC 특수 수치·비극 분기 | GM 결말 기록 |
+| 424 | 423 | Short Form Scenarios | **부분** · Wrathful Lord 특수 Shock·opposed Passion 실행 | Chase 세부 반복 resolver | 성공 시 Aging, 실패 시 Shock 회피 원문 보존 |
+| 425 | 424 | Chapter Nineteen: Adventures | **구현** · Hunt 준비, 참가자와 segment 상태 | 없음 | Search/Chase 진입 |
+| 426 | 425 | Table 19–8: Hunting Terrain Modifiers | **구현** · Table 19-8-11을 Chase·Obstacle·Prey에서 소비 | 원문 Table 19-11 중첩은 GM 선택 | 재추첨 방지 |
+| 427 | 426 | Chapter Nineteen: Adventures | **구현** · Table 19-12 기습과 Chapter 7 전투·종료 구현 | Chapter 18 특수능력은 GM stat 입력 | Hunt 종단 완료 |
+| 428 | 427 | Table 19–13: Challenge Encounters | **부분** · Challenges 표 2개와 Chapter 7 복귀 | 월간 반복 자동 종료 | 표 결과 보존 |
+| 429 | 428 | Chapter Nineteen: Adventures | **부분** · Feud 표와 Chapter 8 bridge | 친족 소집·정지 자동화 | GM 선택 보존 |
+| 430 | 429 | Paladin: A Player-knight may attempt to cure a melan- | **부분** · Forest 표 2개와 전투 bridge | 20까지 일일 반복 자동화 | 결과 고정 |
+| 431 | 430 | Chapter Nineteen: Adventures | **부분** · Holy Lands 표 2개와 Economy·Battle bridge | 다년 반복·Aging 자동 연결 | 외부 의존 보존 |
+| 432 | 431 | Table 19–20: Mad Acts | **부분** · Wild Hunt의 Mad Acts·Character Changes·연간 회복 실행 | Madness 기간의 원문상 서사 | canonical 상태와 GM 후속 기록 |
+| 433 | 432 | Chapter Nineteen: Adventures | **부분** · Mallus·Missus 표 소비 | 판결·감찰 후속 자동화 | 인쇄 모호성 보존 |
+| 434 | 433 | Table 19–27: Amor Modifiers | **구현** · Pilgrimage·Romance의 canonical 선언과 modifier 소비 | 없음 | Chapter 3/9 직접 의존 닫힘 |
+| 435 | 434 | Chapter Nineteen: Adventures | **구현** · Lover's Tasks·Essai·다음 Winter·Consummation 실행 | 임신은 Family/GM 원문 절차 | 장기 상태 저장·재개 |
+| 436 | 435 | Table 19–29: Sample Discovery Factors | **구현** · Discovery·Exposure 표와 Amor 종료 실행 | 없음 | UI 종단 실플레이 통과 |
+| 437 | 436 | Chapter Nineteen: Adventures | **부분** · Royal Court optional Amor·Tournament 절차와 표 소비 | 경연·pairing 자동 반복 | Chapter 7·Personality/Magic 재사용 |
+| 438 | 437 | Table 19–33: | **부분** · Tournament·Vassal Service 표 소비 | melee·3회 무중복 추첨 자동화 | 결과 저장 |
+| 439 | 438 | Chapter Nineteen: Adventures | **부분** · Your Manor 표 2개와 Economy·Standing bridge | 연간 장원 반복 자동화 | Chapter 12 재사용 |
 | 440 | 439 | Appendix One: Names | **부분** · 이름 자료 일부를 생성·참고에 사용 | 모든 문화권·성별 이름 선택기 | Frankish 기본 지원 |
 | 441 | 440 | Appendix One: Names | **부분** · 이름 자료 일부를 생성·참고에 사용 | 모든 문화권·성별 이름 선택기 | Frankish 기본 지원 |
 | 442 | 441 | Appendix Two: Bibliography | **참조** · 서지를 감사 출처 확인에 사용 | 런타임 구현 대상 아님 | 규칙 근거용 |

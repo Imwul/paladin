@@ -250,6 +250,44 @@ export const resolveRecovery = (character, options = {}) => {
   });
 };
 
+export const resolveKnighthood = (character, options = {}) => {
+  const next = clone(character);
+  ensureCampaign(next);
+  const timestamp = iso(options.timestamp);
+  const year = asInt(options.year, next.personal?.campaignYear || 767);
+  const activeId = next.campaign.lifecycle.activeCharacterId || getSelf(next)?.id || 'self';
+  const eventId = safeId(options.eventId || `lifecycle:knighting:${activeId}:${year}`);
+  if (next.campaign.appliedEvents[eventId]) return { character, applied: false, duplicate: true };
+  if (String(next.personal?.personalClass || '').toLowerCase().includes('knight') || String(next.personal?.personalClass || '').includes('기사')) {
+    return { character, applied: false, reason: 'already_knighted' };
+  }
+
+  const previousClass = next.personal?.personalClass || 'Squire';
+  next.personal = { ...(next.personal || {}), personalClass: '기사 (Knight)' };
+  const self = getSelf(next);
+  if (self) {
+    self.personalClass = '기사 (Knight)';
+    self.knightedYear = year;
+  }
+  const event = buildEvent(next, {
+    eventId,
+    sourceRuleId: options.sourceRuleId || 'CHAR-KNIGHT-QUAL-001',
+    previousStatus: next.campaign.lifecycle.careerStatus,
+    nextStatus: next.campaign.lifecycle.careerStatus,
+    cause: options.cause || 'knighted_by_authority',
+    year,
+    sourcePage: options.sourcePage || 'Chapter 1 p. 35',
+    triggeringEvent: 'knighting',
+    appliedEffectIds: [`effect:${eventId}:class`],
+    journalEntryId: `journal:${eventId}`,
+    timestamp
+  });
+  event.previousClass = previousClass;
+  event.nextClass = next.personal.personalClass;
+  appendLifecycleEvent(next, event);
+  return { character: next, applied: true, event };
+};
+
 export const prepareCareerEnd = (character, options = {}) => {
   const type = options.type;
   if (!['death', 'retirement'].includes(type)) return { character, prepared: false, reason: 'invalid_type' };

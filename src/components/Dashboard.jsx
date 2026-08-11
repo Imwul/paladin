@@ -17,6 +17,7 @@ const getPendingActions = character => {
   if (lifecycle.status === 'pending_salvation') actions.push({ tab: 'character', title: '구원 판정', detail: '끝난 생애의 구원(Salvation) 판정이 남아 있습니다.' });
   if (lifecycle.status === 'pending_legacy') actions.push({ tab: 'character', title: '유산 선택', detail: '다음 기사에게 전할 점수와 유산(Legacy)을 선택해야 합니다.' });
   if (lifecycle.status === 'pending_successor') actions.push({ tab: 'family', title: '계승자 선택', detail: '가문의 연대를 이을 후계자를 지정해야 합니다.' });
+  if (character.campaign?.honorStatus?.pendingLordJudgment) actions.push({ tab: 'personality', title: '영주의 명예 심판', detail: `Honor ${character.campaign.honorStatus.honor}. 원문에 따라 추방 또는 기사 신분 박탈을 결정해야 합니다.` });
   const unresolvedWinter = Object.keys(winter.unresolved || {});
   if (unresolvedWinter.length) actions.push({ tab: 'winter', title: '겨울 미결 항목', detail: `${unresolvedWinter.length}건의 선택 또는 판정이 기록에 남아 있습니다.` });
   const completeSteps = Object.values(winter.steps || {}).filter(value => ['resolved', 'skipped'].includes(value)).length;

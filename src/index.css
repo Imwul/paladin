@@ -1,4 +1,10 @@
-/* Eulyoo1945 is loaded from the pinned stylesheet declared in index.html. */
+@font-face {
+  font-family: 'Hahmlet';
+  src: url('./assets/fonts/Hahmlet-Variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 :root {
   /* Illuminated Manuscript Palette */
@@ -18,11 +24,11 @@
   --color-grey-light: #ddd3c1;
   --color-success: #2e6b33;
   
-  --font-korean: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-korean-serif: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-heading: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-serif: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
-  --font-gothic: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif;
+  --font-korean: 'Hahmlet', 'AppleMyungjo', 'Noto Serif KR', serif;
+  --font-korean-serif: var(--font-korean);
+  --font-heading: var(--font-korean);
+  --font-serif: var(--font-korean);
+  --font-gothic: var(--font-korean);
   
   --shadow-medieval: 0 2px 8px rgba(46, 31, 15, 0.05);
 }
@@ -32,17 +38,19 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-korean);
+  font-kerning: normal;
+  font-optical-sizing: auto;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
-  letter-spacing: -0.02em !important;
+  letter-spacing: 0 !important;
   overflow-wrap: break-word;
   word-break: keep-all;
 }
 
-/* Force override browser-specific user agent styles for input/button/UI elements to keep them easily readable (Pretendard) */
+/* Keep native controls on the same locally bundled Korean face. */
 input, textarea, button, select, input[type="number"], input[type="text"], .btn-medieval, .btn-medieval-primary, .auth-badge, .tab-btn {
-  font-family: 'Eulyoo1945', 'AppleMyungjo', 'Batang', serif !important;
-  letter-spacing: -0.03em !important;
+  font-family: var(--font-korean) !important;
+  letter-spacing: 0 !important;
   font-variant-numeric: tabular-nums !important;
   font-feature-settings: "tnum" !important;
 }
@@ -51,8 +59,9 @@ body {
   background-color: #cfc4ae;
   color: var(--color-ink);
   font-family: var(--font-korean) !important;
-  font-size: 16px;
-  letter-spacing: -0.02em !important;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0 !important;
   line-height: 1.65;
   width: 100%;
   min-height: 100vh;
@@ -115,7 +124,7 @@ body {
 .header-decor h1 {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+  font-size: 1.8rem;
   color: var(--color-royal-blue);
   letter-spacing: 0.04em;
   margin-bottom: 2px;
@@ -127,7 +136,7 @@ body {
   font-size: 1.1rem;
   color: var(--color-gold-dark);
   font-style: italic;
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
   font-family: var(--font-heading) !important;
 }
 
@@ -148,7 +157,7 @@ body {
   align-items: center;
   gap: 6px;
   font-family: var(--font-korean);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   height: 34px;
 }
 
@@ -183,7 +192,7 @@ body {
 
 .tab-btn {
   font-family: var(--font-korean);
-  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  font-size: 0.9rem;
   font-weight: 600;
   padding: 9px 14px;
   background-color: rgba(43, 65, 112, 0.04);
@@ -194,7 +203,7 @@ body {
   color: var(--color-ink-light);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -434,13 +443,13 @@ body {
 /* Customized Application Title Korean Sub-text styling */
 .title-ko-sub {
   font-family: var(--font-korean) !important;
-  font-size: clamp(0.75rem, 2.5vw, 1.05rem);
+  font-size: 1.05rem;
   font-weight: 400 !important;
   color: var(--color-gold-dark);
   margin-left: 8px;
   display: inline-block;
   vertical-align: middle;
-  letter-spacing: -0.02em !important;
+  letter-spacing: 0 !important;
 }
 
 /* Form Styles */
@@ -473,7 +482,7 @@ body {
   font-weight: 500;
   color: var(--color-ink);
   font-family: var(--font-korean);
-  letter-spacing: -0.05em;
+  letter-spacing: 0;
   line-height: 1.4;
 }
 
@@ -491,9 +500,9 @@ body {
   padding: 4px 6px !important;
   color: var(--color-ink) !important;
   outline: none !important;
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: var(--font-korean) !important;
   font-size: 1.25rem !important;
-  letter-spacing: -0.05em !important;
+  letter-spacing: 0 !important;
   transition: border-bottom-color 0.2s !important;
   width: auto;
   min-width: 0; /* Allow input to shrink inside flex containers */
@@ -540,7 +549,7 @@ body {
 
 /* Medieval Buttons */
 .btn-medieval {
-  font-family: 'Pretendard', -apple-system, sans-serif !important;
+  font-family: var(--font-korean) !important;
   font-weight: 600;
   font-size: 0.85rem;
   padding: 6px 14px;
@@ -549,7 +558,7 @@ body {
   color: var(--color-crimson);
   cursor: pointer;
   transition: all 0.2s;
-  letter-spacing: -0.02em !important;
+  letter-spacing: 0 !important;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -1965,7 +1974,7 @@ input[type="number"] {
   font-weight: 600;
   border: none !important;
   background: transparent !important;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .ft-status-dot {
@@ -2199,7 +2208,7 @@ input[type="number"] {
   font-weight: 700;
   margin: 0;
   font-family: var(--font-korean);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .ft-close-btn {
@@ -2255,7 +2264,7 @@ input[type="number"] {
   font-weight: 700;
   color: var(--color-ink);
   font-family: var(--font-korean);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 .ft-input {
@@ -2266,7 +2275,7 @@ input[type="number"] {
   color: var(--color-ink) !important;
   font-size: 0.88rem !important;
   font-family: var(--font-korean) !important;
-  letter-spacing: -0.02em !important;
+  letter-spacing: 0 !important;
   outline: none;
   width: 100%;
   min-height: 38px;
@@ -2585,6 +2594,25 @@ input[type="number"] {
   font-weight: 700;
 }
 
+@media (max-width: 600px) {
+  .sub-tab-navigation {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .sub-tab-btn {
+    width: 100%;
+    min-width: 0;
+    height: auto !important;
+    min-height: 44px;
+    padding: 8px 12px !important;
+    white-space: normal !important;
+  }
+}
+
 /* House Chronicle */
 .house-chronicle {
   display: flex;
@@ -2620,7 +2648,7 @@ input[type="number"] {
   font-family: var(--font-korean-serif) !important;
   letter-spacing: 0 !important;
   color: var(--color-royal-blue);
-  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-size: 2rem;
   line-height: 1.2;
   margin-bottom: 8px;
 }
@@ -2920,7 +2948,7 @@ input[type="number"] {
   font-style: italic !important;
   text-align: center;
   margin-top: 4px;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   line-height: 1.3;
   opacity: 0.85;
 }

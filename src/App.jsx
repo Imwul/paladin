@@ -6,6 +6,7 @@ import SaveConflictDialog from './components/SaveConflictDialog';
 import { getFirebaseServices } from './firebase';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import { createEconomyState, toDeniers } from './rules/economyRules';
+import { createPersonalityMagicState } from './rules/personalityMagicRules';
 import './components/SettingsModal.css';
 import './styles/remaster.css';
 
@@ -16,7 +17,8 @@ const WinterPhase = lazy(() => import('./features/winter/WinterPhase'));
 const CombatEncounter = lazy(() => import('./features/combat/CombatEncounterRemaster'));
 const BattleSiege = lazy(() => import('./features/battle/BattleSiege'));
 const EconomyLedger = lazy(() => import('./features/economy/EconomyLedger'));
-const ChronologyJournal = lazy(() => import('./components/ChronologyJournal'));
+const AdventureJournal = lazy(() => import('./features/adventure/AdventureJournal'));
+const PersonalityMagicPanel = lazy(() => import('./features/personality/PersonalityMagicPanel'));
 const SoloOracles = lazy(() => import('./components/SoloOracles'));
 const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
@@ -142,7 +144,7 @@ const initialCharacterState = {
   },
   standingsChecked: {},
   campaign: {
-    schemaVersion: 10,
+    schemaVersion: 12,
     saveRevision: 0,
     characterCreationSession: null,
     completedCreationIds: [],
@@ -151,9 +153,10 @@ const initialCharacterState = {
     chronicleEvents: [],
     gloryLedger: [],
     standingLedger: [],
+    honorLedger: [],
     familyTimeline: [],
     gloryBonusClaimedThreshold: 0,
-    passionStates: [],
+    personalityMagic: createPersonalityMagicState(),
     health: {
       wounds: [],
       surgeryNeeded: false,
@@ -173,6 +176,16 @@ const initialCharacterState = {
     siegeHistory: [],
     captives: [],
     pendingEconomy: [],
+    adventures: {
+      engineVersion: 1,
+      active: null,
+      history: []
+    },
+    chapter18: {
+      engineVersion: 1,
+      active: null,
+      history: []
+    },
     conditions: [],
     fortresses: [],
     captivity: null,
@@ -400,12 +413,16 @@ export default function App() {
     if (activeTab === 'character') return <CharacterDossier character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />;
     if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
     if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} />;
-    if (activeTab === 'adventure') return <ChronologyJournal character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'adventure') return <AdventureJournal character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'economy') return <EconomyLedger character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'personality') return <PersonalityMagicPanel character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
+    if (activeTab === 'oracles' && character.campaign?.adventures?.active?.pendingSubsystem?.type === 'personality_magic') {
+      return <PersonalityMagicPanel character={character} setCharacter={setCharacter} onNavigate={setActiveTab} adventureMode />;
+    }
     if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;
     if (activeTab === 'reference') return <LoreEncyclopedia />;
     return <Dashboard character={character} setActiveTab={setActiveTab} />;

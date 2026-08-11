@@ -53,11 +53,11 @@ const makeCharacter = () => ({
 });
 const fixed = value => () => value;
 
-// Schema v10 / Economy v2 migration preserves cash, estates, and mixed legacy claims exactly once.
+// Schema v12 / Economy v2 migration preserves cash, estates, and mixed legacy claims exactly once.
 const legacy = makeCharacter();
 legacy.campaign.pendingEconomy = [{id:'legacy-ransom',type:'ransom',status:'pending_chapter_12',year:779}];
 const migrated = sanitizeCampaignState(legacy,makeCharacter());
-assert.equal(migrated.campaign.schemaVersion,10);
+assert.equal(migrated.campaign.schemaVersion,12);
 assert.equal(migrated.campaign.economy.version,2);
 assert.equal(migrated.campaign.economy.coinDeniers,toDeniers(100));
 assert.equal(migrated.campaign.economy.estates.length,1);
