@@ -11,21 +11,21 @@
 | 영역 | 상태 | 확인 내용 | 남은 차단 항목 |
 |---|---|---|---|
 | Rulebook Fidelity | 보류 | 463쪽 페이지 순서 감사, 핵심 생성·생애·겨울, Chapter 7·8·12 종단 결과 검증 | 외국 문화·생물·완전 모험 |
-| Save Integrity | 통과 | schema v10, 단일 Economy 상태, 적용 전 전투 판정·진행 중 교전·대전투·공성 phase, 음수 HP·상처와 이전 버전 이관, 결과 중복 방지 | 실제 Firebase 자격 증명 환경의 충돌 복구 실검증 |
+| Save Integrity | 통과 | schema v10·Economy v2, 기존 Economy와 잔여 `pendingEconomy` 병합, 결정적 거래 ID 재적용 방지, 진행 중 전투·겨울 상태 보존 | 실제 Firebase 자격 증명 환경의 충돌 복구 실검증 |
 | Accessibility | 통과 | 360·390·768·1440·1920, 키보드 초점 이동·focus-visible·reduced motion·44px 터치 영역 확인 | 실제 화면 읽기 도구 사용자 검증은 후속 권장 |
 | Mobile | 통과 | 상태띠 2행, 겨울 가족 입력 1열, 레거시 기사 편집 격자 1열, 가로 넘침 0 | 없음 |
 | Localization | 부분 통과 | 한국어 기본, 영문 병기, 캐릭터 이름 비고정 | 백과 원문의 일부 영문 문장과 고유명사 일관성 |
-| Chronicle | 통과 | 의미 있는 사건만 자동 기록, 행정 정산 문구 제외 | 기존 사용자가 직접 작성한 과거 행정 문구는 원본 보존 |
+| Chronicle | 통과 | 전리품 확보와 몸값 정산을 포함한 의미 있는 사건만 자동 기록, 행정 정산 문구 제외 | 기존 사용자가 직접 작성한 과거 행정 문구는 원본 보존 |
 | Family | 통과 | 혼인·출산·사망·서임·계승 Family Timeline | GM 선택 가족 사건의 모든 후속 절차 자동화 |
 | Winter | 부분 통과 | 원문 10단계, 결혼·출산·가족, 경험·훈련·영광, 영지 수입·대출 이자·예금 수수료·전문 수행원 정산, 11회 종단 실행 | 일부 사건의 외부 결투와 GM 서사 후속 |
 | Performance | 통과 | 최대 production chunk 425.07 kB, 모든 chunk 500 kB 미만, 큰 기능 lazy loading 유지 | 실제 저사양 기기 React Profiler 계측 |
-| Testing | 부분 통과 | build, rules, creation, lifecycle, winter, Chapter 7 단위·통합·저장 회귀, Chapter 8 Tables 8-1~8-16·콜백·종단 전쟁 시나리오, Chapter 12 시장·영지·대출·몸값·건물·마법 물품·수행원, 11년 campaign, hostile save 및 신규 모듈 lint | 전체 ESLint의 기존 레거시 오류 135건과 경고 3건 |
+| Testing | 부분 통과 | build, rules, creation, lifecycle, winter, Chapter 7·8 회귀, Chapter 12 Battle→Loot→Ransom→Market→Estate→Winter→Reload→Continue 종단 흐름, 11년 campaign, hostile save 및 신규 모듈 lint | 전체 ESLint의 기존 레거시 오류 135건과 경고 3건 |
 | Remaining Known Issues | 보류 | 아래 목록을 공개 차단 항목으로 유지 | 완전판 출시 전 해결 필요 |
 
 ## 알려진 차단 항목
 
 1. Chapter 7은 완료했습니다. 지형·시야·복합 행동처럼 원문이 GM에게 맡긴 값은 근거와 승인을 기록하는 명시적 입력으로 남습니다. Chapter 18의 공격 훈련된 말 공격은 이번 장 범위가 아닙니다.
-2. Chapter 8은 완료했습니다. 전리품과 포로는 Chapter 12 Economy 상태로 한 번만 전달되며, 몸값 정산 뒤 캠페인 복귀까지 이어집니다. 원문이 GM에게 맡긴 전리품 금액·교전 승패·포로 구출은 명시적 선택으로 기록됩니다.
+2. Chapter 8은 완료했습니다. 전리품은 Chapter 12의 매각 가능한 보물 자산으로 한 번만 전달되고, 포로는 몸값·현금·연대기 정산 뒤 석방 상태로 닫힙니다. 원문이 GM에게 맡긴 전리품 금액·교전 승패·포로 구출은 명시적 선택으로 기록됩니다.
 3. Chapter 12는 완료했습니다. 원문이 수치를 주지 않은 투자 수익·일반 건물 유지비와 환상·예언 같은 서사 효과는 만들지 않고 GM 선택으로 남깁니다. 공격 훈련된 말의 공격 행동은 Chapter 18 범위입니다.
 4. Chapter 17 외국 문화 캐릭터 생성은 참고 자료에 머뭅니다.
 5. Chapter 18 적·생물은 통계 참고가 중심이며 특수능력과 조우를 실행하지 못합니다.

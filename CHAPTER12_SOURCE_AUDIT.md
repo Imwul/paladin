@@ -4,7 +4,7 @@
 
 - Authority: `paladin_core_rulebook.pdf`
 - Printed pages: 193-209 (PDF pages 194-210)
-- Re-read: 2026-08-09
+- Re-read: 2026-08-11
 - Method: rendered every page, then checked paragraphs, tables, sidebars, quotations, footnotes, phase marks, foreign-item marks and the final unextractable image page.
 - Rule boundary: Chapter 12 only. Attack-trained horse attacks remain Chapter 18 behavior; Chapter 17-19 rules were not added.
 
@@ -20,8 +20,8 @@ All deterministic Chapter 12 economic procedures are executable through one cano
 |---:|---|---|---|
 | 193 | Coinage, value, ordinary support, manor definition | Automatic / Reference | £-s-d ledger, £1=20s=240d, legacy cash migration, canonical estates |
 | 194 | Five wealth levels and their consequences | Automatic / Narrative | Winter maintenance grades and exact net economy; descriptive social consequences remain reference |
-| 195 | Progress, heralds, retinue examples, land | Narrative / GM Choice | No invented progress cost; land and specialist retainers have explicit state |
-| 196 | Ransom, Table 12-1, lord/family support, first aids | Automatic / Player Choice | Exact minima, payable/receivable claims, Standing support, campaign release and one-use aid state |
+| 195 | Progress, heralds, retinue examples, land | Narrative / GM Choice | Battle loot enters treasure inventory before sale; no invented progress cost; land and specialist retainers have explicit state |
+| 196 | Ransom, Table 12-1, lord/family support, first aids | Automatic / Player Choice | Exact minima, payable/receivable claims, captive status, Standing support, campaign release and one-use aid state |
 | 197 | Four aids, Tallage, Impost, service, loans, marriage income | Automatic / Player / GM | Aid collection, agreed tax, Impost Commoners -2, phase interest, purpose and Heribannum limits |
 | 198 | Sales, deposits, investment, market rules | Automatic / Player / GM | 50% sale, own-lord 100%, 5-10% deposit fee, eligibility, major spending without invented return |
 | 199 | Standard list rules, famine, mounts | Automatic / Reference | Exact phase gates, GM unavailable boundary, food doubling, complete mount list, Phase 4 training cost |
@@ -73,10 +73,10 @@ All deterministic Chapter 12 economic procedures are executable through one cano
 | Target | Status | Evidence |
 |---|---|---|
 | Chapter 7 | Complete | Equipped weapons, armor, shield DEX, horse armor, forged sword quality, Valorous/Horsemanship relic bonuses and mechanical magic effects enter the shared combat state |
-| Chapter 8 | Complete | Loot changes coin once; captives create canonical ransom claims; player ransom releases only after settlement; battle magic bonus applies |
+| Chapter 8 | Complete | Loot becomes one sellable treasure asset; captives create canonical ransom claims; settlement closes captive state and posts money and Chronicle; battle magic bonus applies |
 | Winter | Complete | Estate net, loan interest, deposit fees, specialist payroll/Glory/checks, steward and horse groom effects, magic aging immunity |
-| Campaign | Complete | Transactions preserve year, source page, cause and related entity |
-| Save | Complete | Schema v10 migrates legacy cash/manors/`pendingEconomy` once and preserves in-progress combat and Winter state |
+| Campaign | Complete | Meaningful loot and ransom events enter Chronicle; transactions preserve year, source page, cause, asset value and related entity |
+| Save | Complete | Schema v10 with Economy v2 merges legacy cash/manors and mixed existing-Economy/`pendingEconomy` claims once; deterministic transfers do not replay |
 
 ## Remaining Boundaries
 
@@ -86,7 +86,7 @@ All deterministic Chapter 12 economic procedures are executable through one cano
 
 ## Verification
 
-- `npm run test:economy`: PASS
+- `npm run test:economy`: PASS · Battle → Loot Inventory → Captive → Ransom → Money → Market → Estate → Winter 10 steps → Save → Reload → Continue
 - `npm run test:combat`: PASS
 - `npm run test:battle`: PASS
 - `npm run test:winter`: PASS

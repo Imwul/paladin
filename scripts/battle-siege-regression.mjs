@@ -175,7 +175,8 @@ campaign.campaign.massBattle.captives.push({ id: 'ransomable', status: 'held', r
 campaign = resolveBattleAftermath(campaign, { clearResult: 'decisive_victory', finalArmyRoll: 5, loot: 4, now: '2026-08-09T00:00:07.000Z' }).character;
 campaign = finalizeMassBattle(campaign, '2026-08-09T00:00:08.000Z').character;
 assert.equal(campaign.campaign.massBattle.status, 'complete');
-assert.equal(campaign.gear.cash, 24);
+assert.equal(campaign.gear.cash, 20);
+assert.equal(campaign.campaign.economy.treasure.some(item => item.source === 'battle_loot' && item.unitValueDeniers === 960), true);
 assert.ok(campaign.gear.gloryThisGame > 0);
 assert.equal(campaign.campaign.economy.ransoms.some(item => item.direction === 'receivable'), true);
 assert.equal(campaign.campaign.battleHistory.length, 1);

@@ -219,10 +219,10 @@
 | 193 | 192 | 도판·백지 | **해당 없음** · 표지·구분지·백지·도판 | 없음 | 렌더링으로 확인 |
 | 194 | 193 | Chapter Twelve: | **구현** · 화폐·장원·생활 수준을 단일 경제 상태와 겨울 정산에 연결 | 없음 | £1=20s=240d와 £6 보통 유지 기준 |
 | 195 | 194 | Chapter Twelve: Wealth and Treasure | **구현** · 다섯 생활 수준의 비용·연간 결과 실행 | 없음 | 사회적 외형과 법적 서술은 참조로 제공 |
-| 196 | 195 | N | **구현** · 토지·수행단과 전문 인력 상태 제공 | 없음 | 영주의 순행과 의전은 서사·GM 범위 |
-| 197 | 196 | Chapter Twelve: Wealth and Treasure | **구현** · 몸값 Table 12-1, 주군·가문 지원, 보편적 원조 실행 | 없음 | Chapter 8 청구와 양방향 정산 |
+| 196 | 195 | N | **구현** · 전쟁 전리품을 보물 자산으로 인계하고 토지·수행단과 전문 인력 상태 제공 | 없음 | 현금화 전 전리품은 Inventory·Economy·Chronicle에 한 번만 기록 |
+| 197 | 196 | Chapter Twelve: Wealth and Treasure | **구현** · 몸값 Table 12-1, 주군·가문 지원, 보편적 원조 실행 | 없음 | Chapter 8 청구·포로 상태·현금·연대기를 한 정산으로 연결 |
 | 198 | 197 | Getting Money | **구현** · 원조·Tallage·Impost·서비스·대출 절차 실행 | 없음 | Impost Commoners Standing -2 포함 |
-| 199 | 198 | Chapter Twelve: Wealth and Treasure | **구현** · 매각·예금·대규모 지출·시장 거래 실행 | 없음 | 원문에 없는 투자 수익률은 만들지 않음 |
+| 199 | 198 | Chapter Twelve: Wealth and Treasure | **구현** · 전리품 매각·예금·대규모 지출·시장 거래 실행 | 없음 | 매각은 통상 반값·자신의 주군 정가, 중복 거래 ID는 재적용하지 않음 |
 | 200 | 199 | The Market | **구현** · 도시 시장, Phase, 기근 식량 배수와 탈것 가격표 실행 | 없음 | 외래품은 비교 참조, GM 품절은 명시 입력 |
 | 201 | 200 | Chapter Twelve: Wealth and Treasure | **구현** · 동물·갑옷·방패 가격과 전투 수치 연결 | 없음 | Protection·DEX가 Chapter 7 상태에 전달 |
 | 202 | 201 | The Market | **구현** · 마갑·근접·원거리 무기 표와 전투 장비 연결 | 없음 | 말 이동·DEX, 무기 특수값과 탄약 연결 |

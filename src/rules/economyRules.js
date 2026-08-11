@@ -1,9 +1,9 @@
 import { getCampaignPhase } from './campaignRules.js';
 import { resolveD20Roll, rollDie } from './coreRules.js';
-import { recordGloryAward, recordStandingChange } from './ledgerRules.js';
+import { appendChronicleEvent, recordGloryAward, recordStandingChange } from './ledgerRules.js';
 import { RELIGIOUS_TRAITS } from './personalityRules.js';
 
-export const ECONOMY_SCHEMA_VERSION = 1;
+export const ECONOMY_SCHEMA_VERSION = 2;
 export const DENIERS_PER_LIVRE = 240;
 
 const clone = value => JSON.parse(JSON.stringify(value));
@@ -262,6 +262,26 @@ export const MAGIC_ITEM_CATALOG = [
 const catalogById = (catalog, id) => catalog.find(item => item.id === id);
 const normalizeEntry = (entry, index, prefix) => ({ ...entry, id: safeId(entry.id || `${prefix}:${index + 1}`) });
 
+const normalizePendingRansoms = pendingEconomy => list(pendingEconomy)
+  .filter(entry => ['ransom', 'player_ransom'].includes(entry.type))
+  .map((entry, index) => ({
+    ...normalizeEntry(entry, index, 'ransom'),
+    amountDeniers: entry.amountDeniers ?? (entry.amount == null ? null : toDeniers(entry.amount)),
+    direction: entry.type === 'player_ransom' ? 'payable' : 'receivable',
+    status: entry.status === 'settled' ? 'settled' : 'pending',
+    sourceType: entry.type || 'ransom'
+  }));
+
+const mergeUniqueEntries = (primary, additions, limit = 1000) => {
+  const ids = new Set(primary.map(entry => entry.id));
+  const uniqueAdditions = additions.filter(entry => {
+    if (ids.has(entry.id)) return false;
+    ids.add(entry.id);
+    return true;
+  });
+  return [...primary, ...uniqueAdditions].slice(-limit);
+};
+
 export const CHRISTIAN_RELIGIOUS_TRAITS = Object.freeze([...RELIGIOUS_TRAITS]);
 
 export const createEconomyState = (character = {}, pendingEconomy = []) => {
@@ -273,7 +293,7 @@ export const createEconomyState = (character = {}, pendingEconomy = []) => {
     version: ECONOMY_SCHEMA_VERSION,
     coinDeniers: toDeniers(character.gear?.cash || 0),
     treasure: [],
-    ransoms: list(pendingEconomy).map((entry, index) => ({ ...normalizeEntry(entry, index, 'ransom'), direction: entry.type === 'player_ransom' ? 'payable' : 'receivable', status: entry.status === 'settled' ? 'settled' : 'pending', sourceType: entry.type || 'ransom' })),
+    ransoms: normalizePendingRansoms(pendingEconomy),
     loans: [], deposits: [], investments: [],
     estates: Array.from({ length: manorCount }, (_, index) => ({ id:`estate:migrated:${index + 1}`,name:`장원 ${index + 1}`,type:'manor',annualIncomeDeniers:1440,status:'active',acquiredYear:year,source:'legacy_migration' })),
     income: [], expenses: [], retainers: [], buildings: [], magicItems: [], equipment: [], transactions: [],
@@ -284,10 +304,11 @@ export const createEconomyState = (character = {}, pendingEconomy = []) => {
 export const sanitizeEconomyState = (value, character = {}, pendingEconomy = []) => {
   const source = value && typeof value === 'object' && !Array.isArray(value) ? value : createEconomyState(character, pendingEconomy);
   const normalize = (key, limit = 1000) => list(source[key]).slice(-limit).map((entry, index) => normalizeEntry(entry, index, key));
+  const ransoms = mergeUniqueEntries(normalize('ransoms'), normalizePendingRansoms(pendingEconomy));
   return {
     version: ECONOMY_SCHEMA_VERSION,
     coinDeniers: money(source.coinDeniers ?? toDeniers(character.gear?.cash || 0)),
-    treasure: normalize('treasure'), ransoms: normalize('ransoms'), loans: normalize('loans'), deposits: normalize('deposits'), investments: normalize('investments'),
+    treasure: normalize('treasure'), ransoms, loans: normalize('loans'), deposits: normalize('deposits'), investments: normalize('investments'),
     estates: normalize('estates', 250), income: normalize('income'), expenses: normalize('expenses'), retainers: normalize('retainers', 250), buildings: normalize('buildings', 500),
     magicItems: normalize('magicItems', 250), equipment: normalize('equipment', 1000), transactions: normalize('transactions', 2000),
     aidsUsed: source.aidsUsed && typeof source.aidsUsed === 'object' && !Array.isArray(source.aidsUsed) ? source.aidsUsed : {},
@@ -312,13 +333,21 @@ const appendTransaction = (character, entry) => {
     id: safeId(entry.id || `economy:${entry.type}:${entry.year || character.personal?.campaignYear}:${entry.createdAt || Date.now()}`),
     year: asInt(entry.year, character.personal?.campaignYear || 767), type: String(entry.type || 'entry'), amountDeniers: asInt(entry.amountDeniers),
     label: String(entry.label || '경제 기록'), sourceRuleId: String(entry.sourceRuleId || 'WEALTH-INCOME-001'), sourcePage: String(entry.sourcePage || 'Ch.12'),
+    assetValueDeniers: money(entry.assetValueDeniers), inventoryId: entry.inventoryId || null,
     relatedId: entry.relatedId || null, note: String(entry.note || ''), createdAt: iso(entry.createdAt)
   };
-  if (!economy.transactions.some(item => item.id === normalized.id)) economy.transactions = [...economy.transactions, normalized].slice(-2000);
+  const existing = economy.transactions.find(item => item.id === normalized.id);
+  if (existing) return existing;
+  economy.transactions = [...economy.transactions, normalized].slice(-2000);
   return normalized;
 };
 
 const changeCoin = (character, amountDeniers, entry) => {
+  const transactionId = entry?.id ? safeId(entry.id) : null;
+  const existing = transactionId
+    ? character.campaign.economy.transactions.find(item => item.id === transactionId)
+    : null;
+  if (existing) return { transaction: existing, applied: false };
   const before = character.campaign.economy.coinDeniers;
   const after = before + asInt(amountDeniers);
   if (after < 0) throw new RangeError(`보유 현금이 ${formatCoin(Math.abs(after))} 부족합니다.`);
@@ -327,14 +356,59 @@ const changeCoin = (character, amountDeniers, entry) => {
   const transaction = appendTransaction(character, { ...entry, amountDeniers });
   const ledgerKey = amountDeniers >= 0 ? 'income' : 'expenses';
   character.campaign.economy[ledgerKey] = [...character.campaign.economy[ledgerKey], transaction].slice(-1000);
-  return transaction;
+  return { transaction, applied: true };
+};
+
+const recordBattleLoot = (character, input, valueDeniers) => {
+  const economy = character.campaign.economy;
+  const transactionId = safeId(input.id || `battle-loot:${input.year || character.personal?.campaignYear}:${input.createdAt || Date.now()}`);
+  const existing = economy.transactions.find(item => item.id === transactionId);
+  if (existing) return { transaction: existing, applied: false };
+
+  const inventoryId = safeId(`${transactionId}:inventory`);
+  const treasure = {
+    id: inventoryId,
+    label: String(input.label || '전투 전리품'),
+    category: 'battle_loot',
+    quantity: 1,
+    unitValueDeniers: money(valueDeniers),
+    acquiredYear: asInt(input.year, character.personal?.campaignYear || 767),
+    source: 'battle_loot',
+    sourceId: input.sourceId || transactionId,
+    disposed: false,
+    note: String(input.note || '')
+  };
+  economy.treasure = mergeUniqueEntries(economy.treasure, [treasure]);
+  const transaction = appendTransaction(character, {
+    ...input,
+    id: transactionId,
+    amountDeniers: 0,
+    assetValueDeniers: treasure.unitValueDeniers,
+    inventoryId,
+    relatedId: inventoryId,
+    sourcePage: 'Chapter 8 pp.148-149; Chapter 12 pp.195, 198-199'
+  });
+  economy.income = [...economy.income, transaction].slice(-1000);
+  appendChronicleEvent(character, {
+    id: `${transactionId}:chronicle`,
+    year: treasure.acquiredYear,
+    type: 'treasure',
+    title: treasure.label,
+    narrative: `${formatCoin(treasure.unitValueDeniers)} 상당의 전리품을 확보해 보물 목록에 기록했습니다.`,
+    sourceRuleId: transaction.sourceRuleId,
+    sourcePage: transaction.sourcePage,
+    createdAt: transaction.createdAt
+  });
+  return { transaction, treasure, applied: true };
 };
 
 export const recordEconomyTransfer = (characterValue, input = {}) => {
   const character = ensureEconomy(characterValue);
   const amountDeniers = asInt(input.amountDeniers ?? toDeniers(input.amountLivres));
-  changeCoin(character, amountDeniers, input);
-  return { character, economy: character.campaign.economy };
+  const result = input.type === 'battle_loot'
+    ? recordBattleLoot(character, input, amountDeniers)
+    : changeCoin(character, amountDeniers, input);
+  return { character, economy: character.campaign.economy, ...result };
 };
 
 export const getMarketAvailability = (itemId, year, options = {}) => {
@@ -366,18 +440,32 @@ export const buyMarketItem = (characterValue, input = {}) => {
   if (multiplier <= 0 || (!input.gmPriceNote && multiplier !== 1 && !merchantCheck)) throw new RangeError('GM 가격 조정에는 근거를 기록해야 합니다.');
   const foodMultiplier = item.category === 'food' ? Math.max(1, asInt(character.campaign.economy.famineMultiplier, 1)) : 1;
   const cost = Math.round(item.costDeniers * quantity * multiplier * foodMultiplier);
-  changeCoin(character, -cost, { id:input.transactionId,type:'market_purchase',label:`${item.label} 구입`,relatedId:item.id,note:input.gmPriceNote,sourceRuleId:'WEALTH-MARKET-001',sourcePage:item.sourcePage,createdAt:input.now });
+  const coinChange = changeCoin(character, -cost, { id:input.transactionId,type:'market_purchase',label:`${item.label} 구입`,relatedId:item.id,note:input.gmPriceNote,sourceRuleId:'WEALTH-MARKET-001',sourcePage:item.sourcePage,createdAt:input.now });
+  if (!coinChange.applied) return { character, item, costDeniers:cost, merchantCheck, economy:character.campaign.economy, applied:false };
   if (!item.service) {
     const collection = ['armor','horseArmor','melee','missile','mount'].includes(item.category) ? 'equipment' : 'treasure';
     const existing = character.campaign.economy[collection].find(entry => entry.marketItemId === item.id && !entry.disposed);
     if (existing) existing.quantity = asInt(existing.quantity, 1) + quantity;
     else character.campaign.economy[collection].push({ id:safeId(`inventory:${item.id}:${iso(input.now)}`),marketItemId:item.id,label:item.label,category:item.category,quantity,unitValueDeniers:item.costDeniers,acquiredYear:character.personal?.campaignYear,source:'market',equipped:false });
   }
-  return { character, item, costDeniers:cost, merchantCheck, economy:character.campaign.economy };
+  return { character, item, costDeniers:cost, merchantCheck, economy:character.campaign.economy, applied:true };
 };
 
 export const sellMarketItem = (characterValue, input = {}) => {
   const character = ensureEconomy(characterValue);
+  const priorTransaction = input.transactionId
+    ? character.campaign.economy.transactions.find(entry => entry.id === safeId(input.transactionId))
+    : null;
+  if (priorTransaction) {
+    return {
+      character,
+      proceedsDeniers: priorTransaction.amountDeniers,
+      multiplier: input.tradeWithOwnLord ? 1 : 0.5,
+      merchantCheck: null,
+      economy: character.campaign.economy,
+      applied: false
+    };
+  }
   const collection = input.collection === 'treasure' ? 'treasure' : 'equipment';
   const owned = character.campaign.economy[collection].find(entry => entry.id === input.inventoryId && !entry.disposed);
   if (!owned) throw new RangeError('매각할 소유 물품을 찾을 수 없습니다.');
@@ -391,10 +479,11 @@ export const sellMarketItem = (characterValue, input = {}) => {
     multiplier = getMerchantSaleMultiplier(merchantCheck.outcome);
   }
   const proceeds = Math.round(asInt(owned.unitValueDeniers, item?.costDeniers || 0) * quantity * multiplier);
-  changeCoin(character, proceeds, { id:input.transactionId,type:'market_sale',label:`${owned.label} 매각`,relatedId:owned.id,note:input.tradeWithOwnLord?'자신의 주군과 정가 거래':'시장 거래',sourceRuleId:'WEALTH-MARKET-001',sourcePage:'Ch.12 pp.198-199',createdAt:input.now });
+  const coinChange = changeCoin(character, proceeds, { id:input.transactionId,type:'market_sale',label:`${owned.label} 매각`,relatedId:owned.id,note:input.tradeWithOwnLord?'자신의 주군과 정가 거래':'시장 거래',sourceRuleId:'WEALTH-MARKET-001',sourcePage:'Ch.12 pp.198-199',createdAt:input.now });
+  if (!coinChange.applied) return { character, proceedsDeniers:proceeds, multiplier, merchantCheck, economy:character.campaign.economy, applied:false };
   owned.quantity = asInt(owned.quantity, 1) - quantity;
   if (owned.quantity <= 0) { owned.quantity = 0; owned.disposed = true; owned.equipped = false; }
-  return { character, proceedsDeniers:proceeds, multiplier, merchantCheck, economy:character.campaign.economy };
+  return { character, proceedsDeniers:proceeds, multiplier, merchantCheck, economy:character.campaign.economy, applied:true };
 };
 
 export const resolveFoodPriceCheck = (characterValue, input = {}, rng = Math.random) => {
@@ -631,7 +720,17 @@ export const settleRansom = (characterValue, input = {}) => {
   } else if(input.payer!=='pledge') throw new RangeError('본인·주군·가문·서약 중 몸값 조달 방식을 선택해야 합니다.');
   claim.status='settled'; claim.ransomStatus=input.ransomStatus; claim.amountDeniers=amount; claim.direction=direction; claim.payer=input.payer || 'captor'; claim.settledYear=character.personal?.campaignYear; claim.standingCheck=standingCheck;
   appendTransaction(character,{id:`${claim.id}:settled`,type:'ransom_settled',amountDeniers:0,label:`${row[0]} 몸값 확정`,relatedId:claim.id,note:input.note,sourceRuleId:'WEALTH-INCOME-001',sourcePage:'Ch.12 pp.196-197',createdAt:input.now});
+  const captive=character.campaign?.captives?.find(entry=>entry.id===claim.captiveId);
+  if(captive){captive.status='ransomed';captive.ransomStatus=input.ransomStatus;captive.ransomClaimId=claim.id;captive.ransomDeniers=amount;captive.settledYear=character.personal?.campaignYear;}
   if(direction==='payable'&&['active','awaiting_ransom'].includes(character.campaign?.captivity?.status)) character.campaign.captivity={...character.campaign.captivity,status:'released',resolvedAt:iso(input.now),releasedYear:character.personal?.campaignYear,ransomClaimId:claim.id};
+  appendChronicleEvent(character,{
+    id:`${claim.id}:chronicle`,year:character.personal?.campaignYear,type:'ransom',
+    title:direction==='receivable'?'몸값을 받다':'몸값을 치르고 풀려나다',
+    narrative:direction==='receivable'
+      ? `${captive?.name || row[0]}의 몸값 ${formatCoin(amount)}을 받아 포로를 석방했습니다.`
+      : `${row[0]}의 몸값 ${formatCoin(amount)}을 정산하고 포로 생활을 마쳤습니다.`,
+    sourceRuleId:'WEALTH-INCOME-001',sourcePage:'Ch.12 pp.196-197',createdAt:iso(input.now)
+  });
   return {character,claim,minimumDeniers:minimum,economy:character.campaign.economy};
 };
 

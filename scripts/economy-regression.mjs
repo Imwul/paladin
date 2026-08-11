@@ -5,6 +5,7 @@ import {
   applyAnnualEconomy,
   buyBuilding,
   buyMarketItem,
+  closeWinterYear,
   dismissRetainer,
   equipMagicItem,
   equipMarketEquipment,
@@ -21,6 +22,7 @@ import {
   resolveFoodPriceCheck,
   resolveSpyExposure,
   resolveWinterStep,
+  recordEconomyTransfer,
   sellMarketItem,
   settleRansom,
   startMassBattle,
@@ -43,22 +45,35 @@ const makeCharacter = () => ({
   skills:{stewardship:15,trade:12,sword:16,lance:15,bow:12,horsemanship:14,battle:14,siege:12,firstAid:10},skillsChecked:{},
   squire:{name:'종자',age:16,status:'생존'},horses:{warhorse:{type:'Charger',hp:46,armor:5,status:'건강'}},
   gear:{cash:100,gloryThisGame:0,gloryTotal:1000,homePossessions:'장원'},
-  family:{name:'시험 가문',manors:1,members:[{id:'self',name:'경제 시험 기사',relation:'본인',generation:3,status:'생존'}]},journal:{},
+  family:{name:'시험 가문',manors:1,members:[
+    {id:'self',name:'경제 시험 기사',relation:'본인',generation:3,status:'생존'},
+    {id:'father',name:'경제 시험 기사의 부친',relation:'부친',generation:2,status:'생존',age:50}
+  ]},journal:{},
   campaign:{schemaVersion:9,saveRevision:0,appliedEvents:{},chronicleEvents:[],familyTimeline:[],gloryLedger:[],standingLedger:[],captives:[],pendingEconomy:[],conditions:[],fortresses:[],lifecycle:{status:'active',careerStatus:'active',activeCharacterId:'self',primaryCharacterId:'self',events:[],unresolvedChoices:[]},health:{wounds:[],weeklyCare:[]},winter:null}
 });
 const fixed = value => () => value;
 
-// Schema v10 migration preserves cash, estates, and Chapter 8 pending claims exactly once.
+// Schema v10 / Economy v2 migration preserves cash, estates, and mixed legacy claims exactly once.
 const legacy = makeCharacter();
 legacy.campaign.pendingEconomy = [{id:'legacy-ransom',type:'ransom',status:'pending_chapter_12',year:779}];
 const migrated = sanitizeCampaignState(legacy,makeCharacter());
 assert.equal(migrated.campaign.schemaVersion,10);
+assert.equal(migrated.campaign.economy.version,2);
 assert.equal(migrated.campaign.economy.coinDeniers,toDeniers(100));
 assert.equal(migrated.campaign.economy.estates.length,1);
 assert.equal(migrated.campaign.economy.ransoms.length,1);
 assert.deepEqual(migrated.campaign.pendingEconomy,[]);
 const reloadedMigration = sanitizeCampaignState(JSON.parse(JSON.stringify(migrated)),makeCharacter());
 assert.equal(reloadedMigration.campaign.economy.ransoms.length,1);
+const hybrid = structuredClone(reloadedMigration);
+hybrid.campaign.pendingEconomy = [
+  {id:'hybrid-player-ransom',type:'player_ransom',status:'pending_chapter_12',amount:12,year:779},
+  {id:'hybrid-player-ransom',type:'player_ransom',status:'pending_chapter_12',amount:12,year:779}
+];
+const mergedMigration = sanitizeCampaignState(hybrid,makeCharacter());
+assert.equal(mergedMigration.campaign.economy.ransoms.length,2);
+assert.equal(mergedMigration.campaign.economy.ransoms.find(item=>item.id==='hybrid-player-ransom').amountDeniers,toDeniers(12));
+assert.equal(sanitizeCampaignState(structuredClone(mergedMigration),makeCharacter()).campaign.economy.ransoms.length,2);
 
 // Food scarcity, liberation-only payment, and Phase 4 horse training use printed costs.
 let conditions = sanitizeCampaignState(makeCharacter(),makeCharacter());
@@ -164,26 +179,62 @@ finance = equipMagicItem(finance,{ownedItemId:'magic:nimrod',equipped:true}).cha
 assert.equal(getMagicScoreModifiers(finance).standings.all,-2);
 assert.equal(getMagicCombatEffects(finance).armorOverride,20);
 
-// Chapter 8 loot and ransom flow into Economy, then Winter and reload do not duplicate them.
+// Battle -> loot -> captive -> ransom -> money -> market -> estate -> Winter -> save -> reload -> continue.
 let campaign = sanitizeCampaignState(makeCharacter(),makeCharacter());
 campaign = addMagicItem(campaign,{id:'magic:banner',magicItemId:'frisian_banner',acquisition:'adventure'}).character;
 campaign = equipMagicItem(campaign,{ownedItemId:'magic:banner',equipped:true}).character;
 campaign = startMassBattle(campaign,{id:'battle:economy',name:'경제 통합 전투',scale:'small',duration:1,playerArmySize:100,enemyArmySize:100,playerArmyBattle:15,battalionBattle:15,followerRefs:[]},'2026-08-09T03:00:00.000Z').character;
 assert.equal(campaign.campaign.massBattle.sides.player.battalionBattle,18);
 campaign.campaign.massBattle.phase='aftermath';
-campaign.campaign.massBattle.captives=[{id:'captive:test',status:'held',ransomEligible:true}];
+campaign.campaign.massBattle.captives=[{id:'captive:test',name:'포로 기사',status:'held',ransomEligible:true}];
 campaign.campaign.massBattle.aftermath={applied:false,glory:{total:0},loot:4,ransomClaims:[{id:'claim:test',captiveId:'captive:test'}],result:{result:'decisive_victory'}};
 campaign = finalizeMassBattle(campaign,'2026-08-09T03:01:00.000Z').character;
-assert.equal(campaign.campaign.economy.coinDeniers,toDeniers(104));
+assert.equal(campaign.campaign.economy.coinDeniers,toDeniers(100));
+const battleLoot = campaign.campaign.economy.treasure.find(item=>item.source==='battle_loot');
+assert.equal(battleLoot.unitValueDeniers,toDeniers(4));
+assert.equal(campaign.campaign.chronicleEvents.some(item=>item.id==='battle:economy:loot:chronicle'),true);
 assert.equal(campaign.campaign.economy.ransoms.some(item=>item.id==='claim:test'),true);
+const replayedLoot = recordEconomyTransfer(campaign,{id:'battle:economy:loot',year:780,type:'battle_loot',amountLivres:4,label:'경제 통합 전투 전리품'});
+assert.equal(replayedLoot.applied,false);
+assert.equal(replayedLoot.character.campaign.economy.treasure.filter(item=>item.source==='battle_loot').length,1);
+campaign = settleRansom(replayedLoot.character,{claimId:'claim:test',ransomStatus:'knight_vassal',transactionId:'claim:test:income',now:'2026-08-09T03:02:00.000Z'}).character;
+assert.equal(campaign.campaign.captives.find(item=>item.id==='captive:test').status,'ransomed');
+assert.equal(campaign.campaign.chronicleEvents.some(item=>item.id==='claim:test:chronicle'),true);
+campaign = sellMarketItem(campaign,{inventoryId:battleLoot.id,collection:'treasure',quantity:1,transactionId:'battle:economy:loot:sale',now:'2026-08-09T03:03:00.000Z'}).character;
+const coinAfterLootSale = campaign.campaign.economy.coinDeniers;
+const repeatedSale = sellMarketItem(campaign,{inventoryId:battleLoot.id,collection:'treasure',quantity:1,transactionId:'battle:economy:loot:sale',now:'2026-08-09T03:03:00.000Z'});
+assert.equal(repeatedSale.applied,false);
+assert.equal(repeatedSale.character.campaign.economy.coinDeniers,coinAfterLootSale);
+campaign = buyMarketItem(repeatedSale.character,{itemId:'chain_mail',quantity:1,transactionId:'campaign:market:chain',now:'2026-08-09T03:04:00.000Z'}).character;
+const coinAfterMarket = campaign.campaign.economy.coinDeniers;
+campaign = buyMarketItem(campaign,{itemId:'chain_mail',quantity:1,transactionId:'campaign:market:chain',now:'2026-08-09T03:04:00.000Z'}).character;
+assert.equal(campaign.campaign.economy.coinDeniers,coinAfterMarket);
+assert.equal(campaign.campaign.economy.equipment.filter(item=>item.marketItemId==='chain_mail'&&!item.disposed).length,1);
+campaign = addEstate(campaign,{id:'estate:campaign',name:'전공으로 받은 장원',gmApproved:true,note:'주군의 수여',transactionId:'estate:campaign:acquired'}).character;
+campaign = buyBuilding(campaign,{buildingId:'barn',estateId:'estate:campaign',transactionId:'estate:campaign:barn',now:'2026-08-09T03:05:00.000Z'}).character;
 campaign = resolveWinterStep(campaign,{stepId:'soloScenario',input:{choice:'not_applicable'}},fixed(0.5)).character;
 campaign = resolveWinterStep(campaign,{stepId:'aging',input:{}},fixed(0.99)).character;
 campaign = resolveWinterStep(campaign,{stepId:'economy',input:{harvestRoll:5,maintenanceGrade:'ordinary'}},fixed(0.5)).character;
+campaign = resolveWinterStep(campaign,{stepId:'survival',input:{}},fixed(0.9)).character;
+campaign = resolveWinterStep(campaign,{stepId:'personalEvent',input:{eventRoll:12,checkRoll:10}},fixed(0.5)).character;
+campaign = resolveWinterStep(campaign,{stepId:'family',input:{familyEventRoll:19,relationRoll:3,sexRoll:2,marriageAction:'within_class_roll',courtesyRoll:5,marriageTableRoll:12,spouseName:'아델',spouseAge:20,childbirthAction:'skip'}},fixed(0.5)).character;
+campaign = resolveWinterStep(campaign,{stepId:'experience',input:{}},fixed(0.99)).character;
+campaign = resolveWinterStep(campaign,{stepId:'training',input:{option:'score',group:'standings',key:'church',amount:1}},fixed(0.5)).character;
+campaign = resolveWinterStep(campaign,{stepId:'glory',input:{}},fixed(0.5)).character;
+const bonusPoints=Math.max(0,Number(campaign.campaign.winter.gloryBonusPoints||0)-Number(campaign.campaign.winter.bonusSpent||0));
+campaign = resolveWinterStep(campaign,{stepId:'gloryBonus',input:{allocations:Array.from({length:bonusPoints},()=>({group:'skills',key:'sword'}))}},fixed(0.5)).character;
+campaign = closeWinterYear(campaign).character;
+assert.equal(campaign.personal.campaignYear,781);
 const saved = JSON.parse(JSON.stringify(campaign));
-const restored = sanitizeCampaignState(saved,makeCharacter());
+let restored = sanitizeCampaignState(saved,makeCharacter());
 assert.equal(restored.campaign.economy.coinDeniers,campaign.campaign.economy.coinDeniers);
 assert.equal(restored.campaign.economy.transactions.filter(item=>item.id==='battle:economy:loot').length,1);
 assert.equal(restored.campaign.economy.ransoms.filter(item=>item.id==='claim:test').length,1);
+assert.equal(restored.campaign.economy.treasure.filter(item=>item.source==='battle_loot').length,1);
+assert.equal(restored.campaign.economy.buildings.some(item=>item.estateId==='estate:campaign'),true);
+restored = resolveWinterStep(restored,{stepId:'soloScenario',input:{choice:'not_applicable'}},fixed(0.5)).character;
+assert.equal(restored.campaign.winter.year,781);
+assert.equal(restored.campaign.winter.steps.soloScenario,'resolved');
 
 // Ogier's Ring suppresses the natural aging roll while age still advances.
 let ageless = sanitizeCampaignState(makeCharacter(),makeCharacter());
