@@ -8,6 +8,8 @@ import { sanitizeAdventureLedger } from '../rules/adventureRules.js';
 import { sanitizeChapter18Ledger } from '../rules/chapter18Rules.js';
 import { normalizeOpposedTraits } from '../rules/personalityRules.js';
 import { sanitizePersonalityMagicState } from '../rules/personalityMagicRules.js';
+import { sanitizeRulebookProcedureState } from '../rules/rulebookProcedureRules.js';
+import { CHARACTER_CULTURES, getCulture, resolveCultureReligion } from '../rules/chapter17Rules.js';
 
 const VALID_STATUSES = new Set(['생존', '사망', '은퇴', '실종', '질병', '포로', '행동 불능', '병상', '역사적']);
 const VALID_GENDERS = new Set(['male', 'female', 'unknown']);
@@ -291,6 +293,16 @@ export const sanitizeCampaignState = (data, defaults) => {
     personal.maintenance = defaults.personal.maintenance || 'ordinary';
   }
   personal.features = sanitizeStringArray(personal.features, defaults.personal.features);
+  const legacyCultureText = String(personal.culture || '').toLowerCase();
+  const inferredCulture = CHARACTER_CULTURES.find(entry => legacyCultureText.includes(entry.printedName.toLowerCase().replace(' / ', '')))
+    || CHARACTER_CULTURES.find(entry => legacyCultureText.includes(entry.id.split('_')[0]));
+  const culture = getCulture(personal.cultureId || inferredCulture?.id || 'frankish');
+  personal.cultureId = culture.id;
+  personal.culture = culture.printedName;
+  personal.cultureSourcePage = sanitizeString(personal.cultureSourcePage, culture.sourcePage);
+  const religion = resolveCultureReligion(culture.id, personal.religionId) || resolveCultureReligion(culture.id, culture.defaultReligionId);
+  personal.religionId = religion?.id || '';
+  personal.religion = religion?.label || sanitizeString(personal.religion, '');
 
   const attributes = sanitizeNumberMap(source.attributes, defaults.attributes, 0, RULE_SCORE_MAX);
   attributes.currentHp = clampInt(source.attributes?.currentHp, -1000, attributes.siz + attributes.con, attributes.siz + attributes.con);
@@ -424,6 +436,7 @@ export const sanitizeCampaignState = (data, defaults) => {
           : clampInt(defaults.campaign?.gloryBonusClaimedThreshold, 0, 10000, 0),
       passionStates: undefined,
       personalityMagic: sanitizePersonalityMagicState(source.campaign?.personalityMagic, source.campaign?.passionStates),
+      rulebookProcedures: sanitizeRulebookProcedureState(source.campaign?.rulebookProcedures),
       health,
       combat: sanitizeChapter7CombatState(source.campaign?.combat, { ...defaults, ...source }),
       combatHistory: sanitizeLedgerEntries(source.campaign?.combatHistory, 250),

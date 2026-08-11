@@ -102,6 +102,19 @@ assert.equal(character.campaign.winter.annualLedger.requiredMaintenance, 6);
 assert.equal(character.campaign.winter.annualLedger.treasuryDelta, 0, 'Gross income is not added directly to cash.');
 assert.equal(character.gear.cash, 10);
 
+let lowCommonerStanding = makeCharacter();
+lowCommonerStanding.standings.commoners = 5;
+lowCommonerStanding = resolveWinterStep(lowCommonerStanding, { stepId: 'soloScenario', input: { choice: 'not_applicable' } }).character;
+lowCommonerStanding = resolveWinterStep(lowCommonerStanding, { stepId: 'aging', input: {} }, constantRng(0.99)).character;
+lowCommonerStanding = resolveWinterStep(lowCommonerStanding, { stepId: 'economy', input: { harvestRoll: 5, maintenanceGrade: 'ordinary' } }).character;
+assert.equal(lowCommonerStanding.campaign.winter.annualLedger.standingAdjustedHarvest, 3, 'Standing [commoners] 5 halves fief income.');
+let rebelliousCommoners = makeCharacter();
+rebelliousCommoners.standings.commoners = 0;
+rebelliousCommoners = resolveWinterStep(rebelliousCommoners, { stepId: 'soloScenario', input: { choice: 'not_applicable' } }).character;
+rebelliousCommoners = resolveWinterStep(rebelliousCommoners, { stepId: 'aging', input: {} }, constantRng(0.99)).character;
+rebelliousCommoners = resolveWinterStep(rebelliousCommoners, { stepId: 'economy', input: { harvestRoll: 5, maintenanceGrade: 'ordinary' } }).character;
+assert.equal(rebelliousCommoners.campaign.winter.annualLedger.standingAdjustedHarvest, 0, 'Standing [commoners] 0 removes fief income.');
+
 result = resolveWinterStep(character, { stepId: 'survival', input: {} }, constantRng(0.9));
 character = result.character;
 assert.equal(character.campaign.winter.survivalRecords.length, 4, 'Each family member, squire and mount receives a separate record.');

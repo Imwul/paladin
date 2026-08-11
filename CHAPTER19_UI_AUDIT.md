@@ -1,5 +1,19 @@
 # Chapter 19 UI Audit
 
+> **Current Phase 16 verdict:** the normal UI now enforces structured source results and deterministic canonical consequences; Chapter 19 UI coverage is complete with intentional GM/narrative and source ambiguity. The Phase 13 correction below is historical before-state evidence.
+
+## Phase 13 Correction (2026-08-12)
+
+**Current certification: PARTIAL**
+
+The previous `34/34 COMPLETE` statement below verified that every catalog entry could be opened and driven to the generic completion state. It did not prove that every source-specific deterministic branch, loop, modifier, reward, and consequence had a canonical runtime consumer. It is therefore retained only as historical reachability evidence and is superseded by `CHAPTER19_COMPLETION_REPORT.md`.
+
+Current UI certification is limited to catalog reachability, shared state-machine controls, nested table selection, existing-engine hand-off/return, and save-safe interruption controls. Full end-to-end rulebook fidelity is not certified for the two long adventures, all 18 Short Forms, or 11 of the 14 Solo procedures.
+
+The Phase 13 live check passed at 360, 768, 1440, 1920, and 3440 CSS pixels with zero document-level horizontal overflow and zero browser warnings/errors. The Forest path visibly consumed `Table 19-16 -> Table 19-11 -> Special Encounter`; the source table remained inside its own mobile scroller. This is UI and routing evidence, not a replacement for the missing scenario-specific consequence resolvers.
+
+## Superseded Walkthrough Record
+
 ## Final Result
 
 - Audit date: 2026-08-12
@@ -96,3 +110,6 @@ Keyboard focus, visible focus treatment, reduced-motion rules, long prompt wrapp
 4. Chapter 18 p.386: Hippogriff `Hoofs 12` conflicts with fly-by `claw or bite`.
 
 These cases show the original choices and source note, require a GM decision where needed, and never invent a replacement value.
+## Phase 16 Structured Consequence Check - 2026-08-12
+
+The normal Adventure UI now rejects note-only procedure completion. The user must select a canonical action, verified transaction, player/GM decision, or narrative classification; deterministic aftermath stages also require an applied canonical result or explicit source-valid no-effect. Save/reload and duplicate-invocation checks pass. Responsive smoke checks at 360, 768, 1440, 1920 and 3440 CSS pixels report zero document-level horizontal overflow and zero browser console warnings/errors.

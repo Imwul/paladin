@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { greatFamilies, soloScenarios, bestiary, bibliography, npcs, paladins, cultures, frankishSociety, franklandTerritories, minorNpcs } from '../data/lore';
 import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword, Library } from 'lucide-react';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
+import { getChapter17Culture } from '../rules/chapter17Rules';
 
 import europe768Map from '../assets/europe_768.jpg';
 import ardennesMap from '../assets/ardennes.jpg';
 import europe814Map from '../assets/europe_814.jpg';
 import aachenMap from '../assets/aachen.jpg';
+
+const CULTURE_REGISTRY_IDS = { moors: 'moors_saracens', saxons: 'saxons_frisians' };
+const stripUnquantifiedCultureBonuses = value => String(value || '').replace(/\s*\+\d+/g, '');
 
 export default function LoreEncyclopedia() {
   const [activeSubTab, setActiveSubTab] = useState('families');
@@ -193,6 +197,9 @@ export default function LoreEncyclopedia() {
     c.characterKO.toLowerCase().includes(searchQuery.toLowerCase()) ||
     c.appearanceKO.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const selectedCanonicalCulture = selectedCulture?.key === 'legendary'
+    ? null
+    : getChapter17Culture(CULTURE_REGISTRY_IDS[selectedCulture?.key] || selectedCulture?.key);
 
   const renderBilingualSection = (title, koVal, enVal, icon = "", customStyle = {}) => {
     return (
@@ -1823,7 +1830,7 @@ export default function LoreEncyclopedia() {
           {/* Left List */}
           <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--color-royal-blue)', borderBottom: '2px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '8px' }}>
-              제국 16대 외래 집단 일람
+              원문 문화 15종 · 전설의 땅 참고
             </h3>
             {filteredCultures.map(c => (
               <div 
@@ -1900,17 +1907,26 @@ export default function LoreEncyclopedia() {
                 <div style={{ border: '1.5px solid var(--color-gold)', padding: '12px', borderRadius: '6px', background: '#fffef9' }}>
                   <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold', marginBottom: '6px' }}>📊 신체 능력치 증감 보정치 (Table 17-1 Physical Modifiers)</div>
                   <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                    {Object.keys(selectedCulture.modifiers).length > 0 ? (
-                      Object.entries(selectedCulture.modifiers).map(([att, val]) => (
+                    {selectedCanonicalCulture && Object.values(selectedCanonicalCulture.attributeModifiers).some(Number) ? (
+                      Object.entries(selectedCanonicalCulture.attributeModifiers).filter(([, value]) => Number(value) !== 0).map(([att, value]) => {
+                        const val = `${Number(value) >= 0 ? '+' : ''}${value}`;
+                        return (
                         <span key={att} style={{ fontSize: '0.85rem', padding: '4px 10px', background: 'rgba(179,143,67,0.04)', border: '1.5px solid var(--color-gold)', borderRadius: '4px', fontWeight: 'bold', color: 'var(--color-ink)' }}>
-                          {att}: <strong style={{ color: val.startsWith('-') ? 'var(--color-crimson)' : 'var(--color-royal-blue)' }}>{val}</strong>
+                          {att.toUpperCase()}: <strong style={{ color: val.startsWith('-') ? 'var(--color-crimson)' : 'var(--color-royal-blue)' }}>{val}</strong>
                         </span>
-                      ))
+                        );
+                      })
                     ) : (
-                      <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', fontStyle: 'italic' }}>기본 인간 속성 적용 (보정치 없음)</span>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--color-grey)', fontStyle: 'italic' }}>{selectedCanonicalCulture ? 'Table 17-1 보정치 없음' : 'Ethiopia와 Cathay는 reference-only이며 PC 능력치가 없습니다.'}</span>
                     )}
                   </div>
                 </div>
+
+                {selectedCanonicalCulture && (
+                  <div style={{ borderInlineStart: '3px solid var(--color-gold)', padding: '8px 12px', background: 'rgba(179,143,67,0.06)', lineHeight: 1.55 }}>
+                    Chapter 17은 기본 능력치만 Table 17-1에서 정량화합니다. 아래 Trait, Passion, Skill은 원문이 관련성을 서술한 항목이며 점수 보정이 아닙니다. 실제 값은 GM과 플레이어가 기록합니다.
+                  </div>
+                )}
 
                 {/* Naming 풀 및 대표 외모 */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', alignItems: 'stretch' }}>
@@ -1927,7 +1943,7 @@ export default function LoreEncyclopedia() {
                 {/* Character, Skills, Relations */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   {renderBilingualSection("⚖️ 세력의 문화적 기질", selectedCulture.characterKO, selectedCulture.characterEN, "⚖️")}
-                  {renderBilingualSection("📜 문화적 특기 기술", selectedCulture.skillsKO, selectedCulture.skillsEN, "📜")}
+                  {renderBilingualSection("📜 원문이 언급한 관련 Skill · 수치 보정 없음", stripUnquantifiedCultureBonuses(selectedCulture.skillsKO), selectedCulture.skillsEN, "📜")}
                 </div>
 
                 {/* Relations with Franks */}
@@ -1943,7 +1959,12 @@ export default function LoreEncyclopedia() {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  {renderBilingualSection("🛡️ 표준 무장 (Standard Equipment)", selectedCulture.equipmentKO, selectedCulture.equipmentEN, "🛡️")}
+                  {selectedCanonicalCulture ? (
+                    <div style={{ border: '1px solid var(--color-grey-light)', padding: '12px', borderRadius: '4px', background: '#fff' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-grey)', marginBottom: '8px' }}>🛡️ 표준 무장 · 원문 runtime profile</div>
+                      {selectedCanonicalCulture.equipmentProfiles.map(profile => <p key={profile.id} lang="en" style={{ margin: '0 0 8px', lineHeight: 1.55 }}><strong>{profile.label}:</strong> {profile.sourceText}</p>)}
+                    </div>
+                  ) : <div style={{ border: '1px solid var(--color-grey-light)', padding: '12px', borderRadius: '4px', background: '#fff' }}>Ethiopia와 Cathay에는 원문 Standard Equipment가 없습니다.</div>}
                   {renderBilingualSection("🏰 요새화 수준 (Fortifications)", selectedCulture.fortificationsKO, selectedCulture.fortificationsEN, "🏰")}
                 </div>
 
@@ -2237,7 +2258,7 @@ export default function LoreEncyclopedia() {
             <div className="sheet-ribbon">
               <h3>🎲 실시간 프랑크 이름 생성기 (Appendix I)</h3>
             </div>
-            <div className="cs-section-inner" style={{ background: '#fffefb', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="cs-section-inner frankish-name-generator" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <p style={{ fontSize: '0.84rem', color: 'var(--color-ink-light)', lineHeight: 1.5 }}>
                 프랑크인의 전통적인 작명 방식인 <strong>접두사(Prefix)와 접미사(Suffix)</strong>를 결합하여 나만의 고유한 기사단원 이름을 작명합니다.
               </p>
@@ -2245,13 +2266,12 @@ export default function LoreEncyclopedia() {
               {/* Gender Selector Toggle */}
               <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--color-grey-light)', paddingBottom: '12px' }}>
                 <button
-                  className="btn-medieval"
+                  className={`btn-medieval frankish-gender-button ${genGender === 'male' ? 'is-active' : ''}`}
+                  aria-pressed={genGender === 'male'}
                   style={{
                     flex: 1,
                     padding: '8px',
                     fontSize: '0.85rem',
-                    background: genGender === 'male' ? 'var(--color-crimson)' : 'none',
-                    color: genGender === 'male' ? '#fff' : 'var(--color-ink-light)',
                     border: genGender === 'male' ? '1px solid var(--color-crimson)' : '1px solid var(--color-grey-light)'
                   }}
                   onClick={() => { setGenGender('male'); generateRandomName('male'); }}
@@ -2259,13 +2279,12 @@ export default function LoreEncyclopedia() {
                   🛡️ 남성명 (Male)
                 </button>
                 <button
-                  className="btn-medieval"
+                  className={`btn-medieval frankish-gender-button ${genGender === 'female' ? 'is-active' : ''}`}
+                  aria-pressed={genGender === 'female'}
                   style={{
                     flex: 1,
                     padding: '8px',
                     fontSize: '0.85rem',
-                    background: genGender === 'female' ? 'var(--color-crimson)' : 'none',
-                    color: genGender === 'female' ? '#fff' : 'var(--color-ink-light)',
                     border: genGender === 'female' ? '1px solid var(--color-crimson)' : '1px solid var(--color-grey-light)'
                   }}
                   onClick={() => { setGenGender('female'); generateRandomName('female'); }}
@@ -2275,14 +2294,15 @@ export default function LoreEncyclopedia() {
               </div>
 
               {/* Generated Name Display */}
-              <div 
-                style={{ 
-                  background: 'linear-gradient(135deg, #fdfbf7 0%, #f5ecd5 100%)', 
-                  border: '2.5px solid var(--color-gold)', 
-                  borderRadius: '6px', 
+              <div
+                className="frankish-name-result"
+                style={{
+                  background: 'var(--paper-bright)',
+                  border: '1px solid var(--rule-dark)',
+                  borderRadius: 0,
                   padding: '20px 10px', 
-                  textAlign: 'center', 
-                  boxShadow: '0 4px 10px rgba(201,168,76,0.15), inset 0 0 10px rgba(201,168,76,0.1)'
+                  textAlign: 'center',
+                  boxShadow: 'none'
                 }}
               >
                 <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', color: 'var(--color-gold-dark)', fontWeight: 'bold', letterSpacing: '1px', marginBottom: '6px' }}>

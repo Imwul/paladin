@@ -16,11 +16,14 @@ import {
 } from 'lucide-react';
 import {
   BIRTH_GIFTS,
+  CHARACTER_CULTURES,
   CHARACTER_CREATION_STEPS,
+  CHAPTER17_RELIGIONS,
   DISTINCTIVE_FEATURES,
   FATHER_CLASSES,
   FAMILY_CHARACTERISTICS_MALE,
   MELEE_WEAPON_SKILLS,
+  MARKET_CATALOG,
   PATRON_SAINTS,
   RELIGIOUS_TRAITS,
   SKILL_CATEGORIES,
@@ -32,6 +35,10 @@ import {
   completeCharacterCreation,
   createCharacterCreationSession,
   getCreationRollRequests,
+  getCulture,
+  getCultureEquipmentChoiceRequests,
+  getCultureEquipmentProfile,
+  isFrankishCulture,
   goToCharacterCreationStep,
   recordManualCharacterCreationRoll,
   removeLastCharacterCreationSquireYear,
@@ -47,6 +54,7 @@ const PASSION_LABELS = { honor: 'Honor', loveCharlemagne: 'Love [Charlemagne]', 
 const STANDING_LABELS = { charlemagne: 'Charlemagne', liegeLord: 'Liege lord', family: 'Family', retinue: 'Retinue', church: 'The Church', commoners: 'Commoners' };
 const SCORE_GROUP_LABELS = { traits: 'Trait', passions: 'Passion', standings: 'Standing' };
 const displayValue = value => value === null || value === undefined || value === '' ? '-' : value;
+const marketLabel = id => MARKET_CATALOG.find(entry => entry.id === id)?.label || id;
 
 function SegmentedControl({ label, value, options, onChange }) {
   return (
@@ -72,12 +80,14 @@ function SegmentedControl({ label, value, options, onChange }) {
 
 function RuleDisclosure({ step, session }) {
   const modifiers = session.modifierLog.filter(entry => entry.stepId === step.id);
+  const culture = getCulture(session.choices.cultureId);
+  const foreign = !isFrankishCulture(culture.id);
   return (
     <details className="cc-rule-note">
       <summary><BookOpen size={15} /> 룰북 근거</summary>
       <div>
-        <span><strong>Rule ID</strong> {step.ruleIds.join(', ')}</span>
-        <span><strong>페이지</strong> {step.pages}</span>
+        <span><strong>Rule ID</strong> {foreign ? `${step.ruleIds.join(', ')} · CH17-GM-BOUNDARY` : step.ruleIds.join(', ')}</span>
+        <span><strong>페이지</strong> {foreign ? `${step.pages} · ${culture.sourcePage}` : step.pages}</span>
         <span><strong>현재 보정</strong> {modifiers.length ? `${modifiers.length}건 기록됨` : '이 단계에서 적용된 보정 없음'}</span>
       </div>
     </details>
@@ -189,6 +199,8 @@ function CreationReview({ session }) {
         <dl>
           <div><dt>이름</dt><dd>{draft.personal.name}</dd></div>
           <div><dt>나이</dt><dd>{draft.personal.age}</dd></div>
+          <div><dt>문화</dt><dd>{draft.personal.culture}</dd></div>
+          <div><dt>종교</dt><dd>{draft.personal.religion || '미정'}</dd></div>
           <div><dt>가문</dt><dd>{draft.family.name}</dd></div>
           <div><dt>부친</dt><dd>{draft.father?.label}</dd></div>
           <div><dt>Page 교육</dt><dd>{draft.pageEducation?.label}</dd></div>
@@ -213,8 +225,8 @@ function CreationReview({ session }) {
         <ScoreRows values={draft.skills} />
       </details>
       <section>
-        <h4>기사 서임과 이상</h4>
-        <p>{draft.qualification.qualified ? `${draft.personal.age}세에 기사 자격 충족` : '아직 기사 자격 미충족'}</p>
+        <h4>신분과 이상</h4>
+        <p>{draft.qualification.notApplicable ? `${draft.personal.personalClass} · Frankish 기사 자격 절차 적용 안 함` : draft.qualification.qualified ? `${draft.personal.age}세에 기사 자격 충족` : '아직 기사 자격 미충족'}</p>
         <div className="cc-inline-list">
           {Object.values(draft.ideals).map(ideal => <span key={ideal.key}>{ideal.label}: {ideal.selected ? '선택' : ideal.eligible ? '자격 충족' : '미충족'}</span>)}
         </div>
@@ -222,7 +234,7 @@ function CreationReview({ session }) {
       <section>
         <h4>영광 · 장비 · 탄생 선물</h4>
         <p className="cc-stat-callout">초기 영광 <strong>{draft.gloryTotal}</strong></p>
-        <p>{draft.usesInheritedEquipment ? `상속 장비 ${draft.inheritedEquipment.length}건` : `시작 장비 ${draft.outfit?.rank}: ${draft.outfit?.armor || ''}, ${Object.entries(draft.outfit?.horses || {}).map(([key, value]) => `${key} x${value}`).join(', ')}`}</p>
+        <p>{draft.usesInheritedEquipment ? `상속 장비 ${draft.inheritedEquipment.length}건` : `시작 장비 ${draft.outfit?.isCultureProfile ? draft.outfit.profileLabel : draft.outfit?.rank}: ${draft.outfit?.armor || ''}, ${Object.entries(draft.outfit?.horses || {}).map(([key, value]) => `${key} x${value}`).join(', ')}`}</p>
         <ul>{draft.gifts.entries.map(gift => <li key={gift.path}>{gift.label}</li>)}</ul>
         {draft.legacyBlessing && <p>성인의 축복: <strong>{draft.legacyBlessing.label}</strong> · {draft.legacyBlessing.effect}</p>}
       </section>
@@ -319,6 +331,8 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
   const [localizedStepTitle] = t(`creation.steps.${step.id}`);
   const state = session.stepStates[step.id];
   const draft = session.draftCharacter;
+  const culture = getCulture(session.choices.cultureId);
+  const frankish = isFrankishCulture(culture.id);
   const choice = (path, value, sourceStep = step.id) => persist(updateCharacterCreationChoice(session, path, value, sourceStep));
   const stepRollPanel = <RollPanel session={session} stepId={step.id} onChange={persist} />;
 
@@ -326,9 +340,22 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
     if (step.id === 'mode') return (
       <div className="cc-step-stack">
         <label className="cc-control">
-          <span>프랑크식 이름</span>
+          <span>문화</span>
+          <select value={culture.id} onChange={event => choice('cultureId', event.target.value)}>
+            {CHARACTER_CULTURES.map(entry => <option key={entry.id} value={entry.id}>{entry.displayName}</option>)}
+          </select>
+          <small>{culture.sourcePage} · {culture.permission === 'gm' ? 'GM 허가가 필요한 대체 출신' : '기본 플레이어 기사 문화'}</small>
+        </label>
+        {!frankish && (
+          <label className="cc-check-row">
+            <input type="checkbox" checked={session.choices.culturePermissionConfirmed === true} onChange={event => choice('culturePermissionConfirmed', event.target.checked)} />
+            <span>Chapter 17의 “inspired game master may allow” 조건에 따라 GM이 이 대체 출신을 허가했습니다.</span>
+          </label>
+        )}
+        <label className="cc-control">
+          <span>{frankish ? '프랑크식 이름' : '원문 또는 GM 승인 이름'}</span>
           <input value={session.choices.name || ''} onChange={event => choice('name', event.target.value)} placeholder="예: Adalhart" />
-          <small>가문명이나 현대식 성은 붙이지 않습니다.</small>
+          <small>{frankish ? '가문명이나 현대식 성은 붙이지 않습니다.' : 'Chapter 17의 이름 자료를 참고하되 앱은 이름을 창작하지 않습니다.'}</small>
         </label>
         <SegmentedControl label="성별" value={session.choices.gender} options={[{ value: 'male', label: '남성' }, { value: 'female', label: '여성 기사' }]} onChange={value => choice('gender', value)} />
         {session.choices.gender === 'female' && (
@@ -346,7 +373,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
           </>
         )}
         <div className="cc-source-facts">
-          <span>{draft.personal.campaignYear}</span><span>{draft.personal.culture}</span><span>{draft.personal.homeland}</span><span>{draft.personal.home}</span><span>{draft.personal.liegeLord}</span><span>종자</span>
+          <span>{draft.personal.campaignYear}</span><span>{draft.personal.culture}</span><span>{draft.personal.homeland}</span><span>{draft.personal.religion || '종교 선택 대기'}</span><span>{culture.sourcePage}</span><span>{frankish ? '종자' : 'GM 신분 입력'}</span>
         </div>
       </div>
     );
@@ -364,7 +391,25 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
           <label className="cc-control cc-wide"><span>Directed Traits</span><input value={session.choices.family?.directedTraits || ''} onChange={event => choice('family.directedTraits', event.target.value)} placeholder="선택 사항, 대상과 값을 함께 기록" /></label>
           <label className="cc-control cc-wide"><span>Directed Passions</span><input value={session.choices.family?.directedPassions || ''} onChange={event => choice('family.directedPassions', event.target.value)} placeholder="선택 사항, 대상과 값을 함께 기록" /></label>
         </div>
+        {!frankish && (
+          <>
+            <p className="cc-warning"><AlertTriangle size={15} /> Chapter 17에는 이 문화를 위한 가족표가 없습니다. 아래 값은 문화 보정이 아니라 명시적인 GM/player 입력입니다.</p>
+            <div className="cc-form-grid">
+              <label className="cc-control"><span>가문 Honor</span><input type="number" min="0" max="20" value={session.choices.foreignFamilyHonor || 0} onChange={event => choice('foreignFamilyHonor', Number(event.target.value))} /></label>
+              {Object.entries({ charlemagne: 'Charlemagne', church: 'Church', commoners: 'Commoners' }).map(([key, label]) => <label className="cc-control" key={key}><span>가문 Standing · {label}</span><input type="number" min="0" max="20" value={session.choices.foreignFamilyStandings?.[key] || 0} onChange={event => choice(`foreignFamilyStandings.${key}`, Number(event.target.value))} /></label>)}
+            </div>
+            <label className="cc-check-row"><input type="checkbox" checked={session.choices.foreignFamilyConfirmed === true} onChange={event => choice('foreignFamilyConfirmed', event.target.checked)} /><span>원문에 없는 외국 문화 가족표를 자동 생성하지 않고, 이 기록을 GM/player 입력으로 확정합니다.</span></label>
+          </>
+        )}
       </div>
+    );
+
+    if (!frankish && step.id === 'familyCharacteristic') return (
+      <div className="cc-step-stack"><p className="cc-result-line"><strong>GM 입력 경계</strong><span>Chapter 17에는 이 문화를 위한 Family Characteristic 표나 수치가 없습니다. 문화 설명을 가문 보너스로 변환하지 않습니다.</span></p></div>
+    );
+
+    if (!frankish && step.id === 'saint') return (
+      <div className="cc-step-stack"><p className="cc-result-line"><strong>수호성인 자동 배정 없음</strong><span>Chapter 1의 Frankish Patron Saint 표를 이 문화에 강제하지 않습니다. 종교 정체성은 Culture 단계에서 원문 선택지로 기록됩니다.</span></p></div>
     );
 
     if (step.id === 'familyCharacteristic') return (
@@ -387,6 +432,14 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
         {session.rolls['family.saint']?.modifiedResult === 20 && (
           <label className="cc-control"><span>Player&apos;s choice</span><select value={session.choices.saintChoice || ''} onChange={event => choice('saintChoice', event.target.value)}><option value="">성인 선택</option>{PATRON_SAINTS.filter(item => !item.choice).map(item => <option key={item.key} value={item.key}>{item.label}</option>)}</select></label>
         )}
+      </div>
+    );
+
+    if (!frankish && step.id === 'father') return (
+      <div className="cc-step-stack">
+        <p className="cc-warning"><AlertTriangle size={15} /> Chapter 17에는 외국 문화용 부친 신분·생존·동원 표가 없습니다.</p>
+        <label className="cc-control"><span>부친 또는 보호 가구의 신분</span><input value={session.choices.foreignFatherStatus || ''} onChange={event => choice('foreignFatherStatus', event.target.value)} placeholder="GM/player가 원문 맥락에 맞춰 기록" /></label>
+        <p className="cc-result-line"><strong>{draft.father?.label || '입력 대기'}</strong><span>기술 점수, Glory, 탄생 선물, Outfit을 자동 추정하지 않습니다.</span></p>
       </div>
     );
 
@@ -413,12 +466,20 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
       </div>
     );
 
+    if (!frankish && step.id === 'sonNumber') return (
+      <div className="cc-step-stack"><label className="cc-control"><span>가족 내 출생 순서</span><input type="number" min="1" max="20" value={session.choices.foreignSonNumber || 1} onChange={event => choice('foreignSonNumber', Number(event.target.value))} /><small>외국 문화용 출생 순서 표가 없으므로 GM/player가 기록합니다.</small></label></div>
+    );
+
     if (step.id === 'sonNumber') return (
       <div className="cc-step-stack">
         <SegmentedControl label="출생 순서" value={session.choices.sonNumberMethod} options={[{ value: 'first', label: '첫째로 기록' }, { value: 'roll', label: '부친 신분에 따라 굴림' }]} onChange={value => choice('sonNumberMethod', value)} />
         {session.choices.sonNumberMethod === 'roll' && stepRollPanel}
         <p className="cc-stat-callout">Son Number <strong>{displayValue(draft.personal.sonNumber)}</strong></p>
       </div>
+    );
+
+    if (!frankish && step.id === 'pageEducation') return (
+      <div className="cc-step-stack"><label className="cc-control"><span>교육 또는 성장 배경</span><input value={session.choices.foreignEducation || ''} onChange={event => choice('foreignEducation', event.target.value)} placeholder="예: 가문 전사단에서 성장 · GM/player 기록" /><small>Chapter 1의 Frankish Page Education 표를 자동 적용하지 않습니다.</small></label></div>
     );
 
     if (step.id === 'pageEducation') return (
@@ -431,6 +492,31 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
         {draft.pageEducation && <p className="cc-result-line"><strong>{draft.pageEducation.label}</strong><span>{draft.pageEducation.automatic ? '부친 신분에 따른 자동 교육' : `${draft.pageEducation.rawRoll} + ${draft.pageEducation.modifier} = ${draft.pageEducation.modifiedRoll}`} · Glory +{draft.pageEducation.glory}</span></p>}
       </div>
     );
+
+    if (!frankish && step.id === 'cultureHomeland') {
+      const selectedProfile = getCultureEquipmentProfile(culture.id, session.choices.cultureEquipmentProfileId);
+      const equipmentChoices = getCultureEquipmentChoiceRequests(culture.id, selectedProfile?.id);
+      const setEquipmentChoice = (requestId, value) => choice('cultureEquipmentChoices', { ...(session.choices.cultureEquipmentChoices || {}), [requestId]: value });
+      return (
+        <div className="cc-step-stack">
+          <p className="cc-result-line"><strong>{culture.printedName}</strong><span>{culture.sourcePage} · Table 17-1은 기본 Statistics만 수치화합니다.</span></p>
+          <div className="cc-form-grid">
+            <label className="cc-control"><span>문화권 / 본향</span><input value={session.choices.cultureHomeland || ''} onChange={event => choice('cultureHomeland', event.target.value)} /></label>
+            <label className="cc-control"><span>구체적인 거처</span><input value={session.choices.foreignHome || ''} onChange={event => choice('foreignHome', event.target.value)} placeholder="GM/player 입력" /></label>
+            <label className="cc-control"><span>주군 또는 정치적 관계</span><input value={session.choices.foreignLiegeLord || ''} onChange={event => choice('foreignLiegeLord', event.target.value)} placeholder="원문이 정하지 않으면 비워둘 수 있음" /></label>
+            <label className="cc-control"><span>종교</span><select value={session.choices.religionId || ''} onChange={event => choice('religionId', event.target.value)}><option value="">선택</option>{culture.religionOptions.map(id => <option key={id} value={id}>{CHAPTER17_RELIGIONS[id].label}</option>)}</select></label>
+            <label className="cc-control cc-wide"><span>인쇄된 장비 역할</span><select value={session.choices.cultureEquipmentProfileId || ''} onChange={event => choice('cultureEquipmentProfileId', event.target.value)}><option value="">선택</option>{culture.equipmentProfiles.map(profile => <option key={profile.id} value={profile.id}>{profile.label} · p.{profile.sourcePage}</option>)}</select></label>
+          </div>
+          {culture.religionNote && <p className="cc-warning"><AlertTriangle size={15} /> {culture.religionNote}</p>}
+          {selectedProfile && <p className="cc-result-line"><strong>{selectedProfile.label}</strong><span>{selectedProfile.sourceText}</span></p>}
+          {equipmentChoices.length > 0 && <div className="cc-form-grid">{equipmentChoices.map(request => <label className="cc-control" key={request.id}><span>원문 장비 선택 · {request.group}</span><select value={session.choices.cultureEquipmentChoices?.[request.id] || ''} onChange={event => setEquipmentChoice(request.id, event.target.value)}><option value="">선택</option>{request.options.map(id => <option key={id} value={id}>{marketLabel(id)}</option>)}</select></label>)}</div>}
+          <div className="cc-modifier-list">
+            {Object.entries(culture.attributeModifiers).map(([key, amount]) => <div key={key}><span>Table 17-1 · {key.toUpperCase()}</span><code>{amount >= 0 ? '+' : ''}{amount}</code></div>)}
+          </div>
+          <label className="cc-check-row"><input type="checkbox" checked={session.choices.foreignScoreAssignmentConfirmed === true} onChange={event => choice('foreignScoreAssignmentConfirmed', event.target.checked)} /><span>성격·열정·Standing·Skill은 문화 설명에서 수치화하지 않고, 이후 단계의 값을 GM이 직접 승인합니다.</span></label>
+        </div>
+      );
+    }
 
     if (step.id === 'cultureHomeland') return (
       <div className="cc-step-stack">
@@ -473,34 +559,35 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
 
     if (step.id === 'traits') return (
       <div className="cc-step-stack">
-        {stepRollPanel}
+        {frankish ? stepRollPanel : <p className="cc-warning"><AlertTriangle size={15} /> 괄호 안의 성향 언급은 수치 보너스가 아닙니다. GM이 각 대립쌍의 왼쪽 값을 정하면 오른쪽은 합계 20으로 기록됩니다.</p>}
         <div className="cc-trait-pairs">
-          {TRAIT_PAIRS.map(([left, right]) => <div key={left}><span>{SOURCE_TRAIT_LABELS[left]}</span><strong>{draft.traits[left]}</strong><i>/</i><strong>{draft.traits[right]}</strong><span>{SOURCE_TRAIT_LABELS[right]}</span></div>)}
+          {TRAIT_PAIRS.map(([left, right]) => <div key={left}><span>{SOURCE_TRAIT_LABELS[left]}</span>{frankish ? <strong>{draft.traits[left]}</strong> : <input aria-label={SOURCE_TRAIT_LABELS[left]} type="number" min="0" max="20" value={session.choices.foreignTraits?.[left] ?? 10} onChange={event => choice(`foreignTraits.${left}`, Number(event.target.value))} />}<i>/</i><strong>{draft.traits[right]}</strong><span>{SOURCE_TRAIT_LABELS[right]}</span></div>)}
         </div>
       </div>
     );
 
     if (step.id === 'passions') return (
       <div className="cc-step-stack">
-        {stepRollPanel}
+        {frankish ? stepRollPanel : <p className="cc-warning"><AlertTriangle size={15} /> Chapter 17은 문화별 Passion 점수를 주지 않습니다. 관련되지 않는 Passion은 0으로 두고 GM이 필요한 값만 배정합니다.</p>}
         <div className="cc-formula-list">
-          {Object.entries(draft.passions).map(([key, value]) => <div key={key}><span>{PASSION_LABELS[key]}</span><strong>{value}</strong><small>{draft.passionCalculations[key]}</small></div>)}
+          {Object.entries(draft.passions).map(([key, value]) => <div key={key}><span>{PASSION_LABELS[key]}</span>{frankish ? <strong>{value}</strong> : <input aria-label={PASSION_LABELS[key]} type="number" min="0" max="20" value={session.choices.foreignPassions?.[key] || 0} onChange={event => choice(`foreignPassions.${key}`, Number(event.target.value))} />}<small>{draft.passionCalculations[key]}</small></div>)}
         </div>
       </div>
     );
 
     if (step.id === 'standings') return (
       <div className="cc-step-stack">
+        {!frankish && <p className="cc-warning"><AlertTriangle size={15} /> Frankish Standing 공식을 강제하지 않습니다. 캠페인 시작 관계를 GM이 직접 배정합니다.</p>}
         <div className="cc-formula-list">
-          {Object.entries(draft.standings).map(([key, value]) => <div key={key}><span>{STANDING_LABELS[key]}</span><strong>{value}</strong><small>{key === 'charlemagne' ? 'Lowest Chivalrous trait' : key === 'liegeLord' ? 'Valorous' : key === 'family' ? 'Honor' : key === 'retinue' ? 'Generous' : key === 'church' ? 'Love [God]' : 'Merciful'}</small></div>)}
+          {Object.entries(draft.standings).map(([key, value]) => <div key={key}><span>{STANDING_LABELS[key]}</span>{frankish ? <strong>{value}</strong> : <input aria-label={STANDING_LABELS[key]} type="number" min="0" max="20" value={session.choices.foreignStandings?.[key] || 0} onChange={event => choice(`foreignStandings.${key}`, Number(event.target.value))} />}<small>{frankish ? key === 'charlemagne' ? 'Lowest Chivalrous trait' : key === 'liegeLord' ? 'Valorous' : key === 'family' ? 'Honor' : key === 'retinue' ? 'Generous' : key === 'church' ? 'Love [God]' : 'Merciful' : 'GM assigned · Chapter 17 unquantified'}</small></div>)}
         </div>
       </div>
     );
 
     if (step.id === 'skills') return (
       <div className="cc-step-stack">
-        {stepRollPanel}
-        <div className="cc-allocation-status"><span>부친 신분 기술 점수</span><strong>{draft.skillTrainingSummary.allocated} / {draft.skillTrainingSummary.available}</strong><em>남은 점수 {draft.skillTrainingSummary.remaining}</em></div>
+        {frankish ? stepRollPanel : <p className="cc-warning"><AlertTriangle size={15} /> Chapter 17의 Skill 명칭은 문화적 경향을 설명할 뿐 수치 보너스가 아닙니다. GM이 canonical Skill 값을 직접 배정합니다.</p>}
+        {frankish && <div className="cc-allocation-status"><span>부친 신분 기술 점수</span><strong>{draft.skillTrainingSummary.allocated} / {draft.skillTrainingSummary.available}</strong><em>남은 점수 {draft.skillTrainingSummary.remaining}</em></div>}
         {Object.entries(SKILL_CATEGORIES).map(([category, keys], categoryIndex) => (
           <details className="cc-skill-group" key={category} open={categoryIndex === 0}>
             <summary>{category === 'common' ? 'Ordinary Skills' : category === 'courtly' ? 'Courtly Skills' : 'Combat Skills'}</summary>
@@ -508,16 +595,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
               {keys.map(key => (
                 <label key={key}>
                   <span>{SOURCE_SKILL_LABELS[key]}</span>
-                  <em>{draft.skillsBeforeTraining[key]}</em>
-                  <input
-                    type="number"
-                    min="0"
-                    max={Math.max(0, 15 - Number(draft.skillsBeforeTraining[key] || 0))}
-                    value={session.choices.skillTraining?.[key] || 0}
-                    onChange={event => choice(`skillTraining.${key}`, Number(event.target.value))}
-                    disabled={draft.skillsBeforeTraining[key] === 0}
-                  />
-                  <strong>{draft.skills[key]}</strong>
+                  {frankish ? <><em>{draft.skillsBeforeTraining[key]}</em><input type="number" min="0" max={Math.max(0, 15 - Number(draft.skillsBeforeTraining[key] || 0))} value={session.choices.skillTraining?.[key] || 0} onChange={event => choice(`skillTraining.${key}`, Number(event.target.value))} disabled={draft.skillsBeforeTraining[key] === 0} /><strong>{draft.skills[key]}</strong></> : <><em>GM</em><input type="number" min="0" max="20" value={session.choices.foreignSkills?.[key] || 0} onChange={event => choice(`foreignSkills.${key}`, Number(event.target.value))} /><strong>{draft.skills[key]}</strong></>}
                 </label>
               ))}
             </div>
@@ -527,6 +605,16 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
     );
 
     if (step.id === 'squireYears') {
+      if (!frankish) return (
+        <div className="cc-step-stack">
+          <p className="cc-warning"><AlertTriangle size={15} /> Frankish Squire Years와 자동 기사 서임 1,000 Glory를 적용하지 않습니다. 원문의 문화적 신분과 선택한 장비 역할을 GM이 기록합니다.</p>
+          <div className="cc-form-grid">
+            <label className="cc-control"><span>생성 완료 나이</span><input type="number" min="15" max="60" value={session.choices.foreignStartingAge || 18} onChange={event => choice('foreignStartingAge', Number(event.target.value))} /></label>
+            <label className="cc-control"><span>사회적 / 군사적 신분</span><input value={session.choices.foreignStatusLabel || ''} onChange={event => choice('foreignStatusLabel', event.target.value)} placeholder={draft.outfit?.profileLabel || 'GM/player 입력'} /></label>
+          </div>
+          <p className="cc-result-line"><strong>{culture.statusPolicy.replaceAll('_', ' ')}</strong><span>{draft.qualification.note}</span></p>
+        </div>
+      );
       const plan = session.choices.squireYearDraft || { categories: [], attributeKey: '', scoreGroup: 'traits', scoreKey: '', skills: { common: '', courtly: '', combat: '', free: '' } };
       const toggleCategory = key => choice('squireYearDraft.categories', plan.categories.includes(key) ? plan.categories.filter(item => item !== key) : [...plan.categories, key]);
       const addYear = () => {
@@ -572,9 +660,10 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
 
     if (step.id === 'glory') return (
       <div className="cc-step-stack">
-        {session.successorContext?.successorMode !== 'same_family' && <SegmentedControl label="부친 영광 출처" value={session.choices.glorySource} options={[{ value: 'fatherClass', label: '표 1-4/1-5' }, { value: 'fatherHistory', label: '부친 역사 1/10' }]} onChange={value => choice('glorySource', value)} />}
-        {session.successorContext?.successorMode !== 'same_family' && session.choices.glorySource === 'fatherHistory' && <label className="cc-control"><span>부친 최종 영광</span><input type="number" min="0" value={session.choices.fatherHistoryGlory || 0} onChange={event => choice('fatherHistoryGlory', Number(event.target.value))} /></label>}
-        {session.successorContext?.successorMode === 'same_family' && <p className="cc-result-line"><strong>전임자 영광의 1/10</strong><span>{session.successorContext.predecessor?.gear?.gloryTotal || 0} ÷ 10, Paladin 반올림</span></p>}
+        {frankish && session.successorContext?.successorMode !== 'same_family' && <SegmentedControl label="부친 영광 출처" value={session.choices.glorySource} options={[{ value: 'fatherClass', label: '표 1-4/1-5' }, { value: 'fatherHistory', label: '부친 역사 1/10' }]} onChange={value => choice('glorySource', value)} />}
+        {frankish && session.successorContext?.successorMode !== 'same_family' && session.choices.glorySource === 'fatherHistory' && <label className="cc-control"><span>부친 최종 영광</span><input type="number" min="0" value={session.choices.fatherHistoryGlory || 0} onChange={event => choice('fatherHistoryGlory', Number(event.target.value))} /></label>}
+        {frankish && session.successorContext?.successorMode === 'same_family' && <p className="cc-result-line"><strong>전임자 영광의 1/10</strong><span>{session.successorContext.predecessor?.gear?.gloryTotal || 0} ÷ 10, Paladin 반올림</span></p>}
+        {!frankish && <><p className="cc-warning"><AlertTriangle size={15} /> Chapter 17은 시작 Glory를 수치화하지 않습니다.</p><label className="cc-control"><span>GM 배정 시작 Glory</span><input type="number" min="0" value={session.choices.foreignInitialGlory || 0} onChange={event => choice('foreignInitialGlory', Number(event.target.value))} /></label><label className="cc-check-row"><input type="checkbox" checked={session.choices.foreignGloryConfirmed === true} onChange={event => choice('foreignGloryConfirmed', event.target.checked)} /><span>이 수치는 원문 자동 보상이 아니라 GM 입력임을 확인합니다.</span></label></>}
         <p className="cc-stat-callout">초기 영광 <strong>{draft.gloryTotal}</strong></p>
         <div className="cc-ledger">{draft.gloryLedger.map((entry, index) => <div key={`${entry.sourceLabel}-${index}`}><span>{entry.sourceLabel}<small>{entry.calculation}</small></span><strong>+{entry.amount}</strong></div>)}</div>
       </div>
@@ -583,10 +672,14 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
     if (step.id === 'outfit') return (
       <div className="cc-step-stack">
         {draft.inheritedEquipment?.length > 0 && <SegmentedControl label="장비 획득 방식" value={session.choices.inheritEquipmentInsteadOfOutfit === null ? '' : String(session.choices.inheritEquipmentInsteadOfOutfit)} options={[{ value: 'false', label: '표 1-14 시작 장비' }, { value: 'true', label: '선택한 상속 장비' }]} onChange={value => choice('inheritEquipmentInsteadOfOutfit', value === 'true')} />}
-        <p className="cc-stat-callout">{draft.usesInheritedEquipment ? '상속 장비' : '시작 장비'} <strong>{draft.usesInheritedEquipment ? `${draft.inheritedEquipment.length}건` : draft.outfit?.rank || '-'}</strong></p>
+        <p className="cc-stat-callout">{draft.usesInheritedEquipment ? '상속 장비' : '시작 장비'} <strong>{draft.usesInheritedEquipment ? `${draft.inheritedEquipment.length}건` : draft.outfit?.isCultureProfile ? draft.outfit.profileLabel : draft.outfit?.rank || '-'}</strong></p>
         {draft.usesInheritedEquipment && <ul className="cc-plain-list">{draft.inheritedEquipment.map(item => <li key={item.id}>{item.category} · {item.key}</li>)}</ul>}
         {draft.outfit && <><div className="cc-result-grid"><div><span>Armor</span><strong>{draft.outfit.armor}</strong></div><div><span>Shields</span><strong>{draft.outfit.shields}</strong></div><div><span>Squires</span><strong>{draft.outfit.squires}</strong></div><div><span>Clothes</span><strong>{draft.outfit.clothes}</strong></div><div><span>Coin</span><strong>£{draft.outfit.cash}</strong></div><div><span>Son penalty</span><strong>{draft.outfit.sonPenalty ? '-1' : '0'}</strong></div></div><h4 className="cc-subheading">말</h4><ScoreRows values={draft.outfit.horses} /><h4 className="cc-subheading">무기</h4><ul className="cc-plain-list">{draft.outfit.weapons.map(item => <li key={item}>{item}</li>)}</ul></>}
       </div>
+    );
+
+    if (!frankish && step.id === 'birthGift') return (
+      <div className="cc-step-stack"><p className="cc-result-line"><strong>Frankish Birth Gift 적용 안 함</strong><span>Chapter 17은 이 문화에 대한 대체 탄생 선물 표를 제공하지 않습니다. 새 표나 보상을 만들지 않습니다.</span></p></div>
     );
 
     if (step.id === 'birthGift') {

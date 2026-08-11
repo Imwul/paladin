@@ -19,6 +19,7 @@ const BattleSiege = lazy(() => import('./features/battle/BattleSiege'));
 const EconomyLedger = lazy(() => import('./features/economy/EconomyLedger'));
 const AdventureJournal = lazy(() => import('./features/adventure/AdventureJournal'));
 const PersonalityMagicPanel = lazy(() => import('./features/personality/PersonalityMagicPanel'));
+const RulebookProcedures = lazy(() => import('./features/rules/RulebookProcedures'));
 const SoloOracles = lazy(() => import('./components/SoloOracles'));
 const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
@@ -35,7 +36,11 @@ const initialCharacterState = {
     blessing: "",
     homeland: "아르덴 (Ardennes)",
     home: "바스토뉴 (Bastogne)",
+    cultureId: "frankish",
     culture: "프랑크 (Frankish)",
+    cultureSourcePage: "Ch.1 pp.26-41",
+    religionId: "christian",
+    religion: "Christian",
     lineage: "아르덴 (Ardennes)",
     liegeLord: "티에리 공작 (Duke Thierry)",
     fathersClass: "봉신 기사 (Vassal Knight)",
@@ -418,6 +423,7 @@ export default function App() {
     if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'economy') return <EconomyLedger character={character} setCharacter={setCharacter} />;
     if (activeTab === 'personality') return <PersonalityMagicPanel character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
+    if (activeTab === 'procedures') return <RulebookProcedures character={character} setCharacter={setCharacter} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
     if (activeTab === 'oracles' && character.campaign?.adventures?.active?.pendingSubsystem?.type === 'personality_magic') {

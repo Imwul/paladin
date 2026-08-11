@@ -5,7 +5,7 @@ import { maleNames, femaleNames, frankishMalePrefixes, frankishMaleSuffixes, fra
 import { getCharacteristicDetails, SKILL_TRANSLATIONS } from '../data/characteristics';
 import { birthGiftsTable, patronSaints } from './CharacterSheet';
 import { applyOnce, hasAppliedEvent, sanitizeCampaignState } from '../utils/campaignState';
-import { adjustOpposedTrait, getSuccessorEligibility, resolveD20Roll, rollD3 as rollPaladinD3, rollDie, roundPaladin } from '../rules';
+import { adjustOpposedTrait, getSuccessorEligibility, resolveD20Roll, resolveMaleAncestorDeathCause, rollD3 as rollPaladinD3, rollDie, roundPaladin } from '../rules';
 
 const parseName = (fullName) => {
   if (!fullName) return { ko: '', en: '' };
@@ -935,6 +935,7 @@ export default function FamilyTree({ character, setCharacter }) {
             let gloryGained = standardGlory * (isVictor ? 2 : 1);
             let cause = "";
             let rollDescText = "";
+            let deathYear = pending.yr;
 
             if (modifiedRoll <= 0) {
               dead = true;
@@ -948,6 +949,7 @@ export default function FamilyTree({ character, setCharacter }) {
             } else if (modifiedRoll === 2) {
               dead = true;
               const retiredYears = rollD20();
+              deathYear = pending.yr + retiredYears;
               cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
               rollDescText = `🏥 주사위 ${rollVal}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
             } else if (modifiedRoll === 3) {
@@ -961,7 +963,7 @@ export default function FamilyTree({ character, setCharacter }) {
               rollDescText = `🛡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 치열한 전투 속에서 무사히 살아남으셨습니다. (+${gloryGained} Glory)`;
             }
 
-            return { dead, gloryGained, cause, rollDescText };
+            return { dead, gloryGained, cause, rollDescText, deathYear };
           };
 
           const res = runGfCombatSurvival(pending.eventName, pending.battleModifier, pending.isVictor, pending.standardGlory);
@@ -969,7 +971,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
           if (res.dead) {
             setGfDead(true);
-            setGrandfatherDeathYear(pending.yr);
+            setGrandfatherDeathYear(res.deathYear);
             setGrandfatherDeathCause(res.cause);
             setInteractiveStage('gf_dead');
             yearOutcomeText = `사망: ${res.cause}`;
@@ -1144,6 +1146,7 @@ export default function FamilyTree({ character, setCharacter }) {
             let gloryGained = standardGlory * (isVictor ? 2 : 1);
             let cause = "";
             let rollDescText = "";
+            let deathYear = pending.yr;
 
             if (modifiedRoll <= 0) {
               dead = true;
@@ -1157,6 +1160,7 @@ export default function FamilyTree({ character, setCharacter }) {
             } else if (modifiedRoll === 2) {
               dead = true;
               const retiredYears = rollD20();
+              deathYear = pending.yr + retiredYears;
               cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
               rollDescText = `🏥 주사위 ${rollVal}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
             } else if (modifiedRoll === 3) {
@@ -1170,7 +1174,7 @@ export default function FamilyTree({ character, setCharacter }) {
               rollDescText = `🛡️ 주사위 ${rollVal}(보정 ${modifiedRoll}) - 치열한 전투 속에서 무사히 살아남으셨습니다. (+${gloryGained} Glory)`;
             }
 
-            return { dead, gloryGained, cause, rollDescText };
+            return { dead, gloryGained, cause, rollDescText, deathYear };
           };
 
           const res = runFCombatSurvival(pending.eventName, pending.battleModifier, pending.isVictor, pending.standardGlory);
@@ -1178,7 +1182,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
           if (res.dead) {
             setFatherDead(true);
-            setFatherDeathYear(pending.yr);
+            setFatherDeathYear(res.deathYear);
             setFatherDeathCause(res.cause);
             setInteractiveStage('f_dead');
             yearOutcomeText = `사망: ${res.cause}`;
@@ -2670,8 +2674,9 @@ export default function FamilyTree({ character, setCharacter }) {
         const nextYr = interactiveYear + 1;
         if (nextYr > 744) {
           const deathYr = 744 + rollD20();
-          const cause = "평화로운 영면 (Old Age)";
-          const finalMsg = `👴 ${deathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`;
+          const causeRoll = rollD20();
+          const cause = resolveMaleAncestorDeathCause(causeRoll);
+          const finalMsg = `👴 ${deathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 생을 마치셨습니다. (Table 2-3: ${causeRoll}, ${cause})`;
 
           setGfDead(true);
           setGrandfatherDeathYear(deathYr);
@@ -2807,6 +2812,7 @@ export default function FamilyTree({ character, setCharacter }) {
       let logMsg = "";
       let cause = "";
       let status = "survived";
+      let deathYear = yr;
 
       if (modifiedRoll <= 0) {
         dead = true;
@@ -2823,6 +2829,7 @@ export default function FamilyTree({ character, setCharacter }) {
         dead = true;
         status = "retired";
         const retiredYears = rollD20();
+        deathYear = yr + retiredYears;
         cause = `부상 은퇴 (수도원에서 ${retiredYears}년 후 영면)`;
         logMsg = `🏥 ${yr}년: ${eventName} -> 주사위 ${roll}(보정 ${modifiedRoll}) - 불구가 되는 중상을 입어 은퇴 후 에히터나흐 수도원으로 들어갑니다. ${retiredYears}년 뒤 수도원에서 조용히 영면에 드십니다. (+${gloryGained} Glory)`;
       } else if (modifiedRoll === 3) {
@@ -2841,19 +2848,19 @@ export default function FamilyTree({ character, setCharacter }) {
         gfGlory += gloryGained;
         if (dead) {
           gfDead = true;
-          gfDeathYr = yr;
+          gfDeathYr = deathYear;
           gfCause = cause;
         }
       } else {
         fGlory += gloryGained;
         if (dead) {
           fDead = true;
-          fDeathYr = yr;
+          fDeathYr = deathYear;
           fCause = cause;
         }
       }
       logs.push(logMsg);
-      return { dead, status };
+      return { dead, status, deathYear };
     };
 
     const rollOrdinaryYear = (yr, eventDescription, isGrandfather, enemyName = "Saxons") => {
@@ -3297,8 +3304,9 @@ export default function FamilyTree({ character, setCharacter }) {
 
     if (!gfDead) {
       gfDeathYr = 744 + rollD20();
-      gfCause = "평화로운 영면 (Old Age)";
-      logs.push(`👴 ${gfDeathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 평화롭게 침상에서 영면에 드셨습니다.`);
+      const causeRoll = rollD20();
+      gfCause = resolveMaleAncestorDeathCause(causeRoll);
+      logs.push(`👴 ${gfDeathYr}년: 은퇴한 조부님(시조 ${character.family?.ancestor || '알베르'})께서 생을 마치셨습니다. (Table 2-3: ${causeRoll}, ${gfCause})`);
     }
 
     setGrandfatherGlory(gfGlory);
@@ -3685,8 +3693,9 @@ export default function FamilyTree({ character, setCharacter }) {
 
     if (!fDead) {
       fDeathYr = 766 + rollD20();
-      fCause = "평화로운 영면 (Old Age)";
-      logs.push(`👴 ${fDeathYr}년: 은퇴한 아버님(제라르 경)께서 영광스러운 대공의 은퇴 생활 도중 침상에서 평화로이 서거하셨습니다.`);
+      const causeRoll = rollD20();
+      fCause = resolveMaleAncestorDeathCause(causeRoll);
+      logs.push(`👴 ${fDeathYr}년: 은퇴한 아버님께서 생을 마치셨습니다. (Table 2-3: ${causeRoll}, ${fCause})`);
     }
 
     setFatherGlory(fGlory);

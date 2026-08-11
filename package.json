@@ -17,8 +17,10 @@
     "test:economy": "node scripts/economy-regression.mjs",
     "test:adventure": "node scripts/adventure-regression.mjs",
     "test:chapter18": "node scripts/chapter18-regression.mjs",
+    "test:chapter17": "node scripts/chapter17-regression.mjs",
     "test:personality-magic": "node scripts/personality-magic-regression.mjs",
-    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:battle && npm run test:economy && npm run test:chapter18 && npm run test:personality-magic && npm run test:adventure && npm run test:campaign && node scripts/hostile-regression.mjs",
+    "test:final-gaps": "node scripts/final-gap-regression.mjs",
+    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:battle && npm run test:economy && npm run test:chapter17 && npm run test:chapter18 && npm run test:personality-magic && npm run test:adventure && npm run test:final-gaps && npm run test:campaign && node scripts/hostile-regression.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

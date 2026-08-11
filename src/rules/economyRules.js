@@ -85,15 +85,28 @@ export const MARKET_CATALOG = [
   market('reinforced_chain', 'armor', '보강 사슬갑옷', 960, { phase: 2, combat: { armor: 12, dex: -5, armorType: 'chainmail' } }),
   market('partial_plate', 'armor', '부분 판금갑옷', 2400, { phase: 3, combat: { armor: 14, dex: -10, armorType: 'plate' } }),
   market('full_plate', 'armor', '전신 판금갑옷', 3840, { phase: 4, combat: { armor: 16, dex: -10, armorType: 'plate' } }),
+  market('leather_armor_5', 'armor', '외래 가죽 갑옷과 모자 · 5점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { armor: 5, dex: -2, armorType: 'leather' } }),
+  market('leather_armor_6', 'armor', '외래 가죽 갑옷 · 6점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { armor: 6, dex: -2, armorType: 'leather' } }),
+  market('fur_armor_5', 'armor', '모피 갑옷 · 5점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.353', combat: { armor: 5, dex: -2, armorType: 'leather' } }),
+  market('cuirbouilli_7', 'armor', '투구를 갖춘 경화 가죽 갑옷 · 7점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { armor: 7, dex: -2, armorType: 'leather' } }),
+  market('ring_mail_8', 'armor', '외래 링 메일 · 8점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { armor: 8, dex: -5, armorType: 'chainmail' } }),
+  market('roman_scale_10', 'armor', '로마 미늘 갑옷 · 10점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.365', combat: { armor: 10, dex: -5, armorType: 'chainmail' } }),
+  market('scale_armor_12', 'armor', '외래 미늘 갑옷 · 12점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { armor: 12, dex: -5, armorType: 'chainmail' } }),
+  market('heavy_scale_14', 'armor', '비잔티움 중미늘 갑옷 · 14점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.347', combat: { armor: 14, dex: -5, armorType: 'chainmail' } }),
   market('buckler', 'armor', '버클러', 3, { combat: { shield: 4 } }),
   market('shield', 'armor', '방패', 5, { combat: { shield: 6 } }),
   market('large_shield', 'armor', '대형 방패', 5, { combat: { shield: 9, dex: -5 } }),
+  market('light_shield_3', 'armor', '훈족 경방패 · 3점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.353', combat: { shield: 3 } }),
+  market('large_shield_7', 'armor', '로마 대형 방패 · 7점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.365', combat: { shield: 7 } }),
 
   market('caparison', 'horseArmor', '카파리슨 · 천', 30, { combat: { armor: 2, armorType: 'caparison', horse: 'any' } }),
   market('trapper', 'horseArmor', '트래퍼 · 누비', 120, { combat: { armor: 4, armorType: 'trapper', horse: 'any' } }),
   market('horse_cuirbouilli', 'horseArmor', '경화 가죽 마갑', 480, { combat: { armor: 6, armorType: 'cuirbouilli', horse: 'charger_destrier' } }),
   market('chain_barding', 'horseArmor', '사슬 마갑', 2400, { phase: 3, combat: { armor: 10, moveDex: -1, armorType: 'barding', horse: 'charger_destrier' } }),
   market('partial_plate_barding', 'horseArmor', '부분 판금 마갑', 3840, { phase: 4, combat: { armor: 12, moveDex: -2, armorType: 'plate_barding', horse: 'destrier' } }),
+  market('foreign_trapper_2', 'horseArmor', '비잔티움 트래퍼 · 2점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.347', combat: { armor: 2, armorType: 'trapper', horse: 'any' } }),
+  market('felt_horse_armor', 'horseArmor', '훈족 펠트 마갑 · 2점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.353', combat: { armor: 2, armorType: 'felt', horse: 'any' } }),
+  market('lamellar_horse_armor', 'horseArmor', '훈족 라멜라 마갑 · 4점', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17 p.353', combat: { armor: 4, armorType: 'lamellar', horse: 'any' } }),
 
   market('axe', 'melee', '한손 도끼', 25, { combat: { weaponId: 'axe', damage: 'normal', special: '방패 피해 주사위가 6이면 방패에 2 피해' } }),
   market('great_axe', 'melee', '양손 도끼', 50, { combat: { weaponId: 'greatAxe', damage: '+1d6', special: '방패 피해 주사위가 6이면 방패에 2 피해' } }),
@@ -112,6 +125,9 @@ export const MARKET_CATALOG = [
   market('frankish_sword', 'melee', '프랑크 강철검', 75, { combat: { weaponId: 'sword', skill: 1, damage: 'normal' } }),
   market('persian_sword', 'melee', '페르시아 강철검', 240, { foreign: true, referenceOnly: true, combat: { weaponId: 'sword', damage: 'normal' } }),
   market('great_sword', 'melee', '양손검', 100, { phase: 2, combat: { weaponId: 'greatSword', damage: '+1d6' } }),
+  market('short_sword', 'melee', '외래 단검신 검', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { weaponId: 'sword', damage: 'normal' } }),
+  market('scimitar', 'melee', '시미터', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { weaponId: 'sword', damage: 'normal' } }),
+  market('curved_dagger', 'melee', '곡선 단검', 0, { foreign: true, referenceOnly: true, sourcePage: 'Ch.17', combat: { weaponId: 'dagger', damage: '-1d6', special: '붙잡기 중 사용 가능' } }),
 
   market('throwing_axe', 'missile', '투척 도끼', 10, { combat: { missileWeaponId: 'throwingAxe', damage: '-1d6', range: '5/10/15' } }),
   market('short_bow', 'missile', '단궁', 15, { combat: { missileWeaponId: 'bow', damage: '3d6', range: '50/100/150' } }),
@@ -326,6 +342,63 @@ export const ensureEconomy = characterValue => {
   character.gear.cash = toLivres(character.campaign.economy.coinDeniers);
   return character;
 };
+
+export const grantMarketItems = (characterValue, input = {}) => {
+  const character = ensureEconomy(characterValue);
+  const transactionId = safeId(input.transactionId || `granted-equipment:${character.personal?.campaignYear || 767}:${Date.now()}`);
+  const prior = character.campaign.economy.transactions.find(entry => entry.id === transactionId);
+  if (prior) return { character, applied: false, duplicate: true, equipment: character.campaign.economy.equipment };
+  const itemIds = Array.isArray(input.itemIds) ? input.itemIds : [];
+  const equippedSlots = new Set(character.campaign.economy.equipment.filter(entry => entry.equipped && !entry.disposed).map(entry => {
+    const item = catalogById(MARKET_CATALOG, entry.marketItemId);
+    return item?.category === 'armor' && item.combat?.shield ? 'shield' : item?.category;
+  }));
+  const granted = [];
+  itemIds.forEach((itemId, index) => {
+    const item = catalogById(MARKET_CATALOG, itemId);
+    if (!item) throw new RangeError(`알 수 없는 시작 장비입니다: ${itemId}`);
+    const slot = item.category === 'armor' && item.combat?.shield ? 'shield' : item.category;
+    const equipEligible = ['armor', 'shield', 'melee', 'missile', 'mount', 'horseArmor'].includes(slot);
+    const equipped = equipEligible && !equippedSlots.has(slot);
+    if (equipped) equippedSlots.add(slot);
+    const entry = {
+      id: safeId(`inventory:${transactionId}:${index + 1}:${item.id}`),
+      marketItemId: item.id,
+      label: item.label,
+      category: item.category,
+      quantity: 1,
+      unitValueDeniers: item.costDeniers,
+      acquiredYear: character.personal?.campaignYear,
+      source: String(input.source || 'rulebook_grant'),
+      sourcePage: String(input.sourcePage || item.sourcePage || 'Ch.17'),
+      sourceProfileId: input.profileId || null,
+      equipped
+    };
+    character.campaign.economy.equipment.push(entry);
+    granted.push(entry);
+  });
+  appendTransaction(character, {
+    id: transactionId,
+    type: String(input.type || 'equipment_granted'),
+    amountDeniers: 0,
+    label: String(input.label || '원문 장비 획득'),
+    note: String(input.note || ''),
+    sourceRuleId: String(input.sourceRuleId || 'EQUIPMENT-GRANT-001'),
+    sourcePage: String(input.sourcePage || 'Rulebook'),
+    createdAt: input.now
+  });
+  return { character, applied: true, duplicate: false, equipment: granted };
+};
+
+export const grantStartingMarketItems = (characterValue, input = {}) => grantMarketItems(characterValue, {
+  ...input,
+  transactionId: input.transactionId || `starting-equipment:${characterValue.personal?.cultureId || 'frankish'}:${characterValue.personal?.name || 'character'}`,
+  type: 'starting_equipment',
+  label: input.label || 'Chapter 17 시작 장비',
+  source: 'chapter17_character_creation',
+  sourceRuleId: 'CH17-EQUIPMENT',
+  sourcePage: input.sourcePage || 'Ch.17'
+});
 
 const appendTransaction = (character, entry) => {
   const economy = character.campaign.economy;

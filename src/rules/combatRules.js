@@ -7,6 +7,7 @@ import {
 } from './coreRules.js';
 import { appendChronicleEvent } from './ledgerRules.js';
 import { prepareCareerEnd, resolveCareerEnd } from './lifecycleRules.js';
+import { getChivalrousNaturalArmor } from './rulebookProcedureRules.js';
 
 export const COMBAT_PHASES = Object.freeze([
   { id: 'determination', label: '결정', sourcePage: 'Ch.7 p.116' },
@@ -243,8 +244,11 @@ export const applyDamageState = (attributes, healthValue, input, rng) => {
   const rolledDamage = Math.max(0, asInt(input.rolledDamage));
   const armor = Math.max(0, asInt(input.armor));
   const shield = input.shieldApplies ? Math.max(0, asInt(input.shield)) : 0;
+  const naturalArmor = Math.max(0, asInt(input.naturalArmor));
   const reducedDamage = input.damageFraction ? roundPaladin(rolledDamage * input.damageFraction) : rolledDamage;
-  const actualDamage = input.direct ? reducedDamage : Math.max(0, reducedDamage - armor - shield);
+  const actualDamage = input.direct
+    ? Math.max(0, reducedDamage - naturalArmor)
+    : Math.max(0, reducedDamage - armor - shield - naturalArmor);
   const balanceRoll = input.skipKnockdown
     ? null
     : input.balanceRoll || (rolledDamage >= before.siz && rolledDamage < before.siz * 2 ? rollDie(20, rng) : null);
@@ -259,6 +263,7 @@ export const applyDamageState = (attributes, healthValue, input, rng) => {
     reducedDamage,
     armor,
     shield,
+    naturalArmor,
     actualDamage,
     knockedDown,
     balanceRoll,
@@ -351,7 +356,10 @@ export const applyDamageState = (attributes, healthValue, input, rng) => {
 export const applyCharacterDamage = (characterValue, input, rng = Math.random) => {
   const character = clone(characterValue);
   character.campaign = character.campaign || {};
-  const applied = applyDamageState(character.attributes, character.campaign.health, input, rng);
+  const applied = applyDamageState(character.attributes, character.campaign.health, {
+    ...input,
+    naturalArmor: input.naturalArmor ?? getChivalrousNaturalArmor(character)
+  }, rng);
   character.attributes = applied.attributes;
   character.campaign.health = applied.health;
   return { character, injury: applied.result };

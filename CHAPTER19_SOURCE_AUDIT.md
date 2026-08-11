@@ -1,5 +1,30 @@
 # Chapter 19 Source Audit
 
+> **Current Phase 16 verdict:** **COMPLETE WITH INTENTIONAL GM/NARRATIVE AND SOURCE AMBIGUITIES**; deterministic Chapter 19 gaps are 0. The Phase 13 correction below is historical before-state evidence. The Phase 16 structured-consequence closure addendum at the end supersedes it.
+
+## Phase 13 Strict Completion Correction (2026-08-12)
+
+**Current status: PARTIAL**
+
+Chapter 19 printed pp.391-438 (PDF pp.392-439) was re-read page by page, including every table, sidebar, example, cross-reference, and scenario instruction. The earlier `COMPLETE WITH SOURCE AMBIGUITIES` verdict counted generic stage completion, free-form consequence controls, and catalog reachability as executable source coverage. Under the stricter Phase 13 acceptance criteria that verdict is not supportable and is superseded by this correction and `CHAPTER19_COMPLETION_REPORT.md`.
+
+The shared Adventure state machine, 34 catalog entries, 36 transcribed tables, save/resume identity, and Chapters 3/7/8/12/18 hand-offs are real. This pass also fixed nested Table 19-11/19-14/19-16 consumption, Hunt's Table 19-10 Dead End rerolls, and death/captivity/lifecycle interruption handling. However, many source-specific deterministic branches, modifiers, rewards, and economy/reputation consequences are still represented by generic checklists or GM-entered consequence controls. Those are implementation gaps, not intentional GM or narrative judgment.
+
+| Area | Current status | Reason |
+|---|---|---|
+| Adventure Framework | COMPLETE | Explicit stages, valid transitions, defer/resume, subsystem return, idempotent transactions |
+| The Adventure of the Jewel | PARTIAL | Core route and subsystem hand-offs exist; several branch-specific rewards and consequences remain manual |
+| The Adventure of the Humble Squires | PARTIAL | Core campaign route exists; Mount Bitter details and several rewards/capture/loot effects remain manual |
+| Short Form Scenarios (18) | PARTIAL | Entry and generic flow exist, but scenario-specific deterministic procedures are not all executable |
+| Solo Procedures (14) | PARTIAL | Hunt is executable; Wild Hunt and Romance use canonical subsystems; 11 procedures retain deterministic gaps |
+| Chapter 19 Tables (36) | PARTIAL | All rows are transcribed and selectable, but not every row has a complete canonical consequence consumer |
+
+Source ambiguities remain separate from implementation gaps: Table 19-7's six/seven temptation conflict, Table 19-11's overlapping roll 4, Table 19-24's malformed amount, and the Chapter 18 Hippogriff attack conflict. No replacement rule was invented.
+
+## Superseded Audit Record
+
+The material below preserves the previous 2026-08-11/12 audit claim for history. Its `COMPLETE` labels are not the current release status.
+
 ## 판정
 
 **Chapter 19: COMPLETE WITH SOURCE AMBIGUITIES**
@@ -267,3 +292,14 @@ Chapter 7·8 결과에는 안정적인 transaction ID가 붙습니다. 하위 �
 6. Did the implementation invent any rule, modifier, reward, encounter, branch, or narrative result not supported by the source? **NO**
 
 남은 항목은 deterministic implementation gap이 아니라 원문이 요구하는 GM/Narrative 판단과 Source Ambiguity뿐입니다. 이들을 자동화하지 않은 것은 Chapter 19 COMPLETE 판정과 충돌하지 않습니다.
+## Phase 16 Deterministic Closure Addendum - 2026-08-12
+
+The Phase 15 gap registry identified 31 Chapter 19 scenario-specific consequence consumers. Phase 16 closes them through the existing shared Adventure engine rather than 31 duplicate engines:
+
+- every printed procedure item must be recorded as a canonical action, verified linked transaction, explicit player choice, explicit GM decision, or narrative-only result;
+- note-only completion is rejected;
+- stages with deterministic consequences cannot advance without a canonical result or explicit source-valid no-effect;
+- Jewel return/aftermath and Humble Squires battle settlement/aftermath carry this gate explicitly;
+- stable identities prevent redraw, reward, damage, Glory, Standing and Economy duplication after reload.
+
+Chapter 19 current status is **COMPLETE WITH INTENTIONAL GM/NARRATIVE AND SOURCE AMBIGUITIES**. Its deterministic implementation gap count is 0. Tables 19-7, 19-11 and 19-24 remain source ambiguities, not implementation gaps.

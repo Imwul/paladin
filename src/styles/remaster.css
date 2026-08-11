@@ -545,6 +545,10 @@ a:focus-visible,
 .legacy-surface { margin-top: 16px; }
 .legacy-surface .cs-page,
 .legacy-surface .ft-container { width: 100%; padding: 0; }
+.legacy-surface--character .cs-page {
+  max-width: none;
+  margin-inline: 0;
+}
 .legacy-surface .cs-page-title { display: none; }
 .legacy-surface .cs-section,
 .legacy-surface .medieval-card,
@@ -565,6 +569,13 @@ a:focus-visible,
 }
 .legacy-surface .btn-medieval:hover,
 .btn-medieval:hover { background: var(--paper-grey) !important; transform: none !important; }
+.frankish-name-generator { background: transparent !important; }
+.frankish-gender-button.is-active {
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  color: white !important;
+}
+.frankish-name-result { background: var(--paper-bright) !important; }
 .legacy-surface .btn-medieval-primary,
 .btn-medieval-primary { background: var(--ink) !important; color: white !important; }
 .legacy-surface input,
@@ -739,6 +750,39 @@ a:focus-visible,
 .royal-footer { min-height: 40px; display: flex; justify-content: space-between; align-items: center; padding: 0 var(--shell-gutter); background: var(--ink); color: #ccc; font-family: var(--font-medieval); font-size: var(--text-micro); }
 .royal-footer span { display: inline-flex; align-items: center; gap: 6px; }
 
+.rulebook-procedures { width: min(100%, var(--page-max)); min-height: 100%; margin: 0 auto; padding: var(--page-gutter); }
+.procedure-section { padding: 0 0 32px; border-bottom: 1px solid var(--rule-dark); }
+.procedure-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.procedure-pane { min-width: 0; display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding: 20px 0; }
+.procedure-pane + .procedure-pane { padding-left: 32px; border-left: 1px solid var(--rule); }
+.procedure-pane h3 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.1rem; }
+.procedure-field { min-width: 0; display: grid; gap: 6px; color: var(--ink-muted); font-size: var(--text-caption); }
+.procedure-field > span { font-weight: 700; }
+.procedure-field input, .procedure-field select { width: 100%; min-height: 44px; }
+.procedure-field select[multiple] { min-height: 132px; }
+.procedure-check { min-height: 44px; display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: var(--text-caption); }
+.procedure-check input { flex: 0 0 auto; min-height: 0; }
+.procedure-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--rule-dark); }
+.procedure-summary > div { min-height: 92px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 16px; border-left: 1px solid var(--rule-dark); }
+.procedure-summary > div:first-child { border-left: 0; }
+.procedure-summary span { color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
+.procedure-summary strong { font-family: var(--font-numeral); font-size: 1.8rem; }
+.procedure-source-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 16px 0; border-top: 1px solid var(--rule); }
+.procedure-source-list > div { min-width: 0; display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.procedure-source-list > div:nth-child(even) { padding-left: 20px; }
+.procedure-source-list strong, .procedure-source-list small { display: block; overflow-wrap: anywhere; }
+.procedure-source-list small { margin-top: 3px; color: var(--ink-muted); font-family: var(--font-data); font-size: var(--text-micro); }
+.procedure-form-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 16px; padding: 20px 0; }
+.procedure-form-row .primary-command { align-self: end; }
+.procedure-journey { display: grid; grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(140px, 0.5fr)); align-items: end; gap: 16px; padding: 20px 0; }
+.procedure-journey > div:first-child { align-self: center; display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 4px 8px; }
+.procedure-journey > div:first-child span { grid-column: 2; color: var(--ink-muted); font-size: var(--text-caption); }
+.procedure-eligibility { min-height: 58px; }
+.procedure-eligibility p { margin: 8px 0 0; color: var(--danger); font-size: var(--text-caption); }
+.procedure-career-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.procedure-message { min-height: 44px; display: flex; align-items: center; gap: 8px; margin: 16px 0; padding: 10px 14px; border-left: 4px solid var(--success); background: rgba(43, 99, 67, 0.08); }
+.procedure-message--error { border-color: var(--danger); background: rgba(159, 47, 41, 0.08); color: var(--danger); }
+
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (min-width: 2200px) {
@@ -783,7 +827,7 @@ a:focus-visible,
   .royal-header__registry { justify-self: stretch; }
   .royal-header__registry > div { flex: 1; }
   .remaster-frame { grid-template-columns: 208px minmax(0, 1fr); }
-  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container { padding: 32px; }
+  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container, .rulebook-procedures { padding: 32px; }
   .folio-heading h1 { font-size: 3.25rem; }
   .dashboard-register { grid-template-columns: 1fr; }
   .dashboard-register__stats { max-width: 100%; }
@@ -808,7 +852,10 @@ a:focus-visible,
   .folio-navigation.is-open { transform: translateX(0); }
   .navigation-scrim { position: fixed; inset: 0; z-index: 80; display: block; width: 100%; height: 100%; border: 0; border-radius: 0; background: rgba(0, 0, 0, 0.55); }
   .folio-breadcrumb { padding: 0 20px; }
-  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container { padding: 24px 20px; }
+  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container, .rulebook-procedures { padding: 24px 20px; }
+  .procedure-grid { grid-template-columns: 1fr; gap: 0; }
+  .procedure-pane + .procedure-pane { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  .procedure-form-row, .procedure-journey { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .folio-heading { min-height: 150px; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
   .folio-heading h1 { font-size: 2.65rem; }
   .folio-heading__year { font-size: 3.2rem; }
@@ -830,7 +877,10 @@ a:focus-visible,
   .campaign-strip span { min-width: 0; min-height: 32px; overflow: hidden; padding-inline: 8px; font-size: var(--text-micro); text-overflow: ellipsis; }
   .campaign-strip span:nth-child(4) { padding-left: 8px; border-left: 0; }
   .folio-breadcrumb { padding-inline: 14px; }
-  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container { padding: 18px 14px 28px; }
+  .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container, .rulebook-procedures { padding: 18px 14px 28px; }
+  .procedure-source-list, .procedure-form-row, .procedure-journey { grid-template-columns: 1fr; }
+  .procedure-career-actions { grid-template-columns: 1fr; }
+  .procedure-source-list > div:nth-child(even) { padding-left: 0; }
   .legacy-surface [style*="grid-template-columns"],
   .legacy-surface .cs-field-grid { grid-template-columns: minmax(0, 1fr) !important; }
   .legacy-surface [style*="grid-column"] { grid-column: auto !important; }

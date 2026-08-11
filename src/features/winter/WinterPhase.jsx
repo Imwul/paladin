@@ -95,6 +95,7 @@ export default function WinterPhase({ character, setCharacter }) {
   const [viewIndex, setViewIndex] = useState(initialIndex < 0 ? 9 : initialIndex);
   const [error, setError] = useState('');
   const [manualNote, setManualNote] = useState('');
+  const [manualTransactionIds, setManualTransactionIds] = useState('');
   const [soloChoice, setSoloChoice] = useState('not_applicable');
   const [maintenanceGrade, setMaintenanceGrade] = useState(character.personal?.maintenance || 'ordinary');
   const [situationalModifier, setSituationalModifier] = useState(0);
@@ -146,9 +147,14 @@ export default function WinterPhase({ character, setCharacter }) {
   const resolveManual = () => {
     setError('');
     try {
-      const result = recordManualWinterResolution(character, { stepId: step.id, note: manualNote });
+      const result = recordManualWinterResolution(character, {
+        stepId: step.id,
+        note: manualNote,
+        canonicalTransactionIds: manualTransactionIds.split(',').map(value => value.trim()).filter(Boolean)
+      });
       setCharacter(result.character);
       setManualNote('');
+      setManualTransactionIds('');
       moveToCurrent(result.character);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '수동 판정 기록을 저장하지 못했습니다.');
@@ -333,8 +339,10 @@ export default function WinterPhase({ character, setCharacter }) {
               <div>
                 <strong>원문상 플레이어 또는 GM의 판정이 필요합니다</strong>
                 <p>{Array.isArray(record?.unresolvedChoice) ? record.unresolvedChoice.map(item => item.label).join(' · ') : record?.unresolvedChoice?.label}</p>
-                <label><span>수동 판정 기록</span><textarea value={manualNote} onChange={event => setManualNote(event.target.value)} rows={3} placeholder="선택, 추가 판정, 적용 결과를 구체적으로 기록" /></label>
-                <button type="button" className="secondary-command" onClick={resolveManual} disabled={!manualNote.trim()}>GM 수동 판정으로 봉인</button>
+                <label><span>후속 처리 기록</span><textarea value={manualNote} onChange={event => setManualNote(event.target.value)} rows={3} placeholder="원문 선택과 실제 적용 결과" /></label>
+                <label><span>Canonical 거래 ID · 쉼표 구분</span><input value={manualTransactionIds} onChange={event => setManualTransactionIds(event.target.value)} placeholder="combat:..., economy:..., standing:..." /></label>
+                <p className="adventure-source-note">결정적인 효과는 전투·경제·평판·생애주기 화면에서 먼저 처리한 뒤 저장된 거래 ID를 연결해야 합니다.</p>
+                <button type="button" className="secondary-command" onClick={resolveManual} disabled={!manualNote.trim()}>후속 결과 연결 후 봉인</button>
               </div>
             </section>
           )}

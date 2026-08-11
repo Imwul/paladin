@@ -210,14 +210,19 @@ const createOpponent = (input = {}, index = 0) => {
 };
 
 const sanitizePlayer = (input = {}, character = {}) => {
-  const weaponId = validMeleeWeapon(input.weaponId);
+  const weaponId = Object.hasOwn(input, 'weaponId') && input.weaponId == null
+    ? 'unarmed'
+    : validMeleeWeapon(input.weaponId);
+  const missileWeaponId = Object.hasOwn(input, 'missileWeaponId') && input.missileWeaponId == null
+    ? null
+    : validMissileWeapon(input.missileWeaponId);
   const magicEffects = getMagicCombatEffects(character);
   if (input.firstRoundArmorEligible === false) magicEffects.firstRoundArmorBonus = 0;
   const baseArmor = clamp(input.armor, 0, 100, 10);
   const armor = clamp((magicEffects.armorOverride ?? baseArmor) + magicEffects.armorBonus, 0, 100, 10);
   const shield = WEAPON_PROFILES[weaponId]?.hands > 1 ? 0 : clamp(input.shield, 0, 100, 6);
   return {
-    weaponId, missileWeaponId: validMissileWeapon(input.missileWeaponId), armor, armorMax: clamp(input.armorMax, 0, 100, armor),
+    weaponId, missileWeaponId, armor, armorMax: clamp(input.armorMax, 0, 100, armor),
     armorType: ['none', 'leather', 'chainmail', 'plate'].includes(input.armorType) ? input.armorType : 'chainmail',
     armorDexModifier: Number.isFinite(Number(input.armorDexModifier)) ? asInt(input.armorDexModifier) : undefined,
     equipmentSkillBonus: asInt(input.equipmentSkillBonus), weaponBreakOnTie: Boolean(input.weaponBreakOnTie), weaponUnbreakable: Boolean(input.weaponUnbreakable),

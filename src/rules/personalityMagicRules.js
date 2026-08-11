@@ -843,6 +843,9 @@ export const beginPrayerResolution = (characterValue, input = {}, rng = Math.ran
   const character = clone(characterValue);
   const state = ensureState(character);
   if (state.activeResolution) throw new RangeError('먼저 진행 중인 Personality/Magic 결과를 마쳐야 합니다.');
+  if (character.personal?.religionId && character.personal.religionId !== 'christian') {
+    throw new RangeError('Chapter 9 Christian magic은 Christian으로 기록된 캐릭터만 사용할 수 있습니다.');
+  }
   if (!input.eligible) throw new RangeError('Charlemagne의 적·마법 사용자·파문자 등은 기도의 이익을 받을 수 없습니다.');
   if (asInt(character.passions?.loveGod) <= 5) throw new RangeError('Love [God] 5 이하는 파문되어 Christian magic의 이익을 받을 수 없습니다.');
   const beneficiary = input.beneficiary === 'other_prayer' ? 'other_prayer' : 'self_prayer';

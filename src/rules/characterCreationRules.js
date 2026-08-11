@@ -24,11 +24,25 @@ import {
   STARTING_OUTFITS
 } from './characterCreationData.js';
 import { SAINT_BLESSINGS } from './lifecycleRules.js';
+import {
+  applyCultureAttributeModifiers,
+  getCulture,
+  getCultureEquipmentProfile,
+  isFrankishCulture,
+  resolveCultureEquipment,
+  resolveCultureReligion
+} from './chapter17Rules.js';
+import { MARKET_CATALOG, grantStartingMarketItems } from './economyRules.js';
+import { chapter18MountToHorse, getChapter18Creature } from './chapter18Rules.js';
 
-const SESSION_VERSION = 2;
+const SESSION_VERSION = 3;
 const SESSION_STATUSES = new Set(['not_started', 'in_progress', 'awaiting_choice', 'completed', 'abandoned']);
 const ATTRIBUTE_KEYS = ['siz', 'dex', 'str', 'con', 'app'];
 const DEFAULT_ATTRIBUTE_BONUSES = { siz: 0, dex: 0, str: 0, con: 0, app: 0 };
+const DEFAULT_FOREIGN_TRAITS = Object.fromEntries(TRAIT_PAIRS.map(([virtue]) => [virtue, 10]));
+const DEFAULT_FOREIGN_PASSIONS = { honor: 0, loveCharlemagne: 0, loveFamily: 0, loveGod: 0 };
+const DEFAULT_FOREIGN_STANDINGS = { charlemagne: 0, liegeLord: 0, family: 0, retinue: 0, church: 0, commoners: 0 };
+const DEFAULT_FOREIGN_SKILLS = Object.fromEntries(Object.values(SKILL_CATEGORIES).flat().map(key => [key, 0]));
 const DEFAULT_FAMILY = {
   name: '', motto: '', battleCry: '', ancestor: '', homeCounty: 'Ardennes', greatNoble: '',
   directedTraits: '', directedPassions: ''
@@ -40,6 +54,9 @@ const asInt = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.tru
 const clamp = (value, min, max) => Math.min(max, Math.max(min, asInt(value, min)));
 const sum = values => values.reduce((total, value) => total + Number(value || 0), 0);
 const getByPath = (object, path) => String(path).split('.').reduce((value, key) => value?.[key], object);
+const cultureForSession = session => getCulture(session.choices?.cultureId || session.successorContext?.predecessor?.personal?.cultureId || 'frankish');
+const isFrankishSession = session => isFrankishCulture(cultureForSession(session).id);
+const marketItem = id => MARKET_CATALOG.find(entry => entry.id === id);
 
 const setByPath = (object, path, value) => {
   const keys = String(path).split('.');
@@ -326,9 +343,34 @@ const resolvePageEducation = (session, father, sonNumber) => {
   return { ...findByRange(PAGE_EDUCATIONS, modifiedRoll), rawRoll, modifier, modifiedRoll };
 };
 
+const resolveForeignFather = session => ({
+  key: 'gm_assigned_foreign',
+  label: String(session.choices.foreignFatherStatus || '').trim(),
+  detail: String(session.choices.foreignFatherStatus || '').trim(),
+  skillPoints: 0,
+  glory: 0,
+  giftRolls: 0,
+  outfit: null,
+  effects: {},
+  sourceBoundary: 'GM input; Chapter 17 does not provide a foreign family table.'
+});
+
+const resolveForeignEducation = session => ({
+  key: 'gm_assigned_foreign',
+  label: String(session.choices.foreignEducation || '').trim(),
+  glory: 0,
+  effects: {},
+  automatic: false,
+  sourceBoundary: 'GM input; Chapter 17 does not quantify education.'
+});
+
 const createIdentityAndFamily = (session, draft) => {
   const successorContext = session.successorContext;
   const campaignYear = Number(successorContext?.predecessor?.personal?.campaignYear || 767);
+  const culture = cultureForSession(session);
+  const frankish = isFrankishSession(session);
+  const religion = resolveCultureReligion(culture.id, session.choices.religionId);
+  const selectedProfile = getCultureEquipmentProfile(culture.id, session.choices.cultureEquipmentProfileId);
   draft.personal = {
     name: String(session.choices.name || '').trim(),
     gender: session.choices.gender,
@@ -336,29 +378,35 @@ const createIdentityAndFamily = (session, draft) => {
     campaignYear,
     sonNumber: null,
     blessing: '',
-    homeland: successorContext?.predecessor?.personal?.homeland || 'Ardennes',
-    home: successorContext?.predecessor?.personal?.home || 'Bastogne',
-    culture: successorContext?.predecessor?.personal?.culture || 'Frankish',
+    homeland: frankish ? successorContext?.predecessor?.personal?.homeland || 'Ardennes' : String(session.choices.cultureHomeland || culture.homeland),
+    home: frankish ? successorContext?.predecessor?.personal?.home || 'Bastogne' : String(session.choices.foreignHome || ''),
+    cultureId: culture.id,
+    culture: culture.printedName,
+    cultureSourcePage: culture.sourcePage,
+    religionId: religion?.id || '',
+    religion: religion?.label || '',
     lineage: String(session.choices.family?.name || '').trim(),
-    liegeLord: successorContext?.predecessor?.personal?.liegeLord || 'Duke Thierry',
+    liegeLord: frankish ? successorContext?.predecessor?.personal?.liegeLord || 'Duke Thierry' : String(session.choices.foreignLiegeLord || ''),
     fathersClass: '',
-    personalClass: 'Squire',
+    personalClass: frankish ? 'Squire' : selectedProfile?.label || 'GM-assigned foreign status',
     maintenance: 'ordinary',
-    features: []
+    features: [],
+    cultureEquipmentProfileId: selectedProfile?.id || '',
+    culturePermission: culture.permission
   };
   draft.family = {
     ...DEFAULT_FAMILY,
     ...(session.choices.family || {}),
-    characteristic: resolveFamilyCharacteristic(session, draft),
-    patronSaint: resolveSaint(session, draft),
-    muster: isFamilySuccessor(session) ? clone(successorContext?.family?.muster || {}) : {
+    characteristic: frankish ? resolveFamilyCharacteristic(session, draft) : null,
+    patronSaint: frankish ? resolveSaint(session, draft) : null,
+    muster: !frankish ? clone(session.choices.foreignFamilyMuster || {}) : isFamilySuccessor(session) ? clone(successorContext?.family?.muster || {}) : {
       oldKnights: hasRoll(session, 'muster.old') ? Math.max(0, getRollValue(session, 'muster.old') - 5) : null,
       middleAgedKnights: hasRoll(session, 'muster.middle') ? Math.max(0, getRollValue(session, 'muster.middle') - 2) : null,
       youngKnights: hasRoll(session, 'muster.young') ? getRollValue(session, 'muster.young') + 1 : null,
       otherLineageMen: hasRoll(session, 'muster.men') ? getRollValue(session, 'muster.men') + 5 : null
     },
-    honor: isFamilySuccessor(session) ? Number(successorContext?.family?.honor || 0) : getRollValue(session, 'family.honor') || null,
-    standings: isFamilySuccessor(session) ? clone(successorContext?.family?.standings || {}) : {
+    honor: !frankish ? Number(session.choices.foreignFamilyHonor || 0) : isFamilySuccessor(session) ? Number(successorContext?.family?.honor || 0) : getRollValue(session, 'family.honor') || null,
+    standings: !frankish ? clone(session.choices.foreignFamilyStandings || {}) : isFamilySuccessor(session) ? clone(successorContext?.family?.standings || {}) : {
       charlemagne: getRollValue(session, 'family.standingCharlemagne') || null,
       church: getRollValue(session, 'family.standingChurch') || null,
       commoners: getRollValue(session, 'family.standingCommoners') || null
@@ -383,6 +431,23 @@ const createAttributes = (session, draft) => {
     attributes[key] = before + amount;
     logModifier(draft, { stepId: 'attributes', ruleId: session.choices.gender === 'female' ? 'CHAR-FAMCHAR-F-001' : 'CHAR-FAMCHAR-M-001', sourceLabel: draft.family.characteristic.label, targetGroup: 'attributes', targetKey: key, before, amount, after: attributes[key] });
   });
+  const culture = cultureForSession(session);
+  const adjusted = applyCultureAttributeModifiers(attributes, culture.id);
+  ATTRIBUTE_KEYS.forEach(key => {
+    const amount = Number(culture.attributeModifiers?.[key] || 0);
+    if (!amount) return;
+    logModifier(draft, {
+      stepId: 'attributes',
+      ruleId: 'CH17-TABLE-17-1',
+      sourceLabel: `${culture.printedName} · Table 17-1`,
+      targetGroup: 'attributes',
+      targetKey: key,
+      before: attributes[key],
+      amount,
+      after: adjusted[key]
+    });
+  });
+  Object.assign(attributes, adjusted);
   attributes.currentHp = attributes.siz + attributes.con;
   return attributes;
 };
@@ -390,7 +455,9 @@ const createAttributes = (session, draft) => {
 const createTraits = (session, draft, father, page) => {
   let traits = {};
   TRAIT_PAIRS.forEach(([virtue]) => {
-    const base = getRollValue(session, `trait.${virtue}`);
+    const base = isFrankishSession(session)
+      ? getRollValue(session, `trait.${virtue}`)
+      : Number(session.choices.foreignTraits?.[virtue] ?? 10);
     traits = setOpposedTraitValue(traits, virtue, base || 0);
   });
 
@@ -400,18 +467,20 @@ const createTraits = (session, draft, father, page) => {
   Object.entries(page?.effects?.traits || {}).forEach(([key, amount]) => {
     traits = applyTraitModifier(draft, traits, key, amount, `Page education: ${page.label}`, 'traits', 'CHAR-PAGE-001');
   });
-  ['energetic', 'generous', 'valorous'].forEach(key => {
-    const amount = getRollValue(session, `culture.${key}`) || 0;
-    traits = applyTraitModifier(draft, traits, key, amount, 'Frankish culture', 'cultureHomeland', 'CHAR-CULTURE-001');
-  });
-  RELIGIOUS_TRAITS.forEach(key => {
-    traits = applyTraitModifier(draft, traits, key, 1, 'Frankish Christian culture', 'cultureHomeland', 'CHAR-CULTURE-001');
-  });
-  ['temperate', 'modest'].forEach(key => {
-    const amount = getRollValue(session, `homeland.${key}`) || 0;
-    traits = applyTraitModifier(draft, traits, key, amount, 'Ardennes homeland', 'cultureHomeland', 'CHAR-HOMELAND-001');
-  });
-  traits = applyTraitModifier(draft, traits, 'suspicious', getRollValue(session, 'homeland.suspicious') || 0, 'Ardennes homeland', 'cultureHomeland', 'CHAR-HOMELAND-001');
+  if (isFrankishSession(session)) {
+    ['energetic', 'generous', 'valorous'].forEach(key => {
+      const amount = getRollValue(session, `culture.${key}`) || 0;
+      traits = applyTraitModifier(draft, traits, key, amount, 'Frankish culture', 'cultureHomeland', 'CHAR-CULTURE-001');
+    });
+    RELIGIOUS_TRAITS.forEach(key => {
+      traits = applyTraitModifier(draft, traits, key, 1, 'Frankish Christian culture', 'cultureHomeland', 'CHAR-CULTURE-001');
+    });
+    ['temperate', 'modest'].forEach(key => {
+      const amount = getRollValue(session, `homeland.${key}`) || 0;
+      traits = applyTraitModifier(draft, traits, key, amount, 'Ardennes homeland', 'cultureHomeland', 'CHAR-HOMELAND-001');
+    });
+    traits = applyTraitModifier(draft, traits, 'suspicious', getRollValue(session, 'homeland.suspicious') || 0, 'Ardennes homeland', 'cultureHomeland', 'CHAR-HOMELAND-001');
+  }
   Object.entries(draft.family.patronSaint?.effects?.traits || {}).forEach(([key, amount]) => {
     traits = applyTraitModifier(draft, traits, key, amount, `Patron saint: ${draft.family.patronSaint.label}`, 'traits', 'CHAR-SAINT-001');
   });
@@ -419,6 +488,11 @@ const createTraits = (session, draft, father, page) => {
 };
 
 const createPassions = (session, draft, page) => {
+  if (!isFrankishSession(session)) {
+    const passions = Object.fromEntries(Object.entries(DEFAULT_FOREIGN_PASSIONS).map(([key]) => [key, clamp(session.choices.foreignPassions?.[key], 0, 20)]));
+    draft.passionCalculations = Object.fromEntries(Object.keys(passions).map(key => [key, 'GM assigned; Chapter 17 names tendencies but does not quantify scores.']));
+    return passions;
+  }
   const passions = {
     honor: roundPaladin((Number(draft.traits.generous || 0) + Number(draft.traits.just || 0) + Number(draft.traits.valorous || 0)) / 3),
     loveCharlemagne: getRollValue(session, 'passion.loveCharlemagne') || 0,
@@ -451,7 +525,17 @@ const createStandings = draft => ({
   commoners: Number(draft.traits.merciful || 0)
 });
 
+const createForeignStandings = session => Object.fromEntries(
+  Object.keys(DEFAULT_FOREIGN_STANDINGS).map(key => [key, clamp(session.choices.foreignStandings?.[key], 0, 20)])
+);
+
 const createSkills = (session, draft, father, page) => {
+  if (!isFrankishSession(session)) {
+    const skills = Object.fromEntries(Object.keys(DEFAULT_FOREIGN_SKILLS).map(key => [key, clamp(session.choices.foreignSkills?.[key], 0, 20)]));
+    draft.skillsBeforeTraining = { ...skills };
+    draft.skillTrainingSummary = { available: 0, allocated: 0, remaining: 0, sourceBoundary: 'GM assigned; Chapter 17 does not quantify Skills.' };
+    return skills;
+  }
   const profile = session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'female' : 'male';
   const formulas = FRANKISH_SKILL_FORMULAS[profile];
   const skills = {};
@@ -567,6 +651,21 @@ const getQualification = draft => {
 };
 
 const applySquireYears = (session, draft) => {
+  if (!isFrankishSession(session)) {
+    const culture = cultureForSession(session);
+    const profile = getCultureEquipmentProfile(culture.id, session.choices.cultureEquipmentProfileId);
+    draft.personal.age = clamp(session.choices.foreignStartingAge, 15, 60);
+    draft.personal.personalClass = String(session.choices.foreignStatusLabel || profile?.label || 'GM-assigned foreign status').trim();
+    draft.squireYearHistory = [];
+    draft.qualification = {
+      qualified: false,
+      notApplicable: true,
+      requirements: [],
+      sourcePolicy: culture.statusPolicy,
+      note: 'Chapter 1 Frankish squire qualification and automatic knighting Glory are not applied.'
+    };
+    return;
+  }
   const histories = [];
   let qualification = getQualification(draft);
   let age = 15;
@@ -834,6 +933,38 @@ const applyBirthGiftEffects = (draft, snapshotBeforeGifts) => {
   );
 };
 
+const createCultureOutfit = session => {
+  const culture = cultureForSession(session);
+  const resolved = resolveCultureEquipment(culture.id, session.choices.cultureEquipmentProfileId, session.choices.cultureEquipmentChoices);
+  if (!resolved.profile || resolved.unresolved.length) return null;
+  const allIds = resolved.allMarketItemIds;
+  const items = allIds.map(marketItem).filter(Boolean);
+  const armor = items.find(entry => entry.category === 'armor' && entry.combat?.armor !== undefined);
+  const shield = items.find(entry => entry.category === 'armor' && entry.combat?.shield !== undefined);
+  const weapons = items.filter(entry => ['melee', 'missile'].includes(entry.category));
+  const horses = Object.fromEntries(resolved.mountIds.map(id => [id, (resolved.mountIds.filter(value => value === id).length)]));
+  return {
+    isCultureProfile: true,
+    rank: null,
+    profileId: resolved.profile.id,
+    profileLabel: resolved.profile.label,
+    sourcePage: `Ch.17 p.${resolved.profile.sourcePage}`,
+    sourceText: resolved.profile.sourceText,
+    canonicalItemIds: allIds,
+    mountIds: resolved.mountIds,
+    horseArmorIds: resolved.horseArmorIds,
+    horses,
+    squires: 0,
+    armor: armor?.label || 'No armor',
+    shields: shield ? shield.combat.shield : 0,
+    shieldLabel: shield?.label || '',
+    weapons: weapons.map(entry => entry.label),
+    clothes: '',
+    cash: 0,
+    sonPenalty: 0
+  };
+};
+
 const createOutfit = (draft, father) => {
   if (!father?.outfit) return null;
   const sonPenalty = Number(draft.personal.sonNumber || 1) > 1 ? 1 : 0;
@@ -852,6 +983,17 @@ const createOutfit = (draft, father) => {
 };
 
 const createGloryLedger = (session, draft, father, page, beforeGifts) => {
+  if (!isFrankishSession(session)) {
+    return [{
+      sourceRuleId: 'CH17-GM-GLORY',
+      sourceLabel: 'GM-assigned starting Glory',
+      amount: clamp(session.choices.foreignInitialGlory, 0, 1000000),
+      calculation: 'Chapter 17 does not quantify starting Glory; recorded as explicit GM input.',
+      appliedAtStep: 'glory',
+      reversible: true,
+      sourcePage: cultureForSession(session).sourcePage
+    }];
+  }
   const sameFamilyGlory = session.successorContext?.successorMode === 'same_family';
   const fatherAmount = sameFamilyGlory
     ? roundPaladin(Number(session.successorContext?.predecessor?.gear?.gloryTotal || 0) / 10)
@@ -893,9 +1035,12 @@ const annotateRollLog = (session, draft) => {
 
 const getStepIssues = (session, draft, stepId) => {
   const issues = [];
+  const frankish = isFrankishSession(session);
+  const culture = cultureForSession(session);
   const requireRolls = keys => keys.forEach(key => { if (!hasRoll(session, key)) issues.push(`Roll ${key}.`); });
   if (stepId === 'mode') {
-    if (!String(session.choices.name || '').trim()) issues.push('Enter one Frankish name.');
+    if (!String(session.choices.name || '').trim()) issues.push(frankish ? 'Enter one Frankish name.' : 'Enter a source-appropriate or GM-approved name.');
+    if (!frankish && session.choices.culturePermissionConfirmed !== true) issues.push('Confirm the GM permission required by Chapter 17 for this alternative origin.');
     if (session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific') {
       issues.push('The female-specific son-number ordering is source-ambiguous and awaits user confirmation; use the printed male-equivalent route for now.');
     }
@@ -906,11 +1051,14 @@ const getStepIssues = (session, draft, stepId) => {
         if (!String(session.choices.family?.[key] || '').trim()) issues.push(`Enter family ${key}.`);
       });
     }
+    if (!frankish && session.choices.foreignFamilyConfirmed !== true) issues.push('Confirm the GM/player family input; Chapter 17 supplies no replacement family table.');
   }
-  if (stepId === 'familyCharacteristic' && !isFamilySuccessor(session)) requireRolls(['family.characteristic']);
-  if (stepId === 'saint' && !isFamilySuccessor(session)) requireRolls(['family.saint']);
+  if (stepId === 'familyCharacteristic' && frankish && !isFamilySuccessor(session)) requireRolls(['family.characteristic']);
+  if (stepId === 'saint' && frankish && !isFamilySuccessor(session)) requireRolls(['family.saint']);
   if (stepId === 'father') {
-    if (isFamilySuccessor(session)) {
+    if (!frankish) {
+      if (!String(session.choices.foreignFatherStatus || '').trim()) issues.push('Enter the GM/player-assigned parent or household status.');
+    } else if (isFamilySuccessor(session)) {
       if (!session.choices.successorFatherClass) issues.push('Choose the predecessor or household father class at career end or knighting.');
       if (session.choices.successorFatherClass === 'lord' && !session.choices.lordType) issues.push('Choose the father lord type.');
     } else {
@@ -920,15 +1068,26 @@ const getStepIssues = (session, draft, stepId) => {
     if (draft.father?.officer && !hasRoll(session, 'father.officerPatron')) issues.push("Roll the officer's patron rank.");
     if (draft.fatherSurvival?.key === 'missing' && !draft.fatherSurvival.missingYears) issues.push('Roll missing years.');
   }
-  if (stepId === 'sonNumber' && !draft.personal.sonNumber) issues.push('Resolve son number.');
-  if (stepId === 'pageEducation' && !draft.pageEducation) issues.push('Roll Page Education.');
-  if (stepId === 'pageEducation' && session.choices.pageEducationMethod === 'fatherCourt') {
+  if (stepId === 'sonNumber' && !draft.personal.sonNumber) issues.push(frankish ? 'Resolve son number.' : 'Enter the GM/player-assigned child order.');
+  if (stepId === 'pageEducation' && !String(draft.pageEducation?.label || '').trim()) issues.push(frankish ? 'Roll Page Education.' : 'Record the GM/player-assigned education or upbringing.');
+  if (stepId === 'pageEducation' && frankish && session.choices.pageEducationMethod === 'fatherCourt') {
     const eligible = draft.father?.key === 'lord' || draft.father?.officer;
     if (!eligible) issues.push("This father has no printed automatic Page Education option; use the table roll.");
     const religiousPatron = ['Lay Bishop', 'Lay Abbot'].includes(draft.father?.detail) || draft.father?.officerPatron === 'Lay Bishop or Lay Abbot';
     if (religiousPatron && !['greatMonastery', 'smallMonastery'].includes(session.choices.pageAutomaticChoice)) issues.push('Choose monastery or great monastery training.');
   }
-  if (stepId === 'cultureHomeland') requireRolls(['culture.energetic', 'culture.generous', 'culture.valorous', 'homeland.hunting', 'homeland.temperate', 'homeland.modest', 'homeland.suspicious']);
+  if (stepId === 'cultureHomeland') {
+    if (frankish) requireRolls(['culture.energetic', 'culture.generous', 'culture.valorous', 'homeland.hunting', 'homeland.temperate', 'homeland.modest', 'homeland.suspicious']);
+    else {
+      if (!String(session.choices.cultureHomeland || '').trim()) issues.push('Record the culture homeland.');
+      if (!String(session.choices.foreignHome || '').trim()) issues.push('Record the character home as GM/player input.');
+      if (!resolveCultureReligion(culture.id, session.choices.religionId)) issues.push('Choose one religion explicitly supported by this culture entry.');
+      if (!getCultureEquipmentProfile(culture.id, session.choices.cultureEquipmentProfileId)) issues.push('Choose one printed Standard Equipment role.');
+      const equipment = resolveCultureEquipment(culture.id, session.choices.cultureEquipmentProfileId, session.choices.cultureEquipmentChoices);
+      if (equipment.unresolved.length) issues.push('Resolve every printed equipment alternative.');
+      if (session.choices.foreignScoreAssignmentConfirmed !== true) issues.push('Confirm the GM-assigned non-quantified Traits, Passions, Standings, and Skills.');
+    }
+  }
   if (stepId === 'attributes') {
     requireRolls(ATTRIBUTE_KEYS.map(key => `attribute.${key}`));
     const bonuses = session.choices.attributeBonuses || {};
@@ -939,33 +1098,51 @@ const getStepIssues = (session, draft, stepId) => {
     if (session.choices.featureMode === 'roll') requireRolls(['feature.category']);
     else if (!DISTINCTIVE_FEATURES.some(item => item.key === session.choices.featureCategory)) issues.push('Choose a printed feature category.');
   }
-  if (stepId === 'traits') requireRolls(TRAIT_PAIRS.map(([virtue]) => `trait.${virtue}`));
-  if (stepId === 'passions') requireRolls(['passion.loveCharlemagne', 'passion.loveFamily']);
+  if (stepId === 'traits') {
+    if (frankish) requireRolls(TRAIT_PAIRS.map(([virtue]) => `trait.${virtue}`));
+    else if (Object.values(session.choices.foreignTraits || {}).some(value => Number(value) < 0 || Number(value) > 20)) issues.push('GM-assigned Trait values must be from 0 to 20.');
+  }
+  if (stepId === 'passions') {
+    if (frankish) requireRolls(['passion.loveCharlemagne', 'passion.loveFamily']);
+    else if (Object.values(session.choices.foreignPassions || {}).some(value => Number(value) < 0 || Number(value) > 20)) issues.push('GM-assigned Passion values must be from 0 to 20.');
+  }
   if (stepId === 'standings' && !draft.standings) issues.push('Resolve traits and passions first.');
   if (stepId === 'skills') {
-    const profile = session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'female' : 'male';
-    requireRolls(Object.entries(FRANKISH_SKILL_FORMULAS[profile]).filter(([, formula]) => typeof formula === 'string' && formula !== 'halfDex').map(([key]) => `skill.${key}`));
-    const availablePoints = Number(draft.father?.skillPoints || 0);
-    const allocations = session.choices.skillTraining || {};
-    const allocated = sum(Object.values(allocations).map(value => Math.max(0, asInt(value))));
-    if (allocated !== availablePoints) issues.push(`Allocate exactly ${availablePoints} father-class skill points.`);
-    Object.entries(allocations).forEach(([key, amount]) => {
-      if (Number(amount || 0) > 0 && Number(draft.skillsBeforeTraining?.[key] || 0) <= 0) issues.push(`Training cannot raise ${key} from 0.`);
-      if (Number(amount || 0) > 0 && Number(draft.skillsBeforeTraining?.[key] || 0) + Number(amount || 0) > 15) issues.push(`Training allocation for ${key} exceeds the creation cap of 15.`);
-    });
+    if (!frankish) {
+      if (Object.values(session.choices.foreignSkills || {}).some(value => Number(value) < 0 || Number(value) > 20)) issues.push('GM-assigned Skill values must be from 0 to 20.');
+    } else {
+      const profile = session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'female' : 'male';
+      requireRolls(Object.entries(FRANKISH_SKILL_FORMULAS[profile]).filter(([, formula]) => typeof formula === 'string' && formula !== 'halfDex').map(([key]) => `skill.${key}`));
+      const availablePoints = Number(draft.father?.skillPoints || 0);
+      const allocations = session.choices.skillTraining || {};
+      const allocated = sum(Object.values(allocations).map(value => Math.max(0, asInt(value))));
+      if (allocated !== availablePoints) issues.push(`Allocate exactly ${availablePoints} father-class skill points.`);
+      Object.entries(allocations).forEach(([key, amount]) => {
+        if (Number(amount || 0) > 0 && Number(draft.skillsBeforeTraining?.[key] || 0) <= 0) issues.push(`Training cannot raise ${key} from 0.`);
+        if (Number(amount || 0) > 0 && Number(draft.skillsBeforeTraining?.[key] || 0) + Number(amount || 0) > 15) issues.push(`Training allocation for ${key} exceeds the creation cap of 15.`);
+      });
+    }
   }
-  if (stepId === 'squireYears' && !draft.qualification?.qualified) issues.push('Add one squire year at a time until every knighthood requirement is met.');
+  if (stepId === 'squireYears') {
+    if (frankish && !draft.qualification?.qualified) issues.push('Add one squire year at a time until every knighthood requirement is met.');
+    if (!frankish && !String(session.choices.foreignStatusLabel || '').trim()) issues.push('Record the source-compatible social or military status selected by the GM/player.');
+  }
   if (stepId === 'ideals') {
     (session.choices.selectedIdeals || []).forEach(key => { if (!draft.ideals?.[key]?.eligible) issues.push(`${key} is selected but is not eligible.`); });
   }
-  if (stepId === 'glory' && !draft.qualification?.qualified) issues.push('Initial Glory is finalized only after knighthood qualification.');
+  if (stepId === 'glory') {
+    if (frankish && !draft.qualification?.qualified) issues.push('Initial Glory is finalized only after knighthood qualification.');
+    if (!frankish && session.choices.foreignGloryConfirmed !== true) issues.push('Confirm the GM-assigned starting Glory; Chapter 17 gives no numeric amount.');
+  }
   if (stepId === 'outfit') {
-    if (draft.inheritedEquipment?.length && typeof session.choices.inheritEquipmentInsteadOfOutfit !== 'boolean') issues.push('Choose inherited equipment or Table 1-14 outfit.');
-    if (!draft.outfit && !draft.usesInheritedEquipment) issues.push('Resolve father class and son number first.');
+    if (frankish && draft.inheritedEquipment?.length && typeof session.choices.inheritEquipmentInsteadOfOutfit !== 'boolean') issues.push('Choose inherited equipment or Table 1-14 outfit.');
+    if (!draft.outfit && !draft.usesInheritedEquipment) issues.push(frankish ? 'Resolve father class and son number first.' : 'Resolve the printed culture equipment profile and alternatives.');
   }
   if (stepId === 'birthGift') {
-    if (draft.gifts.pendingRolls.length) issues.push('Resolve every required Birth Gift roll and reroll.');
-    if (session.successorContext?.blessingGrant && !session.successorContext.blessingGrant.consumed && !draft.legacyBlessing) issues.push('Resolve the granted Table 1-17 blessing roll.');
+    if (frankish) {
+      if (draft.gifts.pendingRolls.length) issues.push('Resolve every required Birth Gift roll and reroll.');
+      if (session.successorContext?.blessingGrant && !session.successorContext.blessingGrant.consumed && !draft.legacyBlessing) issues.push('Resolve the granted Table 1-17 blessing roll.');
+    }
   }
   if (stepId === 'review') {
     if (!String(session.choices.story || '').trim()) issues.push('Record the character story before completion.');
@@ -980,17 +1157,18 @@ const getStepIssues = (session, draft, stepId) => {
 
 export const recomputeCharacterCreationSession = rawSession => {
   const session = clone(rawSession);
+  const frankish = isFrankishSession(session);
   const draft = { modifierLog: [], unresolvedChoices: [], legacyApplication: [] };
   createIdentityAndFamily(session, draft);
-  draft.father = resolveFather(session, draft);
-  draft.fatherSurvival = resolveFatherSurvival(session);
-  draft.personal.sonNumber = resolveSonNumber(session, draft.father);
+  draft.father = frankish ? resolveFather(session, draft) : resolveForeignFather(session);
+  draft.fatherSurvival = frankish ? resolveFatherSurvival(session) : { key: 'gm_recorded', label: String(session.choices.foreignFatherStatus || '').trim() };
+  draft.personal.sonNumber = frankish ? resolveSonNumber(session, draft.father) : clamp(session.choices.foreignSonNumber, 1, 20);
   draft.personal.fathersClass = draft.father?.detail || draft.father?.label || '';
-  draft.pageEducation = resolvePageEducation(session, draft.father, draft.personal.sonNumber);
+  draft.pageEducation = frankish ? resolvePageEducation(session, draft.father, draft.personal.sonNumber) : resolveForeignEducation(session);
   draft.attributes = applyLegacyGroup(session, draft, 'attributes', applySameFamilyAttributeBonus(session, draft, createAttributes(session, draft)));
   draft.traits = applyLegacyGroup(session, draft, 'traits', applySameFamilyValorousBonus(session, draft, createTraits(session, draft, draft.father, draft.pageEducation)));
   draft.passions = applyLegacyGroup(session, draft, 'passions', createPassions(session, draft, draft.pageEducation));
-  draft.standings = applyLegacyGroup(session, draft, 'standings', createStandings(draft));
+  draft.standings = applyLegacyGroup(session, draft, 'standings', frankish ? createStandings(draft) : createForeignStandings(session));
   draft.skills = applyLegacyGroup(session, draft, 'skills', createSkills(session, draft, draft.father, draft.pageEducation));
   applySquireYears(session, draft);
   if (Number(session.successorContext?.candidate?.age) > Number(draft.personal.age)) {
@@ -1006,10 +1184,10 @@ export const recomputeCharacterCreationSession = rawSession => {
   draft.distinctiveFeature = category ? { category: category.key, categoryLabel: category.label, sourceText: category.label, userText: String(session.choices.featureText || '').trim() } : null;
   if (draft.distinctiveFeature) draft.personal.features = [draft.distinctiveFeature.userText || draft.distinctiveFeature.categoryLabel];
   const beforeGifts = clone(draft);
-  const legacyGiftCount = session.successorContext?.successorMode === 'same_family' && !session.successorContext?.birthGiftGrant?.consumed
+  const legacyGiftCount = frankish && session.successorContext?.successorMode === 'same_family' && !session.successorContext?.birthGiftGrant?.consumed
     ? Number(session.successorContext?.birthGiftGrant?.count || 0)
     : 0;
-  resolveBirthGifts(session, draft, Number(draft.father?.giftRolls || 0) + legacyGiftCount);
+  resolveBirthGifts(session, draft, frankish ? Number(draft.father?.giftRolls || 0) + legacyGiftCount : 0);
   applyBirthGiftEffects(draft, beforeGifts);
   draft.inheritedEquipment = session.successorContext?.successorMode === 'same_family'
     ? clone(session.successorContext?.inheritedEquipment || [])
@@ -1018,16 +1196,22 @@ export const recomputeCharacterCreationSession = rawSession => {
     ? clone(session.successorContext?.inheritedManors || [])
     : [];
   draft.usesInheritedEquipment = draft.inheritedEquipment.length > 0 && session.choices.inheritEquipmentInsteadOfOutfit === true;
-  draft.outfit = draft.usesInheritedEquipment ? null : createOutfit(draft, draft.father);
+  draft.outfit = draft.usesInheritedEquipment ? null : frankish ? createOutfit(draft, draft.father) : createCultureOutfit(session);
   const blessingRoll = getRollValue(session, 'legacy.blessing');
   draft.legacyBlessing = blessingRoll ? { roll: blessingRoll, ...findByRange(SAINT_BLESSINGS, blessingRoll) } : null;
   draft.gloryLedger = createGloryLedger(session, draft, draft.father, draft.pageEducation, beforeGifts);
   draft.gloryTotal = sum(draft.gloryLedger.map(entry => entry.amount));
   draft.story = String(session.choices.story || '');
   draft.manualOverrides = clone(session.choices.manualOverrides || []);
-  draft.rulebookDeviations = session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific'
-    ? [{ ruleId: 'CHAR-FEMALE-001', note: 'Female-specific son-number ordering awaits source interpretation confirmation.' }]
-    : [];
+  draft.rulebookDeviations = [
+    ...(session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific'
+      ? [{ ruleId: 'CHAR-FEMALE-001', note: 'Female-specific son-number ordering awaits source interpretation confirmation.' }]
+      : []),
+    ...(!frankish ? [{
+      ruleId: 'CH17-GM-BOUNDARY',
+      note: 'Chapter 17 quantifies only base Statistics. Family, Traits, Passions, Standings, Skills, status, and starting Glory are explicit GM/player assignments and are not inferred from cultural prose.'
+    }] : [])
+  ];
 
   const stepStates = Object.fromEntries(CHARACTER_CREATION_STEPS.map(step => {
     const issues = getStepIssues(session, draft, step.id);
@@ -1057,6 +1241,7 @@ export const recomputeCharacterCreationSession = rawSession => {
 export const createCharacterCreationSession = ({ seed, mode = 'core', existingFamily = null, successorContext = null, now = new Date() } = {}) => {
   const createdAt = nowIso(now);
   const normalizedSeed = String(seed || `paladin-${createdAt}`);
+  const startingCulture = getCulture(successorContext?.predecessor?.personal?.cultureId || 'frankish');
   const session = {
     id: `cc-${hashSeed(`${normalizedSeed}:${createdAt}`).toString(16)}`,
     version: SESSION_VERSION,
@@ -1073,6 +1258,30 @@ export const createCharacterCreationSession = ({ seed, mode = 'core', existingFa
     completionId: null,
     choices: {
       name: successorContext?.candidate?.name || '',
+      cultureId: startingCulture.id,
+      culturePermissionConfirmed: startingCulture.id === 'frankish',
+      cultureHomeland: startingCulture.homeland,
+      religionId: startingCulture.defaultReligionId || '',
+      foreignHome: '',
+      foreignLiegeLord: '',
+      foreignFamilyConfirmed: false,
+      foreignFamilyHonor: 0,
+      foreignFamilyStandings: { charlemagne: 0, church: 0, commoners: 0 },
+      foreignFamilyMuster: { oldKnights: 0, middleAgedKnights: 0, youngKnights: 0, otherLineageMen: 0 },
+      foreignFatherStatus: '',
+      foreignSonNumber: 1,
+      foreignEducation: '',
+      foreignStartingAge: 18,
+      foreignStatusLabel: '',
+      foreignTraits: { ...DEFAULT_FOREIGN_TRAITS },
+      foreignPassions: { ...DEFAULT_FOREIGN_PASSIONS },
+      foreignStandings: { ...DEFAULT_FOREIGN_STANDINGS },
+      foreignSkills: { ...DEFAULT_FOREIGN_SKILLS },
+      foreignScoreAssignmentConfirmed: false,
+      foreignInitialGlory: 0,
+      foreignGloryConfirmed: false,
+      cultureEquipmentProfileId: '',
+      cultureEquipmentChoices: {},
       gender: 'male',
       femaleGeneration: 'maleEquivalent',
       familyMode: existingFamily?.name ? 'reuse' : 'new',
@@ -1124,11 +1333,12 @@ export const createCharacterCreationSession = ({ seed, mode = 'core', existingFa
 
 const rollSpecsForStep = (session, stepId) => {
   const draft = session.draftCharacter || {};
+  const frankish = isFrankishSession(session);
   const specs = [];
   const add = (key, notation, label, ruleId, sourcePage) => specs.push({ key, notation, label, stepId, ruleId, sourcePage });
-  if (stepId === 'familyCharacteristic' && !isFamilySuccessor(session)) add('family.characteristic', '1d20', 'Family Characteristic', session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'CHAR-FAMCHAR-F-001' : 'CHAR-FAMCHAR-M-001', '28');
-  if (stepId === 'saint' && !isFamilySuccessor(session)) add('family.saint', '1d20', 'Family Patron Saint', 'CHAR-SAINT-001', '28-29');
-  if (stepId === 'father' && !isFamilySuccessor(session)) {
+  if (stepId === 'familyCharacteristic' && frankish && !isFamilySuccessor(session)) add('family.characteristic', '1d20', 'Family Characteristic', session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'CHAR-FAMCHAR-F-001' : 'CHAR-FAMCHAR-M-001', '28');
+  if (stepId === 'saint' && frankish && !isFamilySuccessor(session)) add('family.saint', '1d20', 'Family Patron Saint', 'CHAR-SAINT-001', '28-29');
+  if (stepId === 'father' && frankish && !isFamilySuccessor(session)) {
     add('muster.old', '1d6', 'Old family knights', 'CHAR-MUSTER-001', '29');
     add('muster.middle', '1d6', 'Middle-aged family knights', 'CHAR-MUSTER-001', '29');
     add('muster.young', '1d6', 'Young family knights', 'CHAR-MUSTER-001', '29');
@@ -1143,29 +1353,29 @@ const rollSpecsForStep = (session, stepId) => {
     if (draft.father?.officer) add('father.officerPatron', '1d6', "Officer's patron rank", 'CHAR-FATHER-001', '31');
     if (draft.fatherSurvival?.key === 'missing') add('father.missingYears', '2d6', 'Years father has been missing', 'CHAR-FATHER-SURV-001', '31');
   }
-  if (stepId === 'sonNumber' && session.choices.sonNumberMethod !== 'first') {
+  if (stepId === 'sonNumber' && frankish && session.choices.sonNumberMethod !== 'first') {
     const die = ['banneret', 'lord'].includes(draft.father?.key) ? '1d6' : '1d3';
     add('sonNumber.order', die, 'Son Number', 'CHAR-SON-001', '31');
   }
-  if (stepId === 'pageEducation' && session.choices.pageEducationMethod !== 'fatherCourt') add('page.education', '1d20', 'Page Education', 'CHAR-PAGE-001', '31-32');
-  if (stepId === 'cultureHomeland') {
+  if (stepId === 'pageEducation' && frankish && session.choices.pageEducationMethod !== 'fatherCourt') add('page.education', '1d20', 'Page Education', 'CHAR-PAGE-001', '31-32');
+  if (stepId === 'cultureHomeland' && frankish) {
     ['energetic', 'generous', 'valorous'].forEach(key => add(`culture.${key}`, '1d3', `Frankish ${key}`, 'CHAR-CULTURE-001', '32'));
     ['hunting', 'temperate', 'modest', 'suspicious'].forEach(key => add(`homeland.${key}`, '1d3', `Ardennes ${key}`, 'CHAR-HOMELAND-001', '32'));
   }
   if (stepId === 'attributes') ATTRIBUTE_KEYS.forEach(key => add(`attribute.${key}`, '2d6+3', key.toUpperCase(), 'CHAR-ATTR-001', '32'));
   if (stepId === 'feature' && session.choices.featureMode === 'roll') add('feature.category', '1d6', 'Distinctive Feature category', 'CHAR-FEATURE-001', '33');
-  if (stepId === 'traits') TRAIT_PAIRS.forEach(([virtue]) => add(`trait.${virtue}`, '2d6+3', virtue, 'CHAR-TRAIT-001', '33-34'));
-  if (stepId === 'passions') {
+  if (stepId === 'traits' && frankish) TRAIT_PAIRS.forEach(([virtue]) => add(`trait.${virtue}`, '2d6+3', virtue, 'CHAR-TRAIT-001', '33-34'));
+  if (stepId === 'passions' && frankish) {
     add('passion.loveCharlemagne', '2d6+3', 'Love [Charlemagne]', 'CHAR-PASSION-001', '34');
     add('passion.loveFamily', '1d6', 'Love [family] die', 'CHAR-PASSION-001', '34');
   }
-  if (stepId === 'skills') {
+  if (stepId === 'skills' && frankish) {
     const profile = session.choices.gender === 'female' && session.choices.femaleGeneration === 'femaleSpecific' ? 'female' : 'male';
     Object.entries(FRANKISH_SKILL_FORMULAS[profile]).forEach(([key, formula]) => {
       if (typeof formula === 'string' && formula !== 'halfDex') add(`skill.${key}`, formula, key, profile === 'female' ? 'CHAR-SKILL-F-001' : 'CHAR-SKILL-M-001', '35');
     });
   }
-  if (stepId === 'birthGift') {
+  if (stepId === 'birthGift' && frankish) {
     specs.push(...(draft.gifts?.pendingRolls || []));
     if (session.successorContext?.blessingGrant && !session.successorContext.blessingGrant.consumed && !hasRoll(session, 'legacy.blessing')) {
       add('legacy.blessing', '1d20', 'Table 1-17 saint blessing', 'LIFE-SAINT-001', '42, Table 1-17');
@@ -1202,6 +1412,23 @@ export const updateCharacterCreationChoice = (rawSession, path, value, stepId = 
   const session = clone(rawSession);
   const before = getByPath(session.choices, path);
   setByPath(session.choices, path, value);
+  if (path === 'cultureId') {
+    const culture = getCulture(value);
+    session.choices.cultureId = culture.id;
+    session.choices.culturePermissionConfirmed = culture.id === 'frankish';
+    session.choices.cultureHomeland = culture.homeland;
+    session.choices.religionId = culture.defaultReligionId || '';
+    session.choices.cultureEquipmentProfileId = '';
+    session.choices.cultureEquipmentChoices = {};
+    session.choices.foreignScoreAssignmentConfirmed = false;
+    session.choices.foreignFamilyConfirmed = false;
+    session.choices.foreignGloryConfirmed = false;
+    session.choices.foreignTraits = { ...DEFAULT_FOREIGN_TRAITS };
+    session.choices.foreignPassions = { ...DEFAULT_FOREIGN_PASSIONS };
+    session.choices.foreignStandings = { ...DEFAULT_FOREIGN_STANDINGS };
+    session.choices.foreignSkills = { ...DEFAULT_FOREIGN_SKILLS };
+  }
+  if (path === 'cultureEquipmentProfileId') session.choices.cultureEquipmentChoices = {};
   const sourceStep = stepId || CHARACTER_CREATION_STEPS[session.currentStep]?.id || 'mode';
   const stepIndex = CHARACTER_CREATION_STEPS.findIndex(step => step.id === sourceStep);
   if (stepIndex >= 0 && stepIndex < session.currentStep) session.currentStep = stepIndex;
@@ -1237,6 +1464,7 @@ const validateSquireYearPlan = (plan, draft) => {
 
 export const addCharacterCreationSquireYear = (rawSession, plan) => {
   const session = recomputeCharacterCreationSession(rawSession);
+  if (!isFrankishSession(session)) return { session, added: false, error: 'Chapter 17 does not provide a foreign squire-year procedure.' };
   if (session.draftCharacter.qualification?.qualified) return { session, added: false, error: 'The character already qualifies and must be knighted immediately.' };
   const error = validateSquireYearPlan(plan, session.draftCharacter);
   if (error) return { session, added: false, error };
@@ -1382,10 +1610,30 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
   next.squire = outfit?.squires
     ? { ...(!isSuccessor ? next.squire || {} : {}), name: '', age: 15 }
     : { ...(!isSuccessor ? next.squire || {} : {}), name: '', age: 0 };
+  const primaryMountId = outfit?.isCultureProfile ? outfit.mountIds?.[0] : null;
+  const primaryMarketMount = primaryMountId ? marketItem(primaryMountId) : null;
+  const primaryCultureMount = primaryMountId && getChapter18Creature(primaryMountId)
+    ? chapter18MountToHorse(primaryMountId, { id: `horse:${session.id}:${primaryMountId}` })
+    : primaryMarketMount ? {
+      id: `horse:${session.id}:${primaryMountId}`,
+      chapter18Id: null,
+      marketItemId: primaryMountId,
+      type: primaryMarketMount.label,
+      knownMarketCombat: clone(primaryMarketMount.combat || {}),
+      status: 'pending_combat_profile',
+      unresolvedRequirement: {
+        type: 'gm_mount_stat_input',
+        fields: ['siz', 'dex', 'currentHp'],
+        sourcePage: primaryMarketMount.sourcePage,
+        reason: 'Chapter 12 lists this mount, but Chapter 18 supplies no matching statblock.'
+      },
+      sourceBoundary: 'Canonical Chapter 12 mount; Chapter 18 has no matching statblock. No combat values were inferred.'
+    } : null;
   next.horses = {
     ...(!isSuccessor ? next.horses || {} : {}),
-    warhorse: { ...(!isSuccessor ? next.horses?.warhorse || {} : {}), type: formatHorseList(outfit?.horses).join(', ') },
-    inventory: clone(outfit?.horses || {})
+    warhorse: primaryCultureMount || { ...(!isSuccessor ? next.horses?.warhorse || {} : {}), type: formatHorseList(outfit?.horses).join(', ') },
+    inventory: clone(outfit?.horses || {}),
+    canonicalMountIds: clone(outfit?.mountIds || [])
   };
   const inheritedGear = Object.fromEntries((draft.inheritedEquipment || [])
     .filter(item => item.id?.startsWith('gear.') && item.key !== 'conditionalModifiers')
@@ -1397,13 +1645,13 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
   if (inheritedHorse) next.horses = clone(inheritedHorse.value);
   next.gear = {
     ...(!isSuccessor ? next.gear || {} : {}),
-    armorShield: outfit ? `${outfit.armor}; ${outfit.shields} shield(s)` : '',
+    armorShield: outfit ? `${outfit.armor}; ${outfit.shieldLabel || `${outfit.shields} shield(s)`}` : '',
     clothing: outfit?.clothes || '',
     personalGear: [...(outfit?.weapons || []), ...(draft.gearExtras?.possessions || [])].join(', '),
     cash: Number(outfit?.cash || 0) + Number(draft.gearExtras?.cash || 0),
     gloryThisGame: 0,
     gloryTotal: draft.gloryTotal,
-    startingOutfit: outfit ? `Outfit ${outfit.rank}` : '',
+    startingOutfit: outfit ? outfit.isCultureProfile ? `${cultureForSession(session).printedName} · ${outfit.profileLabel}` : `Outfit ${outfit.rank}` : '',
     startingOutfitInventory: clone(outfit || {}),
     birthGifts: clone(draft.gifts.entries),
     conditionalModifiers: [...clone(draft.gearExtras?.conditionalModifiers || []), ...inheritedConditionalModifiers],
@@ -1612,10 +1860,30 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
       inheritedEquipment: clone(draft.inheritedEquipment),
       inheritedManors: clone(draft.inheritedManors),
       blessing: clone(draft.legacyBlessing),
+      culture: {
+        id: draft.personal.cultureId,
+        sourcePage: draft.personal.cultureSourcePage,
+        religionId: draft.personal.religionId,
+        equipmentProfileId: draft.personal.cultureEquipmentProfileId,
+        attributeModifiers: clone(cultureForSession(session).attributeModifiers || {}),
+        gmAssignedScores: !isFrankishSession(session)
+      },
       manualOverrides: clone(draft.manualOverrides),
       rulebookDeviations: clone(draft.rulebookDeviations)
     }
   };
+  if (outfit?.isCultureProfile) {
+    const granted = grantStartingMarketItems(next, {
+      transactionId: `starting-equipment:${completionId}`,
+      itemIds: outfit.canonicalItemIds,
+      profileId: outfit.profileId,
+      label: `${draft.personal.culture} · ${outfit.profileLabel} 시작 장비`,
+      note: outfit.sourceText,
+      sourcePage: outfit.sourcePage,
+      now: completedAt
+    });
+    Object.assign(next, granted.character);
+  }
   return { character: next, session: completedSession, completed: true, duplicate: false, issues: [] };
 };
 
@@ -1643,7 +1911,20 @@ export const sanitizeCharacterCreationSession = value => {
     invalidationLog: Array.isArray(source.invalidationLog) ? source.invalidationLog.slice(-500) : [],
     squireYears: Array.isArray(source.squireYears) ? source.squireYears.slice(0, 100) : [],
     successorContext: source.successorContext && typeof source.successorContext === 'object' ? source.successorContext : null,
-    choices: source.choices && typeof source.choices === 'object' ? { ...defaults.choices, ...source.choices } : defaults.choices
+    choices: source.choices && typeof source.choices === 'object' ? {
+      ...defaults.choices,
+      ...source.choices,
+      family: { ...defaults.choices.family, ...(source.choices.family || {}) },
+      attributeBonuses: { ...defaults.choices.attributeBonuses, ...(source.choices.attributeBonuses || {}) },
+      skillTraining: { ...defaults.choices.skillTraining, ...(source.choices.skillTraining || {}) },
+      foreignFamilyStandings: { ...defaults.choices.foreignFamilyStandings, ...(source.choices.foreignFamilyStandings || {}) },
+      foreignFamilyMuster: { ...defaults.choices.foreignFamilyMuster, ...(source.choices.foreignFamilyMuster || {}) },
+      foreignTraits: { ...defaults.choices.foreignTraits, ...(source.choices.foreignTraits || {}) },
+      foreignPassions: { ...defaults.choices.foreignPassions, ...(source.choices.foreignPassions || {}) },
+      foreignStandings: { ...defaults.choices.foreignStandings, ...(source.choices.foreignStandings || {}) },
+      foreignSkills: { ...defaults.choices.foreignSkills, ...(source.choices.foreignSkills || {}) },
+      cultureEquipmentChoices: { ...defaults.choices.cultureEquipmentChoices, ...(source.choices.cultureEquipmentChoices || {}) }
+    } : defaults.choices
   };
   try {
     return recomputeCharacterCreationSession(safe);

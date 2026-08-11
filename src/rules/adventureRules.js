@@ -25,7 +25,8 @@ const TABLE_SUBSYSTEM_REQUIREMENTS = Object.freeze({
     '19-5': ['Saracen Archery', 'Lance Charge', 'Carloman Wounded', 'Player Unit Routs'],
     '19-14': ['*'],
     '19-15': ['Lone Knight'],
-    '19-16': ['Bandits', 'Wild Animal', 'Melancholic or Mad Paladin'],
+    '19-11': ['*'],
+    '19-16': ['Bandits', 'Melancholic or Mad Paladin'],
     '19-17': ['Jousting Knight', 'Robber Knight'],
     '19-28': ['Joust All Strangers for a Month', 'Fight a Boar Unarmored', 'Kill Husband, Father, or Guardian'],
     '19-30': ['Fight to the Death'],
@@ -106,6 +107,7 @@ export const sanitizeAdventureState = value => {
     pendingTest: value.pendingTest && typeof value.pendingTest === 'object' ? clone(value.pendingTest) : null,
     pendingTable: value.pendingTable && typeof value.pendingTable === 'object' ? clone(value.pendingTable) : null,
     pendingSubsystem: value.pendingSubsystem && typeof value.pendingSubsystem === 'object' ? clone(value.pendingSubsystem) : null,
+    pendingInterruption: value.pendingInterruption && typeof value.pendingInterruption === 'object' ? clone(value.pendingInterruption) : null,
     pendingConsequence: value.pendingConsequence && typeof value.pendingConsequence === 'object' ? clone(value.pendingConsequence) : null,
     pendingDependency: value.pendingDependency && typeof value.pendingDependency === 'object' ? clone(value.pendingDependency) : null,
     stageProgress: value.stageProgress && typeof value.stageProgress === 'object' && !Array.isArray(value.stageProgress) ? clone(value.stageProgress) : {},
@@ -177,6 +179,41 @@ const transactionApplied = (state, transactionId) => state.appliedTransactionIds
 const applyTransaction = (state, transactionId) => {
   if (transactionApplied(state, transactionId)) return false;
   state.appliedTransactionIds = [...state.appliedTransactionIds, transactionId].slice(-2000);
+  return true;
+};
+
+const continuationBlock = character => {
+  if (character.campaign?.health?.pendingDeath) {
+    return { type: 'pending_death', reason: '생명력이 0 이하이므로 자정 사망 또는 회복 절차를 먼저 해결해야 합니다.' };
+  }
+  const captivity = character.campaign?.captivity;
+  if (['active', 'awaiting_ransom'].includes(captivity?.status)) {
+    return { type: 'captivity', reason: '포로 상태와 몸값 정산을 먼저 해결해야 합니다.' };
+  }
+  const lifecycle = character.campaign?.lifecycle || {};
+  const status = lifecycle.status || lifecycle.careerStatus || 'active';
+  if (!['active', 'incapacitated', 'bedridden'].includes(status)) {
+    return { type: 'lifecycle', reason: '사망·은퇴·계승 상태를 먼저 해결하고 모험 참가자를 다시 확정해야 합니다.' };
+  }
+  return null;
+};
+
+const pauseForContinuation = (character, state, pending, transactionId, now) => {
+  const block = continuationBlock(character);
+  if (!block) return false;
+  state.pendingInterruption = {
+    id: safeId(`${transactionId}:interruption`),
+    ...block,
+    status: 'pending',
+    stageId: pending.stageId,
+    sourcePage: pending.sourcePage,
+    returnTransactionId: transactionId,
+    advanceOnReturn: Boolean(pending.advanceOnReturn),
+    parentHunt: Boolean(pending.parentHunt),
+    activeCharacterIdBefore: character.campaign?.lifecycle?.activeCharacterId || null,
+    createdAt: iso(now)
+  };
+  state.updatedAt = iso(now);
   return true;
 };
 
@@ -269,6 +306,7 @@ const resetRepeatedStage = (state, stage, now) => {
   state.pendingChoice = null;
   state.pendingTest = null;
   state.pendingTable = null;
+  state.pendingInterruption = null;
   state.pendingConsequence = null;
   state.pendingDependency = null;
   state.scene = '';
@@ -295,6 +333,7 @@ const prepareStage = state => {
   state.pendingTable = stage?.kind === 'table' ? {
     stageId: stage.id,
     tableId: stage.tableId,
+    subtable: null,
     rootTableId: stage.tableId,
     iteration: progress?.iteration || 1,
     sourcePage: stage.sourcePage,
@@ -492,7 +531,11 @@ export const lookupChapter19Table = (tableId, roll, options = {}) => {
   const found = tableRow(table, value, options.subtable, options.rowIndex);
   if (!found) throw new RangeError(`${tableId}의 원문 범위에 해당하는 결과가 없습니다.`);
   const selectedIndex = tableRows(table, options.subtable).indexOf(found);
-  return { tableId, title: table.title, sourcePage: table.sourcePage, roll: value, rowIndex: selectedIndex, subtable: options.subtable || null, ...clone(found) };
+  const { subtable: nextSubtable = null, ...rowData } = clone(found);
+  return {
+    tableId, title: table.title, sourcePage: table.sourcePage, roll: value, rowIndex: selectedIndex,
+    subtable: options.subtable || null, nextSubtable, ...rowData
+  };
 };
 
 export const resolveAdventureTable = (characterValue, input = {}) => {
@@ -502,36 +545,52 @@ export const resolveAdventureTable = (characterValue, input = {}) => {
   if (stage?.kind !== 'table') throw new RangeError('현재 단계는 표 판정 단계가 아닙니다.');
   const pendingTable = state.pendingTable;
   const tableId = String(input.tableId || pendingTable?.tableId || stage.tableId);
+  const subtable = input.subtable || pendingTable?.subtable || null;
   if (tableId !== pendingTable?.tableId) throw new RangeError('현재 원문 절차가 호출하는 표가 아닙니다.');
+  if (subtable !== (pendingTable?.subtable || null)) throw new RangeError('현재 원문 절차가 호출하는 하위 표가 아닙니다.');
   const progress = getStageProgress(state, stage);
   if (stage.repeat?.sequence && tableId === stage.tableId && asInt(input.roll) !== progress.iteration) {
     throw new RangeError(`원문 고정 순서에 따라 ${progress.iteration}라운드 결과를 처리하세요.`);
   }
-  const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:table:${progress.iteration}:${tableId}`);
+  const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:table:${progress.iteration}:${tableId}:${subtable || 'root'}`);
   const existing = state.results.find(item => item.id === transactionId);
   if (existing) return { character, adventure: state, result: existing, applied: false };
-  const followUp = tableId !== stage.tableId;
-  const result = { id: transactionId, type: 'table', stageId: stage.id, iteration: progress.iteration, followUp, ...lookupChapter19Table(tableId, input.roll, input), createdAt: iso(input.now) };
+  const followUp = Boolean(pendingTable.rootResult) || tableId !== stage.tableId || Boolean(subtable);
+  const result = {
+    id: transactionId, type: 'table', stageId: stage.id, iteration: progress.iteration, followUp,
+    ...lookupChapter19Table(tableId, input.roll, { ...input, subtable }), createdAt: iso(input.now)
+  };
   if (stage.repeat?.unique && !followUp && getStageTableResults(state, stage.id).some(item => item.result === result.result)) {
     throw new RangeError('원문이 중복 결과를 무시하라고 명시하므로 다시 판정하세요.');
   }
   appendAdventureResult(state, result);
   applyTransaction(state, transactionId);
   const followUpRule = !followUp ? list(stage.followUps).find(rule => list(rule.results).includes(result.result)) : null;
-  if (followUpRule) {
+  const nextTable = result.nextSubtable
+    ? { tableId, subtable: result.nextSubtable }
+    : followUpRule
+      ? { tableId: followUpRule.tableId, subtable: followUpRule.subtable || null }
+      : null;
+  if (nextTable) {
+    const rootResult = pendingTable.rootResult || result;
+    const followUpResults = followUp ? [...list(pendingTable.followUpResults), result] : [];
     state.pendingTable = {
       ...pendingTable,
-      tableId: followUpRule.tableId,
-      sourcePage: CHAPTER_19_TABLES[followUpRule.tableId]?.sourcePage || stage.sourcePage,
+      tableId: nextTable.tableId,
+      subtable: nextTable.subtable,
+      sourcePage: CHAPTER_19_TABLES[nextTable.tableId]?.sourcePage || stage.sourcePage,
       resolved: null,
-      rootResult: result,
-      followUpResults: []
+      rootResult,
+      followUpResults
     };
     state.pendingConsequence = null;
     state.updatedAt = iso(input.now);
-    return { character, adventure: state, result, applied: true, followUpTableId: followUpRule.tableId };
+    return {
+      character, adventure: state, result, applied: true,
+      followUpTableId: nextTable.tableId, followUpSubtable: nextTable.subtable
+    };
   }
-  const rootResult = followUp ? pendingTable.rootResult : result;
+  const rootResult = pendingTable.rootResult || result;
   const followUpResults = followUp ? [...list(pendingTable.followUpResults), result] : [];
   progress.history.push({ iteration: progress.iteration, rootResult: clone(rootResult), followUpResults: clone(followUpResults), completedAt: iso(input.now) });
   state.pendingTable = { ...pendingTable, tableId, resolved: result, rootResult, followUpResults };
@@ -639,6 +698,19 @@ export const applyAdventureConsequence = (characterValue, input = {}, now) => {
   return { character, adventure: state, result, applied: true };
 };
 
+export const recordAdventureNoMechanicalEffect = (characterValue, input = {}, now) => {
+  const character = clone(characterValue);
+  const state = requireActive(character);
+  const stage = getCurrentAdventureStage(state);
+  if (!['consequence', 'aftermath', 'procedure'].includes(stage.kind)) throw new RangeError('현재 단계에는 별도 무효과 확인이 필요하지 않습니다.');
+  if (!String(input.reason || '').trim()) throw new RangeError('원문 조건상 적용할 기계적 결과가 없는 이유를 기록하세요.');
+  const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:no_mechanical_effect`);
+  if (!applyTransaction(state, transactionId)) return { character, adventure: state, applied: false };
+  const result = { id: transactionId, stageId: stage.id, type: 'no_mechanical_effect', sourcePage: stage.sourcePage, reason: String(input.reason).trim(), createdAt: iso(now) };
+  appendAdventureResult(state, result);
+  return { character, adventure: state, result, applied: true };
+};
+
 export const acknowledgeAdventureConsequence = (characterValue, input = {}, now) => {
   const character = clone(characterValue);
   const state = requireActive(character);
@@ -650,7 +722,7 @@ export const acknowledgeAdventureConsequence = (characterValue, input = {}, now)
   state.pendingConsequence = { ...state.pendingConsequence, status: 'acknowledged', note: String(input.note || ''), acknowledgedAt: iso(now) };
   if (state.pendingSubsystem?.type === 'hunt' && state.pendingSubsystem.awaitingConsequence) {
     state.pendingSubsystem.awaitingConsequence = false;
-    finalizeHuntSegment(state.pendingSubsystem);
+    if (!state.pendingSubsystem.obstacle) finalizeHuntSegment(state.pendingSubsystem);
   }
   return { character, adventure: state };
 };
@@ -785,24 +857,40 @@ export const resolveAdventureHuntObstacle = (characterValue, input = {}, now) =>
   if (hunt.phase !== 'segments' || !hunt.obstacle) throw new RangeError('현재 해결할 Hunt 장애물이 없습니다.');
   const hunter = hunt.hunters.find(item => item.id === hunt.obstacle.hunterId);
   const tableResult = lookupChapter19Table('19-10', input.roll);
-  const transactionId = safeId(`${huntResultId(hunt, hunter.id, 'obstacle')}:${tableResult.roll}`);
+  const sequence = Math.max(1, asInt(hunt.obstacle.sequence, 1));
+  const transactionId = safeId(`${huntResultId(hunt, hunter.id, `obstacle_${sequence}`)}:${tableResult.roll}`);
   if (hunt.results.some(item => item.id === transactionId)) return { character, adventure: state, hunt, result: tableResult, applied: false };
-  if ([4, 12].includes(tableResult.roll)) {
+  const deadEndFollowUp = asInt(hunt.obstacle.remainingRolls) > 0;
+  const ignoredEleven = deadEndFollowUp && tableResult.roll === 11;
+  if (ignoredEleven) {
+    hunt.obstacle = { ...hunt.obstacle, sequence: sequence + 1 };
+  } else if (tableResult.roll === 11 && !input.overcome) {
+    hunter.status = 'obstacle';
+    hunt.obstacle = { hunterId: hunter.id, status: 'dead_end_followups', remainingRolls: 2, ignoreEleven: true, sequence: sequence + 1, sourcePage: 425 };
+  } else if ([4, 12].includes(tableResult.roll)) {
     hunter.status = 'discovered';
     hunt.phase = 'discovery';
+    hunt.obstacle = null;
   } else {
     hunter.status = input.overcome ? 'chase' : 'search';
+    const remainingRolls = deadEndFollowUp ? Math.max(0, asInt(hunt.obstacle.remainingRolls) - 1) : 0;
+    hunt.obstacle = remainingRolls > 0
+      ? { ...hunt.obstacle, remainingRolls, sequence: sequence + 1 }
+      : null;
   }
-  const result = { id: transactionId, type: 'hunt_obstacle', hunterId: hunter.id, overcome: Boolean(input.overcome), ...tableResult, createdAt: iso(now) };
+  const result = {
+    id: transactionId, type: 'hunt_obstacle', hunterId: hunter.id, overcome: Boolean(input.overcome),
+    ignored: ignoredEleven, remainingRolls: asInt(hunt.obstacle?.remainingRolls), ...tableResult, createdAt: iso(now)
+  };
   hunt.results.push(result);
-  hunt.obstacle = null;
-  hunt.awaitingConsequence = Boolean(tableResult.effect);
+  const structuralDeadEnd = ignoredEleven || (tableResult.roll === 11 && !input.overcome);
+  hunt.awaitingConsequence = Boolean(tableResult.effect) && !structuralDeadEnd;
   if (hunt.awaitingConsequence) {
     state.pendingConsequence = {
       id: `${transactionId}:consequence`, stageId: hunt.stageId, sourcePage: 425,
       description: tableResult.effect, status: 'pending', appliedActions: []
     };
-  } else finalizeHuntSegment(hunt);
+  } else if (!hunt.obstacle) finalizeHuntSegment(hunt);
   state.updatedAt = iso(now);
   return { character, adventure: state, hunt, result, applied: true };
 };
@@ -814,11 +902,9 @@ export const resolveAdventureHuntPrey = (characterValue, input = {}, now) => {
   if (hunt.phase !== 'discovery') throw new RangeError('아직 먹잇감을 발견할 단계가 아닙니다.');
   if (hunt.prey) return { character, adventure: state, hunt, prey: hunt.prey, applied: false };
   const primary = lookupChapter19Table('19-11', input.roll, { rowIndex: input.rowIndex });
-  const selected = primary.subtable === 'special' || primary.subtable
-    ? primary
-    : primary.result === 'Special Encounter'
-      ? lookupChapter19Table('19-11', input.specialRoll, { subtable: 'special', rowIndex: input.specialRowIndex })
-      : primary;
+  const selected = primary.nextSubtable
+    ? lookupChapter19Table('19-11', input.specialRoll, { subtable: primary.nextSubtable, rowIndex: input.specialRowIndex })
+    : primary;
   hunt.prey = {
     name: selected.result, avoidance: asInt(selected.avoidance), chapter18Page: selected.chapter18Page,
     creatureId: getChapter18HuntCreatureId(selected.result),
@@ -1094,9 +1180,11 @@ export const completeAdventureCombat = (characterValue, input = {}, now) => {
       ...pending.parentHunt, phase: 'complete', status: 'active', outcome: outcome?.result || outcome?.status || 'combat_complete',
       combatTransactionId: transactionId, updatedAt: iso(now)
     };
+    pauseForContinuation(character, nextState, pending, transactionId, now);
   } else {
     nextState.pendingSubsystem = null;
-    if (pending.advanceOnReturn) advance(character, nextState, now);
+    const paused = pauseForContinuation(character, nextState, pending, transactionId, now);
+    if (pending.advanceOnReturn && !paused) advance(character, nextState, now);
   }
   return { character, adventure: character.campaign.adventures.active, combat: concluded.combat, applied: true };
 };
@@ -1152,8 +1240,53 @@ export const completeAdventureBattleReturn = (characterValue, _input = {}, now) 
   });
   applyTransaction(state, transactionId);
   state.pendingSubsystem = null;
-  if (pending.advanceOnReturn) advance(character, state, now);
+  const paused = pauseForContinuation(character, state, pending, transactionId, now);
+  if (pending.advanceOnReturn && !paused) advance(character, state, now);
   return { character, adventure: character.campaign.adventures.active, battle, applied: true };
+};
+
+export const resolveAdventureInterruption = (characterValue, input = {}, now) => {
+  const character = clone(characterValue);
+  const state = requireActive(character);
+  const interruption = state.pendingInterruption;
+  if (!interruption || interruption.status !== 'pending') throw new RangeError('해결할 모험 중단 상태가 없습니다.');
+  const remaining = continuationBlock(character);
+  if (remaining) throw new RangeError(remaining.reason);
+  const action = ['continue', 'continue_successor', 'continue_survivors', 'end_adventure'].includes(input.action)
+    ? input.action
+    : 'continue';
+  const transactionId = safeId(`${interruption.id}:resolved`);
+  if (transactionApplied(state, transactionId)) return { character, adventure: state, applied: false };
+  const activeCharacterId = character.campaign?.lifecycle?.activeCharacterId || null;
+  const previousCharacterId = interruption.activeCharacterIdBefore;
+  if (activeCharacterId !== previousCharacterId) {
+    state.participants = state.participants.filter(participant => participant.characterId !== previousCharacterId);
+    if (action === 'continue_successor') {
+      state.participants.push(sanitizeParticipant({
+        id: activeCharacterId || 'successor', characterId: activeCharacterId,
+        name: character.personal?.name || '후계 기사', role: 'player_knight', status: 'active'
+      }, state.participants.length));
+    }
+  }
+  const decision = sanitizeDecision({
+    id: transactionId, stageId: interruption.stageId, kind: 'gm', value: action,
+    note: input.note || '전투 후 생애주기·포로 상태를 해결하고 참가자 연속성을 확정함',
+    sourcePage: interruption.sourcePage, createdAt: iso(now)
+  });
+  state.decisions.push(decision);
+  appendAdventureResult(state, {
+    id: transactionId, type: 'interruption_resolved', stageId: interruption.stageId,
+    interruptionType: interruption.type, action, sourcePage: interruption.sourcePage, createdAt: iso(now)
+  });
+  applyTransaction(state, transactionId);
+  state.pendingInterruption = null;
+  if (action === 'end_adventure') {
+    state.pendingSubsystem = null;
+    return abortAdventure(character, { note: decision.note }, now);
+  }
+  if (!state.participants.length) throw new RangeError('계속할 생존 참가자 또는 후계 기사를 확정하세요.');
+  if (interruption.advanceOnReturn && !interruption.parentHunt) advance(character, state, now);
+  return { character, adventure: character.campaign.adventures.active, applied: true };
 };
 
 export const beginAdventurePersonalityMagic = (characterValue, _input = {}, now) => {
@@ -1376,8 +1509,8 @@ export const resolveAdventureKnighthood = (characterValue, input = {}, now) => {
 };
 
 export const recordAdventureProcedureItem = (characterValue, input = {}, now) => {
-  const character = clone(characterValue);
-  const state = requireActive(character);
+  let character = clone(characterValue);
+  let state = requireActive(character);
   const stage = getCurrentAdventureStage(state);
   if (stage?.kind !== 'procedure' || !stage.procedure) throw new RangeError('현재 장면에는 구조화된 원문 절차가 없습니다.');
   const item = list(stage.procedure.items).find(candidate => candidate.id === input.itemId);
@@ -1387,11 +1520,40 @@ export const recordAdventureProcedureItem = (characterValue, input = {}, now) =>
     return { character, adventure: state, progress: current, applied: false };
   }
   const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:procedure:${item.id}`);
+  const resolutionKind = ['canonical_action', 'linked_transaction', 'player_choice', 'gm_decision', 'narrative'].includes(input.resolutionKind)
+    ? input.resolutionKind
+    : '';
+  if (!resolutionKind) throw new RangeError('원문 항목을 canonical 결과, 기존 거래, Player/GM 판단 또는 Narrative로 분류하세요.');
+  let canonicalResultId = null;
+  let linkedTransactionIds = [];
+  if (resolutionKind === 'canonical_action') {
+    if (!input.action?.type) throw new RangeError('실제 적용할 canonical 결과 유형을 선택하세요.');
+    const applied = applyAdventureConsequence(character, {
+      ...input.action,
+      transactionId: `${transactionId}:canonical`,
+      reason: input.action.reason || item.title,
+      note: input.note
+    }, now);
+    character = applied.character;
+    state = requireActive(character);
+    canonicalResultId = applied.result?.id || `${transactionId}:canonical`;
+  } else if (resolutionKind === 'linked_transaction') {
+    linkedTransactionIds = [...new Set(list(input.linkedTransactionIds).map(safeId).filter(Boolean))];
+    const available = new Set([
+      ...list(character.campaign?.gloryLedger), ...list(character.campaign?.standingLedger), ...list(character.campaign?.honorLedger),
+      ...list(character.campaign?.economy?.transactions), ...list(character.campaign?.combatHistory), ...list(character.campaign?.battleHistory),
+      ...list(character.campaign?.siegeHistory), ...list(character.campaign?.personalityMagic?.transactions), ...list(state.results)
+    ].flatMap(entry => [entry.id, entry.transactionId, entry.resultId].filter(Boolean).map(safeId)));
+    if (!linkedTransactionIds.length || linkedTransactionIds.some(id => !available.has(id))) throw new RangeError('저장된 canonical 결과의 거래 ID를 정확히 연결하세요.');
+  } else if (!String(input.note || '').trim()) throw new RangeError('원문이 맡긴 선택 또는 판단 내용을 구체적으로 기록하세요.');
   const record = {
     id: transactionId,
     itemId: item.id,
     title: item.title,
     note: String(input.note || ''),
+    resolutionKind,
+    canonicalResultId,
+    linkedTransactionIds,
     sourcePage: item.sourcePage || stage.sourcePage,
     createdAt: iso(now)
   };
@@ -1410,6 +1572,7 @@ export const completeAdventureStage = (characterValue, input = {}, now) => {
   const character = clone(characterValue);
   const state = requireActive(character);
   const stage = getCurrentAdventureStage(state);
+  if (state.pendingInterruption) throw new RangeError('사망·포로·생애주기 중단 상태를 먼저 해결하세요.');
   if (state.pendingSubsystem) throw new RangeError('연결된 하위 절차의 결과를 먼저 모험으로 돌려보내세요.');
   if (stage.kind === 'subsystem') throw new RangeError('현재 장면의 canonical 하위 절차를 시작하고 결과를 반환하세요.');
   if (stage.kind === 'player_choice' && !state.pendingChoice?.resolved) throw new RangeError('플레이어 선택을 먼저 기록하세요.');
@@ -1433,6 +1596,13 @@ export const completeAdventureStage = (characterValue, input = {}, now) => {
     if (required.some(id => !completed.has(id)) || completed.size < minimum) {
       throw new RangeError('현재 원문 절차의 필수 항목을 모두 처리하세요.');
     }
+    const records = list(progress.records);
+    if (required.some(id => !records.find(record => record.itemId === id)?.resolutionKind)) {
+      throw new RangeError('필수 항목마다 실제 결과 또는 원문 판단 분류를 저장하세요.');
+    }
+  }
+  if (stage.requiresCanonicalConsequence && !state.results.some(item => item.stageId === stage.id && ['glory', 'standing', 'honor', 'score', 'economy', 'damage', 'check', 'no_mechanical_effect'].includes(item.type))) {
+    throw new RangeError('이 장면의 원문 결과를 canonical 장부에 반영하거나, 적용할 기계적 결과가 없음을 근거와 함께 확인하세요.');
   }
   if (['gm_decision', 'narrative', 'procedure', 'consequence', 'aftermath', 'setup', 'reference'].includes(stage.kind)
     && !state.decisions.some(item => item.stageId === stage.id)) {

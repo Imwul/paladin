@@ -182,7 +182,7 @@ test('WIN-AGE-001', 'aging table and career end', () => {
 });
 
 test('WIN-ECO-001', 'harvest modifiers and income table', () => {
-  assert.equal(getHarvestModifier({ year: 779, standings: { commoners: 16, retinue: 4 }, prosperity: true }), 5);
+  assert.equal(getHarvestModifier({ year: 779, standings: { commoners: 16, retinue: 4 }, prosperity: true }), -4);
   assert.equal(resolveHarvest({ roll: 10, stewardship: 8, modifier: 2, manors: 2 }).income, 18);
   assert.equal(resolveHarvest({ roll: 3, stewardship: 8, modifier: 2, manors: 2 }).income, 12);
   assert.equal(resolveHarvest({ roll: 11, stewardship: 8, modifier: 2, manors: 2 }).income, 10);

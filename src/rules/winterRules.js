@@ -7,6 +7,8 @@ import { adjustOpposedTrait, RELIGIOUS_TRAITS } from './personalityRules.js';
 import { resolveExperienceChecks, resolveTraitExperienceChecks } from './progressionRules.js';
 import { addEstate, applyAnnualEconomy, ensureEconomy, getMagicCombatEffects, getRetainerSkill, recordEconomyTransfer, toDeniers } from './economyRules.js';
 
+const asInt = (value, fallback = 0) => Number.isFinite(Number(value)) ? Math.trunc(Number(value)) : fallback;
+
 export const WINTER_STEPS = [
   { id: 'soloScenario', number: 1, ruleId: 'WINTER-ORDER-001', sourcePage: 'Ch.10 p.173', label: '개인 모험', english: 'Solo Scenario', summary: '필요한 개인 모험을 먼저 마치거나 해당 없음으로 기록합니다.' },
   { id: 'aging', number: 2, ruleId: 'WINTER-AGING-001', sourcePage: 'Ch.10 pp.174-175', label: '노화', english: 'Aging', summary: '기사, 종자, 탈것의 나이를 올리고 30세 이상 노화를 판정합니다.' },
@@ -566,6 +568,18 @@ export const collectSurvivalTargets = character => {
     targets.push({ targetId: 'primary-squire', type: 'squire', relationship: '종자', label: character.squire.name || '종자', age: character.squire.age, priorIllness: character.squire.status === '질병', replacementPolicy: 'replace_at_age_18' });
   }
 
+  (character.campaign?.economy?.retainers || [])
+    .filter(retainer => !['dismissed', 'dead'].includes(retainer.status))
+    .forEach(retainer => targets.push({
+      targetId: `retainer:${retainer.id}`,
+      type: 'retainer',
+      relationship: '수행원',
+      label: retainer.name || retainer.label || '수행원',
+      age: retainer.age ?? null,
+      priorIllness: retainer.status === 'ill',
+      replacementPolicy: 'none'
+    }));
+
   const hasHerd = getManorCount(character) > 0 || Number(character.standings?.liegeLord || 0) > 0;
   const warhorse = character.horses?.warhorse;
   if (warhorse && warhorse.status !== '사망') {
@@ -582,7 +596,37 @@ export const collectSurvivalTargets = character => {
       rollRequired: !ordinary || !hasHerd
     });
   }
-  return targets;
+  const knightErrant = Boolean(character.campaign?.rulebookProcedures?.career?.knightErrant);
+  const ordinaryMountIds = new Set(['charger', 'rouncy', 'sumpter', 'frankish_charger', 'palfrey']);
+  (character.campaign?.economy?.equipment || [])
+    .filter(item => item.category === 'mount' && !item.disposed && asInt(item.quantity, 1) > 0)
+    .forEach((mount, index) => {
+      const ordinary = ordinaryMountIds.has(mount.marketItemId);
+      if (ordinary && !knightErrant) return;
+      targets.push({
+        targetId: `inventory-mount:${mount.id || index}`,
+        type: ordinary ? 'ordinary_mount' : 'special_mount',
+        relationship: '보유 탈것',
+        label: mount.label || '탈것',
+        age: mount.age ?? null,
+        priorIllness: mount.status === 'ill',
+        replacementPolicy: ordinary && hasHerd ? 'herd' : 'none',
+        rollRequired: !ordinary || !hasHerd
+      });
+    });
+  Object.entries(character.horses || {})
+    .filter(([key, mount]) => key !== 'warhorse' && mount && (typeof mount === 'string' ? mount.trim() : mount.status !== '사망'))
+    .forEach(([key, mount]) => targets.push({
+      targetId: `horse-slot:${key}`,
+      type: 'special_mount',
+      relationship: '추가 탈것',
+      label: typeof mount === 'string' ? mount : mount.type || key,
+      age: typeof mount === 'object' ? mount.age ?? null : null,
+      priorIllness: typeof mount === 'object' && mount.status === '질병',
+      replacementPolicy: 'none',
+      rollRequired: true
+    }));
+  return [...new Map(targets.map(target => [target.targetId, target])).values()];
 };
 
 export const resolveFamilyRelation = ({ relationRoll, sexRoll, members = [] }) => {
@@ -703,7 +747,9 @@ const resolveEconomy = (character, winter, record, input, rng) => {
   const requiredMaintenance = householdKnight ? 0 : grade.minimum;
   const activeWards = (character.family?.wards || []).filter(ward => Number(ward.startYear || 0) <= record.year && (!ward.endYear || record.year < ward.endYear));
   const wardIncome = activeWards.reduce((sum, ward) => sum + Number(ward.annualIncome || 1), 0);
-  const grossIncome = harvest.income + wardIncome;
+  const commonerStanding = Number(character.standings?.commoners || 0);
+  const standingAdjustedHarvest = commonerStanding === 0 ? 0 : commonerStanding <= 5 ? harvest.income / 2 : harvest.income;
+  const grossIncome = standingAdjustedHarvest + wardIncome;
   const surplus = grossIncome - requiredMaintenance;
   const cashBefore = Number(character.gear?.cash || 0);
   if (cashBefore + surplus < 0) {
@@ -731,6 +777,7 @@ const resolveEconomy = (character, winter, record, input, rng) => {
   winter.annualLedger = {
     year: record.year,
     grossIncome,
+    standingAdjustedHarvest,
     requiredMaintenance,
     manorExpense: 0,
     householdExpense: baseExpenses.knightAndSquire + baseExpenses.family,
@@ -1320,15 +1367,32 @@ export const resolveWinterStep = (rawCharacter, { stepId, input = {} }, rng = Ma
   return { character, record, applied: true, awaitingChoice: false };
 };
 
-export const recordManualWinterResolution = (rawCharacter, { stepId, note }) => {
+export const recordManualWinterResolution = (rawCharacter, { stepId, note, canonicalTransactionIds = [] }) => {
   if (!String(note || '').trim()) throw new RangeError('A manual resolution note is required.');
   const character = clone(rawCharacter);
   const winter = ensureWinterState(character);
   const record = winter.records[stepId];
   const step = WINTER_STEPS.find(item => item.id === stepId);
   if (!record || winter.steps[stepId] !== 'awaiting_choice') throw new RangeError('No unresolved choice exists for this Winter step.');
+  const ids = [...new Set((Array.isArray(canonicalTransactionIds) ? canonicalTransactionIds : []).map(String).filter(Boolean))];
+  const available = new Set([
+    ...(character.campaign?.gloryLedger || []),
+    ...(character.campaign?.standingLedger || []),
+    ...(character.campaign?.honorLedger || []),
+    ...(character.campaign?.economy?.transactions || []),
+    ...(character.campaign?.combatHistory || []),
+    ...(character.campaign?.battleHistory || []),
+    ...(character.campaign?.siegeHistory || []),
+    ...(character.campaign?.lifecycle?.events || []),
+    ...(character.campaign?.personalityMagic?.transactions || []),
+    ...(character.campaign?.rulebookProcedures?.transactions || [])
+  ].map(entry => String(entry.id || entry.transactionId || '')));
+  const unresolvedType = record.unresolvedChoice?.type || winter.unresolved?.[stepId]?.type || '';
+  const narrativeOnly = new Set(['family_member_target', 'bastard_parent']);
+  if (!narrativeOnly.has(unresolvedType) && !ids.length) throw new RangeError('결정적 후속 결과는 먼저 canonical 하위 절차에서 처리하고 거래 ID를 연결해야 합니다.');
+  if (ids.some(id => !available.has(id))) throw new RangeError('저장된 canonical 거래에서 확인할 수 없는 ID가 있습니다.');
   record.status = 'resolved_manual';
-  record.manualResolution = { note: String(note).trim(), recordedAt: new Date().toISOString(), gmOverride: true };
+  record.manualResolution = { note: String(note).trim(), canonicalTransactionIds: ids, unresolvedType, recordedAt: new Date().toISOString(), gmOverride: narrativeOnly.has(unresolvedType) };
   record.journalEntry = `${record.journalEntry} 수동 판정 기록: ${record.manualResolution.note}`;
   winter.steps[stepId] = 'resolved';
   winter.transactions.push(record);

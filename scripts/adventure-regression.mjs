@@ -25,6 +25,7 @@ import {
   getCurrentAdventureStage,
   lookupChapter19Table,
   recordAdventureDecision,
+  recordAdventureNoMechanicalEffect,
   recordAdventureProcedureItem,
   resolveAdventureTable,
   resolveAdventureTest,
@@ -32,7 +33,9 @@ import {
   resolveAdventureChaseStage,
   resolveAdventureHuntAction,
   resolveAdventureHuntDiscovery,
+  resolveAdventureHuntObstacle,
   resolveAdventureHuntPrey,
+  resolveAdventureInterruption,
   resumeAdventure,
   sanitizeAdventureLedger,
   skipOptionalAdventureStage,
@@ -105,7 +108,10 @@ const reloadAdventure = character => {
 
 const confirmStage = character => {
   const stage = getCurrentAdventureStage(character.campaign.adventures.active);
-  const recorded = recordAdventureDecision(character, { kind: stage.kind === 'narrative' ? 'narrative' : 'gm', value: 'confirmed', note: `test ${stage.id}` });
+  const prepared = stage.requiresCanonicalConsequence
+    ? recordAdventureNoMechanicalEffect(character, { reason: `regression path did not meet a numeric condition at ${stage.id}` }).character
+    : character;
+  const recorded = recordAdventureDecision(prepared, { kind: stage.kind === 'narrative' ? 'narrative' : 'gm', value: 'confirmed', note: `test ${stage.id}` });
   return completeAdventureStage(recorded.character, { confirmed: true }).character;
 };
 
@@ -218,7 +224,7 @@ const resolvePersonalityMagicStage = characterValue => {
 };
 
 const runDefinition = (definition, options = {}) => {
-  let character = startAdventure(makeCharacter(), {
+  let character = startAdventure(options.character || makeCharacter(), {
     adventureId: definition.id,
     participants: [{ id: 'self', characterId: 'self', name: '검증 기사' }, { id: 'guest', name: '동료 기사' }]
   }).character;
@@ -342,7 +348,7 @@ const runDefinition = (definition, options = {}) => {
         if (selected.length >= stage.procedure.minimum) break;
         if (!selected.some(candidate => candidate.id === item.id)) selected.push(item);
       }
-      for (const item of selected) character = recordAdventureProcedureItem(reloadAdventure(character), { itemId: item.id, note: 'regression complete' }).character;
+      for (const item of selected) character = recordAdventureProcedureItem(reloadAdventure(character), { itemId: item.id, resolutionKind: 'gm_decision', note: 'regression complete' }).character;
       character = confirmStage(character);
       continue;
     }
@@ -370,13 +376,56 @@ assert.deepEqual([...Object.keys(CHAPTER_19_TABLES)].filter(tableId => !runtimeT
 for (const [tableId, table] of Object.entries(CHAPTER_19_TABLES)) {
   assert.ok(table.consumer, `${tableId} has a runtime consumer`);
   assert.ok(table.rows.length, `${tableId} has transcribed rows`);
-  assert.equal(lookupChapter19Table(tableId, table.rows[0].min).result, table.rows[0].result);
-  assert.equal(lookupChapter19Table(tableId, table.rows.at(-1).max).result, table.rows.at(-1).result);
+  for (const [subtable, rows] of [[null, table.rows], ...Object.entries(table.subtables || {})]) {
+    rows.forEach((row, rowIndex) => {
+      const values = new Set([row.min, Math.floor((row.min + row.max) / 2), row.max]);
+      for (const value of values) {
+        const result = lookupChapter19Table(tableId, value, { subtable, rowIndex });
+        assert.equal(result.result, row.result, `${tableId}${subtable ? `:${subtable}` : ''} ${value}`);
+        assert.equal(result.rowIndex, rowIndex, `${tableId}${subtable ? `:${subtable}` : ''} row identity`);
+      }
+    });
+  }
 }
 
 assert.throws(() => lookupChapter19Table('19-11', 4), /범위가 겹칩니다/);
 assert.equal(lookupChapter19Table('19-11', 4, { rowIndex: 0 }).result, 'Deer');
 assert.equal(lookupChapter19Table('19-11', 4, { rowIndex: 1 }).result, 'Aurochs');
+
+let specialHunt = startAdventure(makeCharacter(), { adventureId: 'hunt' }).character;
+specialHunt = recordAdventureDecision(specialHunt, { kind: 'player', value: 'leisure_hunt' }).character;
+specialHunt = completeAdventureStage(specialHunt).character;
+specialHunt = beginAdventureHunt(specialHunt, {
+  season: 'summer', segments: 2, terrainModifier: 0, preyAvoidance: 15,
+  hunters: [{ participantId: 'self', hunting: 20, mode: 'hunter' }]
+}).character;
+specialHunt = resolveAdventureHuntAction(specialHunt, { hunterId: 'self', roll: 1 }).character;
+specialHunt = resolveAdventureHuntAction(specialHunt, { hunterId: 'self', roll: 1, preyRoll: 20 }).character;
+specialHunt = resolveAdventureHuntPrey(reloadAdventure(specialHunt), { roll: 20, specialRoll: 1 }).character;
+assert.equal(specialHunt.campaign.adventures.active.pendingSubsystem.prey.name, 'Panther');
+assert.equal(specialHunt.campaign.adventures.active.pendingSubsystem.prey.specialRoll, 1);
+
+let deadEndHunt = startAdventure(makeCharacter(), { adventureId: 'hunt' }).character;
+deadEndHunt = recordAdventureDecision(deadEndHunt, { kind: 'player', value: 'leisure_hunt' }).character;
+deadEndHunt = completeAdventureStage(deadEndHunt).character;
+deadEndHunt = beginAdventureHunt(deadEndHunt, {
+  season: 'summer', segments: 4, terrainModifier: 0, preyAvoidance: 15,
+  hunters: [{ participantId: 'self', hunting: 10, mode: 'hunter' }]
+}).character;
+deadEndHunt = resolveAdventureHuntAction(deadEndHunt, { hunterId: 'self', roll: 1 }).character;
+deadEndHunt = resolveAdventureHuntAction(deadEndHunt, { hunterId: 'self', roll: 15, preyRoll: 1 }).character;
+assert.ok(deadEndHunt.campaign.adventures.active.pendingSubsystem.obstacle);
+deadEndHunt = resolveAdventureHuntObstacle(deadEndHunt, { roll: 11, overcome: false }).character;
+assert.equal(deadEndHunt.campaign.adventures.active.pendingSubsystem.obstacle.remainingRolls, 2);
+deadEndHunt = resolveAdventureHuntObstacle(reloadAdventure(deadEndHunt), { roll: 11, overcome: false }).character;
+assert.equal(deadEndHunt.campaign.adventures.active.pendingSubsystem.obstacle.remainingRolls, 2);
+deadEndHunt = resolveAdventureHuntObstacle(deadEndHunt, { roll: 2, overcome: true }).character;
+deadEndHunt = acknowledgeAdventureConsequence(deadEndHunt).character;
+assert.equal(deadEndHunt.campaign.adventures.active.pendingSubsystem.obstacle.remainingRolls, 1);
+deadEndHunt = resolveAdventureHuntObstacle(reloadAdventure(deadEndHunt), { roll: 3, overcome: true }).character;
+deadEndHunt = acknowledgeAdventureConsequence(deadEndHunt).character;
+assert.equal(deadEndHunt.campaign.adventures.active.pendingSubsystem.obstacle, null);
+assert.equal(deadEndHunt.campaign.adventures.active.pendingSubsystem.results.filter(item => item.type === 'hunt_obstacle').length, 4);
 
 let vassalLoop = startAdventure(makeCharacter(), { adventureId: 'vassal_service' }).character;
 vassalLoop = recordAdventureDecision(vassalLoop, { kind: 'player', value: 'annual_service' }).character;
@@ -408,6 +457,73 @@ forestLoop = resolveAdventureTable(forestLoop, { roll: 20 }).character;
 if (forestLoop.campaign.adventures.active.pendingConsequence) forestLoop = settlePendingConsequence(forestLoop);
 forestLoop = completeAdventureStage(reloadAdventure(forestLoop)).character;
 assert.equal(forestLoop.campaign.adventures.active.currentStageId, 'resolution');
+
+let specialChallenge = startAdventure(makeCharacter(), { adventureId: 'challenges' }).character;
+specialChallenge = recordAdventureDecision(specialChallenge, { kind: 'player', value: 'path' }).character;
+specialChallenge = completeAdventureStage(specialChallenge).character;
+specialChallenge = resolveAdventureTable(specialChallenge, { roll: 1 }).character;
+specialChallenge = completeAdventureStage(specialChallenge).character;
+specialChallenge = resolveAdventureTable(specialChallenge, { roll: 6 }).character;
+assert.equal(specialChallenge.campaign.adventures.active.pendingTable.tableId, '19-14');
+assert.equal(specialChallenge.campaign.adventures.active.pendingTable.subtable, 'special');
+assert.equal(specialChallenge.campaign.adventures.active.pendingTable.resolved, null);
+specialChallenge = reloadAdventure(specialChallenge);
+specialChallenge = resolveAdventureTable(specialChallenge, { roll: 2, subtable: 'special' }).character;
+assert.equal(specialChallenge.campaign.adventures.active.pendingTable.resolved.result, 'Bandits');
+assert.equal(specialChallenge.campaign.adventures.active.pendingTable.rootResult.result, 'Special Encounter');
+specialChallenge = settlePendingConsequence(specialChallenge);
+assert.throws(() => completeAdventureStage(specialChallenge), /Chapter 7/);
+specialChallenge = beginAdventureCombat(specialChallenge, {
+  opponents: [{ id: 'bandit', name: 'Bandit', skill: 10, damageDice: 3, armor: 2, shield: 0, dex: 10, str: 10, siz: 10, con: 10, weaponId: 'sword', distance: 1 }]
+}).character;
+specialChallenge.campaign.health.pendingDeath = { source: 'regression', deadline: 'midnight' };
+specialChallenge = completeAdventureCombat(reloadAdventure(specialChallenge), { result: 'victory' }).character;
+assert.equal(specialChallenge.campaign.adventures.active.pendingInterruption.type, 'pending_death');
+assert.throws(() => resolveAdventureInterruption(specialChallenge, { action: 'continue' }), /자정 사망/);
+specialChallenge.campaign.health.pendingDeath = null;
+specialChallenge = resolveAdventureInterruption(reloadAdventure(specialChallenge), { action: 'continue' }).character;
+assert.equal(specialChallenge.campaign.adventures.active.pendingInterruption, null);
+assert.equal(specialChallenge.campaign.adventures.active.currentStageId, 'table_19_14');
+
+let forestAnimal = startAdventure(makeCharacter(), { adventureId: 'forest' }).character;
+forestAnimal = recordAdventureDecision(forestAnimal, { kind: 'player', value: 'lost_in_woods' }).character;
+forestAnimal = completeAdventureStage(forestAnimal).character;
+forestAnimal = resolveAdventureTable(forestAnimal, { roll: 10 }).character;
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.tableId, '19-11');
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.subtable, null);
+forestAnimal = reloadAdventure(forestAnimal);
+forestAnimal = resolveAdventureTable(forestAnimal, { roll: 20 }).character;
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.tableId, '19-11');
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.subtable, 'special');
+forestAnimal = reloadAdventure(forestAnimal);
+forestAnimal = resolveAdventureTable(forestAnimal, { roll: 1, subtable: 'special' }).character;
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.resolved.result, 'Panther');
+assert.equal(forestAnimal.campaign.adventures.active.pendingTable.followUpResults.length, 2);
+assert.throws(() => completeAdventureStage(forestAnimal), /Chapter 7/);
+forestAnimal = beginAdventureCombat(forestAnimal, { chapter18Id: 'panther', attackId: 'claws' }).character;
+forestAnimal = completeAdventureCombat(reloadAdventure(forestAnimal), { result: 'victory' }).character;
+forestAnimal = completeAdventureStage(reloadAdventure(forestAnimal)).character;
+assert.equal(forestAnimal.campaign.adventures.active.currentStageId, 'table_19_16');
+
+let capturedFeud = startAdventure(makeCharacter(), { adventureId: 'feud' }).character;
+capturedFeud = recordAdventureDecision(capturedFeud, { kind: 'player', value: 'punitive_expedition' }).character;
+capturedFeud = completeAdventureStage(capturedFeud).character;
+capturedFeud = resolveAdventureTable(capturedFeud, { roll: 2 }).character;
+capturedFeud = beginAdventureBattle(capturedFeud, {
+  battleType: 'mass_battle',
+  setup: { duration: 0, playerArmySize: 100, enemyArmySize: 50, playerArmyBattle: 12, enemyArmyBattle: 10 }
+}).character;
+capturedFeud.campaign.massBattle.status = 'complete';
+capturedFeud.campaign.massBattle.phase = 'complete';
+capturedFeud.campaign.massBattle.result = { result: 'defeat', source: 'chapter_8' };
+capturedFeud.campaign.captivity = { status: 'active', captor: 'Feuding enemies' };
+capturedFeud = completeAdventureBattleReturn(reloadAdventure(capturedFeud)).character;
+assert.equal(capturedFeud.campaign.adventures.active.pendingInterruption.type, 'captivity');
+assert.throws(() => completeAdventureStage(capturedFeud), /중단 상태/);
+capturedFeud.campaign.captivity.status = 'released';
+capturedFeud = resolveAdventureInterruption(reloadAdventure(capturedFeud), { action: 'continue', note: 'Ransom resolved' }).character;
+capturedFeud = completeAdventureStage(capturedFeud).character;
+assert.equal(capturedFeud.campaign.adventures.active.currentStageId, 'resolution');
 
 assert.throws(() => completeAdventureStage(startAdventure(makeCharacter(), { adventureId: 'jewel' }).character), /기록/);
 
@@ -463,5 +579,16 @@ assert.notEqual(tableCombat.campaign.adventures.active.pendingSubsystem.transact
 
 for (const definition of CHAPTER_19_ADVENTURES) runDefinition(definition);
 for (const definition of CHAPTER_19_LONG_ADVENTURES) runDefinition(definition, { includeOptional: true });
+
+let longCampaign = makeCharacter();
+for (const adventureId of ['hunt', 'adulterous_spouse', 'tournament', 'romance', 'jewel']) {
+  const definition = CHAPTER_19_ADVENTURES.find(item => item.id === adventureId);
+  longCampaign = runDefinition(definition, { character: longCampaign });
+  assert.equal(longCampaign.campaign.adventures.active, null, `${adventureId} closed before the next adventure`);
+}
+const longCampaignHistory = longCampaign.campaign.adventures.history.slice(-5);
+assert.deepEqual(longCampaignHistory.map(item => item.adventureId), ['hunt', 'adulterous_spouse', 'tournament', 'romance', 'jewel']);
+assert.equal(new Set(longCampaignHistory.map(item => item.id)).size, 5);
+assert.ok(longCampaignHistory.every(item => item.status === 'complete' && !item.pendingSubsystem && !item.pendingInterruption));
 
 console.log(`Chapter 19 adventure regression passed: ${CHAPTER_19_ADVENTURES.length} procedures, ${Object.keys(CHAPTER_19_TABLES).length} tables, save/resume and duplicate prevention.`);

@@ -1,11 +1,13 @@
 # Rulebook Page Audit
 
+> **Current Phase 16 verdict:** deterministic implementation gaps are **0** across all 463 PDF pages. The Phase 15 summary immediately below is preserved as historical before-state evidence; the superseding counts and chapter verdicts are in the Phase 16 section at the end of this document and in `FINAL_GAP_CLOSURE_REPORT.md`.
+
 ## 기준
 
 - 권위 원본: paladin_core_rulebook.pdf, 463 PDF pages
-- 재검토일: 2026-08-12 (Chapter 19 Final Completion Pass)
-- 방법: PDF 1쪽부터 463쪽까지 추출 텍스트와 렌더링된 전 페이지 contact sheet를 순서대로 확인했습니다.
-- 판정: 구현은 해당 페이지 절차를 끝까지 실행, 부분은 핵심은 있으나 외부 절차·GM 선택·하위 체계가 남음, 참조는 조회 중심, 미구현은 실제 플레이 절차가 없음, 해당 없음은 표지·백지·도판입니다.
+- 재검토일: 2026-08-12 (Phase 15 full rulebook current-state certification)
+- 방법: PDF 1쪽부터 463쪽까지 본문·표·사이드바·예시·각주·cross-reference·선택 규칙·도판 캡션을 페이지 순서로 다시 읽고, 현재 canonical engine·일반 UI 도달성·저장/재개·runtime consumer와 대조했습니다.
+- 판정: `COMPLETE`, `COMPLETE WITH INTENTIONAL GM/NARRATIVE`, `COMPLETE WITH SOURCE AMBIGUITIES`, `PARTIAL`, `REFERENCE ONLY`, `NOT APPLICABLE`을 구분합니다. GM/서사/원문 모호성은 deterministic implementation gap으로 세지 않습니다.
 - Rule ID 집계가 아닌 페이지 순서 감사이며 표·사이드바·예시·디자이너 노트·선택 규칙·각주·도판 캡션을 함께 확인했습니다.
 
 ## 요약
@@ -13,13 +15,74 @@
 | 상태 | PDF 쪽 수 |
 |---|---:|
 | 해당 없음 | 36 |
-| 참조 | 149 |
-| 부분 | 137 |
-| 구현 | 140 |
-| 구현/참조 | 1 |
-| 미구현 | 0 |
+| 참조 | 116 |
+| 구현 | 36 |
+| 구현/참조 | 143 |
+| 부분 | 132 |
+| **합계** | **463** |
 
-완전한 규칙서 전체와 등가물로 판정하지는 않습니다. 다만 Chapter 3/9의 현재 gameplay dependency는 canonical subsystem으로 완료했고, Chapter 19는 두 장편, 18개 Short Form, 14개 Solo Procedure, 36개 표의 결정 가능한 절차를 종단 실행하며 Chapter 7·8·12·18과 Chapter 3/9 canonical subsystem으로 복귀합니다. Chapter 3/9와 Chapter 19에 남은 것은 원문상 GM/Narrative 판단과 source ambiguity뿐입니다. 저장소 전체 범위에는 Chapter 17 외국 문화 생성과 Hippogriff 원문 내부 충돌 등 별도 장의 잔여 사항이 있습니다.
+`구현/참조` 143쪽은 `COMPLETE WITH INTENTIONAL GM/NARRATIVE` 138쪽과 `COMPLETE WITH SOURCE AMBIGUITIES` 5쪽을 합친 전달용 집계입니다. 아래 463개 과거 행은 감사 이력 보존을 위해 수정하지 않았으며, 현재 상태에는 이 Phase 15 snapshot과 각 superseding audit을 우선 적용합니다.
+
+완전한 규칙서 전체와 등가물로 판정하지 않습니다. 현재 실제 deterministic gap은 **46건(5 Blocker, 40 Major, 1 Minor)**입니다. Chapter 17/18의 완료 판정은 유지되며, Chapter 19 외에도 Chapter 1·2·4·5·6·10·11·13·15에 현재 gap이 있습니다. 상세 등록부와 폐기된 과거 gap 45건은 `FULL_RULEBOOK_GAP_AUDIT.md`가 현재 source of truth입니다.
+
+## Phase 15 Full Rulebook Superseding Snapshot
+
+이 표는 아래의 과거 페이지 행 및 Phase별 요약보다 우선합니다. 한 gap은 독립적으로 닫을 수 있는 canonical runtime consumer 하나이며, 같은 consumer를 공유하는 하위 규칙은 묶었습니다. Chapter 19만 시나리오별로 독립 종료 가능하므로 각각 셌습니다.
+
+| 범위 | 현재 판정 | Actual gap | 현재 근거 / 남은 범위 |
+|---|---|---:|---|
+| Introduction, PDF 15-22 | **COMPLETE** | 0 | 공용 주사위·반올림·시간 resolver |
+| Chapter 1, PDF 26-44 | **PARTIAL** | 1 | 생성은 실행 가능; 공유 가족/다중 Player-knight roster·muster continuity 누락 |
+| Chapter 2, PDF 46-63 | **PARTIAL** | 1 | 723-766 loop 존재; Table 2-2 result 2와 Table 2-3 event chain 불일치 |
+| Chapter 3, PDF 66-82 | **COMPLETE WITH INTENTIONAL GM/NARRATIVE** | 0 | Personality canonical subsystem; Melancholy 기간 source ambiguity 분리 |
+| Chapter 4, PDF 84-94 | **PARTIAL** | 2 | 일부 Glory formula와 Standing gift/threshold consequence 누락 |
+| Chapter 5, PDF 96-106 | **PARTIAL** | 1 | generic roll은 존재; skill-specific deterministic consequence consumer 누락 |
+| Chapter 6, PDF 108-114 | **PARTIAL** | 2 | Feat engine의 UI 도달성과 saveable Travel workflow 누락 |
+| Chapter 7, PDF 116-136 | **COMPLETE WITH INTENTIONAL GM/NARRATIVE** | 0 | Chapter 7 regression PASS |
+| Chapter 8, PDF 138-162 | **COMPLETE WITH INTENTIONAL GM/NARRATIVE** | 0 | Chapter 8 regression PASS |
+| Chapter 9, PDF 164-172 | **COMPLETE WITH INTENTIONAL GM/NARRATIVE** | 0 | Prayer/Miracle/Dream/Relic/Amor canonical subsystem |
+| Chapter 10, PDF 174-182 | **PARTIAL** | 2 | 10-step Winter PASS; survival target와 event downstream hand-off 누락 |
+| Chapter 11, PDF 184-192 | **PARTIAL** | 2 | career state machine과 full ideal benefit/duty 누락 |
+| Chapter 12, PDF 194-210 | **COMPLETE WITH INTENTIONAL GM/NARRATIVE** | 0 | Economy v2 regression PASS |
+| Chapter 13, PDF 214-256 | **PARTIAL** | 2 | 대부분 reference/GM; chivalric combat·siege settlement는 deterministic gap |
+| Chapter 14, PDF 262-283 | **REFERENCE ONLY** | 0 | 지리·정치·장소 설명; mandatory location executor 없음 |
+| Chapter 15, PDF 286-320 | **PARTIAL** | 2 | 연도별 Harvest와 deterministic phase/year custom registry 불완전 |
+| Chapter 16, PDF 322-340 | **REFERENCE ONLY** | 0 | NPC 의도/행동은 GM; stat/combat는 Chapter 18/7이 소비 |
+| Chapter 17, PDF 342-372 | **COMPLETE WITH SOURCE AMBIGUITIES** | 0 | 15 cultures·36 profiles; generic Slav Pony ambiguity |
+| Chapter 18, PDF 374-390 | **COMPLETE WITH SOURCE AMBIGUITIES** | 0 | 74 statblocks·138 attacks; Hippogriff ambiguity |
+| Chapter 19, PDF 392-439 | **PARTIAL** | 31 | 공용 framework는 완료; 2 long·18 short·11 solo의 scenario-specific consumer 누락 |
+| Appendices/sheets/end matter, PDF 440-463 | **REFERENCE ONLY / NOT APPLICABLE** | 0 | 선택 이름·서지·Houses·종이 서식·도판 |
+| **합계** | **PARTIAL** | **46** | **5 Blocker · 40 Major · 1 Minor** |
+
+현재 페이지 범위 분류는 다음과 같습니다. 이 compact range ledger가 아래 역사적 개별 행의 현재 판정을 대체합니다.
+
+| Detailed status | Current PDF ranges | 쪽 수 |
+|---|---|---:|
+| NOT APPLICABLE | 1-2, 23-25, 45, 64-65, 83, 95, 107, 115, 136-137, 163, 173, 183, 193, 211-213, 257-261, 265, 284-285, 319-321, 341, 373, 391, 463 | 36 |
+| REFERENCE ONLY | 3-14, 37-38, 214-228, 230-232, 236-256, 262-264, 266-283, 322-340, 440-462 | 116 |
+| COMPLETE | 15-22, 31-36, 39-40, 42-44, 84-87, 103-106, 108-110, 114, 174-175, 372, 425, 427 | 36 |
+| COMPLETE WITH INTENTIONAL GM/NARRATIVE | 66-79, 81-82, 116-135, 138-162, 164-172, 194-210, 342-369, 371, 374-386, 388-390, 392-394, 432, 435-436 | 138 |
+| COMPLETE WITH SOURCE AMBIGUITIES | 41, 80, 370, 387, 426 | 5 |
+| PARTIAL | 26-30, 46-63, 88-94, 96-102, 111-113, 176-182, 184-192, 229, 233-235, 286-318, 395-424, 428-431, 433-434, 437-439 | 132 |
+
+Final assessment: **PARTIAL**. Intentional GM/narrative decisions are not counted as gaps. **FINAL GAP CLOSURE REQUIRED.**
+
+## Chapter 17 Phase 14 Superseding Audit
+
+아래 판정은 과거 페이지별 기록 중 PDF 342-372의 `참조` 행을 대체합니다. 과거 행은 감사 이력을 위해 유지하며 현재 상태 판단에는 사용하지 않습니다.
+
+| PDF | 인쇄 | 범위 | 현재 구현 여부 | 남은 항목 | 검증 |
+|---:|---:|---|---|---|---|
+| 342-345 | 341-344 | Basques, Bretons | **구현** | 원문상 GM 허가와 비수치 가족·성격 입력 | 5 profiles·Table 17-1·UI 생성 |
+| 345-348 | 344-347 | Britons, Byzantines | **구현** | 정치·사회 맥락의 GM 판단 | 6 profiles·Prayer·mount adapters |
+| 348-351 | 347-350 | Danes, Gascons | **구현** | 문화적 서술 | 5 profiles·Pagan/Christian gate |
+| 352-355 | 351-354 | Huns, Jews | **구현** | 훈족 종교 선택, 유대인 비군사 신분의 GM 맥락 | 4 profiles·무장 금지·UI 종단 |
+| 355-361 | 354-360 | Lombards, Moors/Saracens | **구현** | 원문 역사·종교 용어의 서술 맥락 | 5 profiles·Chapter 7/12/18 |
+| 361-368 | 360-367 | Persians, Romans, Saxons/Frisians | **구현** | 신분과 정치 관계의 GM 판단 | 6 profiles·모든 장비 대안 |
+| 368-371 | 367-370 | Slavs, Visigoths | **구현** | 없음 | 5 profiles; Rouncy와 모든 비마상 경로 실행 |
+| 372 | 371 | Legendary Lands, Table 17-1 | **구현/참조** | generic Slav Pony combat statblock의 원문 누락 | 15행 exact table·Ethiopia/Cathay reference-only |
+
+Chapter 17은 **COMPLETE WITH SOURCE AMBIGUITIES**입니다. Source inventory와 각 문화/장비 profile의 상세 증거는 `CHAPTER17_SOURCE_AUDIT.md`, 실제 UI와 전체 snapshot은 `CHAPTER17_COMPLETION_REPORT.md`에 기록했습니다.
 
 ## Chapter 3 / 9 Current Superseding Audit
 
@@ -40,22 +103,22 @@
 
 상세 procedure, table, save/resume와 Chapter 19 복귀 증거는 `CHAPTER3_9_DEPENDENCY_AUDIT.md`에 기록했습니다.
 
-## Chapter 19 Final Superseding Audit
+## Chapter 19 Phase 13 Superseding Audit
 
-아래 판정은 2026-08-11 전 페이지 기록 중 PDF 392-439의 PARTIAL 행을 대체합니다. 과거 행은 감사 이력을 위해 그대로 두며 현재 상태 판단에는 사용하지 않습니다.
+아래 판정은 2026-08-12의 Chapter 19 `COMPLETE` 판정을 대체합니다. 과거 행과 완료 주장은 감사 이력을 위해 그대로 두며 현재 상태 판단에는 사용하지 않습니다.
 
 | PDF | 인쇄 | 범위 | 현재 구현 여부 | 남은 항목 | 검증 |
 |---:|---:|---|---|---|---|
 | 392-394 | 391-393 | Chapter 19 introduction and Adventure model | **구현** | 원문 GM/Narrative 판단 | 공용 상태 머신·save/resume |
-| 395-400 | 394-399 | The Adventure of the Jewel | **구현** | 원문 GM/Narrative 판단 | UI 완주·Chapter 7/12 복귀 |
-| 401-410 | 400-409 | The Adventure of the Humble Squires | **구현** | 원문 GM/Narrative 판단 | UI 완주·Hunt·Chapter 7/8·서임 |
-| 411-424 | 410-423 | 18 Short Form Scenarios | **구현** | Table 19-7 source ambiguity | 18/18 UI 완료 |
-| 425-427 | 424-426 | Hunt and Tables 19-8 to 19-12 | **구현** | Table 19-11 source ambiguity | Search-to-stop UI 완료 |
-| 428-433 | 427-432 | Challenges through Mallus | **구현** | Table 19-24 source ambiguity | 반복·nested table·stop 완료 |
-| 434-436 | 433-435 | Pilgrimage and Romance | **구현** | 원문 GM/Narrative 판단 | Winter 포함 UI 완료 |
-| 437-439 | 436-438 | Royal Court through Your Manor | **구현** | 원문 GM/Narrative 판단 | 반복·Chapter 7/12 복귀 완료 |
+| 395-400 | 394-399 | The Adventure of the Jewel | **부분** | branch-specific reward/consequence consumers | route와 Chapter 7/12 hand-off는 구현 |
+| 401-410 | 400-409 | The Adventure of the Humble Squires | **부분** | Mount Bitter 세부, capture/loot/reward consumers | Hunt·Chapter 7/8·서임 hand-off는 구현 |
+| 411-424 | 410-423 | 18 Short Form Scenarios | **부분** | 다수 고유 절차가 generic checklist/consequence 입력 | 18개 catalog와 공용 flow는 구현 |
+| 425-427 | 424-426 | Hunt and Tables 19-8 to 19-12 | **구현** | Table 19-11 source ambiguity | Search, Chase, Dead End, nested prey, Chapter 7 return |
+| 428-433 | 427-432 | Challenges through Mallus | **부분** | next-roll modifiers, economy/reputation and judgment consumers | nested tables와 반복 state 일부 구현 |
+| 434-436 | 433-435 | Pilgrimage and Romance | **부분** | Pilgrimage deterministic costs/results | Romance canonical Amor flow는 구현 |
+| 437-439 | 436-438 | Royal Court through Your Manor | **부분** | awards, annual duties and dispute consequences | table selection과 Chapter 7/12 hand-off 일부 구현 |
 
-Chapter 19 페이지 변화는 PARTIAL 42쪽을 구현으로 전환한 것입니다. Table 19-7, 19-11, 19-24의 인쇄 모호성은 구현 누락으로 세지 않고 GM/source record로 보존합니다.
+Table 19-7, 19-11, 19-24의 인쇄 모호성은 구현 누락으로 세지 않고 GM/source record로 보존합니다. 그와 별개로 `CHAPTER19_COMPLETION_REPORT.md`에 나열한 결정적 절차 공백이 남으므로 Chapter 19 전체는 PARTIAL입니다.
 
 ## 전 페이지 기록
 
@@ -527,4 +590,20 @@ Chapter 19 페이지 변화는 PARTIAL 42쪽을 구현으로 전환한 것입니
 
 ## 최종 판정
 
-이번 보완으로 겨울의 결혼·출산·가족 사건, 영원한 젊음·다산·번영 축복, 의미 있는 연대기, 영광·지위 원장, 가문 사건 연대와 후계자 연속성이 강화됐습니다. 그러나 미구현과 핵심 부분 범위 때문에 현재 빌드를 Rulebook 없이 모든 Paladin 절차를 완주 가능한 최종판으로 승인할 수는 없습니다. 앱이 제공하는 캠페인 관리·캐릭터 생성·생애·겨울 경로에서는 불필요한 원문 의존을 제거했고, 제공하지 않는 하위 체계는 완전 구현인 것처럼 표시하지 않습니다.
+Chapter 17의 15개 외국 문화 생성, 종교, 장비, 말, 저장·재개와 기존 엔진 연결을 완료했습니다. 그러나 Chapter 2·4·5·6·10·11·15와 Chapter 19에 확인된 결정적 공백이 있어 현재 빌드를 Rulebook 없이 모든 Paladin 절차를 완주 가능한 최종판으로 승인할 수는 없습니다. 현재 장별 snapshot과 실제 blocker는 `CHAPTER17_COMPLETION_REPORT.md`에 기록했으며, 다음 작업은 특정 장 구현이 아니라 전체 규칙서 gap 재감사여야 합니다.
+## Superseding Phase 16 Current State - 2026-08-12
+
+The Phase 15 page ledger and all older page rows below are preserved as historical evidence. Phase 16 rechecked every one of its 46 Gap IDs against the cited source pages and closed the actual deterministic set.
+
+| Current delivery status | PDF pages |
+|---|---:|
+| Not Applicable | 36 |
+| Reference | 116 |
+| Complete | 36 |
+| Complete / qualified complete | 275 |
+| Partial due to deterministic implementation gap | 0 |
+| **Total** | **463** |
+
+The 132 pages previously folded into `Partial` now have reachable canonical consumers. Qualified completion still preserves intentional GM/player narrative and the nine source-ambiguity clusters; those are not implementation gaps. Current chapter verdicts and all 46 source-to-runtime mappings are recorded in `FINAL_GAP_CLOSURE_REPORT.md`.
+
+Current deterministic counts: **Blocker 0 / Major 0 / Minor 0 / Total 0**.

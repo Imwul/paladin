@@ -563,7 +563,10 @@ const SOLO_TABLE_CONFIG = Object.freeze({
   forest: {
     '19-16': {
       repeat: { mode: 'until_result', results: ['Familiar Area'], label: '20이 나와 익숙한 지역에 도달할 때까지 하루마다 반복' },
-      followUps: [{ results: ['Manor Found'], tableId: '19-17' }]
+      followUps: [
+        { results: ['Wild Animal'], tableId: '19-11' },
+        { results: ['Manor Found'], tableId: '19-17' }
+      ]
     },
     '19-17': { nestedOnly: true }
   },
@@ -691,8 +694,8 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
       { id: 'eingarstein', title: 'Eingarstein', kind: 'gm_decision', sourcePage: 398 },
       { id: 'werewolf', title: 'Sir Eingar at Night', kind: 'subsystem', subsystem: 'combat', sourcePage: 398 },
       { id: 'eingar_fate', title: 'Mercy and Sir Eingar’s Fate', kind: 'player_choice', sourcePage: 399, options: ['spare_and_monastery', 'killed_in_combat', 'captured_for_judgment'] },
-      { id: 'return', title: 'Return to La Roche', kind: 'consequence', sourcePage: 399 },
-      { id: 'aftermath', title: 'Glory and Treasure', kind: 'aftermath', sourcePage: 399 }
+      { id: 'return', title: 'Return to La Roche', kind: 'consequence', sourcePage: 399, requiresCanonicalConsequence: true },
+      { id: 'aftermath', title: 'Glory and Treasure', kind: 'aftermath', sourcePage: 399, requiresCanonicalConsequence: true }
     ]
   },
   {
@@ -712,6 +715,7 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
       { id: 'battle_enemy', title: 'Squire Battle Rounds 1 and 2', kind: 'table', tableId: '19-3', sourcePage: 404, repeat: { mode: 'count', count: 2, label: '전투 1·2라운드의 상대' } },
       { id: 'third_round', title: 'Falseron and Morlant', kind: 'table', tableId: '19-4', sourcePage: 405 },
       { id: 'battle_choices', title: 'Prisoners, Plunder, and Captives', kind: 'player_choice', sourcePage: 405, options: ['free_prisoners', 'plunder', 'capture_pagan'] },
+      { id: 'battle_choice_consequence', title: 'Prisoner, Plunder, or Captive Settlement', kind: 'consequence', sourcePage: 405, requiresCanonicalConsequence: true },
       { id: 'knighting', title: 'The Knighting Ceremony', kind: 'subsystem', subsystem: 'knighthood', sourcePage: 406 },
       { id: 'paladins', title: 'The Order of Paladins', kind: 'narrative', sourcePage: 406 },
       { id: 'mount_bitter', title: 'The Battle of Mount Bitter', kind: 'table', tableId: '19-5', sourcePage: 406, repeat: { mode: 'count', count: 5, sequence: true, label: '원문 1~5라운드 고정 사건' }, optional: true },
@@ -724,7 +728,7 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
       { id: 'floripas_trials', title: 'Princess Floripas’s Three Trials', kind: 'test', sourcePage: 408, tests: ['courtesy', 'dancing', 'eloquence', 'languages', 'playInstruments', 'romance', 'singing'], repeat: { mode: 'count', count: 3, unique: true, label: '각 Player-knight가 고른 서로 다른 세 과업' }, optional: true },
       { id: 'aumont_siege', title: 'Siege of Aumont’s Tower', kind: 'subsystem', subsystem: 'battle', battleType: 'siege', sourcePage: 408, optional: true },
       { id: 'final_duel', title: 'Ogier and Danemont’s Final Duel', kind: 'narrative', sourcePage: 408, optional: true },
-      { id: 'aftermath', title: 'Glory and Conclusion', kind: 'aftermath', sourcePage: 409 }
+      { id: 'aftermath', title: 'Glory and Conclusion', kind: 'aftermath', sourcePage: 409, requiresCanonicalConsequence: true }
     ]
   }
 ]);

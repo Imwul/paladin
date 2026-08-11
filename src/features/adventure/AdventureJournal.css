@@ -590,6 +590,21 @@
   color: var(--color-muted);
 }
 
+.adventure-procedure li .adventure-procedure__resolution {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: minmax(160px, 0.7fr) minmax(220px, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.adventure-procedure__action {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
 .adventure-chase__ending {
   display: grid;
   grid-template-columns: minmax(180px, 1fr) minmax(220px, 2fr) auto;
@@ -712,6 +727,8 @@
   .adventure-procedure li > div {
     grid-column: 1 / -1;
   }
+
+  .adventure-procedure li .adventure-procedure__resolution { grid-template-columns: minmax(0, 1fr) auto; }
 }
 
 @media (max-width: 600px) {
@@ -724,6 +741,9 @@
   .adventure-status {
     grid-template-columns: 1fr;
   }
+
+  .adventure-procedure li .adventure-procedure__resolution,
+  .adventure-procedure__action { grid-template-columns: 1fr; }
 
   .adventure-catalog__groups [role="list"] button:nth-child(odd),
   .adventure-status > div,

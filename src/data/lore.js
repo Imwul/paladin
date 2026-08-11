@@ -2507,10 +2507,10 @@ export const cultures = [
       "men": "Senapo, Agrican, Gradasso, Brunello",
       "women": "Angelica, Clarice"
     },
-    "appearanceKO": "제국의 영역을 아득히 벗어난 머나먼 극동과 아프리카의 존재들입니다. 황금 비단 외투를 걸치고 신비로운 마법 장신구를 두르고 있습니다.",
-    "characterKO": "아득히 먼 미지의 세상에서 온 신비로운 영웅들입니다. 황금을 가볍게 여기며 고도의 신비로운 환술을 부립니다.",
-    "skillsKO": "마법 주문 해제 및 환상 식별(Faerie Lore +10), 외국어 마스터(Languages +10)",
-    "relationsKO": "사라센 세력의 배후 동맹이거나, 신비로운 보석을 지키는 존재들이며, 아스톨프 기사가 히포그리프를 타고 방문하여 우방의 인연을 맺었습니다.",
+    "appearanceKO": "원문은 에티오피아와 카테이를 전설의 땅으로 짧게 소개할 뿐, 플레이어 캐릭터의 외모나 능력치를 제시하지 않습니다.",
+    "characterKO": "Reference only. 원문에 수치화된 Character 규칙이 없습니다.",
+    "skillsKO": "Reference only. 원문에 Skill 값이나 보정이 없습니다.",
+    "relationsKO": "에티오피아는 사라센의 적이며 샤를마뉴가 식량을 원조합니다. 아스톨프는 776년에 세나포의 궁정을 방문합니다. 카테이의 마술사는 775년에 딸과 아들을 샤를마뉴의 궁정으로 보냅니다.",
     "chronology": [
       {
         "year": "775년",
@@ -2521,20 +2521,20 @@ export const cultures = [
         "event": "성기사 아스톨프 경이 아프리카 에티오피아의 세나포 국왕을 아라비아 괴수들의 고난에서 구하고 동맹 구축."
       }
     ],
-    "dailyLifeKO": "황금 성벽이 번쩍이고 공중 정원이 회전하는 장엄한 동방의 대수도 알브라카(Albracca)에서 마법적 번영을 누리며 풍족하게 삽니다.",
-    "warfareKO": "마법과 신비로운 괴수(히포그리프 등), 그리고 온몸을 불사르는 강력한 동방의 마법 방패를 무기로 사용하여 프랑크 기병을 제압합니다.",
-    "equipmentKO": "귀족: 황금 비단 판금 의복 (아머 15), 마법 보석 반지, 투명 비단 안개 베일.\n유목: 동양의 신비로운 마법 곡도, 룬 마법 나팔.",
-    "codeOfHonorKO": "프랑크의 기사도를 모르지만, 기사들의 고결한 맹세에 감복하여 침례를 받고 스스로 성기사단에 자청해 합류하기도 하는 신비로운 명예 규범을 가졌습니다.",
-    "fortificationsKO": "마법의 안개와 투명 주문으로 은폐되어 침입자들의 감각을 교란하는 공중 회전 성채를 소유합니다.",
-    "appearanceEN": "Mysterious figures from far-off lands of Cathay in the East and Ethiopia in the South. They wear garments of gold and silk, and carry exotic magical treasures and jewelry.",
-    "characterEN": "These travelers from unknown realms are fabulously rich and possess strange mystical abilities. In Cathay, they have so much gold that it is worthless to them. The Ethiopians are devout Christians who are deeply loyal to their king, Senapo.",
-    "skillsEN": "The people of these lands are well-versed in magic, illusions, and unique healing arts, and speak exotic foreign languages.",
+    "dailyLifeKO": "에티오피아는 이교도에게 둘러싸인 기독교 섬으로, 카테이는 황금이 무가치할 정도로 부유하고 수도는 알브라카라고 원문이 전합니다.",
+    "warfareKO": "Reference only. 원문에 전투 절차가 없습니다.",
+    "equipmentKO": "Reference only. 원문에 Standard Equipment가 없습니다.",
+    "codeOfHonorKO": "Reference only. 원문에 Honor 또는 기사도 절차가 없습니다.",
+    "fortificationsKO": "Reference only. 원문에 요새 규칙이 없습니다.",
+    "appearanceEN": "Reference only. Chapter 17 gives no player-character appearance or Attribute profile for Ethiopia or Cathay.",
+    "characterEN": "Reference only. No quantified Character rules are printed.",
+    "skillsEN": "Reference only. No Skill values or modifiers are printed.",
     "relationsEN": "The Ethiopians are allies of the Franks against the Saracens. Charlemagne helps them by sending grain, wine, and oil. The British knight, Astolf, visits Ethiopia during his travels in 776. Cathay's powerful magician sends his beautiful daughter and son to Charlemagne's court in 775.",
-    "dailyLifeEN": "Ethiopia is described as a Christian island surrounded by pagans, ruled by Senapo, thought by some to be the legendary Prester John. The capital of Cathay is the fabled, wondrous city of Albracca, ruled by a powerful magician, where wealth and magic flourish.",
-    "warfareEN": "They rely on magic, unique tactics, and legendary creatures such as the Hippogriff, or standard eastern mercenaries, to overwhelm their enemies.",
-    "equipmentEN": "Nobles: Golden silk plate garments (15 points armor), magical gem rings, invisible silk mist veils.\\nNomads: Mystical eastern scimitars, runic magic horns.",
-    "codeOfHonorEN": "They are noble and honorable figures who, though unfamiliar with Frankish chivalry, possess a deep spiritual sense of honor; some may choose to receive baptism and join the Paladins.",
-    "fortificationsEN": "They possess mystical levitating castles, magical abbeys, and ancient cities shielded from intruders by magic and illusion."
+    "dailyLifeEN": "Ethiopia is described as a Christian island surrounded by pagans. Cathay is fabulously rich, and its capital is Albracca, ruled by a powerful magician.",
+    "warfareEN": "Reference only. Chapter 17 provides no warfare procedure.",
+    "equipmentEN": "Reference only. Chapter 17 provides no Standard Equipment for Ethiopia or Cathay.",
+    "codeOfHonorEN": "Reference only. Chapter 17 provides no Honor or knighthood procedure.",
+    "fortificationsEN": "Reference only. Chapter 17 provides no fortification rule."
   }
 ];
 
