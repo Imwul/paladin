@@ -2,14 +2,14 @@
 
 ## Principles
 
-The interface is an open royal manuscript interpreted through modern editorial design. On wide screens the index and current chapter read as facing folios divided by a visible spine; on small screens they become one page and an off-canvas index. Hierarchy comes from type, rules, color, numbering, whitespace and provenance. Rulebook clarity always outranks ornament.
+The interface is a Carolingian royal register interpreted through modern editorial design. Hierarchy comes from type, rules, numbering, whitespace and provenance rather than fantasy borders, rounded cards or decorative texture. Rulebook clarity always outranks ornament.
 
 ## Grid and Rhythm
 
 - Base spacing unit: 8px; compact metadata may use 4px subdivisions.
-- Desktop content: up to 1680px inside the right folio, with a 300px left folio index.
-- Wide desktop (2200px+): 22px root type, up to 2580px right folio, 560px left folio, and 72px page gutters. The complete spread is capped at 3320px for a 3440x1440 primary display.
-- Tablet index: 208px; the decorative spread collapses before labels become unreadable.
+- Desktop content: up to 1460px inside the folio, with a 248px register index.
+- Wide desktop (2200px+): 22px root type, up to 2400px folio, 336px register index, and 64px page gutters.
+- Tablet index: 208px; content grids collapse before labels become unreadable.
 - Mobile: one-column folio, off-canvas index and vertical ledger rows.
 - Fixed-format controls use stable 44px minimum targets and explicit grid tracks.
 - Page sections are ruled bands or open layouts. Cards are reserved for repeated records and dialogs.
@@ -32,16 +32,14 @@ The interface is an open royal manuscript interpreted through modern editorial d
 
 | Token | Value | Use |
 |---|---|---|
-| Parchment | `#f1e5c7` | Main folio |
-| Bright vellum | `#fbf3de` | Header, fields and active records |
-| Aged parchment | `#ddcba6` | Index and quiet bands |
-| Iron-gall ink | `#261b16` | Primary text and rules |
-| Ultramarine | `#174575` | Chapter structure and primary commands |
-| Deep ultramarine | `#0b2d53` | Binding, headers and major bands |
-| Vermilion | `#b13a2f` | Active, warning and historical emphasis |
-| Malachite | `#315f49` | Positive and living state |
-| Gold | `#e0c36b` | Folio rules, register marks and ornament |
-| Focus gold | `#c79b2c` | Keyboard focus only |
+| Paper | `#f3f2ed` | Main folio |
+| Bright paper | `#fbfaf6` | Header and active record |
+| Paper grey | `#e4e3de` | Index and quiet bands |
+| Ink | `#171717` | Primary text and rules |
+| Muted ink | `#73736f` | Metadata |
+| Seal red | `#b7372f` | Active, warning and historical emphasis |
+| Dark red | `#7d201c` | Danger and unresolved actions |
+| Focus blue | `#155b85` | Keyboard focus only |
 
 Color never carries state alone. Every state also has a label, icon, border style or explanatory text.
 
@@ -61,7 +59,7 @@ Color never carries state alone. Every state also has a label, icon, border styl
 ## Interaction States
 
 - Hover changes paper value or underline only.
-- Focus uses a 3px visible gold outline with 3px offset.
+- Focus uses a 3px visible blue outline with 3px offset.
 - Disabled controls remain labelled and retain sufficient contrast.
 - Unresolved records use double dark-red rules plus an explicit explanation.
 - Resolved Winter steps remain readable and cannot be re-applied.
@@ -75,6 +73,6 @@ Color never carries state alone. Every state also has a label, icon, border styl
 - Tables remain tables; long ledgers switch column structure rather than becoming decorative cards.
 - No viewport-scaled font sizes, horizontal document overflow or text/image overlap is permitted.
 
-## Editorial Plates
+## Editorial Plate
 
-The lower index uses a public-domain 1352 manuscript plate of a knightly investiture. The dashboard opens with a CC0 1455 Book of Hours border from the Cleveland Museum of Art. Both are treated as cited archival objects, not atmospheric stock art; no imagery is generated for the interface. See `ATTRIBUTIONS.md`.
+The lower index uses a public-domain 1352 manuscript plate of a knightly investiture. It replaces the former decorative letter seal and is treated as a cited archival object, not atmospheric stock art. See `ATTRIBUTIONS.md`.

@@ -18,7 +18,6 @@
 | 1440 | 0 | 0 |
 | 1920 | 0 | 0 |
 | 2200+ wide breakpoint | 0 | 0 |
-| 3440 | 0 | 0 |
 
 ## Interaction Checks
 
@@ -30,9 +29,6 @@
 - Combat controls have programmatic labels, visible 44px targets, no duplicate IDs and no console warnings or errors.
 - A conscious Major Wound exposes its required Valorous continuation check without displacing the combat ledger; failure, forced re-entry and withdrawal remain keyboard-operable.
 - Current-character display is derived from the lifecycle active character ID. Regression coverage confirms that death or retirement clears the current name and exposes the predecessor separately.
-- The illuminated spread keeps a persistent left folio and a 2590px right folio at 3440x1440, with a visible central binding and no content collision.
-- At 820px and below the spread becomes a single folio; the complete index remains available in the existing `100dvh` off-canvas navigation.
-- Character, Winter, Combat, Adventure, Personality and Reference screens retain zero document overflow after the color and component remaster.
 
 ## Typography and Assets
 
@@ -42,7 +38,6 @@
 - Small English and Latin register labels use title case with no uppercase transform.
 - The family reference list contains eight Lucide shield icons and no broken surrogate-pair glyphs.
 - The public-domain knightly investiture plate loads with a non-zero natural width.
-- The CC0 Book of Hours border loads at 1280px natural width and is cropped responsively without generated or reconstructed imagery.
 
 ## Captures
 
@@ -54,5 +49,3 @@
 - `docs/screenshots/grand-remaster-reference-1024.png`
 - `docs/screenshots/final-combat-360.png`
 - `docs/screenshots/final-combat-1440.png`
-- `docs/screenshots/illuminated-spread-dashboard-3440.jpg`
-- `docs/screenshots/illuminated-spread-dashboard-360.jpg`
