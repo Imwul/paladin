@@ -510,7 +510,7 @@ a:focus-visible,
 .generation-control > svg { min-width: 20px; margin-right: 8px; color: var(--ink-muted); }
 .chronicle-filters button,
 .generation-control button {
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 11px;
   border: 1px solid transparent;
   border-radius: 0;

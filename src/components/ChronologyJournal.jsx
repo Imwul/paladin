@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ProperNoun from './ProperNoun';
 import { chronologyData } from '../data/chronology';
 import { BookOpen, Edit3, Trash2, Save, Calendar, Shield, Heart, Award, AlertTriangle, Users, Compass, Eye, EyeOff, Search } from 'lucide-react';
@@ -114,14 +114,6 @@ export default function ChronologyJournal({ character, setCharacter }) {
     character?.family?.patronSaintRoll ??
     character?.patronSaintRoll ??
     null;
-
-  // Auto-select era based on current campaign year or default
-  useEffect(() => {
-    if (activeEra === 'player') {
-      // Do not override if already in player tab
-      return;
-    }
-  }, [campaignYear]);
 
   // Save manual journal entry
   const saveJournalEntry = (year) => {

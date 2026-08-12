@@ -1690,6 +1690,14 @@ input[type="number"] {
   box-shadow: var(--shadow-medieval);
 }
 
+.ft-toolbar-actions {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .ft-canvas-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -1718,6 +1726,11 @@ input[type="number"] {
 }
 
 @media (max-width: 768px) {
+  .ft-toolbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   .ft-canvas-wrapper {
     padding: 8px;
     overflow-x: hidden;
@@ -2334,10 +2347,83 @@ input[type="number"] {
 }
 
 @media (max-width: 768px) {
+  .ft-toolbar-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .ft-canvas-wrapper {
+    padding: 8px;
+    overflow-x: hidden;
+  }
+
+  .ft-canvas {
+    min-width: 0;
+    padding: 14px 12px;
+  }
+
+  .ft-svg-layer {
+    display: none;
+  }
+
+  .ft-rows-container {
+    gap: 28px;
+  }
+
+  .ft-gen-row {
+    min-width: 0;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .ft-gen-label {
+    width: 100%;
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--color-gold-light);
+    padding-right: 0;
+    padding-bottom: 10px;
+  }
+
+  .ft-gen-label > div:last-child {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .ft-gen-label .btn-medieval {
+    min-height: 44px;
+  }
+
+  .ft-gen-nodes {
+    width: 100%;
+    min-width: 0;
+    flex: none;
+    flex-direction: column;
+    gap: 14px;
+  }
+
   .ft-single-block,
   .ft-marriage-block,
   .ft-card {
     width: 100% !important;
+    min-width: 0;
+    transform: none !important;
+  }
+
+  .ft-marriage-block {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ft-marriage-heart {
+    align-self: center;
+    transform: none !important;
+  }
+
+  .ft-action-btn {
+    width: 44px;
+    height: 44px;
   }
 }
 

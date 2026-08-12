@@ -1,5 +1,7 @@
 # Rulebook Page Audit
 
+> **Current Phase 17 certification verdict (2026-08-12):** deterministic implementation gaps remain **0** and the remediated v1.0 release candidate is **CERTIFIED** with 40/40 gates passing. The initial blocked run is preserved near the end of this document as historical evidence. See `FINAL_RULEBOOK_CERTIFICATION.md`.
+
 > **Current Phase 16 verdict:** deterministic implementation gaps are **0** across all 463 PDF pages. The Phase 15 summary immediately below is preserved as historical before-state evidence; the superseding counts and chapter verdicts are in the Phase 16 section at the end of this document and in `FINAL_GAP_CLOSURE_REPORT.md`.
 
 ## 기준
@@ -607,3 +609,36 @@ The Phase 15 page ledger and all older page rows below are preserved as historic
 The 132 pages previously folded into `Partial` now have reachable canonical consumers. Qualified completion still preserves intentional GM/player narrative and the nine source-ambiguity clusters; those are not implementation gaps. Current chapter verdicts and all 46 source-to-runtime mappings are recorded in `FINAL_GAP_CLOSURE_REPORT.md`.
 
 Current deterministic counts: **Blocker 0 / Major 0 / Minor 0 / Total 0**.
+
+## Phase 17 Release Candidate Certification - 2026-08-12
+
+- Certification baseline: `237c9db32251e0cdb1bfe896937371f69e234534`, schema v12, clean worktree.
+- Page coverage remains: Not Applicable 36 / Reference 116 / Complete 36 / Complete or qualified complete 275 / deterministic Partial 0 / Total 463.
+- The nine source ambiguity clusters remain unchanged and no unsupported value was invented.
+- Full temporary CI, all current chapter regressions, final-gap regression, migration, hostile saves, production build and the 11-year campaign passed.
+- Production-browser certification reproduced `RC-BLOCK-001`: editing a Character Dossier skill number causes focus to move to `BODY` after the state update.
+- The defect does not reopen any rule Gap ID, but it fails desktop keyboard accessibility and repository lint-risk gates.
+- Per the Phase 17 stop policy, the remaining manual UI matrix was not executed and no gameplay source was modified.
+
+Current rule status: **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
+
+Current release status: **PALADIN v1.0 RELEASE CANDIDATE - BLOCKED**.
+
+## Superseding Phase 17 Remediation and Certification Restart - 2026-08-12
+
+The blocked result immediately above is preserved as the first frozen-baseline run. After explicit user authorization, `RC-BLOCK-001` and the remaining React Hook runtime-risk findings were corrected and the complete automated and production-browser gates were rerun.
+
+- Source baseline: `237c9db32251e0cdb1bfe896937371f69e234534` plus authorized uncommitted source patch SHA-256 `3b0182bdaf76364479ce32ae0ccd2dcf1e3abe6e37356c2586482da11448998e`.
+- Page coverage remains: Not Applicable 36 / Reference 116 / Complete 36 / Complete or qualified complete 275 / deterministic Partial 0 / Total 463.
+- Deterministic counts remain: Blocker 0 / Major 0 / Minor 0 / Total 0.
+- Nine source ambiguity clusters remain explicit and unchanged.
+- Full temporary CI, all chapter regressions, migration, hostile saves, production build, and the 11-year campaign pass.
+- Production UI: all 15 routes load; Character skill focus survives updates; Hunt and Combat survive reload at the exact stage/round; responsive 360/375/390/768/1440/1920/3440 checks have 0 horizontal overflow after Family remediation; the mobile Family editor uses readable one-column cards and 44 px action controls; console has 0 errors / 0 warnings.
+- Repository lint is now 129 errors / 0 warnings, all `no-unused-vars` or `no-useless-assignment`; runtime-risk Hook findings are 0.
+- Physical-device, physical screen-reader, and authenticated Firebase multi-client checks remain environment limitations rather than rule gaps.
+
+Current rule status: **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
+
+Current release status: **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**.
+
+The authoritative certification evidence is `FINAL_RULEBOOK_CERTIFICATION.md`. No commit, push, release tag, deployment, or final production release was performed.

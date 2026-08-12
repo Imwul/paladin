@@ -598,10 +598,11 @@ export default function FamilyTree({ character, setCharacter }) {
     fSkipYearsUntil,
     chronicleHistory,
     chroniclePendingRoll,
-    chronicleManualD6,
-    fatherHonorModifier,
-    chronicleBirthGifts
-  ]);
+	    chronicleManualD6,
+	    fatherHonorModifier,
+	    chronicleBirthGifts,
+      setCharacter
+	  ]);
 
 
     const ANCESTOR_EVENTS = {
@@ -4096,18 +4097,14 @@ export default function FamilyTree({ character, setCharacter }) {
   const [fcChoiceSkill, setFcChoiceSkill] = useState('');
   const [fcChoiceValue, setFcChoiceValue] = useState(10);
   const [fcChoiceAttribute, setFcChoiceAttribute] = useState('');
-
-  useEffect(() => {
-    if (fcRoll === 20 && !fcChoiceSkill && character?.skills) {
-      const firstSkill = Object.keys(character.skills)[0] || '';
-      setFcChoiceSkill(firstSkill);
-    }
-  }, [fcRoll, character.skills]);
+  const effectiveFcChoiceSkill = fcChoiceSkill
+    || (fcRoll === 20 ? Object.keys(character?.skills || {})[0] || '' : '');
 
   const treeContainerRef = useRef(null);
   const hasCenteredRef = useRef(false);
   const [lines, setLines] = useState([]);
   const [showRelationLines, setShowRelationLines] = useState(false);
+  const [draggingMemberId, setDraggingMemberId] = useState(null);
   const dragRef = useRef({
     memberId: null,
     startX: 0,
@@ -4145,6 +4142,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
     if (!drag.isDragging && Math.abs(dx) > 3) {
       drag.isDragging = true;
+      setDraggingMemberId(drag.memberId);
     }
 
     if (drag.isDragging) {
@@ -4163,6 +4161,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
   const handleMouseUp = () => {
     dragRef.current = { memberId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0, isDragging: false };
+    setDraggingMemberId(null);
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
   };
@@ -4195,6 +4194,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
     if (!drag.isDragging && Math.abs(dx) > 3) {
       drag.isDragging = true;
+      setDraggingMemberId(drag.memberId);
     }
 
     if (drag.isDragging) {
@@ -4216,6 +4216,7 @@ export default function FamilyTree({ character, setCharacter }) {
     document.removeEventListener('touchmove', handleTouchMove);
     document.removeEventListener('touchend', handleTouchEnd);
     dragRef.current = { memberId: null, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0, isDragging: false };
+    setDraggingMemberId(null);
   };
 
   const handleResetPositions = () => {
@@ -4487,8 +4488,8 @@ export default function FamilyTree({ character, setCharacter }) {
   }, [members, showRelationLines]);
 
   useLayoutEffect(() => {
-    // 1. Calculate lines immediately
-    calculateLines();
+    // Measure after the committed layout so line state is not updated synchronously inside the effect.
+    const animationFrame = requestAnimationFrame(calculateLines);
 
     // 2. Schedule progressive recalculations for animations or font loads
     const timeouts = [50, 150, 300, 600, 1000].map(delay => 
@@ -4531,6 +4532,7 @@ export default function FamilyTree({ character, setCharacter }) {
     }
 
     return () => {
+      cancelAnimationFrame(animationFrame);
       timeouts.forEach(clearTimeout);
       window.removeEventListener('resize', calculateLines);
       if (container) {
@@ -4898,9 +4900,9 @@ export default function FamilyTree({ character, setCharacter }) {
       const memberCharInfo = fcRoll ? {
         roll: Number(fcRoll),
         gender: formGender,
-        desc: getCharacteristicDetails(Number(fcRoll), formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.desc || '',
-        bonusText: getCharacteristicDetails(Number(fcRoll), formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.bonusText || '',
-        choiceSkill: fcChoiceSkill,
+        desc: getCharacteristicDetails(Number(fcRoll), formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.desc || '',
+        bonusText: getCharacteristicDetails(Number(fcRoll), formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.bonusText || '',
+        choiceSkill: effectiveFcChoiceSkill,
         choiceValue: fcChoiceValue,
         choiceAttribute: fcChoiceAttribute
       } : undefined;
@@ -4988,7 +4990,7 @@ export default function FamilyTree({ character, setCharacter }) {
             name: combinedName
           };
           if (fcRoll) {
-            const details = getCharacteristicDetails(Number(fcRoll), formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute);
+            const details = getCharacteristicDetails(Number(fcRoll), formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute);
             nextChar.family.characteristic = {
               gender: formGender,
               roll: Number(fcRoll),
@@ -5415,7 +5417,7 @@ export default function FamilyTree({ character, setCharacter }) {
 
     const positions = character.family?.positions || {};
     const pos = positions[member.id] || { x: 0, y: 0 };
-    const isGrabbing = dragRef.current.memberId === member.id;
+    const isGrabbing = draggingMemberId === member.id;
     const parent = member.parentId ? members.find(m => m.id === member.parentId) : null;
     const spouse = member.spouseId
       ? members.find(m => m.id === member.spouseId)
@@ -5607,7 +5609,7 @@ export default function FamilyTree({ character, setCharacter }) {
             가문원 카드에 마우스를 올리면 관계선 추가, 편집, 삭제가 가능합니다. (본인 {character.personal?.name || '이름 없는 기사'} 중심)
           </p>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div className="ft-toolbar-actions">
           <button
             className={`btn-medieval ${showRelationLines ? 'btn-medieval-primary' : ''}`}
             onClick={() => setShowRelationLines(prev => !prev)}
@@ -6938,13 +6940,13 @@ export default function FamilyTree({ character, setCharacter }) {
                           <div>
                             <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>특징명:</span>
                             <strong style={{ fontSize: '0.8rem', color: 'var(--color-royal-blue)', display: 'block' }}>
-                              {getCharacteristicDetails(fcRoll, formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.desc}
+                              {getCharacteristicDetails(fcRoll, formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.desc}
                             </strong>
                           </div>
                           <div>
                             <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)' }}>효과:</span>
                             <span style={{ fontSize: '0.76rem', color: 'var(--color-gold-dark)', fontWeight: 'bold', display: 'block' }}>
-                              {getCharacteristicDetails(fcRoll, formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.bonusText}
+                              {getCharacteristicDetails(fcRoll, formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute)?.bonusText}
                             </span>
                           </div>
 
@@ -6964,7 +6966,7 @@ export default function FamilyTree({ character, setCharacter }) {
                                   </label>
                                   {fcChoiceAttribute !== 'app' && (
                                     <div style={{ display: 'flex', gap: '4px', marginTop: '2px' }}>
-                                      <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
+                                      <select value={effectiveFcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
                                         <option value="">-- 스킬 선택 --</option>
                                         {Object.keys(character.skills || {}).map(s => (
                                           <option key={s} value={s}>{SKILL_TRANSLATIONS[s] || s}</option>
@@ -6979,7 +6981,7 @@ export default function FamilyTree({ character, setCharacter }) {
                                 </div>
                               ) : (
                                 <div style={{ display: 'flex', gap: '4px' }}>
-                                  <select value={fcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
+                                  <select value={effectiveFcChoiceSkill} onChange={e => setFcChoiceSkill(e.target.value)} style={{ padding: '2px', fontSize: '0.72rem' }}>
                                     <option value="">-- 스킬 선택 --</option>
                                     {Object.keys(character.skills || {}).map(s => (
                                       <option key={s} value={s}>{SKILL_TRANSLATIONS[s] || s}</option>
@@ -7001,7 +7003,7 @@ export default function FamilyTree({ character, setCharacter }) {
                                 type="button"
                                 className="btn-medieval btn-medieval-primary"
                                 style={{ fontSize: '0.72rem', padding: '4px 8px', display: 'flex', alignItems: 'center', gap: '2px', height: '24px' }}
-                                onClick={() => applyFamilyCharacteristicToCharacter(fcRoll, formGender, fcChoiceSkill, fcChoiceValue, fcChoiceAttribute)}
+                                onClick={() => applyFamilyCharacteristicToCharacter(fcRoll, formGender, effectiveFcChoiceSkill, fcChoiceValue, fcChoiceAttribute)}
                               >
                                 <Check size={10} />
                                 시트 반영

@@ -23,6 +23,26 @@ const applyTraitAdjustment = (character, trait, amount, maximum = 20) => {
   character.traits = adjustOpposedTrait(character.traits, trait, amount, maximum);
 };
 
+const SkillRow = ({ skill, value, checked, onValueChange, onCheckedChange }) => (
+  <div className="cs-skill-row">
+    <span className="cs-skill-name">{skill.label}</span>
+    <span className="cs-skill-val">
+      <span className="cs-num-ctrl">
+        <button type="button" className="cs-ctrl-btn" aria-label={`${skill.label} 감소`} onClick={() => onValueChange(Math.max(0, value - 1))}>−</button>
+        <input type="number" aria-label={`${skill.label} 수치`} value={value} onChange={(event) => onValueChange(parseInt(event.target.value) || 0)} />
+        <button type="button" className="cs-ctrl-btn" aria-label={`${skill.label} 증가`} onClick={() => onValueChange(value + 1)}>+</button>
+      </span>
+    </span>
+    <input
+      type="checkbox"
+      className="exp-checkbox"
+      aria-label={`${skill.label} 경험치 체크`}
+      checked={checked}
+      onChange={(event) => onCheckedChange(event.target.checked)}
+    />
+  </div>
+);
+
 const lordOfficerSubclasses = [
   { key: 'Count', name: 'Count (백작)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
   { key: 'Duke', name: 'Duke (공작)', type: 'lord', skills: { courtesy: 2, heraldry: 2, intrigue: 2, battle: 2, sword: 2, spear: 2 }, traits: { modest: -2 }, passions: {}, glory: 400 },
@@ -1862,23 +1882,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
     { key: "commoners", label: "영지 평민단 (Commoners)", base: baseStandings.commoners }
   ];
 
-  // Data arrays are declared at module scope level
-
-  const SkillRow = ({ skill, category = 'skills' }) => (
-    <div className="cs-skill-row">
-      <span className="cs-skill-name">{skill.label}</span>
-      <span className="cs-skill-val">
-        <div className="cs-num-ctrl">
-          <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('skills', skill.key, Math.max(0, (character?.skills?.[skill.key] || 0) - 1))}>−</button>
-          <input type="number" value={character?.skills?.[skill.key] || 0}
-            onChange={e => handleInputChange('skills', skill.key, parseInt(e.target.value) || 0)} />
-          <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('skills', skill.key, (character?.skills?.[skill.key] || 0) + 1)}>+</button>
-        </div>
-      </span>
-      <input type="checkbox" className="exp-checkbox"
-        checked={character?.skillsChecked?.[skill.key] || false}
-        onChange={e => handleInputChange('skillsChecked', skill.key, e.target.checked)} />
-    </div>
+  const renderSkillRow = (skill) => (
+    <SkillRow
+      key={skill.key}
+      skill={skill}
+      value={character?.skills?.[skill.key] || 0}
+      checked={character?.skillsChecked?.[skill.key] || false}
+      onValueChange={(value) => handleInputChange('skills', skill.key, value)}
+      onCheckedChange={(checked) => handleInputChange('skillsChecked', skill.key, checked)}
+    />
   );
 
   // Personal fields are declared at module scope level
@@ -2649,6 +2661,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                 <div className="cs-field" key={f.key}>
                   <span className="cs-field-label">{f.label}:</span>
                   <input type={f.type || 'text'}
+                    aria-label={f.label}
                     value={f.type === 'number' ? (character?.personal?.[f.key] || 0) : (character?.personal?.[f.key] || '')}
                     onChange={e => {
                       const val = e.target.value;
@@ -2693,6 +2706,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <select
+                  aria-label="부친의 신분"
                   value={character?.personal?.fathersClass || ''}
                   onChange={e => handleInputChange('personal', 'fathersClass', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -2725,6 +2739,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <select
+                  aria-label="부친의 생존 상태"
                   value={character?.personal?.fathersSurvival || ''}
                   onChange={e => handleInputChange('personal', 'fathersSurvival', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -2760,6 +2775,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <select
+                  aria-label="자녀 서열"
                   value={character?.personal?.sonNumber || ''}
                   onChange={e => handleInputChange('personal', 'sonNumber', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -2797,6 +2813,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               </div>
               <div style={{ display: 'flex', gap: '8px' }}>
                 <select
+                  aria-label="페이지 교육 기관"
                   value={character?.personal?.pageEducation || ''}
                   onChange={e => handleInputChange('personal', 'pageEducation', e.target.value)}
                   style={{ flex: 1, padding: '6px 10px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.88rem', backgroundColor: '#faf6eb' }}
@@ -2966,6 +2983,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                 <span className="cs-attr-abbr">{attr.abbr}</span>
                 <span className="cs-attr-label">{attr.label}</span>
                 <input type="number" value={character?.attributes?.[attr.key] || 0}
+                  aria-label={`${attr.label} (${attr.abbr})`}
                   onChange={e => handleInputChange('attributes', attr.key, parseInt(e.target.value) || 0)} />
                 <div className="cs-attr-actions">
                   <button type="button" className="cs-attr-btn"
@@ -3008,7 +3026,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
             <div className="cs-hp-panel">
               <div className="cs-hp-main">
                 <span style={{ fontWeight: 700, color: 'var(--color-danger)', fontSize: '0.95rem' }}>HP</span>
-                <input type="number" value={currentHp} max={maxHP}
+                <input type="number" aria-label="현재 체력" value={currentHp} max={maxHP}
                   onChange={e => handleInputChange('attributes', 'currentHp', Math.min(maxHP, parseInt(e.target.value) || 0))} />
                 <span style={{ fontSize: '1.1rem', color: 'var(--color-grey)' }}>/ {maxHP}</span>
               </div>
@@ -3039,12 +3057,12 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
             <div className="cs-glory-row">
               <div className="cs-glory-item">
                 <label>이번 세션</label>
-                <input type="number" value={character?.gear?.gloryThisGame || 0}
+                <input type="number" aria-label="이번 세션 영예" value={character?.gear?.gloryThisGame || 0}
                   onChange={e => handleInputChange('gear', 'gloryThisGame', parseInt(e.target.value) || 0)} />
               </div>
               <div className="cs-glory-item cs-glory-total">
                 <label>누적 총합</label>
-                <input type="number" value={character?.gear?.gloryTotal || 0}
+                <input type="number" aria-label="누적 영예" value={character?.gear?.gloryTotal || 0}
                   onChange={e => handleInputChange('gear', 'gloryTotal', parseInt(e.target.value) || 0)} />
               </div>
             </div>
@@ -3092,6 +3110,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     <div className="cs-num-ctrl mini">
                       <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, Math.max(0, (character?.traits?.[t.key1] || 0) - 1))}>−</button>
                       <input type="number" value={character?.traits?.[t.key1] || 0}
+                        aria-label={`${t.label1} 수치`}
                         min="0" onChange={e => handleTraitChange(t.key1, e.target.value)} />
                       <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key1, (character?.traits?.[t.key1] || 0) + 1)}>+</button>
                     </div>
@@ -3101,6 +3120,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     <div className="cs-num-ctrl mini">
                       <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, Math.max(0, (character?.traits?.[t.key2] || 0) - 1))}>−</button>
                       <input type="number" value={character?.traits?.[t.key2] || 0}
+                        aria-label={`${t.label2} 수치`}
                         min="0" onChange={e => handleTraitChange(t.key2, e.target.value)} />
                       <button type="button" className="cs-ctrl-btn" onClick={() => handleTraitChange(t.key2, (character?.traits?.[t.key2] || 0) + 1)}>+</button>
                     </div>
@@ -3122,6 +3142,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
             {passions.map(p => (
               <div className="cs-passion-row" key={p.key}>
                 <input type="checkbox" className="exp-checkbox"
+                  aria-label={`${p.label} 경험치 체크`}
                   checked={character?.passionsChecked?.[p.key] || false}
                   onChange={e => handleInputChange('passionsChecked', p.key, e.target.checked)} />
                 <span className="cs-passion-name">{p.label}</span>
@@ -3132,6 +3153,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       handleInputChange('passions', p.key, Math.max(0, val - 1));
                     }}>−</button>
                     <input type="number"
+                      aria-label={`${p.label} 수치`}
                       value={character?.passions?.[p.key] !== undefined ? character?.passions?.[p.key] : p.defaultVal}
                       onChange={e => handleInputChange('passions', p.key, parseInt(e.target.value) || 0)} />
                     <button type="button" className="cs-ctrl-btn" onClick={() => {
@@ -3152,6 +3174,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               return (
                 <div className="cs-passion-row" key={key}>
                   <input type="checkbox" className="exp-checkbox"
+                    aria-label={`${label} 경험치 체크`}
                     checked={character?.passionsChecked?.[key] || false}
                     onChange={e => handleInputChange('passionsChecked', key, e.target.checked)} />
                   <span className="cs-passion-name">{label}</span>
@@ -3162,6 +3185,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                         handleInputChange('passions', key, Math.max(0, val - 1));
                       }}>−</button>
                       <input type="number"
+                        aria-label={`${label} 수치`}
                         value={character?.passions?.[key] || 0}
                         onChange={e => handleInputChange('passions', key, parseInt(e.target.value) || 0)} />
                       <button type="button" className="cs-ctrl-btn" onClick={() => {
@@ -3192,6 +3216,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                           handleInputChange('standings', s.key, Math.max(0, val - 1));
                         }}>−</button>
                         <input type="number"
+                          aria-label={`${s.label} 수치`}
                           value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
                           onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
                         <button type="button" className="cs-ctrl-btn" onClick={() => {
@@ -3217,7 +3242,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="sheet-ribbon"><h3>기본 모험 기술</h3></div>
           <div className="cs-section-inner">
             <div className="cs-skill-list">
-              {commonSkills.map(s => <SkillRow key={s.key} skill={s} />)}
+              {commonSkills.map(renderSkillRow)}
             </div>
           </div>
         </section>
@@ -3225,7 +3250,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="sheet-ribbon"><h3>궁정 예법 기술</h3></div>
           <div className="cs-section-inner">
             <div className="cs-skill-list">
-              {courtlySkills.map(s => <SkillRow key={s.key} skill={s} />)}
+              {courtlySkills.map(renderSkillRow)}
             </div>
           </div>
         </section>
@@ -3237,8 +3262,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="sheet-ribbon"><h3>전투 기술</h3></div>
           <div className="cs-section-inner">
             <div className="cs-skill-list">
-              <SkillRow skill={{ key: 'battle', label: '전술 (Battle)' }} />
-              <SkillRow skill={{ key: 'siege', label: '공성 (Siege)' }} />
+              {renderSkillRow({ key: 'battle', label: '전술 (Battle)' })}
+              {renderSkillRow({ key: 'siege', label: '공성 (Siege)' })}
             </div>
           </div>
         </section>
@@ -3246,7 +3271,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="sheet-ribbon"><h3>무기 기술</h3></div>
           <div className="cs-section-inner">
             <div className="cs-skill-list">
-              {weaponSkills.map(s => <SkillRow key={s.key} skill={s} />)}
+              {weaponSkills.map(renderSkillRow)}
             </div>
           </div>
         </section>
@@ -3262,14 +3287,14 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div className="cs-companion-row">
                 <div className="cs-companion-field" style={{ flex: '2 1 140px' }}>
                   <label>이름:</label>
-                  <input type="text" value={character?.squire?.name || ''}
+                  <input type="text" aria-label="종자 이름" value={character?.squire?.name || ''}
                     onChange={e => handleInputChange('squire', 'name', e.target.value)} />
                 </div>
                 <div className="cs-companion-field" style={{ flex: '1 1 80px' }}>
                   <label>나이:</label>
                   <div className="cs-num-ctrl">
                     <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('squire', 'age', Math.max(0, (character?.squire?.age || 0) - 1))}>−</button>
-                    <input type="number" value={character?.squire?.age || 0}
+                    <input type="number" aria-label="종자 나이" value={character?.squire?.age || 0}
                       onChange={e => handleInputChange('squire', 'age', parseInt(e.target.value) || 0)} />
                     <button type="button" className="cs-ctrl-btn" onClick={() => handleInputChange('squire', 'age', (character?.squire?.age || 0) + 1)}>+</button>
                   </div>
@@ -3290,7 +3315,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       const updated = { ...(character?.horses?.warhorse || {}), hp: Math.max(0, (character?.horses?.warhorse?.hp || 0) - 1) };
                       handleInputChange('horses', 'warhorse', updated);
                     }}>−</button>
-                    <input type="number" value={character?.horses?.warhorse?.hp || 0}
+                    <input type="number" aria-label="전투마 체력" value={character?.horses?.warhorse?.hp || 0}
                       onChange={e => {
                         const updated = { ...(character?.horses?.warhorse || {}), hp: parseInt(e.target.value) || 0 };
                         handleInputChange('horses', 'warhorse', updated);
@@ -3308,7 +3333,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       const updated = { ...(character?.horses?.warhorse || {}), armor: Math.max(0, (character?.horses?.warhorse?.armor || 0) - 1) };
                       handleInputChange('horses', 'warhorse', updated);
                     }}>−</button>
-                    <input type="number" value={character?.horses?.warhorse?.armor || 0}
+                    <input type="number" aria-label="전투마 방어" value={character?.horses?.warhorse?.armor || 0}
                       onChange={e => {
                         const updated = { ...(character?.horses?.warhorse || {}), armor: parseInt(e.target.value) || 0 };
                         handleInputChange('horses', 'warhorse', updated);
@@ -3321,7 +3346,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                 </div>
                 <div className="cs-companion-field">
                   <label>피해:</label>
-                  <input type="text" value={character?.horses?.warhorse?.damage || ''}
+                  <input type="text" aria-label="전투마 피해" value={character?.horses?.warhorse?.damage || ''}
                     onChange={e => {
                       const updated = { ...(character?.horses?.warhorse || {}), damage: e.target.value };
                       handleInputChange('horses', 'warhorse', updated);
@@ -3393,7 +3418,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <label style={{ fontSize: '0.88rem', fontWeight: 'bold', color: 'var(--color-ink-light)' }}>소지금 (Cash):</label>
               <div className="cs-num-ctrl" style={{ width: '120px', height: '32px', border: '1px solid var(--color-gold-light)', borderRadius: '4px', backgroundColor: '#fff', display: 'flex', alignItems: 'center', padding: '0 4px', gap: '4px' }}>
                 <button type="button" style={{ width: '24px', height: '24px', borderRadius: '3px', border: 'none', background: 'var(--color-crimson)', color: '#fff', fontSize: '1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }} onClick={() => handleInputChange('gear', 'cash', Math.max(0, (character?.gear?.cash || 0) - 1))}>−</button>
-                <input type="number" value={character?.gear?.cash || 0}
+                <input type="number" aria-label="소지금" value={character?.gear?.cash || 0}
                   onChange={e => handleInputChange('gear', 'cash', parseInt(e.target.value) || 0)}
                   style={{ width: '50px', height: '24px', border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 'bold', fontSize: '1rem', outline: 'none' }}
                 />
@@ -3518,7 +3543,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                 </button>
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <input type="number" value={character?.family?.honor || 0}
+                <input type="number" aria-label="가문 고유 명예" value={character?.family?.honor || 0}
                   onChange={e => handleFamilyChange('honor', parseInt(e.target.value) || 0)} style={{ flex: 1, textAlign: 'center', fontWeight: 'bold' }} />
                 {sheetHonorRollResult && (
                   <span style={{ fontSize: '0.78rem', color: 'var(--color-royal-blue)', fontWeight: 'bold' }}>
@@ -3582,6 +3607,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               {sheetSaintMode === 'select' ? (
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <select
+                    aria-label="수호 성인 선택"
                     style={{ flex: 1, padding: '6px 8px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.85rem' }}
                     value={patronSaints.findIndex(s => s.name === character?.family?.patronSaint)}
                     onChange={e => {
@@ -3687,6 +3713,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               {sheetCharMode === 'select' ? (
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   <select
+                    aria-label="가문 특징 선택"
                     style={{ flex: 1, padding: '6px 8px', borderRadius: '4px', border: '1px solid var(--color-gold-light)', fontSize: '0.85rem' }}
                     value={familyCharacteristics.findIndex(c => c.name === character?.family?.characteristic?.name)}
                     onChange={e => {
@@ -3816,15 +3843,15 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--color-ink)' }}>👑 대제 평판 (Charlemagne):</span>
-                  <input type="number" value={character?.family?.standingCharlemagne || 0} onChange={e => handleFamilyChange('standingCharlemagne', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
+                  <input type="number" aria-label="대제 평판" value={character?.family?.standingCharlemagne || 0} onChange={e => handleFamilyChange('standingCharlemagne', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--color-ink)' }}>⛪ 교회 평판 (Church):</span>
-                  <input type="number" value={character?.family?.standingChurch || 0} onChange={e => handleFamilyChange('standingChurch', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
+                  <input type="number" aria-label="교회 평판" value={character?.family?.standingChurch || 0} onChange={e => handleFamilyChange('standingChurch', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.8rem', color: 'var(--color-ink)' }}>🚜 평민 평판 (Commoners):</span>
-                  <input type="number" value={character?.family?.standingCommoners || 0} onChange={e => handleFamilyChange('standingCommoners', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
+                  <input type="number" aria-label="평민 평판" value={character?.family?.standingCommoners || 0} onChange={e => handleFamilyChange('standingCommoners', parseInt(e.target.value) || 0)} style={{ width: '60px', textAlign: 'center' }} />
                 </div>
               </div>
             </div>
@@ -3882,19 +3909,19 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.78rem' }}>노년 기사:</span>
-                  <input type="number" value={character?.family?.oldKnights || 0} onChange={e => handleFamilyChange('oldKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
+                  <input type="number" aria-label="노년 기사 수" value={character?.family?.oldKnights || 0} onChange={e => handleFamilyChange('oldKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.78rem' }}>장년 기사:</span>
-                  <input type="number" value={character?.family?.middleKnights || 0} onChange={e => handleFamilyChange('middleKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
+                  <input type="number" aria-label="장년 기사 수" value={character?.family?.middleKnights || 0} onChange={e => handleFamilyChange('middleKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.78rem' }}>청년 기사:</span>
-                  <input type="number" value={character?.family?.youngKnights || 0} onChange={e => handleFamilyChange('youngKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
+                  <input type="number" aria-label="청년 기사 수" value={character?.family?.youngKnights || 0} onChange={e => handleFamilyChange('youngKnights', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.78rem' }}>친족 보병:</span>
-                  <input type="number" value={character?.family?.lineageMen || 0} onChange={e => handleFamilyChange('lineageMen', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
+                  <input type="number" aria-label="친족 보병 수" value={character?.family?.lineageMen || 0} onChange={e => handleFamilyChange('lineageMen', parseInt(e.target.value) || 0)} style={{ width: '45px', textAlign: 'center' }} />
                 </div>
               </div>
             </div>

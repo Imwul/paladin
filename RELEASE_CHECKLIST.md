@@ -1,5 +1,9 @@
 # Release Candidate Checklist
 
+> **Current Phase 17 verdict (2026-08-12):** **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**. The initial frozen-baseline run reproduced a keyboard focus blocker; after explicit remediation authorization, that defect and the remaining Hook runtime risks were fixed and all 40 gates passed. The blocked first-run section remains below as historical evidence. `FINAL_RULEBOOK_CERTIFICATION.md` is the current certification record.
+
+> **v1.0.0 packaging:** release metadata is fixed at `1.0.0`; the immutable release identity is the annotated `v1.0.0` tag target. Production target is the existing GitHub Pages workflow at `https://imwul.github.io/paladin/`. See `GOLDEN_MASTER.md`.
+
 > **Current Phase 16 verdict:** **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE** with Blocker 0 / Major 0 / Minor 0. The Phase 15 hold immediately below is retained as historical before-state evidence; the superseding Phase 16 checklist follows it. Final release certification remains a separate phase.
 
 ## 판정
@@ -79,3 +83,73 @@ Final rulebook status: **PARTIAL - FINAL GAP CLOSURE REQUIRED.**
 Current rule status: **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
 
 This is not the final release certification. Remaining release work is the separate `FULL RULEBOOK FINAL CERTIFICATION`, plus the already documented repository lint, physical-device, assistive-technology and live multi-client Firebase evidence checks. See `FINAL_GAP_CLOSURE_REPORT.md`.
+
+## Phase 17 Final Certification Result - 2026-08-12
+
+### Release Decision
+
+- [x] Certification baseline fixed at `237c9db32251e0cdb1bfe896937371f69e234534`.
+- [x] `HEAD`, `main`, and `origin/main` matched before certification.
+- [x] Working tree was clean and schema remained v12.
+- [x] Deterministic rule gaps remain Blocker 0 / Major 0 / Minor 0 / Total 0.
+- [x] Full temporary CI and production build passed.
+- [x] 11-year campaign passed with 0 rulebook consultations.
+- [x] Repository lint reproduced the Phase 16 baseline: 135 errors / 3 warnings.
+- [ ] Desktop keyboard interaction gate: **FAIL**.
+- [ ] Accessibility automated-evidence gate: **FAIL**.
+- [ ] Repository lint-risk gate: **FAIL**.
+- [ ] v1.0 release candidate certification: **BLOCKED**.
+
+### Blocking Defect
+
+`RC-BLOCK-001`: Character Dossier skill inputs lose focus after a value update because `SkillRow` is created inside the `CharacterSheet` render. The production-build browser run observed the edited value apply once and `document.activeElement` immediately become `BODY`. This matches two `react-hooks/static-components` errors and makes continuous keyboard editing unreliable.
+
+### Gate Summary
+
+- PASS: 16
+- FAIL: 3
+- NOT TESTED after mandatory stop: 21
+- Physical device, screen reader and live Firebase multi-client behavior remain `NOT TESTED - ENVIRONMENT UNAVAILABLE`.
+- No release tag, Golden Master or final production release may be created from this baseline.
+
+Rule coverage remains **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
+
+Release status is **PALADIN v1.0 RELEASE CANDIDATE - BLOCKED**.
+
+## Superseding Phase 17 Remediation and Certification Restart - 2026-08-12
+
+The blocked first-run result above remains as historical evidence. After explicit authorization to fix the reproduced defect carefully, certification restarted against source commit `237c9db32251e0cdb1bfe896937371f69e234534`. The final pre-tag source patch SHA-256 is `3b0182bdaf76364479ce32ae0ccd2dcf1e3abe6e37356c2586482da11448998e`; it supersedes the earlier Phase 17 identity after the mobile Family editor cascade correction.
+
+### Release Decision
+
+- [x] `RC-BLOCK-001` fixed and production keyboard focus retest passed.
+- [x] Remaining React Hook runtime-risk lint findings fixed; Hook errors/warnings are 0.
+- [x] Character Dossier repeated controls receive contextual accessible names.
+- [x] Family mobile toolbar overflow fixed; generation controls meet 44 px touch height.
+- [x] Family mobile editor generation rows remain single-column at 360-390 px; member cards retain readable width, saved desktop drag offsets are neutralized, and action controls are 44 px.
+- [x] Full temporary CI passes after all remediation.
+- [x] Deterministic gaps remain Blocker 0 / Major 0 / Minor 0 / Total 0.
+- [x] 11-year campaign passes with one successor year and 0 rulebook consultations.
+- [x] Migration through schema v12, hostile saves, save/reload, and duplicate prevention pass.
+- [x] Production build passes with the unchanged >500 kB main-chunk warning.
+- [x] All 15 production routes load with actual content.
+- [x] Hunt resumes at the exact pending stage after reload.
+- [x] Chapter 7 combat resumes at Round 1 with the same opponent after reload.
+- [x] 360 / 375 / 768 / 1440 / 1920 / 3440 production responsive checks pass with 0 horizontal overflow on the tested core views.
+- [x] Production browser console: 0 errors / 0 warnings.
+- [x] Repository lint classified: 129 quality-only errors / 0 warnings / 0 runtime-risk Hook findings.
+- [x] v1.0 release candidate certification: **CERTIFIED**.
+
+### Remaining Non-Blocking Evidence Limits
+
+- [ ] Physical phone/tablet session: `NOT TESTED - ENVIRONMENT UNAVAILABLE`.
+- [ ] Physical screen-reader session: `NOT TESTED - ENVIRONMENT UNAVAILABLE`.
+- [ ] Authenticated Firebase multi-client conflict session: `NOT TESTED - ENVIRONMENT UNAVAILABLE`.
+- [ ] Repository quality-only lint debt: 66 unused values and 63 useless assignments.
+- [ ] Main chunk remains 696.01 kB / gzip 212.32 kB and triggers the existing build warning.
+
+Current rule status: **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
+
+Current release status: **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**.
+
+Certification does not create a release tag, Golden Master, deployment, or final production release. See `FINAL_RULEBOOK_CERTIFICATION.md` for all 40 gates and evidence limitations.
