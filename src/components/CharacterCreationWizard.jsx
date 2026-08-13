@@ -47,6 +47,7 @@ import {
   updateCharacterCreationChoice
 } from '../rules';
 import { t } from '../i18n';
+import RulebookButton from '../features/rulebook/RulebookButton';
 import './CharacterCreationWizard.css';
 
 const ATTRIBUTE_LABELS = { siz: 'SIZ', dex: 'DEX', str: 'STR', con: 'CON', app: 'APP' };
@@ -89,6 +90,7 @@ function RuleDisclosure({ step, session }) {
         <span><strong>Rule ID</strong> {foreign ? `${step.ruleIds.join(', ')} · CH17-GM-BOUNDARY` : step.ruleIds.join(', ')}</span>
         <span><strong>페이지</strong> {foreign ? `${step.pages} · ${culture.sourcePage}` : step.pages}</span>
         <span><strong>현재 보정</strong> {modifiers.length ? `${modifiers.length}건 기록됨` : '이 단계에서 적용된 보정 없음'}</span>
+        <RulebookButton sourcePage={step.pages} reason={step.title} label="이 단계 원문" />
       </div>
     </details>
   );

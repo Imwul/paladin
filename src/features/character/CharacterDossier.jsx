@@ -3,6 +3,7 @@ import { FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/Led
 import LifecyclePanel from '../../components/LifecyclePanel';
 import CharacterSheet from '../../components/CharacterSheet';
 import { getActiveCharacterIdentity } from '../../rules/lifecycleRules';
+import RulebookButton from '../rulebook/RulebookButton';
 
 const lifecycleTone = status => ['deceased', 'retired'].includes(status) ? 'danger' : ['incapacitated', 'bedridden'].includes(status) ? 'warning' : 'active';
 
@@ -24,10 +25,10 @@ export default function CharacterDossier({ character, setCharacter, initialChara
         <div><Sparkles size={15} aria-hidden="true" /><span>누적 영광</span><strong>{(character.gear?.gloryTotal || 0).toLocaleString()}</strong></div>
       </section>
 
-      <SectionHeader index="I" title="생애와 계승" meta="Lifecycle · Salvation · Legacy" />
+      <SectionHeader index="I" title="생애와 계승" meta="Lifecycle · Salvation · Legacy" action={<RulebookButton page={40} reason="Lifecycle and inheritance" />} />
       <LifecyclePanel character={character} setCharacter={setCharacter} />
 
-      <SectionHeader index="II" title="기사 원부" meta="Attributes · Traits · Skills · Passions" />
+      <SectionHeader index="II" title="기사 원부" meta="Attributes · Traits · Skills · Passions" action={<RulebookButton page={31} reason="Character records" />} />
       <div className="legacy-surface legacy-surface--character">
         <CharacterSheet character={character} setCharacter={setCharacter} initialCharacterState={initialCharacterState} />
       </div>

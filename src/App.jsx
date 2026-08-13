@@ -7,6 +7,7 @@ import { getFirebaseServices } from './firebase';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import { createEconomyState, toDeniers } from './rules/economyRules';
 import { createPersonalityMagicState } from './rules/personalityMagicRules';
+import { RulebookProvider } from './features/rulebook/RulebookContext';
 import './components/SettingsModal.css';
 import './styles/remaster.css';
 
@@ -25,6 +26,7 @@ const LoreEncyclopedia = lazy(() => import('./components/LoreEncyclopedia'));
 const SettingsModal = lazy(() => import('./components/SettingsModal'));
 const StandingLedger = lazy(() => import('./features/ledgers/ReputationLedgers').then(module => ({ default: module.StandingLedger })));
 const GloryLedger = lazy(() => import('./features/ledgers/ReputationLedgers').then(module => ({ default: module.GloryLedger })));
+const RulebookReader = lazy(() => import('./features/rulebook/RulebookReader'));
 
 // Initial state template representing the full blank Knight Character Sheet & Linage
 const initialCharacterState = {
@@ -431,52 +433,55 @@ export default function App() {
     }
     if (activeTab === 'oracles') return <SoloOracles character={character} setCharacter={setCharacter} />;
     if (activeTab === 'reference') return <LoreEncyclopedia />;
+    if (activeTab === 'rulebook') return <RulebookReader />;
     return <Dashboard character={character} setActiveTab={setActiveTab} />;
   };
 
   return (
-    <AppShell
-      activeTab={activeTab}
-      character={character}
-      cloudState={cloudState}
-      cloudActions={{
-        canLogin: firebaseStatus === 'CONFIGURED_OFFLINE',
-        isLoggedIn: firebaseStatus === 'LOGGED_IN',
-        onLogin: handleGoogleLogin,
-        onLogout: handleLogout,
-        onSave: handleCloudSave,
-        onLoad: handleCloudLoad
-      }}
-      onNavigate={setActiveTab}
-      onOpenSettings={() => setIsSettingsOpen(true)}
-    >
-      <Suspense fallback={<LoadingState />}>
-        {renderActiveScreen()}
-      </Suspense>
+    <RulebookProvider activeView={activeTab} onNavigate={setActiveTab}>
+      <AppShell
+        activeTab={activeTab}
+        character={character}
+        cloudState={cloudState}
+        cloudActions={{
+          canLogin: firebaseStatus === 'CONFIGURED_OFFLINE',
+          isLoggedIn: firebaseStatus === 'LOGGED_IN',
+          onLogin: handleGoogleLogin,
+          onLogout: handleLogout,
+          onSave: handleCloudSave,
+          onLoad: handleCloudLoad
+        }}
+        onNavigate={setActiveTab}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      >
+        <Suspense fallback={<LoadingState />}>
+          {renderActiveScreen()}
+        </Suspense>
 
-      <Suspense fallback={null}>
-        <SettingsModal
-          isOpen={isSettingsOpen}
-          onClose={() => setIsSettingsOpen(false)}
-          character={character}
-          setCharacter={setCharacter}
-          firebaseStatus={firebaseStatus}
+        <Suspense fallback={null}>
+          <SettingsModal
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            character={character}
+            setCharacter={setCharacter}
+            firebaseStatus={firebaseStatus}
+          />
+        </Suspense>
+
+        <SaveConflictDialog
+          conflict={saveConflict}
+          onClose={() => setSaveConflict(null)}
+          onKeepLocal={() => {
+            setSaveConflict(null);
+            setSaveActivity('saved');
+          }}
+          onUseCloud={() => {
+            setCharacter(saveConflict.cloud);
+            setSaveConflict(null);
+            setSaveActivity('saved');
+          }}
         />
-      </Suspense>
-
-      <SaveConflictDialog
-        conflict={saveConflict}
-        onClose={() => setSaveConflict(null)}
-        onKeepLocal={() => {
-          setSaveConflict(null);
-          setSaveActivity('saved');
-        }}
-        onUseCloud={() => {
-          setCharacter(saveConflict.cloud);
-          setSaveConflict(null);
-          setSaveActivity('saved');
-        }}
-      />
-    </AppShell>
+      </AppShell>
+    </RulebookProvider>
   );
 }

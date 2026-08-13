@@ -54,6 +54,7 @@ import {
   triggerMadness
 } from '../../rules/personalityMagicRules';
 import { completeAdventurePersonalityMagic } from '../../rules/adventureRules';
+import RulebookButton from '../rulebook/RulebookButton';
 import './PersonalityMagicPanel.css';
 
 const PASSION_LABELS = {
@@ -112,7 +113,7 @@ const passionOptions = character => Object.keys(character.passions || {});
 function RuntimeSection({ icon: Icon, title, source, children, open = false }) {
   return <details className="personality-section" open={open}>
     <summary><Icon size={19} aria-hidden="true" /><span>{title}</span><small>{source}</small></summary>
-    <div className="personality-section__body">{children}</div>
+    <div className="personality-section__body"><RulebookButton sourcePage={source} reason={title} label="이 절차 원문" />{children}</div>
   </details>;
 }
 

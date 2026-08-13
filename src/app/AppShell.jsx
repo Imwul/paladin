@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   Award,
   BookOpen,
+  BookOpenText,
   BookText,
   CalendarDays,
   ChevronRight,
@@ -29,6 +30,7 @@ import {
 import { getCampaignPhase } from '../rules/campaignRules';
 import { getActiveCharacterIdentity } from '../rules/lifecycleRules';
 import knightInvestiture from '../assets/knight-investiture.jpg';
+import RulebookButton from '../features/rulebook/RulebookButton';
 
 export const NAV_ITEMS = [
   { id: 'dashboard', label: '표지', meta: 'Index', icon: BookOpen },
@@ -45,7 +47,8 @@ export const NAV_ITEMS = [
   { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
   { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
   { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
-  { id: 'reference', label: '참조', meta: 'Reference', icon: BookText }
+  { id: 'reference', label: '참조', meta: 'Reference', icon: BookText },
+  { id: 'rulebook', label: '개인 룰북', meta: 'Personal Rulebook', icon: BookOpenText }
 ];
 
 const getLifecycleLabel = (status) => ({
@@ -239,7 +242,9 @@ export default function AppShell({
 
         <main id="main-content" className="folio-main" tabIndex="-1">
           <div className="folio-breadcrumb" aria-label="현재 위치">
-            <span lang="la">Palatinum</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong><span lang="en">{activeItem.meta}</span>
+            <span lang="la">Palatinum</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong>
+            <RulebookButton reason={activeItem.meta} label="현재 원문" />
+            <span lang="en">{activeItem.meta}</span>
           </div>
           {children}
         </main>

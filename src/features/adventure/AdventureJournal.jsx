@@ -17,6 +17,7 @@ import {
   UsersRound
 } from 'lucide-react';
 import { FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import RulebookButton from '../rulebook/RulebookButton';
 import {
   CHAPTER_19_LONG_ADVENTURES,
   CHAPTER_19_OVERVIEWS,
@@ -172,7 +173,7 @@ const TableWorkspace = ({ tableId, subtable = null, resolved, onResolve }) => {
   const matches = roll === '' ? [] : rows.map((item, index) => ({ item, index })).filter(({ item }) => numericRoll >= item.min && numericRoll <= item.max);
   const ambiguous = matches.length > 1;
   return <section className="adventure-table-workspace">
-    <header><div><span className="serial-label">Table {tableId}{subtable ? ` · ${subtable}` : ''}</span><h3 lang="en">{table.title}</h3></div><code>p.{table.sourcePage}</code></header>
+    <header><div><span className="serial-label">Table {tableId}{subtable ? ` · ${subtable}` : ''}</span><h3 lang="en">{table.title}</h3></div><RulebookButton page={table.sourcePage} reason={`Table ${tableId}`} label={`p.${table.sourcePage}`} /></header>
     <div className="adventure-table-scroll"><table><thead><tr><th>범위</th><th>결과</th><th>효과·자료</th></tr></thead><tbody>{rows.map((item, index) => <tr key={`${item.min}:${item.max}:${index}`} className={resolved?.min === item.min && resolved?.max === item.max ? 'selected' : ''}><td>{item.min === item.max ? item.min : `${item.min}-${item.max}`}</td><td>{item.result}</td><td>{item.effect || [item.skill, item.damage, item.test].filter(Boolean).join(' · ') || '원문 결과 참조'}</td></tr>)}</tbody></table></div>
     {!resolved ? <div className="adventure-table-controls"><Field label={selectable ? '결과 행 값' : table.die}><input type="number" value={roll} onChange={event => { setRoll(event.target.value); setRowIndex(''); }} /></Field>{ambiguous && <fieldset className="adventure-table-ambiguity"><legend>원문 범위 중복 · GM 확정</legend>{matches.map(({ item, index }) => <label key={index}><input type="radio" name={`${tableId}-${subtable || 'root'}-row`} checked={Number(rowIndex) === index && rowIndex !== ''} onChange={() => setRowIndex(String(index))} /><span>{item.min}-{item.max} · {item.result}</span></label>)}</fieldset>}<button type="button" className="secondary-command" disabled={roll === '' || (ambiguous && rowIndex === '')} onClick={() => onResolve({ roll: numericRoll, subtable, rowIndex: rowIndex === '' ? undefined : Number(rowIndex) })}><Dices size={17} aria-hidden="true" />결과 확정</button></div> : <div className="adventure-resolved"><Check size={17} aria-hidden="true" /><div><strong>{resolved.roll} · {resolved.result}</strong><p>{resolved.effect || '표 결과가 현재 모험 저장에 고정되었습니다.'}</p></div></div>}
   </section>;
@@ -503,7 +504,7 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
     <div className="adventure-runtime">
       <StageRail definition={definition} active={active} />
       <div className="adventure-scene">
-        <header><div><span className="serial-label">{KIND_LABELS[stage.kind]} · p.{stage.sourcePage}</span><h2 lang="en">{stage.title}</h2></div><BookOpenCheck size={24} aria-hidden="true" /></header>
+        <header><div><span className="serial-label">{KIND_LABELS[stage.kind]} · p.{stage.sourcePage}</span><h2 lang="en">{stage.title}</h2></div><RulebookButton page={stage.sourcePage} reason={stage.title} label="장면 원문" /></header>
         <p className="adventure-source-note">{stageNote}</p>
         {repeatStatus && <div className="adventure-repeat-status"><RotateCcw size={17} aria-hidden="true" /><div><strong>{repeatStatus.label}</strong><span>{repeatStatus.target ? `${repeatStatus.completed} / ${repeatStatus.target}` : `${repeatStatus.completed}회 완료`}</span>{repeatStatus.sourceAmbiguity && <small>Source ambiguity · {repeatStatus.sourceAmbiguity}</small>}</div></div>}
 

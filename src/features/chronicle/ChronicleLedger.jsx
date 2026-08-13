@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Filter, ScrollText } from 'lucide-react';
 import { EmptyState, FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import RulebookButton from '../rulebook/RulebookButton';
 
 const FILTERS = [
   ['all', '전체'],
@@ -62,7 +63,7 @@ export default function ChronicleLedger({ character }) {
         기사와 가문의 사건을 연도, 규칙, 결과에 따라 보존합니다.
       </FolioHeading>
 
-      <SectionHeader index="I" title="사건 색인" meta={`${visibleEvents.length} Entries`} />
+      <SectionHeader index="I" title="사건 색인" meta={`${visibleEvents.length} Entries`} action={<RulebookButton page={285} query={String(character.personal?.campaignYear || 767)} reason="Chapter 15 · Current Year" label="현재 연도 원문" />} />
       <div className="chronicle-filters" role="group" aria-label="연대기 필터">
         <Filter size={15} aria-hidden="true" />
         {FILTERS.map(([id, label]) => (

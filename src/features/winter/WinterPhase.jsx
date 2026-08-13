@@ -24,6 +24,7 @@ import {
   WINTER_STEPS
 } from '../../rules';
 import { CompleteMark, FolioHeading, LedgerRow, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import RulebookButton from '../rulebook/RulebookButton';
 
 const GROUP_LABELS = {
   attributes: '능력치',
@@ -48,7 +49,7 @@ function SourceReference({ step }) {
       <div>
         <span>{step.sourcePage}</span>
         <p>{step.summary}</p>
-        <small>원문 전체를 복제하지 않고, 이 단계에서 사용하는 계산과 미결 상태만 표시합니다.</small>
+        <RulebookButton sourcePage={step.sourcePage} reason={`${step.label} · ${step.ruleId}`} label="이 단계 원문" />
       </div>
     </details>
   );

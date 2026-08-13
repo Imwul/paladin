@@ -358,6 +358,23 @@ a:focus-visible,
 .folio-breadcrumb strong { color: var(--ink); }
 .folio-breadcrumb span:last-child { margin-left: auto; }
 
+.rulebook-context-button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 1px solid var(--rule-dark);
+  background: var(--paper-bright);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.folio-breadcrumb .rulebook-context-button { margin-left: auto; }
+.folio-breadcrumb .rulebook-context-button + span { margin-left: 0; }
+
 .folio-page,
 .cs-page,
 .journal-container,
@@ -877,6 +894,7 @@ a:focus-visible,
   .campaign-strip span { min-width: 0; min-height: 32px; overflow: hidden; padding-inline: 8px; font-size: var(--text-micro); text-overflow: ellipsis; }
   .campaign-strip span:nth-child(4) { padding-left: 8px; border-left: 0; }
   .folio-breadcrumb { padding-inline: 14px; }
+  .folio-breadcrumb .rulebook-context-button span { display: none; }
   .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container, .rulebook-procedures { padding: 18px 14px 28px; }
   .procedure-source-list, .procedure-form-row, .procedure-journey { grid-template-columns: 1fr; }
   .procedure-career-actions { grid-template-columns: 1fr; }

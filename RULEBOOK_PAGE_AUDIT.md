@@ -634,6 +634,17 @@ The blocked result immediately above is preserved as the first frozen-baseline r
 - Nine source ambiguity clusters remain explicit and unchanged.
 - Full temporary CI, all chapter regressions, migration, hostile saves, production build, and the 11-year campaign pass.
 - Production UI: all 15 routes load; Character skill focus survives updates; Hunt and Combat survive reload at the exact stage/round; responsive 360/375/390/768/1440/1920/3440 checks have 0 horizontal overflow after Family remediation; the mobile Family editor uses readable one-column cards and 44 px action controls; console has 0 errors / 0 warnings.
+
+## Superseding v1.1 Personal Rulebook Transplant Evidence - 2026-08-13
+
+- 463/463 PDF pages are available through the lazy Personal Rulebook reader, with exact physical-page facsimile fallback.
+- All 22 source groups, 163 tables, 210 Rule blocks, 152 Procedure blocks and nine source-ambiguity clusters pass the transplant regression.
+- Production-browser certification passes 37/37 gates, including contextual links, search, tables, personal library persistence and read-only campaign behavior.
+- Responsive reader evidence passes at 360, 390, 768, 1440, 1920 and 3440 px with zero horizontal overflow.
+- Representative normal play required zero deterministic consultations of the external PDF.
+- Full v1.0 gameplay CI, schema-v12 migration, hostile saves/idempotency and the 11-year campaign remain PASS.
+
+Current transplant status: **PALADIN PERSONAL RULEBOOK TRANSPLANT COMPLETE**. See `PERSONAL_RULEBOOK_BROWSER_CERTIFICATION.md`.
 - Repository lint is now 129 errors / 0 warnings, all `no-unused-vars` or `no-useless-assignment`; runtime-risk Hook findings are 0.
 - Physical-device, physical screen-reader, and authenticated Firebase multi-client checks remain environment limitations rather than rule gaps.
 

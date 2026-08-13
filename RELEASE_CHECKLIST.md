@@ -1,5 +1,7 @@
 # Release Candidate Checklist
 
+> **v1.1 Personal Rulebook (2026-08-13):** `feature/v1.1-personal-rulebook-transplant` preserves the v1.0.0 Golden Master and adds the 463-page integrated reader. Campaign schema remains v12. Source coverage, 163-table indexing, full CI, hostile saves, the 11-year campaign and all 37 production-browser gates pass. Current status: **PALADIN PERSONAL RULEBOOK TRANSPLANT COMPLETE**. See `PERSONAL_RULEBOOK_BROWSER_CERTIFICATION.md`.
+
 > **Current Phase 17 verdict (2026-08-12):** **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**. The initial frozen-baseline run reproduced a keyboard focus blocker; after explicit remediation authorization, that defect and the remaining Hook runtime risks were fixed and all 40 gates passed. The blocked first-run section remains below as historical evidence. `FINAL_RULEBOOK_CERTIFICATION.md` is the current certification record.
 
 > **v1.0.0 packaging:** release metadata is fixed at `1.0.0`; the immutable release identity is the annotated `v1.0.0` tag target. Production target is the existing GitHub Pages workflow at `https://imwul.github.io/paladin/`. See `GOLDEN_MASTER.md`.
@@ -153,3 +155,23 @@ Current rule status: **PALADIN DETERMINISTIC RULEBOOK COVERAGE COMPLETE**.
 Current release status: **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**.
 
 Certification does not create a release tag, Golden Master, deployment, or final production release. See `FINAL_RULEBOOK_CERTIFICATION.md` for all 40 gates and evidence limitations.
+
+## v1.1 Personal Rulebook Transplant - 2026-08-13
+
+- [x] 463/463 source pages, 22 groups, 163 tables, 210 Rule blocks and 152 Procedure blocks are transplanted.
+- [x] Nine certified source ambiguities remain explicit and non-inventive.
+- [x] Reader, full-text search, Table Library, contextual source drawer and PDF facsimile fallback pass in the production build.
+- [x] Bookmarks, recent history, personal notes and separately labeled House Rule notes persist outside campaign storage.
+- [x] Production-browser certification passes 37/37 gates.
+- [x] 360/390/768/1440/1920/3440 reader checks have 0 horizontal overflow; audited 360px critical controls meet 44px.
+- [x] Keyboard focus trap, semantic names and browser console gates pass.
+- [x] Full temporary CI, migration, hostile saves/idempotency and the 11-year campaign pass after browser remediation.
+- [x] Deterministic rulebook consultation count remains 0.
+- [x] Schema remains v12 and the v1.0.0 Golden Master tag remains unchanged.
+- [ ] Physical device, physical screen-reader and authenticated Firebase multi-client sessions remain `NOT TESTED - ENVIRONMENT UNAVAILABLE`.
+- [ ] Existing quality-only repository lint debt remains 129 errors / 0 warnings.
+- [ ] Existing main-chunk warning remains: 700.56 kB / gzip 213.38 kB.
+
+Current v1.1 status: **PALADIN PERSONAL RULEBOOK TRANSPLANT COMPLETE**.
+
+Evidence: `PERSONAL_RULEBOOK_BROWSER_CERTIFICATION.md`.

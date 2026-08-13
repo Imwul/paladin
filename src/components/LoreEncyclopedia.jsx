@@ -3,6 +3,7 @@ import { greatFamilies, soloScenarios, bestiary, bibliography, npcs, paladins, c
 import { Shield, Book, Compass, Search, ChevronRight, HelpCircle, Award, Globe, Skull, Sparkles, Shuffle, RefreshCw, Scale, Crown, Home, Sword, Library } from 'lucide-react';
 import { frankishMalePrefixes, frankishMaleSuffixes, frankishFemalePrefixes, frankishFemaleSuffixes, nameEquivalents } from '../data/names';
 import { getChapter17Culture } from '../rules/chapter17Rules';
+import RulebookButton from '../features/rulebook/RulebookButton';
 
 import europe768Map from '../assets/europe_768.jpg';
 import ardennesMap from '../assets/ardennes.jpg';
@@ -200,6 +201,17 @@ export default function LoreEncyclopedia() {
   const selectedCanonicalCulture = selectedCulture?.key === 'legendary'
     ? null
     : getChapter17Culture(CULTURE_REGISTRY_IDS[selectedCulture?.key] || selectedCulture?.key);
+  const rulebookReference = {
+    families: { page: 213, query: selectedFamily?.nameEN || selectedFamily?.nameKO, reason: 'Chapter 13 · Great Families' },
+    scenarios: { page: 391, query: selectedScenario?.nameEN || selectedScenario?.nameKO, reason: 'Chapter 19 · Adventures' },
+    gazetteer: { page: 261, query: selectedTerritory?.nameEN || '', reason: 'Chapter 14 · Frankland Atlas' },
+    bestiary: { page: 373, query: selectedMonster?.nameEN || '', reason: 'Chapter 18 · Opponents and Creatures' },
+    npcs: { page: 321, query: selectedNPC?.nameEN || activeMinorNPC?.nameEN || '', reason: 'Chapter 16 · Non-Player Characters' },
+    cultures: { page: 341, query: selectedCulture?.nameEN || '', reason: 'Chapter 17 · Foreign Cultures' },
+    feudal: { page: 213, query: 'Frankish society', reason: 'Chapter 13 · Frankish Society' },
+    names: { page: 439, query: 'Frankish names', reason: 'Appendix I · Frankish Names' },
+    bibliography: { page: 439, query: 'Bibliography', reason: 'Appendices' }
+  }[activeSubTab];
 
   const renderBilingualSection = (title, koVal, enVal, icon = "", customStyle = {}) => {
     return (
@@ -433,6 +445,12 @@ export default function LoreEncyclopedia() {
               fontSize: '0.9rem'
             }}
           />
+        </div>
+      )}
+
+      {rulebookReference && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <RulebookButton page={rulebookReference.page} query={rulebookReference.query} reason={rulebookReference.reason} label="선택 항목 원문 검색" />
         </div>
       )}
 

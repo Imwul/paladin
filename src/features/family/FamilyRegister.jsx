@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Focus, UsersRound } from 'lucide-react';
 import { FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
 import FamilyTree from '../../components/FamilyTree';
+import RulebookButton from '../rulebook/RulebookButton';
 
 const memberTone = status => {
   if (status === '사망') return 'danger';
@@ -56,7 +57,7 @@ export default function FamilyRegister({ character, setCharacter }) {
         )) : <div className="quiet-complete"><UsersRound size={18} aria-hidden="true" />탄생, 혼인, 죽음과 계승이 이곳에 기록됩니다.</div>}
       </div>
 
-      <SectionHeader index="III" title="계보 편집과 조상 연대" meta="Lineage Map · Ancestor History" />
+      <SectionHeader index="III" title="계보 편집과 조상 연대" meta="Lineage Map · Ancestor History" action={<RulebookButton page={45} reason="Chapter 2 Family History" />} />
       <div className="legacy-surface legacy-surface--family"><FamilyTree character={character} setCharacter={setCharacter} /></div>
     </article>
   );

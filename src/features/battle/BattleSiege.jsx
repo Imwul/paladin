@@ -14,6 +14,7 @@ import {
 import { FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
 import { BATTLE_ENEMY_TABLES, lookupBattleEnemy } from '../../rules/battleEnemyTables';
 import { beginChapter8PersonalCombat } from '../../rules/combatIntegrationRules';
+import RulebookButton from '../rulebook/RulebookButton';
 import {
   assignSkirmishFollowerFates,
   assignFollowerFates,
@@ -81,7 +82,7 @@ const StepRail = ({ phases, current, labels }) => (
 );
 
 const RuleNote = ({ children, page }) => (
-  <aside className="battle-rule-note"><Shield size={17} aria-hidden="true" /><p>{children}</p><code>{page}</code></aside>
+  <aside className="battle-rule-note"><Shield size={17} aria-hidden="true" /><p>{children}</p><RulebookButton sourcePage={page} reason={page} label={page} /></aside>
 );
 
 const ResultBlock = ({ title, children, tone = 'neutral' }) => (
@@ -180,7 +181,7 @@ const SkirmishSetup = ({ character, setCharacter, run }) => {
   const update = (key, value) => setSetup(previous => ({ ...previous, [key]: value }));
   return <section className="battle-sheet">
     <header><div><span className="serial-label">새 소규모 교전</span><h2>지휘와 참가자</h2></div><StatusSeal tone="neutral">pp.138-139</StatusSeal></header>
-    <RuleNote page="Tables 8-1 and 8-2">지휘관의 Battle 결과는 첫 근접전의 전투 기술과 각 부지휘관의 추종자 운명 판정에만 적용됩니다.</RuleNote>
+    <RuleNote page="Tables 8-1 and 8-2 · p.138">지휘관의 Battle 결과는 첫 근접전의 전투 기술과 각 부지휘관의 추종자 운명 판정에만 적용됩니다.</RuleNote>
     <div className="battle-form-grid battle-form-grid--four">
       <TextField label="교전 이름" value={setup.name} onChange={value => update('name', value)} />
       <TextField label="상대" value={setup.enemy} onChange={value => update('enemy', value)} />
@@ -328,7 +329,7 @@ const SiegeFlow = ({ character, setCharacter, run, openCombat }) => {
   const recentTurn = siege.currentTurn || siege.turns.at(-1);
   const content = () => {
     if (siege.phase === 'health') return <><RuleNote page="Table 8-11 · p.158">매월 먼저 플레이어 기사와 양측 병력의 Siege 건강 판정을 해결합니다.</RuleNote><button type="button" className="primary-command" onClick={() => updateCharacter(previous => resolveSiegeHealth(previous))}><Dices size={17} aria-hidden="true" />이번 달 건강 판정</button></>;
-    if (siege.phase === 'tactic') return <><RuleNote page="Tables 8-12 to 8-14">강습, 봉쇄, 배신, 대표 결투 중 하나만 이번 달 전술로 선택합니다. 대표 결투는 Chapter 7 엔진으로 해결합니다.</RuleNote><SelectField label="월간 전술" value={siege.mode === 'simple' ? 'assault' : tactic} onChange={setTactic} options={[{value:'assault',label:'강습'},{value:'blockade',label:'봉쇄'},{value:'treachery',label:'배신 공작'},{value:'single_combat',label:'대표 결투'}]} /><div className="battle-form-grid battle-form-grid--four">{(siege.mode === 'simple' || tactic === 'assault') && <><NumberField label="공격 장비 투입" value={tacticInput.attackerEquipment} max={siege.sides.attacker.equipment} onChange={value => setTacticInput(previous => ({ ...previous, attackerEquipment: value }))} /><NumberField label="수비 장비 투입" value={tacticInput.defenderEquipment} max={siege.sides.defender.equipment} onChange={value => setTacticInput(previous => ({ ...previous, defenderEquipment: value }))} /></>}{tactic === 'treachery' && <><NumberField label="뇌물 £" value={tacticInput.bribe} onChange={value => setTacticInput(previous => ({ ...previous, bribe: value }))} /><SelectField label="매수 대상" value={tacticInput.target} onChange={value => setTacticInput(previous => ({ ...previous, target: value }))} options={[{value:'commander',label:'요새 지휘관'},{value:'knights',label:'수비 기사'},{value:'commoners',label:'평민과 하인'}]} /></>}</div><button type="button" className="primary-command" onClick={() => tactic === 'single_combat' ? openCombat({ type: 'siege_single_combat' }) : updateCharacter(previous => resolveSiegeTactic(previous, { ...tacticInput, tactic: siege.mode === 'simple' ? 'assault' : tactic }))}>{tactic === 'single_combat' ? <Swords size={17} aria-hidden="true" /> : <ChevronRight size={17} aria-hidden="true" />}{tactic === 'single_combat' ? 'Chapter 7 대표 결투 시작' : '전술 해결'}</button></>;
+    if (siege.phase === 'tactic') return <><RuleNote page="Tables 8-12 to 8-14 · pp.158-159">강습, 봉쇄, 배신, 대표 결투 중 하나만 이번 달 전술로 선택합니다. 대표 결투는 Chapter 7 엔진으로 해결합니다.</RuleNote><SelectField label="월간 전술" value={siege.mode === 'simple' ? 'assault' : tactic} onChange={setTactic} options={[{value:'assault',label:'강습'},{value:'blockade',label:'봉쇄'},{value:'treachery',label:'배신 공작'},{value:'single_combat',label:'대표 결투'}]} /><div className="battle-form-grid battle-form-grid--four">{(siege.mode === 'simple' || tactic === 'assault') && <><NumberField label="공격 장비 투입" value={tacticInput.attackerEquipment} max={siege.sides.attacker.equipment} onChange={value => setTacticInput(previous => ({ ...previous, attackerEquipment: value }))} /><NumberField label="수비 장비 투입" value={tacticInput.defenderEquipment} max={siege.sides.defender.equipment} onChange={value => setTacticInput(previous => ({ ...previous, defenderEquipment: value }))} /></>}{tactic === 'treachery' && <><NumberField label="뇌물 £" value={tacticInput.bribe} onChange={value => setTacticInput(previous => ({ ...previous, bribe: value }))} /><SelectField label="매수 대상" value={tacticInput.target} onChange={value => setTacticInput(previous => ({ ...previous, target: value }))} options={[{value:'commander',label:'요새 지휘관'},{value:'knights',label:'수비 기사'},{value:'commoners',label:'평민과 하인'}]} /></>}</div><button type="button" className="primary-command" onClick={() => tactic === 'single_combat' ? openCombat({ type: 'siege_single_combat' }) : updateCharacter(previous => resolveSiegeTactic(previous, { ...tacticInput, tactic: siege.mode === 'simple' ? 'assault' : tactic }))}>{tactic === 'single_combat' ? <Swords size={17} aria-hidden="true" /> : <ChevronRight size={17} aria-hidden="true" />}{tactic === 'single_combat' ? 'Chapter 7 대표 결투 시작' : '전술 해결'}</button></>;
     if (siege.phase === 'morale') return <><RuleNote page="Tables 8-15 and 8-16 · p.160">필요한 양측은 Valorous, Standing [retinue], Standing [commoners] 순으로 판정합니다. 항복·반란·철수가 즉시 공성 결과에 반영됩니다.</RuleNote><button type="button" className="primary-command" onClick={() => updateCharacter(previous => resolveSiegeMorale(previous))}><Dices size={17} aria-hidden="true" />사기 연쇄 판정</button></>;
     if (siege.phase === 'aftermath') return <><ResultBlock title={siege.result?.winner === 'attacker' ? '공격군이 요새를 차지함' : '수비군이 요새를 지킴'} tone="active"><p>{siege.result?.reason} · {siege.turns.length || 1}개월</p></ResultBlock><button type="button" className="primary-command" onClick={() => updateCharacter(previous => finalizeSiege(previous))}>공성 결과 확정</button></>;
     return <ResultBlock title="공성 기록 완료" tone="active"><p>{siege.fortress} · {siege.glory?.total || 0} Glory</p></ResultBlock>;
