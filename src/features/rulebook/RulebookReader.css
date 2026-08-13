@@ -147,7 +147,7 @@
 
 .rulebook-reader__layout {
   display: grid;
-  grid-template-columns: 238px minmax(0, 1fr);
+  grid-template-columns: 288px minmax(0, 1fr);
   align-items: start;
 }
 
@@ -184,13 +184,27 @@
   cursor: pointer;
 }
 
+.rulebook-library-rail li button {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  padding-block: 8px;
+}
+
 .rulebook-library-rail li button:hover,
 .rulebook-library-rail li button.active,
 .rulebook-personal-list button:hover { background: var(--paper-bright); color: var(--seal-dark); }
 .rulebook-library-rail li button.active { box-shadow: inset 3px 0 0 var(--seal); }
 .rulebook-library-rail li button > span,
 .rulebook-personal-list button span { color: var(--ink-muted); font-family: var(--font-numeral); font-size: var(--text-caption); }
-.rulebook-library-rail li button b,
+.rulebook-library-rail li button > span,
+.rulebook-library-rail li button small { white-space: nowrap; }
+.rulebook-library-rail li button b {
+  min-width: 0;
+  overflow: visible;
+  font-size: var(--text-caption);
+  line-height: 1.25;
+  text-overflow: clip;
+  white-space: normal;
+}
 .rulebook-personal-list button b { overflow: hidden; font-size: var(--text-caption); text-overflow: ellipsis; white-space: nowrap; }
 .rulebook-library-rail li button small { color: var(--ink-muted); font-size: var(--text-micro); }
 .rulebook-personal-list button { grid-template-columns: 46px minmax(0, 1fr); }
@@ -361,7 +375,7 @@
 
 @media (max-width: 900px) {
   .rulebook-drawer { width: calc(100vw - 28px); }
-  .rulebook-reader__layout { grid-template-columns: 202px minmax(0, 1fr); }
+  .rulebook-reader__layout { grid-template-columns: 240px minmax(0, 1fr); }
   .rulebook-reader__content { padding-left: 18px; }
   .rulebook-transcript__columns,
   .rulebook-practical-context,
