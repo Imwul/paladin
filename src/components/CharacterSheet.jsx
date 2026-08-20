@@ -2950,7 +2950,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     justifyContent: 'space-between',
                   }}>
                     <span style={{ fontWeight: '500', color: 'var(--color-ink)' }}>{feat}</span>
-                    <button type="button" style={{
+                    <button type="button" className="cs-feature-remove" aria-label={`${feat} 특징 삭제`} style={{
                       border: 'none',
                       background: 'none',
                       color: 'var(--color-danger)',
@@ -3573,7 +3573,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⛪ 가문 수호 성인 설정 (Table 1-3)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3587,7 +3587,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     }}
                     onClick={() => setSheetSaintMode('select')}
                   >선택</button>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3679,7 +3679,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>⚔️ 가문 특징 설정 (Table 1-1)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3693,7 +3693,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     }}
                     onClick={() => setSheetCharMode('select')}
                   >선택</button>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3796,7 +3796,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>📊 가문 평판 설정 (2d6, p.30)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3810,7 +3810,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     }}
                     onClick={() => setSheetStandingsMode('manual')}
                   >직접 입력</button>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3861,7 +3861,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1.5px solid var(--color-gold-light)', paddingBottom: '6px', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
                 <span style={{ fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-gold-dark)' }}>🛡️ 가문의 군역 (Muster, p.28)</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.04)', padding: '2px', borderRadius: '6px' }}>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',
@@ -3875,7 +3875,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     }}
                     onClick={() => setSheetMusterMode('manual')}
                   >직접 입력</button>
-                  <button type="button"
+                  <button type="button" className="cs-mode-toggle"
                     style={{
                       padding: '4px 10px',
                       fontSize: '0.74rem',

@@ -263,7 +263,7 @@ export default function LoreEncyclopedia() {
       </div>
 
       {/* Sub Tab Navigation */}
-      <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px' }}>
+      <div className="lore-section-tabs" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', borderBottom: '1px solid var(--color-gold-light)', paddingBottom: '8px', marginBottom: '16px' }}>
         <button 
           style={{ 
             background: 'none', 
