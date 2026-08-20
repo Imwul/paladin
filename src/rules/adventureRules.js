@@ -750,7 +750,7 @@ const finalizeHuntSegment = hunt => {
   return true;
 };
 
-const defaultHuntSegments = season => season === 'winter' ? 6 : season === 'summer' ? 10 : 8;
+export const getHuntSegmentsForSeason = season => season === 'winter' ? 6 : season === 'summer' ? 10 : 8;
 
 export const beginAdventureHunt = (characterValue, input = {}, now) => {
   const character = clone(characterValue);
@@ -776,7 +776,7 @@ export const beginAdventureHunt = (characterValue, input = {}, now) => {
     };
   });
   if (!hunters.some(hunter => hunter.mode === 'hunter')) throw new RangeError('최소 한 명은 직접 Hunting 판정을 해야 합니다.');
-  const segments = Math.max(1, asInt(fixed.segments, asInt(input.segments, defaultHuntSegments(input.season))));
+  const segments = Math.max(1, asInt(fixed.segments, asInt(input.segments, getHuntSegmentsForSeason(input.season))));
   const transactionId = safeId(`${state.id}:${stage.id}:hunt`);
   state.pendingSubsystem = {
     type: 'hunt', subsystemId: transactionId, transactionId, stageId: stage.id, sourcePage: stage.sourcePage,

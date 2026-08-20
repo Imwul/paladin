@@ -42,6 +42,7 @@ import {
   deferAdventure,
   getAdventureDefinition,
   getAdventureRepeatStatus,
+  getHuntSegmentsForSeason,
   getAdventureTableSubsystemRequirement,
   getCurrentAdventureStage,
   recordAdventureDecision,
@@ -316,7 +317,7 @@ const HuntWorkspace = ({ active, stage, character, hunt, onStart, onAction, onOb
 
   if (!hunt) return <section className="adventure-hunt"><header><Dices size={20} aria-hidden="true" /><div><strong>Chapter 19 Hunt 준비</strong><p>Table 19-8~19-12를 이 장면 안에서 순서대로 소비합니다.</p></div></header>
     <div className="adventure-subsystem__grid">
-      {!fixed.segments && <Field label="계절"><select value={setup.season} onChange={event => setSetup(previous => ({ ...previous, season: event.target.value, segments: event.target.value === 'winter' ? 6 : event.target.value === 'summer' ? 10 : 8 }))}><option value="winter">Winter · 6</option><option value="spring_autumn">Spring/Autumn · 8</option><option value="summer">Summer · 10</option></select></Field>}
+      {!fixed.segments && <Field label="계절"><select value={setup.season} onChange={event => setSetup(previous => ({ ...previous, season: event.target.value, segments: getHuntSegmentsForSeason(event.target.value) }))}><option value="winter">Winter · 6</option><option value="spring_autumn">Spring/Autumn · 8</option><option value="summer">Summer · 10</option></select></Field>}
       <Field label="Segment 수"><input type="number" min="1" max="10" value={setup.segments} disabled={Boolean(fixed.segments)} onChange={event => setSetup(previous => ({ ...previous, segments: Number(event.target.value) }))} /></Field>
       <Field label="Hunting 수정"><input type="number" value={setup.terrainModifier} disabled={fixed.modifier !== undefined} onChange={event => setSetup(previous => ({ ...previous, terrainModifier: Number(event.target.value) }))} /></Field>
       <Field label="먹잇감 Avoidance · GM 필수"><input type="number" min="1" value={setup.preyAvoidance || ''} disabled={Boolean(fixed.prey)} onChange={event => setSetup(previous => ({ ...previous, preyAvoidance: Number(event.target.value) }))} /></Field>

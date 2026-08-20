@@ -23,6 +23,7 @@ import {
   deferAdventure,
   getAdventureTableSubsystemRequirement,
   getCurrentAdventureStage,
+  getHuntSegmentsForSeason,
   lookupChapter19Table,
   recordAdventureDecision,
   recordAdventureNoMechanicalEffect,
@@ -63,6 +64,10 @@ import {
   startAmor,
   triggerMadness
 } from '../src/rules/personalityMagicRules.js';
+
+assert.equal(getHuntSegmentsForSeason('winter'), 6);
+assert.equal(getHuntSegmentsForSeason('spring_autumn'), 8);
+assert.equal(getHuntSegmentsForSeason('summer'), 10);
 
 const makeCharacter = () => {
   const character = {

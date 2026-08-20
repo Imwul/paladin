@@ -597,12 +597,6 @@ const passions = [
   { key: "amor", label: "연인에 대한 로맨스 (Amor)", defaultVal: 0 }
 ];
 
-// 🎲 룰북 주사위 눈 대응 매핑 함수 (Page 25-30)
-const getSaintIndexFromRoll = (roll) => {
-  const r = Math.min(20, Math.max(1, parseInt(roll) || 1));
-  return r - 1; // Saint Table 1-3 is a direct 1-to-20 mapping
-};
-
 const getCharIndexFromRoll = (roll) => {
   return getFamilyCharacteristicIndexFromRoll(roll);
 };
@@ -667,8 +661,8 @@ const getTitleByNameAndClass = (koName, enName, statusClass) => {
 
   const cls = (statusClass || '').toLowerCase();
 
-  let koTitle = '';
-  let enPrefix = '';
+  let koTitle;
+  let enPrefix;
 
   if (cls.includes('공작') || cls.includes('duke')) {
     koTitle = ' 공작';
@@ -966,7 +960,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const rollKnightFatherClass = () => {
     const r = rollDie(20);
-    let className = '';
+    let className;
     if (r === 1) className = "영주 또는 관료 (Lord or Officer)";
     else if (r >= 2 && r <= 3) className = "기치 기사 (Banneret Knight)";
     else if (r >= 4 && r <= 8) className = "봉신 기사 (Vassal Knight)";
@@ -979,7 +973,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const rollKnightFatherSurvival = () => {
     const r = rollDie(20);
-    let condition = '';
+    let condition;
     if (r <= 13) condition = "부친 생존 (Father living)";
     else if (r <= 17) condition = "부친 사망 (Father deceased)";
     else if (r <= 19) condition = "부친 병상 (Father bedridden)";
@@ -993,7 +987,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
   const rollKnightSonNumber = () => {
     const r = rollDie(6);
-    let sonNum = '';
+    let sonNum;
     if (r <= 2) sonNum = "첫째 (Eldest)";
     else if (r <= 4) sonNum = "둘째 (Second)";
     else sonNum = `셋째 (Third)`;
@@ -1518,9 +1512,8 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
     // 1. Apply Subclass (Lord or Officer) or Standard Father Class
     const father = fathersClasses[customFatherIndex];
-    let startingManors = 0;
-    let fatherSkillPoints = getFatherSkillPointCount(customFatherIndex, customSubclass);
-    let trainingResult = { allocations: {}, spent: 0, lost: 0 };
+    let startingManors;
+    const fatherSkillPoints = getFatherSkillPointCount(customFatherIndex, customSubclass);
     
     if (customFatherIndex === 4) {
       const subclassData = lordOfficerSubclasses.find(sc => sc.key === customSubclass) || lordOfficerSubclasses[4];
@@ -1556,7 +1549,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       }
     }
 
-    trainingResult = applySkillTrainingPlan(newChar.skills, fatherSkillPoints, customTrainingFocus);
+    const trainingResult = applySkillTrainingPlan(newChar.skills, fatherSkillPoints, customTrainingFocus);
     
     newChar.family.manors = startingManors;
     newChar.personal.blessing = '';
@@ -1585,12 +1578,12 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
       { skills: {} }                        // 15: 자유 선택
     ];
 
-    let finalCharEffect = { skills: {} };
-    let finalCharDesc = "";
-    let finalCharBenefit = "";
+    let finalCharEffect;
+    let finalCharDesc;
+    let finalCharBenefit;
     
     if (customCharIndex === 14) {
-      finalCharEffect.skills[customCharChoice19] = 5;
+      finalCharEffect = { skills: { [customCharChoice19]: 5 } };
       finalCharDesc = "전장의 지배자 (Master tacticians)";
       finalCharBenefit = customCharChoice19 === 'battle' ? "+5 전술 (Battle)" : "+5 공성 (Siege)";
     } else if (customCharIndex === 15) {
@@ -1814,8 +1807,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
   const siz = parseInt(character?.attributes?.siz) || 0;
   const dex = parseInt(character?.attributes?.dex) || 0;
   const con = parseInt(character?.attributes?.con) || 0;
-  const app = parseInt(character?.attributes?.app) || 0;
-
   const calculatedDamage = roundPaladin((str + siz) / 6);
   const calculatedHealing = roundPaladin((str + con) / 10);
   const calculatedMove = calculateMovementRate({ str, dex });

@@ -70,7 +70,7 @@ export const SKILL_TRANSLATIONS = {
   battle: "전투"
 };
 
-export const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue, choiceAttribute, characterSkills = {}) => {
+export const getCharacteristicDetails = (roll, gender, choiceSkill, choiceValue, choiceAttribute, _characterSkills = {}) => {
   if (!roll) return null;
   const table = gender === 'female' ? FEMALE_CHARACTERISTICS : MALE_CHARACTERISTICS;
   const entry = table[roll];

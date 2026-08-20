@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import ProperNoun from './ProperNoun';
+import { useState } from 'react';
 import { maleNames, femaleNames, surnames, locations, titles } from '../data/names';
 import { rollGrades, yesNoOracle, soloScenariosRef } from '../data/oracles';
-import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, Smile, AlertCircle, Info, ChevronRight, User, Award, Coins } from 'lucide-react';
+import { Dices, RefreshCw, HelpCircle, ArrowRight, Shield, Heart, Flame, Sparkles, AlertCircle, Award, Coins } from 'lucide-react';
 import { applyOnce, hasAppliedEvent, markAppliedEvent, markWinterStep } from '../utils/campaignState';
 import PersonalityMagicPanel from '../features/personality/PersonalityMagicPanel';
 import {
@@ -162,7 +161,7 @@ export default function SoloOracles({ character, setCharacter }) {
   const [giftRollResult, setGiftRollResult] = useState(null);
   const [standingRollResult, setStandingRollResult] = useState(null);
   const [isRollingStanding, setIsRollingStanding] = useState(false);
-  const [isRollingGiftProportion, setIsRollingGiftProportion] = useState(false);
+  const [, setIsRollingGiftProportion] = useState(false);
   const [standingActionApplied, setStandingActionApplied] = useState(false);
 
   // 3. Melee Clash Simulator States
@@ -663,9 +662,9 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         const finalRoll = rollDie(20);
 
-        let outcome = '';
-        let desc = '';
-        let color = '';
+        let outcome;
+        let desc;
+        let color;
         let checkRequired = false;
         let oppositeCheckRequired = false;
         let opposedRollVal = null;
@@ -769,11 +768,11 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         const finalRoll = rollDie(20);
 
-        let outcome = '';
-        let state = '';
+        let outcome;
+        let state;
         let skillBonus = 0;
-        let desc = '';
-        let color = '';
+        let desc;
+        let color;
 
         const check = resolveD20Roll(finalRoll, modifiedTarget);
         if (check.fumble) {
@@ -910,9 +909,9 @@ export default function SoloOracles({ character, setCharacter }) {
         const successA = finalRollA <= valA;
         const successB = finalRollB <= valB;
 
-        let winner = '';
-        let textResult = '';
-        let color = '';
+        let winner;
+        let textResult;
+        let color;
 
         if (successA && !successB) {
           winner = 'A';
@@ -976,7 +975,7 @@ export default function SoloOracles({ character, setCharacter }) {
         let fumblesCount = 0;
 
         const details = groupKnights.map(k => {
-          let indRes = '';
+          let indRes;
           const check = resolveD20Roll(finalRoll, k.passionScore);
           if (check.fumble) {
             indRes = '대실패 (광기 위험)';
@@ -1044,9 +1043,9 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
 
         const finalRoll = rollDie(20);
-        let title = '평온함';
-        let desc = '기사는 현실의 임무에 또렷이 집중하고 있습니다. 정상적인 모험 활동이 가능합니다.';
-        let color = 'var(--color-grey)';
+        let title;
+        let desc;
+        let color;
 
         if (finalRoll === 1 || finalRoll <= 3) {
           title = '사랑의 몽상: 넋을 잃음! 🌌';
@@ -1231,9 +1230,9 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         const finalRoll = rollDie(20);
 
-        let outcome = '';
-        let desc = '';
-        let color = '';
+        let outcome;
+        let desc;
+        let color;
 
         const check = resolveD20Roll(finalRoll, baseVal);
         if (check.fumble) {
@@ -1355,9 +1354,9 @@ export default function SoloOracles({ character, setCharacter }) {
 
         let pWeaponState = 'Intact';
         let oWeaponState = 'Intact';
-        let clashOutcome = '';
-        let winner = '';
-        let color = '';
+        let clashOutcome;
+        let winner;
+        let color;
         let detailDesc = '';
 
         // Fumble breakage rules
@@ -1396,9 +1395,6 @@ export default function SoloOracles({ character, setCharacter }) {
           winner = 'Opponent';
           clashOutcome = '상대방의 격돌 승리 ⚔️';
           color = 'var(--color-crimson)';
-
-          let dmg = '적 기본 피해';
-          if (opponentWeapon === 'two_handed_sword' || opponentWeapon === 'halberd') dmg = '적 피해 + 1d6 추가 피해';
 
           detailDesc += `⚠️ 상대방의 주사위가 더 강하여 기사의 방어를 뚫고 무거운 피해를 선사했습니다.`;
         } else {
@@ -1477,9 +1473,9 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         const finalRoll = rollDie(20);
 
-        let outcome = '';
-        let desc = '';
-        let color = '';
+        let outcome;
+        let desc;
+        let color;
         let isSuccess = false;
 
         const check = resolveD20Roll(finalRoll, finalTarget);
@@ -1558,9 +1554,9 @@ export default function SoloOracles({ character, setCharacter }) {
         clearInterval(interval);
         const finalRoll = rollDie(20);
 
-        let outcome = '';
-        let desc = '';
-        let color = '';
+        let outcome;
+        let desc;
+        let color;
         let isSuccess = false;
 
         const improvement = resolveExperienceRoll(finalRoll, skillVal);
@@ -1644,9 +1640,9 @@ export default function SoloOracles({ character, setCharacter }) {
       const eCrit = enemyCheck.critical;
       const eFumble = enemyCheck.fumble;
 
-      let pOutcome = '';
-      let eOutcome = '';
-      let advantage = '';
+      let pOutcome;
+      let eOutcome;
+      let advantage;
       let color = 'var(--color-grey)';
 
       // Determine outcomes
@@ -1714,8 +1710,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setTimeout(() => {
       const roll = rollDie(20);
-      let outcome = '';
-      let desc = '';
+      let outcome;
+      let desc;
       let glory = 0;
       let loot = 0;
 
@@ -1775,8 +1771,8 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setTimeout(() => {
       const roll = rollDie(20);
-      let outcome = '';
-      let desc = '';
+      let outcome;
+      let desc;
       let glory = 0;
       let loot = 0;
 
@@ -1826,8 +1822,8 @@ export default function SoloOracles({ character, setCharacter }) {
       const enemy = rollD20Check(pursuitEnemySkill);
       const winner = compareOpposedRolls(hunting, enemy);
       const base = battleBaseGloryByScale[battleScale] || 45;
-      let outcome = '';
-      let desc = '';
+      let outcome;
+      let desc;
       let glory = 0;
       let loot = 0;
       let damage = 0;
@@ -1946,7 +1942,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
       let outcome = '';
       let desc = '';
-      let color = '';
+      let color;
       let glory = 0;
       let stateEffect = null;
 
@@ -2099,7 +2095,7 @@ export default function SoloOracles({ character, setCharacter }) {
 
     setTimeout(() => {
       const roll = rollDie(20);
-      let targetVal = 10;
+      let targetVal;
       let typeLabel = '';
 
       if (selectedTrialType === 'combat') {
@@ -2524,9 +2520,9 @@ export default function SoloOracles({ character, setCharacter }) {
     setTimeout(() => {
       const roll = rollDie(20);
 
-      let name = '';
+      let name;
       let value = 0;
-      let desc = '';
+      let desc;
 
       if (roll <= 3) {
         name = '이교도 장병들의 전술 무구 파편';
@@ -2582,16 +2578,6 @@ export default function SoloOracles({ character, setCharacter }) {
       ];
       setArmoryLogs(prev => [...logs, ...prev]);
     }, 800);
-  };
-
-  const resetArmoryLogs = () => {
-    setArmoryLogs([]);
-    setAppraisedTreasure(null);
-  };
-
-  const getOracleAnswerFromRollText = (ans) => {
-    if (!ans) return '';
-    return ans.result + ': ' + ans.desc;
   };
 
   return (
