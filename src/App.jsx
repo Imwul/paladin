@@ -3,7 +3,7 @@ import Dashboard from './components/Dashboard';
 import AppShell from './app/AppShell';
 import { LoadingState } from './components/ui/LedgerUI';
 import SaveConflictDialog from './components/SaveConflictDialog';
-import { getFirebaseServices } from './firebase';
+import { getCloudSaveRevision, getFirebaseServices } from './firebase';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import { createEconomyState, toDeniers } from './rules/economyRules';
 import { createPersonalityMagicState } from './rules/personalityMagicRules';
@@ -262,6 +262,7 @@ export default function App() {
   const [firebaseStatus, setFirebaseStatus] = useState(getInitialFirebaseStatus);
   const [saveActivity, setSaveActivity] = useState('saved');
   const [saveConflict, setSaveConflict] = useState(null);
+  const [cloudMeta, setCloudMeta] = useState(null);
   const [user, setUser] = useState(null);
 
   const [rawCharacter, setRawCharacter] = useState(() => {
@@ -311,20 +312,37 @@ export default function App() {
         if (usr) {
           setUser(usr);
           setFirebaseStatus('LOGGED_IN');
-          services.loadFromCloud(usr.uid).then(cloudData => {
-            if (!cloudData || sessionStorage.getItem('paladin_cloud_prompted')) return;
+          services.getCloudSave(usr.uid).then(cloudSave => {
+            if (!active) return;
+            if (!cloudSave?.characterData) {
+              setCloudMeta({ revision: 0, updatedAt: null, localRevision: null });
+              return;
+            }
             const localSaved = localStorage.getItem('paladin_companion_data');
             const localData = localSaved ? mergeWithDefault(JSON.parse(localSaved)) : createInitialCharacterState();
-            const canonicalCloud = mergeWithDefault(cloudData);
-            if (JSON.stringify(localData) !== JSON.stringify(canonicalCloud)) {
+            const canonicalCloud = mergeWithDefault(cloudSave.characterData);
+            const recordsMatch = JSON.stringify(localData) === JSON.stringify(canonicalCloud);
+            setCloudMeta({
+              revision: cloudSave.revision,
+              updatedAt: cloudSave.updatedAt,
+              localRevision: recordsMatch ? getCloudSaveRevision(localData) : null
+            });
+            if (!recordsMatch && !sessionStorage.getItem('paladin_cloud_prompted')) {
               sessionStorage.setItem('paladin_cloud_prompted', 'true');
-              setSaveConflict({ local: localData, cloud: canonicalCloud });
+              setSaveConflict({
+                local: localData,
+                cloud: canonicalCloud,
+                cloudUpdatedAt: cloudSave.updatedAt,
+                reason: 'login'
+              });
             }
           }).catch(error => {
             console.error('Cloud comparison failed:', error);
           });
         } else {
           setUser(null);
+          setCloudMeta(null);
+          setSaveConflict(null);
           setFirebaseStatus('CONFIGURED_OFFLINE');
         }
       });
@@ -367,6 +385,9 @@ export default function App() {
     try {
       await services.logout();
       setUser(null);
+      setCloudMeta(null);
+      setSaveConflict(null);
+      setSaveActivity('saved');
       setFirebaseStatus('CONFIGURED_OFFLINE');
     } catch (error) {
       console.error(error);
@@ -374,28 +395,98 @@ export default function App() {
   };
 
   const handleCloudSave = async () => {
-    if (!user) return;
+    if (!user || saveActivity === 'saving' || saveActivity === 'loading') return;
     const services = await getFirebaseServices();
     try {
       setSaveActivity('saving');
       const sanitizedForCloud = mergeWithDefault(character);
-      await services.saveToCloud(user.uid, sanitizedForCloud);
-      setSaveActivity('saved');
+      let expectedRevision = cloudMeta?.revision;
+      let expectedUpdatedAt = cloudMeta?.updatedAt;
+
+      if (!cloudMeta || cloudMeta.localRevision === null) {
+        const currentCloud = await services.getCloudSave(user.uid);
+        if (currentCloud?.characterData) {
+          const canonicalCloud = mergeWithDefault(currentCloud.characterData);
+          setCloudMeta({
+            revision: currentCloud.revision,
+            updatedAt: currentCloud.updatedAt,
+            localRevision: null
+          });
+          if (JSON.stringify(sanitizedForCloud) !== JSON.stringify(canonicalCloud)) {
+            setSaveConflict({
+              local: sanitizedForCloud,
+              cloud: canonicalCloud,
+              cloudUpdatedAt: currentCloud.updatedAt,
+              reason: 'upload'
+            });
+            setSaveActivity('saved');
+            return;
+          }
+          expectedRevision = currentCloud.revision;
+          expectedUpdatedAt = currentCloud.updatedAt;
+        } else {
+          expectedRevision = 0;
+          expectedUpdatedAt = null;
+        }
+      }
+
+      const result = await services.saveToCloud(user.uid, sanitizedForCloud, {
+        expectedRevision,
+        expectedUpdatedAt
+      });
+      setCloudMeta({
+        revision: result.revision,
+        updatedAt: result.updatedAt,
+        localRevision: getCloudSaveRevision(sanitizedForCloud)
+      });
+      setSaveActivity('uploaded');
     } catch (error) {
+      if (error.code === 'paladin/cloud-conflict' && error.cloudSave?.characterData) {
+        const canonicalCloud = mergeWithDefault(error.cloudSave.characterData);
+        setCloudMeta({
+          revision: error.cloudSave.revision,
+          updatedAt: error.cloudSave.updatedAt,
+          localRevision: null
+        });
+        setSaveConflict({
+          local: mergeWithDefault(character),
+          cloud: canonicalCloud,
+          cloudUpdatedAt: error.cloudSave.updatedAt,
+          reason: 'concurrent'
+        });
+        setSaveActivity('saved');
+        return;
+      }
       setSaveActivity('error');
       alert(`클라우드 백업 실패: ${error.message}`);
     }
   };
 
   const handleCloudLoad = async () => {
-    if (!user) return;
+    if (!user || saveActivity === 'saving' || saveActivity === 'loading') return;
     const services = await getFirebaseServices();
     try {
       setSaveActivity('loading');
-      const cloudData = await services.loadFromCloud(user.uid);
-      if (cloudData) {
-        setSaveConflict({ local: character, cloud: mergeWithDefault(cloudData) });
+      const cloudSave = await services.getCloudSave(user.uid);
+      if (cloudSave?.characterData) {
+        const canonicalCloud = mergeWithDefault(cloudSave.characterData);
+        const localData = mergeWithDefault(character);
+        const recordsMatch = JSON.stringify(localData) === JSON.stringify(canonicalCloud);
+        setCloudMeta({
+          revision: cloudSave.revision,
+          updatedAt: cloudSave.updatedAt,
+          localRevision: recordsMatch ? getCloudSaveRevision(localData) : null
+        });
+        if (!recordsMatch) {
+          setSaveConflict({
+            local: localData,
+            cloud: canonicalCloud,
+            cloudUpdatedAt: cloudSave.updatedAt,
+            reason: 'load'
+          });
+        }
       } else {
+        setCloudMeta({ revision: 0, updatedAt: null, localRevision: null });
         alert('저장된 클라우드 기록을 찾을 수 없습니다.');
       }
       setSaveActivity('saved');
@@ -405,14 +496,52 @@ export default function App() {
     }
   };
 
+  const handleKeepLocal = async () => {
+    if (!user || !saveConflict || saveActivity === 'saving') return;
+    const services = await getFirebaseServices();
+    try {
+      setSaveActivity('saving');
+      const localData = mergeWithDefault(character);
+      const result = await services.saveToCloud(user.uid, localData, { force: true });
+      setCloudMeta({
+        revision: result.revision,
+        updatedAt: result.updatedAt,
+        localRevision: getCloudSaveRevision(localData)
+      });
+      setSaveConflict(null);
+      setSaveActivity('uploaded');
+    } catch (error) {
+      setSaveActivity('error');
+      alert(`클라우드 덮어쓰기 실패: ${error.message}`);
+    }
+  };
+
+  const handleUseCloud = () => {
+    if (!saveConflict?.cloud) return;
+    const canonicalCloud = mergeWithDefault(saveConflict.cloud);
+    setRawCharacter(canonicalCloud);
+    setCloudMeta(current => ({
+      revision: current?.revision ?? getCloudSaveRevision(canonicalCloud),
+      updatedAt: saveConflict.cloudUpdatedAt || current?.updatedAt || null,
+      localRevision: getCloudSaveRevision(canonicalCloud)
+    }));
+    setSaveConflict(null);
+    setSaveActivity('synced');
+  };
+
   const cloudState = useMemo(() => {
     if (saveActivity === 'saving') return { label: '올리는 중', tone: 'pending' };
     if (saveActivity === 'loading') return { label: '불러오는 중', tone: 'pending' };
     if (saveActivity === 'error') return { label: '확인 필요', tone: 'danger' };
     if (saveConflict) return { label: '버전 충돌', tone: 'danger' };
-    if (firebaseStatus === 'LOGGED_IN') return { label: '로컬·클라우드', tone: 'active' };
+    if (firebaseStatus === 'LOGGED_IN') {
+      const localRevision = getCloudSaveRevision(character);
+      if (!cloudMeta || cloudMeta.localRevision !== localRevision) return { label: '업로드 필요', tone: 'pending' };
+      if (saveActivity === 'uploaded') return { label: '업로드 완료', tone: 'active' };
+      return { label: '클라우드 최신', tone: 'active' };
+    }
     return { label: '로컬 저장', tone: 'neutral' };
-  }, [firebaseStatus, saveActivity, saveConflict]);
+  }, [character, cloudMeta, firebaseStatus, saveActivity, saveConflict]);
 
   const renderActiveScreen = () => {
     if (activeTab === 'dashboard') return <Dashboard character={character} setActiveTab={setActiveTab} />;
@@ -449,7 +578,8 @@ export default function App() {
           onLogin: handleGoogleLogin,
           onLogout: handleLogout,
           onSave: handleCloudSave,
-          onLoad: handleCloudLoad
+          onLoad: handleCloudLoad,
+          isBusy: saveActivity === 'saving' || saveActivity === 'loading'
         }}
         onNavigate={setActiveTab}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -465,21 +595,26 @@ export default function App() {
             character={character}
             setCharacter={setCharacter}
             firebaseStatus={firebaseStatus}
+            cloudActions={{
+              canLogin: firebaseStatus === 'CONFIGURED_OFFLINE',
+              isLoggedIn: firebaseStatus === 'LOGGED_IN',
+              onLogin: handleGoogleLogin,
+              onLogout: handleLogout,
+              onSave: handleCloudSave,
+              onLoad: handleCloudLoad,
+              isBusy: saveActivity === 'saving' || saveActivity === 'loading'
+            }}
+            cloudState={cloudState}
+            cloudMeta={cloudMeta}
           />
         </Suspense>
 
         <SaveConflictDialog
           conflict={saveConflict}
           onClose={() => setSaveConflict(null)}
-          onKeepLocal={() => {
-            setSaveConflict(null);
-            setSaveActivity('saved');
-          }}
-          onUseCloud={() => {
-            setCharacter(saveConflict.cloud);
-            setSaveConflict(null);
-            setSaveActivity('saved');
-          }}
+          onKeepLocal={handleKeepLocal}
+          onUseCloud={handleUseCloud}
+          isBusy={saveActivity === 'saving'}
         />
       </AppShell>
     </RulebookProvider>

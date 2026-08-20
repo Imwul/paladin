@@ -162,9 +162,9 @@ export default function AppShell({
           )}
           {cloudActions?.isLoggedIn && (
             <>
-              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onSave} aria-label="클라우드에 기록 올리기" title="클라우드에 기록 올리기"><CloudUpload size={18} aria-hidden="true" /></button>
-              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onLoad} aria-label="클라우드 기록 가져오기" title="클라우드 기록 가져오기"><CloudDownload size={18} aria-hidden="true" /></button>
-              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onLogout} aria-label="클라우드 로그아웃" title="클라우드 로그아웃"><LogOut size={18} aria-hidden="true" /></button>
+              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onSave} disabled={cloudActions.isBusy} aria-busy={cloudActions.isBusy} aria-label="클라우드에 기록 올리기" title={`클라우드에 기록 올리기 · ${cloudState.label}`}><CloudUpload size={18} aria-hidden="true" /></button>
+              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onLoad} disabled={cloudActions.isBusy} aria-label="클라우드 기록 가져오기" title="클라우드 기록 가져오기"><CloudDownload size={18} aria-hidden="true" /></button>
+              <button className="icon-command desktop-cloud-command" type="button" onClick={cloudActions.onLogout} disabled={cloudActions.isBusy} aria-label="클라우드 로그아웃" title="클라우드 로그아웃"><LogOut size={18} aria-hidden="true" /></button>
             </>
           )}
           <button className="icon-command" type="button" onClick={onOpenSettings} aria-label="설정과 저장 관리" title="설정과 저장 관리">

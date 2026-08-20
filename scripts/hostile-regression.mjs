@@ -5,7 +5,12 @@ import {
   sanitizeCampaignState,
   validateCampaignImport
 } from '../src/utils/campaignState.js';
-import { getFirebaseServices } from '../src/firebase.js';
+import {
+  getCloudSaveRevision,
+  getFirebaseServices,
+  hasCloudWriteConflict,
+  normalizeCloudSaveDocument
+} from '../src/firebase.js';
 import { getFamilyCharacteristicIndexFromRoll } from '../src/utils/rulebookTables.js';
 import { resolveWinterStep } from '../src/rules/winterRules.js';
 
@@ -221,6 +226,33 @@ assert.deepEqual(validateCampaignImport({ personal: {}, attributes: {}, skills: 
   ok: false,
   errors: ['traits', 'passions', 'gear', 'family', 'journal']
 });
+
+assert.equal(getCloudSaveRevision({ campaign: { saveRevision: 14 } }), 14);
+assert.equal(getCloudSaveRevision({ campaign: { saveRevision: -1 } }), 0);
+assert.deepEqual(normalizeCloudSaveDocument({
+  characterData: { campaign: { saveRevision: 8 } },
+  updatedAt: '2026-08-21T00:00:00.000Z'
+}), {
+  characterData: { campaign: { saveRevision: 8 } },
+  revision: 8,
+  updatedAt: '2026-08-21T00:00:00.000Z'
+});
+assert.equal(normalizeCloudSaveDocument({ revision: 9 }), null);
+const currentCloudSave = {
+  characterData: { campaign: { saveRevision: 8 } },
+  revision: 8,
+  updatedAt: '2026-08-21T00:00:00.000Z'
+};
+assert.equal(hasCloudWriteConflict(currentCloudSave, 9, {
+  expectedRevision: 8,
+  expectedUpdatedAt: currentCloudSave.updatedAt
+}), false);
+assert.equal(hasCloudWriteConflict(currentCloudSave, 9, {
+  expectedRevision: 8,
+  expectedUpdatedAt: '2026-08-20T00:00:00.000Z'
+}), true);
+assert.equal(hasCloudWriteConflict(currentCloudSave, 7), true);
+assert.equal(hasCloudWriteConflict(currentCloudSave, 7, { force: true }), false);
 
 globalThis.localStorage = {
   getItem: () => null
