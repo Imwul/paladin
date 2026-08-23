@@ -24,6 +24,9 @@
 .health-register strong { grid-column: 1 / -1; font-family: var(--font-numeral); font-size: 1.8rem; line-height: 1; }
 .health-register strong small { color: var(--ink-muted); font-size: var(--text-caption); }
 .health-register .status-seal { grid-column: 1 / -1; justify-self: start; }
+.health-register--compact > div { min-height: 70px; }
+.health-register--compact strong { font-size: 1.45rem; }
+.combat-ledger--active .folio-heading { min-height: 132px; }
 
 .combat-critical-notice {
   display: grid;
@@ -39,6 +42,35 @@
 
 .combat-critical-notice strong { display: block; }
 .combat-critical-notice p { margin: 3px 0 0; color: var(--ink-soft); font-size: var(--text-small); }
+
+.combat-workspace-tabs {
+  min-height: 64px;
+  display: flex;
+  align-items: stretch;
+  margin-top: 24px;
+  border-block: 2px solid var(--ink);
+}
+
+.combat-workspace-tabs button {
+  min-width: 190px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 18px;
+  border: 0;
+  border-right: 1px solid var(--rule-dark);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.combat-workspace-tabs button.active { background: var(--ink); color: white; }
+.combat-workspace-tabs button b { min-width: 24px; padding: 1px 6px; background: var(--seal-dark); color: white; font-family: var(--font-numeral); }
+.combat-workspace-tabs .status-seal { min-height: 22px; color: inherit; }
+.combat-workspace[hidden] { display: none; }
 
 .combat-setup,
 .combat-active,
@@ -300,9 +332,14 @@
   .combat-critical-notice > .combat-field,
   .combat-critical-notice > .combat-check,
   .combat-critical-notice button { grid-column: 2; justify-self: start; }
+  .combat-workspace-tabs button { min-width: 0; flex: 1; }
 }
 
 @media (max-width: 560px) {
+  .combat-workspace-tabs { min-height: 58px; }
+  .combat-workspace-tabs button { padding: 6px; }
+  .combat-workspace-tabs button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .combat-workspace-tabs .status-seal { display: none; }
   .chapter18-register__grid,
   .chapter18-attacks,
   .chapter18-gate,

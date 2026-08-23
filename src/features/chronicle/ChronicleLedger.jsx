@@ -18,6 +18,21 @@ const FILTERS = [
 
 const ADMINISTRATIVE_JOURNAL = /겨울 정산 완료|단계 거래와|규칙 거래 중 연대기 사건/;
 
+const EVENT_TYPE_LABELS = {
+  adventure_start: '모험 시작',
+  adventure_complete: '모험 완료',
+  battle: '대전투',
+  character: '기사',
+  combat: '전투',
+  death: '죽음',
+  family: '가문',
+  glory: '영광',
+  marriage: '혼인',
+  miracle: '기적',
+  succession: '계승',
+  winter: '겨울'
+};
+
 const normalizeEvents = character => {
   const events = (character.campaign?.chronicleEvents || []).map((event, index) => ({
     id: event.id || `chronicle-${index}`,
@@ -78,7 +93,7 @@ export default function ChronicleLedger({ character }) {
             {yearEvents.map(event => (
               <article className="chronicle-entry" key={event.id}>
                 <div className="chronicle-entry__meta">
-                  <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{event.type}</StatusSeal>
+                  <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{EVENT_TYPE_LABELS[event.type] || event.type.replaceAll('_', ' ')}</StatusSeal>
                   {event.age !== undefined && <span lang="en">Age {event.age}</span>}
                   {event.ruleId && <code>{event.ruleId}</code>}
                   {event.source && <span>{event.source}</span>}

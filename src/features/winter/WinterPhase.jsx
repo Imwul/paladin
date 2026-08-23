@@ -23,7 +23,7 @@ import {
   resolveWinterStep,
   WINTER_STEPS
 } from '../../rules';
-import { CompleteMark, FolioHeading, LedgerRow, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import { CompleteMark, FolioHeading, LedgerRow, StatusSeal } from '../../components/ui/LedgerUI';
 import RulebookButton from '../rulebook/RulebookButton';
 
 const GROUP_LABELS = {
@@ -58,19 +58,19 @@ function SourceReference({ step }) {
 function ResultPanel({ record }) {
   if (!record) return null;
   const result = record.result || {};
+  const rollSummary = record.roll ? JSON.stringify(record.roll) : '';
   return (
     <section className="winter-result" aria-label="적용 결과">
       <header><FileCheck2 size={17} aria-hidden="true" /><strong>적용 결과</strong><StatusSeal tone={record.status?.includes('manual') ? 'warning' : 'active'}>{record.status || 'resolved'}</StatusSeal></header>
       <p>{record.journalEntry}</p>
-      <dl>
-        <div><dt>완료 ID</dt><dd><code>{record.completionId}</code></dd></div>
-        <div><dt>Rollback</dt><dd><code>{record.rollbackBoundary}</code></dd></div>
-        {record.roll && <div><dt>주사위</dt><dd><code>{JSON.stringify(record.roll)}</code></dd></div>}
-        <div><dt>상태 변경</dt><dd>{record.stateChanges?.length || 0}건</dd></div>
+      <dl className="winter-result__outcome">
+        {record.roll && <div><dt>판정</dt><dd>{rollSummary}</dd></div>}
+        <div><dt>반영된 변화</dt><dd>{record.stateChanges?.length || 0}건</dd></div>
         {result.total !== undefined && <div><dt>합계</dt><dd>{result.total}</dd></div>}
         {result.deaths !== undefined && <div><dt>생존 결과</dt><dd>사망 {result.deaths} · 질병 {result.illness} · 건강 {result.healthy}</dd></div>}
       </dl>
       {record.manualResolution && <aside><AlertTriangle size={15} aria-hidden="true" /><span>GM 수동 판정: {record.manualResolution.note}</span></aside>}
+      <details className="winter-result__technical"><summary>거래 상세</summary><dl><div><dt>완료 ID</dt><dd><code>{record.completionId}</code></dd></div><div><dt>Rollback</dt><dd><code>{record.rollbackBoundary}</code></dd></div>{record.stateChanges?.length > 0 && <div><dt>변경 기록</dt><dd><code>{JSON.stringify(record.stateChanges)}</code></dd></div>}</dl></details>
     </section>
   );
 }
@@ -367,11 +367,13 @@ export default function WinterPhase({ character, setCharacter }) {
         </section>
       )}
 
-      <SectionHeader index="XI" title="연간 거래 원장" meta={`${winter.transactions?.length || 0} Transactions`} />
-      <div className="winter-transaction-ledger">
-        {(winter.transactions || []).map(transaction => <LedgerRow key={transaction.completionId} label={`${transaction.number}. ${transaction.label}`} meta={`${transaction.ruleId} · ${transaction.sourcePage}`} value={transaction.status?.includes('manual') ? 'GM 기록' : '완료'} />)}
-        {!winter.transactions?.length && <p className="muted-copy">아직 봉인된 단계 거래가 없습니다.</p>}
-      </div>
+      <details className="winter-transactions">
+        <summary><span>연간 거래 원장</span><strong>{winter.transactions?.length || 0}건</strong></summary>
+        <div className="winter-transaction-ledger">
+          {(winter.transactions || []).map(transaction => <LedgerRow key={transaction.completionId} label={`${transaction.number}. ${transaction.label}`} meta={`${transaction.ruleId} · ${transaction.sourcePage}`} value={transaction.status?.includes('manual') ? 'GM 기록' : '완료'} />)}
+          {!winter.transactions?.length && <p className="muted-copy">아직 봉인된 단계 거래가 없습니다.</p>}
+        </div>
+      </details>
     </article>
   );
 }

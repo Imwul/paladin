@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  ArrowLeft,
   Award,
   BookOpen,
   BookOpenText,
   BookText,
-  CalendarDays,
   ChevronRight,
   Cloud,
   CloudDownload,
@@ -33,22 +33,28 @@ import knightInvestiture from '../assets/knight-investiture.jpg';
 import RulebookButton from '../features/rulebook/RulebookButton';
 
 export const NAV_ITEMS = [
-  { id: 'dashboard', label: '표지', meta: 'Index', icon: BookOpen },
-  { id: 'chronicle', label: '연대기', meta: 'Chronicle', icon: ScrollText },
-  { id: 'character', label: '기사', meta: 'Dossier', icon: UserRound },
-  { id: 'family', label: '가문', meta: 'Lineage', icon: UsersRound },
-  { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake },
-  { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass },
-  { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords },
-  { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield },
-  { id: 'economy', label: '재산과 보물', meta: 'Wealth and Treasure', icon: Coins },
-  { id: 'personality', label: '성격과 신앙', meta: 'Personality and Faith', icon: HeartHandshake },
-  { id: 'procedures', label: '원문 절차', meta: 'Canonical Procedures', icon: Scale },
-  { id: 'standing', label: '지위', meta: 'Standing', icon: Crown },
-  { id: 'glory', label: '영광', meta: 'Glory', icon: Award },
-  { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices },
-  { id: 'reference', label: '참조', meta: 'Reference', icon: BookText },
-  { id: 'rulebook', label: '개인 룰북', meta: 'Personal Rulebook', icon: BookOpenText }
+  { id: 'dashboard', label: '표지', meta: 'Index', icon: BookOpen, group: 'campaign' },
+  { id: 'character', label: '기사', meta: 'Dossier', icon: UserRound, group: 'campaign' },
+  { id: 'family', label: '가문', meta: 'Lineage', icon: UsersRound, group: 'campaign' },
+  { id: 'chronicle', label: '연대기', meta: 'Chronicle', icon: ScrollText, group: 'campaign' },
+  { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass, group: 'campaign' },
+  { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords, group: 'campaign' },
+  { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield, group: 'campaign' },
+  { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake, group: 'campaign' },
+  { id: 'economy', label: '재산과 보물', meta: 'Wealth and Treasure', icon: Coins, group: 'ledger' },
+  { id: 'personality', label: '성격과 신앙', meta: 'Personality and Faith', icon: HeartHandshake, group: 'ledger' },
+  { id: 'standing', label: '지위', meta: 'Standing', icon: Crown, group: 'ledger' },
+  { id: 'glory', label: '영광', meta: 'Glory', icon: Award, group: 'ledger' },
+  { id: 'procedures', label: '원문 절차', meta: 'Canonical Procedures', icon: Scale, group: 'reference' },
+  { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices, group: 'reference' },
+  { id: 'reference', label: '참조', meta: 'Reference', icon: BookText, group: 'reference' },
+  { id: 'rulebook', label: '개인 룰북', meta: 'Personal Rulebook', icon: BookOpenText, group: 'reference' }
+];
+
+const NAV_GROUPS = [
+  { id: 'campaign', label: '기사의 연대' },
+  { id: 'ledger', label: '상태 장부' },
+  { id: 'reference', label: '참조 도구', compact: true }
 ];
 
 const getLifecycleLabel = (status) => ({
@@ -97,6 +103,19 @@ export default function AppShell({
   const activeCharacter = getActiveCharacterIdentity(character);
   const captive = ['active', 'awaiting_ransom'].includes(character.campaign?.captivity?.status);
   const blockedWhileCaptive = new Set(['winter', 'adventure', 'combat', 'oracles']);
+  const activeWar = character.campaign?.massBattle?.status === 'active'
+    || character.campaign?.skirmish?.status === 'active'
+    || character.campaign?.siege?.status === 'active';
+  const winterInProgress = winterDone > 0 && winterDone < 10;
+  const continuation = character.campaign?.combat?.status === 'active'
+    ? { tab: 'combat', label: '진행 중인 전투로 돌아가기' }
+    : activeWar
+      ? { tab: 'battle', label: '진행 중인 전쟁으로 돌아가기' }
+      : adventurePending && ['active', 'deferred'].includes(adventurePending.status)
+        ? { tab: 'adventure', label: adventurePending.title ? `${adventurePending.title}로 돌아가기` : '진행 중인 모험으로 돌아가기' }
+        : winterInProgress
+          ? { tab: 'winter', label: `${year}년 겨울 정산으로 돌아가기` }
+          : null;
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
@@ -141,7 +160,7 @@ export default function AppShell({
 
       <header className="royal-header">
         <div className="royal-header__identity">
-          <span className="serial-label" lang="la">Codex Regius · 0767</span>
+          <span className="serial-label" lang="la">Codex Regius</span>
           <div className="royal-wordmark" aria-label="Paladin">
             <span lang="en">Paladin</span>
           </div>
@@ -149,9 +168,7 @@ export default function AppShell({
         </div>
 
         <div className="royal-header__registry" aria-label="현재 캠페인 기록">
-          <div><span lang="la">Anno</span><strong>{year}</strong></div>
-          <div><span lang="la">Folio</span><strong>{String(NAV_ITEMS.findIndex(item => item.id === activeTab) + 1).padStart(2, '0')}</strong></div>
-          <div><span lang="en">Rev.</span><strong>{character.campaign?.saveRevision || 0}</strong></div>
+          <div className="campaign-date"><span>현재 연대</span><strong>{year}년 · 제{phase?.number ?? 0}기</strong></div>
           <div className={`save-state save-state--${cloudState.tone}`} role="status" aria-live="polite">
             <span lang="en">Save</span><strong>{cloudState.label}</strong>
           </div>
@@ -185,12 +202,15 @@ export default function AppShell({
       </header>
 
       <div className="campaign-strip" aria-label="캠페인 현재 상태">
-        <span><CalendarDays size={14} aria-hidden="true" /> {year}년</span>
-        <span lang="en"><Shield size={14} aria-hidden="true" /> Phase {phase?.number ?? 0}</span>
         <span><UserRound size={14} aria-hidden="true" /> {activeCharacter.name}</span>
         <span>{healthLabel}</span>
         <span><Snowflake size={14} aria-hidden="true" /> 겨울 {winterDone}/10</span>
         <span className={unresolvedCount || adventurePending ? 'campaign-strip__warning' : ''}>미결 {unresolvedCount + (adventurePending ? 1 : 0)}</span>
+        {continuation && activeTab !== continuation.tab && (
+          <button type="button" className="campaign-strip__continue" onClick={() => navigate(continuation.tab)}>
+            <ArrowLeft size={14} aria-hidden="true" /> {continuation.label}
+          </button>
+        )}
       </div>
 
       <div className="remaster-frame">
@@ -204,29 +224,35 @@ export default function AppShell({
             <span lang="la">Index Generalis</span>
             <strong>장부 목차</strong>
           </div>
-          <ol>
-            {NAV_ITEMS.map((item, index) => {
-              const Icon = item.icon;
-              const active = item.id === activeTab;
-              return (
-                <li key={item.id}>
-                  <button
-                    type="button"
-                    className={active ? 'active' : ''}
-                    onClick={() => navigate(item.id)}
-                    aria-current={active ? 'page' : undefined}
-                    disabled={captive && blockedWhileCaptive.has(item.id)}
-                    title={captive && blockedWhileCaptive.has(item.id) ? '포로 상태를 먼저 해결해야 합니다.' : undefined}
-                  >
-                    <span className="folio-navigation__number">{String(index + 1).padStart(2, '0')}</span>
-                    <Icon size={17} aria-hidden="true" />
-                    <span className="folio-navigation__label"><b>{item.label}</b><small lang="en">{item.meta}</small></span>
-                    <ChevronRight size={15} aria-hidden="true" />
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
+          {NAV_GROUPS.map(group => (
+            <section className={`folio-navigation__group ${group.compact ? 'folio-navigation__group--compact' : ''}`} key={group.id} aria-labelledby={`navigation-${group.id}`}>
+              <h2 id={`navigation-${group.id}`}>{group.label}</h2>
+              <ol>
+                {NAV_ITEMS.filter(item => item.group === group.id).map(item => {
+                  const Icon = item.icon;
+                  const active = item.id === activeTab;
+                  const index = NAV_ITEMS.findIndex(entry => entry.id === item.id);
+                  return (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        className={active ? 'active' : ''}
+                        onClick={() => navigate(item.id)}
+                        aria-current={active ? 'page' : undefined}
+                        disabled={captive && blockedWhileCaptive.has(item.id)}
+                        title={captive && blockedWhileCaptive.has(item.id) ? '포로 상태를 먼저 해결해야 합니다.' : item.meta}
+                      >
+                        <span className="folio-navigation__number">{String(index + 1).padStart(2, '0')}</span>
+                        <Icon size={17} aria-hidden="true" />
+                        <span className="folio-navigation__label"><b>{item.label}</b></span>
+                        <ChevronRight size={15} aria-hidden="true" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </section>
+          ))}
           <figure className="folio-navigation__plate">
             <img
               src={knightInvestiture}

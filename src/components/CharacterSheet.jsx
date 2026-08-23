@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Sparkles, Dices, RefreshCw, Check, User } from 'lucide-react';
 import CharacterCreationWizard from './CharacterCreationWizard';
-import LifecyclePanel from './LifecyclePanel';
 import { t } from '../i18n';
 import { applyOnce, deepClone, hasAppliedEvent } from '../utils/campaignState';
 import {
@@ -780,8 +779,8 @@ const revertCharacteristic = (char, charName) => {
   }
 };
 
-export default function CharacterSheet({ character, setCharacter, initialCharacterState }) {
-  const [isGenOpen, setIsGenOpen] = useState(false);
+export default function CharacterSheet({ character, setCharacter, initialCharacterState, creationRequest = 0 }) {
+  const [isGenOpen, setIsGenOpen] = useState(Boolean(creationRequest));
   const [genActiveTab, setGenActiveTab] = useState('core'); // 'core', 'custom', or 'preset'
   const [selectedPreset, setSelectedPreset] = useState(0);
 
@@ -1915,15 +1914,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           {isGenOpen ? '생성 도우미 닫기' : '룰북 캐릭터 생성 도우미'}
         </button>
       </div>
-
-      <LifecyclePanel
-        character={character}
-        setCharacter={setCharacter}
-        onOpenCreation={() => {
-          setGenActiveTab('core');
-          setIsGenOpen(true);
-        }}
-      />
 
       {isGenOpen && (
         <div className="cs-gen-container view-animate">

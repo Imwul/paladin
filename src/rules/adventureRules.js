@@ -458,6 +458,8 @@ const scoreSource = (character, key) => {
   return null;
 };
 
+export const getAdventureTestSource = (character, key) => scoreSource(character, key);
+
 export const resolveAdventureTest = (characterValue, input = {}, rng = Math.random) => {
   const character = clone(characterValue);
   const state = requireActive(character);

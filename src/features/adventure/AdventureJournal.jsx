@@ -42,6 +42,7 @@ import {
   deferAdventure,
   getAdventureDefinition,
   getAdventureRepeatStatus,
+  getAdventureTestSource,
   getHuntSegmentsForSeason,
   getAdventureTableSubsystemRequirement,
   getCurrentAdventureStage,
@@ -80,6 +81,8 @@ const KIND_LABELS = {
   setup: '설정', reference: '원문 참조', player_choice: '플레이어 선택', gm_decision: 'GM 판단', narrative: '서술',
   test: '판정', table: '표', procedure: '절차', subsystem: '기존 엔진', dependency: '외부 의존성', consequence: '결과', aftermath: '후속 처리'
 };
+
+const ADVENTURE_STATUS_LABELS = { active: '진행 중', deferred: '보류', complete: '완료', aborted: '중단' };
 
 const TEST_LABELS = {
   religion: 'Religion', intrigue: 'Intrigue', loveCharlemagne: 'Love [Charlemagne]', siege: 'Siege', folkLore: 'Folk Lore',
@@ -137,13 +140,23 @@ const Field = ({ label, children }) => <label className="adventure-field"><span>
 
 const AdventureCatalog = ({ onStart }) => {
   const [selected, setSelected] = useState('jewel');
+  const [activeGroup, setActiveGroup] = useState('long');
   const [participants, setParticipants] = useState('');
   const definition = getAdventureDefinition(selected);
+  const group = GROUPS.find(([id]) => id === activeGroup) || GROUPS[0];
+  const selectGroup = id => {
+    const nextGroup = GROUPS.find(([groupId]) => groupId === id) || GROUPS[0];
+    setActiveGroup(nextGroup[0]);
+    if (!nextGroup[2].some(item => item.id === selected)) setSelected(nextGroup[2][0].id);
+  };
   return <section className="adventure-catalog" aria-labelledby="adventure-catalog-title">
     <header><div><span className="serial-label" lang="en">Chapter 19 · Initium</span><h2 id="adventure-catalog-title">모험 선택</h2></div><StatusSeal tone="neutral"><span lang="en">34 procedures</span></StatusSeal></header>
+    <nav className="adventure-catalog__tabs" aria-label="모험 종류">
+      {GROUPS.map(([id, label, items, language]) => <button type="button" key={id} className={activeGroup === id ? 'active' : ''} onClick={() => selectGroup(id)} aria-pressed={activeGroup === id}><span lang={language}>{label}</span><small>{items.length}</small></button>)}
+    </nav>
     <div className="adventure-catalog__layout">
       <div className="adventure-catalog__groups">
-        {GROUPS.map(([id, label, items, language]) => <section key={id}><h3 lang={language}>{label}<small>{items.length}</small></h3><div role="list">{items.map(item => <button type="button" key={item.id} className={selected === item.id ? 'active' : ''} onClick={() => setSelected(item.id)}><span lang="en">{item.title}</span><small>{item.sourcePage}</small><ChevronRight size={15} aria-hidden="true" /></button>)}</div></section>)}
+        <section><h3 lang={group[3]}>{group[1]}<small>{group[2].length}</small></h3><div role="list">{group[2].map(item => <button type="button" key={item.id} className={selected === item.id ? 'active' : ''} onClick={() => setSelected(item.id)}><span lang="en">{item.title}</span><small>{item.sourcePage}</small><ChevronRight size={15} aria-hidden="true" /></button>)}</div></section>
       </div>
       <aside className="adventure-catalog__brief">
         <span className="serial-label">{definition.type.replace('_', ' ')}</span>
@@ -158,11 +171,22 @@ const AdventureCatalog = ({ onStart }) => {
   </section>;
 };
 
-const StageRail = ({ definition, active }) => <ol className="adventure-stage-rail" aria-label="모험 진행 단계">{definition.stages.map((stage, index) => {
+const StageItem = ({ stage, index, active }) => {
   const complete = active.completedStageIds.includes(stage.id);
   const current = index === active.stageIndex;
-  return <li key={stage.id} className={current ? 'active' : complete ? 'complete' : ''} aria-current={current ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><div><b lang="en">{stage.title}</b><small>{KIND_LABELS[stage.kind]} · p.{stage.sourcePage}</small></div>{complete && <Check size={15} aria-hidden="true" />}</li>;
-})}</ol>;
+  return <li className={current ? 'active' : complete ? 'complete' : ''} aria-current={current ? 'step' : undefined}><span>{String(index + 1).padStart(2, '0')}</span><div><b lang="en">{stage.title}</b><small>{KIND_LABELS[stage.kind]} · p.{stage.sourcePage}</small></div>{complete && <Check size={15} aria-hidden="true" />}</li>;
+};
+
+const StageRail = ({ definition, active }) => {
+  const indexes = [active.stageIndex - 1, active.stageIndex, active.stageIndex + 1].filter(index => index >= 0 && index < definition.stages.length);
+  const progress = Math.round(((active.stageIndex + 1) / definition.stages.length) * 100);
+  return <aside className="adventure-stage-progress" aria-label="모험 진행 단계">
+    <header><span>현재 여정</span><strong>{active.stageIndex + 1} / {definition.stages.length}</strong></header>
+    <div className="adventure-stage-progress__track" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
+    <ol className="adventure-stage-rail">{indexes.map(index => <StageItem key={definition.stages[index].id} stage={definition.stages[index]} index={index} active={active} />)}</ol>
+    <details className="adventure-stage-overview"><summary>전체 단계 보기</summary><ol>{definition.stages.map((stage, index) => <StageItem key={stage.id} stage={stage} index={index} active={active} />)}</ol></details>
+  </aside>;
+};
 
 const TableWorkspace = ({ tableId, subtable = null, resolved, onResolve }) => {
   const table = CHAPTER_19_TABLES[tableId];
@@ -499,9 +523,13 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
   const tableSubsystemReturned = tableSubsystemRequirement
     ? active.results.some(item => item.type === `${tableSubsystemRequirement}_return` && item.tableResultId === active.pendingTable.resolved.id)
     : true;
-  return <article className="folio-page adventure-ledger view-animate">
+  const selectedTestKey = test.key || availableTestKeys[0] || stage.tests?.[0];
+  const selectedTestSource = selectedTestKey ? getAdventureTestSource(character, selectedTestKey) : null;
+  const stageTestResults = active.results.filter(item => item.type === 'test' && item.stageId === stage.id);
+  const resolvedChoice = active.pendingChoice?.resolved;
+  return <article className="folio-page adventure-ledger adventure-ledger--active view-animate">
     <FolioHeading eyebrow={`Liber Adventurarum · ${definition.sourcePage}`} title={definition.title} year={active.campaignYear}>{active.participants.map(item => item.name).join(' · ')}</FolioHeading>
-    <section className="adventure-status"><div><span>현재 장면</span><strong>{stage.title}</strong></div><div><span>진행</span><strong>{active.stageIndex + 1} / {definition.stages.length}</strong></div><div><span>상태</span><StatusSeal tone={active.status === 'deferred' ? 'warning' : 'active'}>{active.status}</StatusSeal></div><div><span>출처</span><strong>p.{stage.sourcePage}</strong></div></section>
+    <section className="adventure-status"><div><span>현재 장면</span><strong>{stage.title}</strong></div><div><span>진행</span><strong>{active.stageIndex + 1} / {definition.stages.length}</strong></div><div><span>상태</span><StatusSeal tone={active.status === 'deferred' ? 'warning' : 'active'}>{ADVENTURE_STATUS_LABELS[active.status] || active.status}</StatusSeal></div><div><span>출처</span><strong>p.{stage.sourcePage}</strong></div></section>
     <div className="adventure-runtime">
       <StageRail definition={definition} active={active} />
       <div className="adventure-scene">
@@ -510,9 +538,9 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
         {repeatStatus && <div className="adventure-repeat-status"><RotateCcw size={17} aria-hidden="true" /><div><strong>{repeatStatus.label}</strong><span>{repeatStatus.target ? `${repeatStatus.completed} / ${repeatStatus.target}` : `${repeatStatus.completed}회 완료`}</span>{repeatStatus.sourceAmbiguity && <small>Source ambiguity · {repeatStatus.sourceAmbiguity}</small>}</div></div>}
 
         {active.status === 'deferred' ? <section className="adventure-deferred"><CirclePause size={24} aria-hidden="true" /><div><strong>{active.deferred?.requirement}</strong><p>{active.deferred?.gmNote || 'GM 판단 또는 외부 의존성을 기다립니다.'}</p><small>p.{active.deferred?.sourcePage}</small></div><button type="button" className="primary-command" onClick={() => update(previous => resumeAdventure(previous), '같은 장면에서 모험을 재개했습니다.')}><RotateCcw size={17} aria-hidden="true" />재개</button></section> : interruption ? <InterruptionWorkspace interruption={interruption} onResolve={input => update(previous => resolveAdventureInterruption(previous, input), '중단 상태와 참가자 연속성을 확인했습니다.')} /> : <>
-          {stage.kind === 'player_choice' && <section className="adventure-decision"><fieldset><legend>플레이어 선택</legend>{stage.options?.length ? stage.options.map(option => <label key={option}><input type="radio" name="adventure-choice" checked={decision.value === option} onChange={() => setDecision(previous => ({ ...previous, value: option }))} /><span>{option.replaceAll('_', ' ')}</span></label>) : <Field label="선택"><input value={decision.value} onChange={event => setDecision(previous => ({ ...previous, value: event.target.value }))} /></Field>}</fieldset><Field label="선택 이유·장면 기록"><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} /></Field>{!active.pendingChoice?.resolved ? <button type="button" className="secondary-command" onClick={() => resolveDecision('player')}>선택 확정</button> : <button type="button" className="primary-command" onClick={() => next()}>다음 장면<ChevronRight size={17} aria-hidden="true" /></button>}</section>}
+          {stage.kind === 'player_choice' && <section className="adventure-decision">{resolvedChoice ? <><div className="adventure-resolved adventure-resolved--decision"><Check size={17} aria-hidden="true" /><div><span>확정한 선택</span><strong>{String(resolvedChoice.value || '').replaceAll('_', ' ')}</strong>{resolvedChoice.note && <p>{resolvedChoice.note}</p>}</div></div><button type="button" className="primary-command" onClick={() => next()}>다음 장면<ChevronRight size={17} aria-hidden="true" /></button></> : <><fieldset><legend>플레이어 선택</legend>{stage.options?.length ? stage.options.map(option => <label key={option}><input type="radio" name="adventure-choice" checked={decision.value === option} onChange={() => setDecision(previous => ({ ...previous, value: option }))} /><span>{option.replaceAll('_', ' ')}</span></label>) : <Field label="선택"><input value={decision.value} onChange={event => setDecision(previous => ({ ...previous, value: event.target.value }))} /></Field>}</fieldset><Field label="선택 이유·장면 기록"><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} /></Field><button type="button" className="secondary-command" onClick={() => resolveDecision('player')}>선택 확정</button></>}</section>}
 
-          {stage.kind === 'test' && <section className="adventure-test"><div><Field label="판정"><select value={test.key || availableTestKeys[0] || stage.tests?.[0]} onChange={event => setTest(previous => ({ ...previous, key: event.target.value }))}>{availableTestKeys.map(key => <option key={key} value={key}>{TEST_LABELS[key] || key}</option>)}</select></Field><Field label="d20 · 비우면 앱 굴림"><input type="number" min="1" max="20" value={test.roll} onChange={event => setTest(previous => ({ ...previous, roll: event.target.value }))} /></Field><Field label="원문 수정"><input type="number" value={test.modifier} onChange={event => setTest(previous => ({ ...previous, modifier: event.target.value }))} /></Field></div>{(stage.testMode === 'all' || stage.repeat) && <p className="adventure-test__progress">판정 완료 {resolvedTestKeys.length}{repeatStatus?.target ? ` / ${repeatStatus.target}` : ''}</p>}{!active.pendingTest?.resolved ? <button type="button" className="secondary-command" disabled={!availableTestKeys.length} onClick={() => update(previous => resolveAdventureTest(previous, { testKey: test.key || availableTestKeys[0] || stage.tests[0], roll: test.roll === '' ? undefined : Number(test.roll), modifier: Number(test.modifier) }), '판정 결과를 저장했습니다.')}><Dices size={17} aria-hidden="true" />판정</button> : <><div className="adventure-resolved"><Check size={17} aria-hidden="true" /><strong>{active.pendingTest.resolved.testKey} · {active.pendingTest.resolved.outcome}</strong><span>d20 {active.pendingTest.resolved.roll} / {active.pendingTest.resolved.target}</span></div><button type="button" className="primary-command" onClick={() => next()}>다음 {stage.repeat && repeatStatus?.completed < repeatStatus?.target ? '판정' : '장면'}<ChevronRight size={17} aria-hidden="true" /></button></>}</section>}
+          {stage.kind === 'test' && <section className="adventure-test"><div><Field label="판정"><select value={selectedTestKey} onChange={event => setTest(previous => ({ ...previous, key: event.target.value }))}>{availableTestKeys.map(key => <option key={key} value={key}>{TEST_LABELS[key] || key}</option>)}</select></Field><Field label="d20 · 비우면 앱 굴림"><input type="number" min="1" max="20" value={test.roll} onChange={event => setTest(previous => ({ ...previous, roll: event.target.value }))} /></Field><Field label="원문 수정"><input type="number" value={test.modifier} onChange={event => setTest(previous => ({ ...previous, modifier: event.target.value }))} /></Field></div>{selectedTestSource && !active.pendingTest?.resolved && <div className="adventure-test__target"><span>{TEST_LABELS[selectedTestKey] || selectedTestKey}</span><strong>{selectedTestSource.value}{Number(test.modifier) ? ` ${Number(test.modifier) > 0 ? '+' : '-'} ${Math.abs(Number(test.modifier))}` : ''}</strong><small>{selectedTestSource.group}의 현재 수치</small></div>}{(stage.testMode === 'all' || stage.repeat) && <p className="adventure-test__progress">판정 완료 {resolvedTestKeys.length}{repeatStatus?.target ? ` / ${repeatStatus.target}` : ''}</p>}{stageTestResults.length > 0 && <div className="adventure-test__history" aria-label="이 장면의 판정 결과">{stageTestResults.map(result => <div key={result.id}><span>{TEST_LABELS[result.testKey] || result.testKey}</span><strong>{result.outcome}</strong><small>d20 {result.roll} / {result.target}</small></div>)}</div>}{!active.pendingTest?.resolved ? <button type="button" className="secondary-command" disabled={!availableTestKeys.length} onClick={() => update(previous => resolveAdventureTest(previous, { testKey: selectedTestKey, roll: test.roll === '' ? undefined : Number(test.roll), modifier: Number(test.modifier) }), '판정 결과를 저장했습니다.')}><Dices size={17} aria-hidden="true" />판정</button> : <button type="button" className="primary-command" onClick={() => next()}>다음 {stage.repeat && repeatStatus?.completed < repeatStatus?.target ? '판정' : '장면'}<ChevronRight size={17} aria-hidden="true" /></button>}</section>}
 
           {stage.kind === 'table' && <><TableWorkspace key={`${stage.id}:${active.pendingTable?.iteration}:${active.pendingTable?.tableId}:${active.pendingTable?.subtable || 'root'}:${active.pendingTable?.resolved?.id || 'open'}`} tableId={active.pendingTable?.tableId || stage.tableId} subtable={active.pendingTable?.subtable || null} resolved={active.pendingTable?.resolved} onResolve={tableInput => update(previous => resolveAdventureTable(previous, tableInput), '표 결과를 이 모험에 고정했습니다.')} />{active.pendingConsequence?.status === 'pending' && <ConsequenceWorkspace pending={active.pendingConsequence} onApply={form => update(previous => applyAdventureConsequence(previous, { ...form, amount: Number(form.amount), amountDeniers: Number(form.amountDeniers), damage: Number(form.damage), reason: form.reason || active.pendingConsequence.description }), '기존 canonical 장부에 결과를 반영했습니다.')} onAcknowledge={() => update(previous => acknowledgeAdventureConsequence(previous), '별도 수치 변화가 없는 결과로 확인했습니다.')} />}{active.pendingTable?.resolved && active.pendingConsequence?.status !== 'pending' && !pending && <>{tableSubsystemRequirement === 'combat' && !tableSubsystemReturned && <CombatLaunch active={active} stage={stage} preset={active.pendingTable.resolved} onLaunch={launchCombat} />}{tableSubsystemRequirement === 'battle' && !tableSubsystemReturned && <BattleLaunch stage={stage} character={character} onLaunch={launchBattle} />}{tableSubsystemReturned && <div className="adventure-command-row"><button type="button" className="primary-command" onClick={() => next()}>{stage.repeat && !(repeatStatus?.target && repeatStatus.completed >= repeatStatus.target) ? '다음 반복' : '표 결과 소비 완료'}<ChevronRight size={17} aria-hidden="true" /></button>{repeatStatus?.allowStop && repeatStatus.completed >= repeatStatus.minimum && <button type="button" className="secondary-command" onClick={() => next({ stopRepeat: true })}>반복 종료</button>}</div>}</>}</>}
 
