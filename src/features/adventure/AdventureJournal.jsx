@@ -513,8 +513,10 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
     : stage.tests || [];
   const procedureSubsystemBridge = stage.kind === 'procedure'
     && (definition.integrations.includes('combat') || definition.integrations.includes('battle'));
-  const consequenceBridge = ['procedure', 'aftermath'].includes(stage.kind)
-    && ['economy', 'glory', 'standing'].some(key => definition.integrations.includes(key));
+  const consequenceBridge = stage.requiresCanonicalConsequence || (
+    ['procedure', 'aftermath'].includes(stage.kind)
+    && ['economy', 'glory', 'standing'].some(key => definition.integrations.includes(key))
+  );
   const repeatStatus = getAdventureRepeatStatus(active);
   const procedureProgress = active.procedureProgress?.[stage.id] || null;
   const tableSubsystemRequirement = active.pendingTable?.resolved

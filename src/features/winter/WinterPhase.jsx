@@ -20,6 +20,7 @@ import {
   MAINTENANCE_GRADES,
   PERSONAL_EVENT_TABLE,
   recordManualWinterResolution,
+  resolveWinterFamilyTarget,
   resolveWinterStep,
   WINTER_STEPS
 } from '../../rules';
@@ -97,6 +98,9 @@ export default function WinterPhase({ character, setCharacter }) {
   const [error, setError] = useState('');
   const [manualNote, setManualNote] = useState('');
   const [manualTransactionIds, setManualTransactionIds] = useState('');
+  const [familyRelationRoll, setFamilyRelationRoll] = useState('');
+  const [familySexRoll, setFamilySexRoll] = useState('');
+  const [familyTargetId, setFamilyTargetId] = useState('');
   const [soloChoice, setSoloChoice] = useState('not_applicable');
   const [maintenanceGrade, setMaintenanceGrade] = useState(character.personal?.maintenance || 'ordinary');
   const [situationalModifier, setSituationalModifier] = useState(0);
@@ -121,6 +125,9 @@ export default function WinterPhase({ character, setCharacter }) {
   const step = WINTER_STEPS[viewIndex];
   const record = winter.records?.[step.id];
   const status = winter.steps?.[step.id] || 'pending';
+  const pendingChoices = Array.isArray(record?.unresolvedChoice) ? record.unresolvedChoice : record?.unresolvedChoice ? [record.unresolvedChoice] : [];
+  const hasFamilyTargetChoice = step.id === 'family' && pendingChoices.some(item => ['family_target_choice', 'family_target_creation_or_reroll', 'family_target_required'].includes(item.type));
+  const familyTargetCandidates = record?.result?.relation?.candidates || [];
   const resolvedCount = WINTER_STEPS.filter(item => winter.steps?.[item.id] === 'resolved').length;
   const activeIndex = WINTER_STEPS.findIndex(item => item.id === winter.currentStep);
   const trainingGroups = useMemo(() => getTrainingSkillGroups(), []);
@@ -159,6 +166,24 @@ export default function WinterPhase({ character, setCharacter }) {
       moveToCurrent(result.character);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '수동 판정 기록을 저장하지 못했습니다.');
+    }
+  };
+
+  const resolveFamilyTarget = () => {
+    setError('');
+    try {
+      const relationRoll = Number(familyRelationRoll || record?.roll?.relation);
+      const sexRoll = Number(familySexRoll || record?.roll?.sex);
+      const result = resolveWinterFamilyTarget(character, familyTargetCandidates.length > 1
+        ? { targetId: familyTargetId }
+        : { relationRoll, sexRoll });
+      setCharacter(result.character);
+      setFamilyTargetId('');
+      setFamilyRelationRoll('');
+      setFamilySexRoll('');
+      if (!result.awaitingChoice) moveToCurrent(result.character);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '가족 사건 대상을 확정하지 못했습니다.');
     }
   };
 
@@ -334,7 +359,26 @@ export default function WinterPhase({ character, setCharacter }) {
 
         <div className="winter-step-sheet__workspace">
           {renderControls()}
-          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && (
+          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && hasFamilyTargetChoice && (
+            <section className="manual-resolution">
+              <Dices size={20} aria-hidden="true" />
+              <div>
+                <strong>Table 10-13 가족 대상을 확정하십시오</strong>
+                <p>{pendingChoices.filter(item => ['family_target_choice', 'family_target_creation_or_reroll', 'family_target_required'].includes(item.type)).map(item => item.label).join(' · ')}</p>
+                {familyTargetCandidates.length > 1 ? (
+                  <SelectField label="가족 사건 대상" value={familyTargetId} onChange={setFamilyTargetId} options={familyTargetCandidates.map(member => ({ value: member.id, label: `${member.name} · ${member.relation}` }))} />
+                ) : (
+                  <div className="winter-form-grid">
+                    <label className="winter-field"><span>관계 d20</span><input type="number" min="1" max="20" value={familyRelationRoll || record?.roll?.relation || ''} onChange={event => setFamilyRelationRoll(event.target.value)} /></label>
+                    <label className="winter-field"><span>성별 d6</span><input type="number" min="1" max="6" value={familySexRoll || record?.roll?.sex || ''} onChange={event => setFamilySexRoll(event.target.value)} /></label>
+                  </div>
+                )}
+                <p className="adventure-source-note">해당 가문원을 가문 장부에 먼저 추가한 뒤 같은 판정을 다시 확인하거나, 원문이 허용한 재판정 값을 입력할 수 있습니다.</p>
+                <button type="button" className="secondary-command" onClick={resolveFamilyTarget} disabled={familyTargetCandidates.length > 1 && !familyTargetId}>{familyTargetCandidates.length > 1 ? '가족 대상 확정' : '가족 대상 다시 판정'}</button>
+              </div>
+            </section>
+          )}
+          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && (
             <section className="manual-resolution">
               <AlertTriangle size={20} aria-hidden="true" />
               <div>

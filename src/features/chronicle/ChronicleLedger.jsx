@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Filter, ScrollText } from 'lucide-react';
 import { EmptyState, FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
 import RulebookButton from '../rulebook/RulebookButton';
+import { formatStandingChange, getChronicleTypeLabel, getLifecycleLabel } from '../../utils/chronicleLabels';
 
 const FILTERS = [
   ['all', '전체'],
@@ -18,19 +19,16 @@ const FILTERS = [
 
 const ADMINISTRATIVE_JOURNAL = /겨울 정산 완료|단계 거래와|규칙 거래 중 연대기 사건/;
 
-const EVENT_TYPE_LABELS = {
-  adventure_start: '모험 시작',
-  adventure_complete: '모험 완료',
-  battle: '대전투',
-  character: '기사',
-  combat: '전투',
-  death: '죽음',
-  family: '가문',
-  glory: '영광',
-  marriage: '혼인',
-  miracle: '기적',
-  succession: '계승',
-  winter: '겨울'
+const FILTER_TYPES = {
+  character: ['character', 'knighting', 'retirement', 'incapacitated', 'bedridden', 'active', 'legacy', 'recovery', 'madness', 'dishonor'],
+  family: ['family', 'birth'],
+  winter: ['winter'],
+  battle: ['combat', 'battle', 'siege', 'injury', 'creature_encounter', 'captivity'],
+  glory: ['glory'],
+  marriage: ['marriage'],
+  death: ['death'],
+  succession: ['succession'],
+  miracle: ['miracle']
 };
 
 const normalizeEvents = character => {
@@ -66,7 +64,7 @@ const normalizeEvents = character => {
 export default function ChronicleLedger({ character }) {
   const [filter, setFilter] = useState('all');
   const events = useMemo(() => normalizeEvents(character), [character]);
-  const visibleEvents = filter === 'all' ? events : events.filter(event => event.type.includes(filter));
+  const visibleEvents = filter === 'all' ? events : events.filter(event => (FILTER_TYPES[filter] || [filter]).includes(event.type));
   const grouped = useMemo(() => visibleEvents.reduce((acc, event) => {
     (acc[event.year] ||= []).push(event);
     return acc;
@@ -93,7 +91,7 @@ export default function ChronicleLedger({ character }) {
             {yearEvents.map(event => (
               <article className="chronicle-entry" key={event.id}>
                 <div className="chronicle-entry__meta">
-                  <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{EVENT_TYPE_LABELS[event.type] || event.type.replaceAll('_', ' ')}</StatusSeal>
+                  <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{getChronicleTypeLabel(event.type)}</StatusSeal>
                   {event.age !== undefined && <span lang="en">Age {event.age}</span>}
                   {event.ruleId && <code>{event.ruleId}</code>}
                   {event.source && <span>{event.source}</span>}
@@ -102,9 +100,9 @@ export default function ChronicleLedger({ character }) {
                 {event.narrative && <p>{event.narrative}</p>}
                 {(event.glory !== undefined || event.standing || event.lifecycle) && (
                   <footer>
-                    {event.glory !== undefined && <span lang="en">Glory {Number(event.glory) >= 0 ? '+' : ''}{event.glory}</span>}
-                    {event.standing && <span lang="en">Standing {String(event.standing)}</span>}
-                    {event.lifecycle && <span lang="en">Lifecycle {String(event.lifecycle)}</span>}
+                    {event.glory !== undefined && <span>영광 {Number(event.glory) >= 0 ? '+' : ''}{event.glory}</span>}
+                    {event.standing && <span>지위 {formatStandingChange(event.standing)}</span>}
+                    {event.lifecycle && <span>생애 {getLifecycleLabel(event.lifecycle)}</span>}
                   </footer>
                 )}
               </article>

@@ -10,6 +10,7 @@ import {
   resolveFamilyRelation,
   resolveRandomMarriage,
   resolveSurvivalRoll,
+  resolveWinterFamilyTarget,
   resolveWinterStep,
   WINTER_STEPS
 } from '../src/rules/winterRules.js';
@@ -154,6 +155,25 @@ choiceResult = resolveWinterStep(choiceResult.character, { stepId: 'family', inp
 assert.equal(choiceResult.awaitingChoice, false);
 assert.equal(choiceResult.character.family.members.length, memberCountBeforeChoice, 'Resuming a family-event choice cannot duplicate spouse or children.');
 assert.equal(choiceResult.character.campaign.familyTimeline.length, lineageCountBeforeChoice + 1, 'Only the selected family event is appended on resume.');
+
+let missingTarget = resolveWinterStep(familyStepStart, { stepId: 'family', input: {
+  familyEventRoll: 2, relationRoll: 14, sexRoll: 5,
+  marriageAction: 'skip', childbirthAction: 'skip'
+} });
+assert.equal(missingTarget.awaitingChoice, true, 'A missing printed-table family target pauses Winter.');
+assert.deepEqual(missingTarget.character.campaign.winter.unresolved.family.types.sort(), ['family_target_creation_or_reroll', 'family_target_required']);
+const gloryTransactionsBeforeTarget = missingTarget.character.campaign.gloryLedger.length;
+missingTarget = resolveWinterFamilyTarget(missingTarget.character, { relationRoll: 3, sexRoll: 2 });
+assert.equal(missingTarget.awaitingChoice, false, 'The printed reroll path can resolve a missing family target.');
+assert.equal(missingTarget.character.family.members.find(member => member.id === 'father').status, '사망');
+assert.equal(missingTarget.character.campaign.winter.steps.family, 'resolved');
+assert.equal(missingTarget.character.campaign.familyTimeline.find(entry => entry.id === 'winter:767:family:event').memberId, 'father');
+assert.equal(missingTarget.character.campaign.gloryLedger.length, gloryTransactionsBeforeTarget, 'Resolving the target cannot replay the family event reward.');
+assert.throws(
+  () => resolveWinterFamilyTarget(missingTarget.character, { relationRoll: 3, sexRoll: 2 }),
+  /No unresolved Winter family target/,
+  'A resolved family target cannot be applied twice.'
+);
 
 result = resolveWinterStep(character, { stepId: 'experience', input: {} }, constantRng(0.99));
 character = result.character;

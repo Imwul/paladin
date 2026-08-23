@@ -631,6 +631,7 @@ export const collectSurvivalTargets = character => {
 
 export const resolveFamilyRelation = ({ relationRoll, sexRoll, members = [] }) => {
   const relation = FAMILY_RELATION_TABLE.find(entry => relationRoll >= entry.min && relationRoll <= entry.max);
+  if (!relation) throw new RangeError('Family relation roll must be between 1 and 20.');
   const gender = Number(sexRoll) % 2 === 1 ? 'female' : 'male';
   const candidates = members.filter(member => {
     if (member.status === '사망') return false;
@@ -653,6 +654,16 @@ export const resolveFamilyRelation = ({ relationRoll, sexRoll, members = [] }) =
     }
   };
 };
+
+const FAMILY_TARGET_CHOICE_TYPES = new Set([
+  'family_target_choice',
+  'family_target_creation_or_reroll',
+  'family_target_required'
+]);
+
+const unresolvedItems = record => (Array.isArray(record?.unresolvedChoice)
+  ? record.unresolvedChoice
+  : record?.unresolvedChoice ? [record.unresolvedChoice] : []);
 
 const resolveSolo = (character, winter, record, input) => {
   const choice = input.choice;
@@ -1348,7 +1359,13 @@ export const resolveWinterStep = (rawCharacter, { stepId, input = {} }, rng = Ma
     record.status = record.status || 'awaiting_choice';
     winter.steps[stepId] = 'awaiting_choice';
     winter.records[stepId] = record;
-    winter.unresolved[stepId] = { label: Array.isArray(record.unresolvedChoice) ? record.unresolvedChoice.map(item => item.label).join('; ') : record.unresolvedChoice?.label, required: true, ruleId: step.ruleId };
+    const pending = unresolvedItems(record);
+    winter.unresolved[stepId] = {
+      label: pending.map(item => item.label).filter(Boolean).join('; '),
+      types: pending.map(item => item.type).filter(Boolean),
+      required: true,
+      ruleId: step.ruleId
+    };
     winter.currentStep = stepId;
     character.campaign.winter = winter;
     return { character, record, applied: true, awaitingChoice: true };
@@ -1362,6 +1379,114 @@ export const resolveWinterStep = (rawCharacter, { stepId, input = {} }, rng = Ma
   winter.currentStep = nextPendingStep(winter);
   delete winter.unresolved[stepId];
   markApplied(character, completionId, `${step.number}단계 ${step.label}`);
+  pushChronicle(character, record);
+  character.campaign.winter = winter;
+  return { character, record, applied: true, awaitingChoice: false };
+};
+
+export const resolveWinterFamilyTarget = (rawCharacter, input = {}, rng = Math.random) => {
+  const character = clone(rawCharacter);
+  const winter = ensureWinterState(character);
+  const step = WINTER_STEPS.find(item => item.id === 'family');
+  const record = winter.records.family;
+  const currentUnresolved = unresolvedItems(record);
+  if (!record || winter.steps.family !== 'awaiting_choice' || !currentUnresolved.some(item => FAMILY_TARGET_CHOICE_TYPES.has(item.type))) {
+    throw new RangeError('No unresolved Winter family target exists.');
+  }
+
+  let relation = record.result?.relation;
+  if (!input.targetId) {
+    const relationRoll = input.relationRoll === undefined ? rollDie(20, rng) : asInt(input.relationRoll);
+    const sexRoll = input.sexRoll === undefined ? rollDie(6, rng) : asInt(input.sexRoll);
+    if (sexRoll < 1 || sexRoll > 6) throw new RangeError('Family sex roll must be between 1 and 6.');
+    relation = resolveFamilyRelation({ relationRoll, sexRoll, members: character.family?.members || [] });
+  }
+
+  const candidates = Array.isArray(relation?.candidates) ? relation.candidates : [];
+  const selectedId = input.targetId || relation?.selectedTarget?.id;
+  const target = selectedId
+    ? (character.family?.members || []).find(member => member.id === selectedId && candidates.some(candidate => candidate.id === member.id))
+    : null;
+  if (input.targetId && !target) throw new RangeError('The selected family member is not a valid printed-table target.');
+
+  record.roll = { ...record.roll, relation: relation.relationRoll, sex: relation.sexRoll };
+  record.result.relation = { ...relation, selectedTarget: target };
+
+  const targetRequired = currentUnresolved.find(item => item.type === 'family_target_required');
+  const remaining = currentUnresolved.filter(item => !FAMILY_TARGET_CHOICE_TYPES.has(item.type));
+  if (!target) {
+    record.unresolvedChoice = [
+      ...remaining,
+      relation.unresolvedChoice,
+      ...(targetRequired ? [targetRequired] : [])
+    ].filter(Boolean);
+    record.status = 'awaiting_choice';
+    winter.records.family = record;
+    winter.unresolved.family = {
+      label: record.unresolvedChoice.map(item => item.label).filter(Boolean).join('; '),
+      types: record.unresolvedChoice.map(item => item.type).filter(Boolean),
+      required: true,
+      ruleId: step.ruleId
+    };
+    character.campaign.winter = winter;
+    return { character, record, applied: true, awaitingChoice: true };
+  }
+
+  const familyEvent = record.result?.familyEvent || {};
+  const beforeStatus = target.status;
+  if ([1, 2].includes(familyEvent.roll) || familyEvent.lifecycleEffect === 'target_death') {
+    target.status = '사망';
+    target.deathCause = familyEvent.title;
+    target.lifeYears = `${String(target.lifeYears || '').split('~')[0]}~${record.year}`;
+  } else if (familyEvent.familyEffect === 'captive') target.status = '포로';
+  else if (familyEvent.familyEffect === 'missing') target.status = '실종';
+
+  if (target.status !== beforeStatus) {
+    record.stateChanges.push({ path: `family.members.${target.id}.status`, before: beforeStatus, after: target.status });
+  }
+  if (familyEvent.familyEffect === 'ward') {
+    const ward = (character.family?.wards || []).find(item => item.id === `${record.completionId}:ward`);
+    const birthYear = Number(target.birthYear || String(target.lifeYears || '').split('~')[0]);
+    if (ward) {
+      ward.memberId = target.id;
+      ward.memberName = target.name;
+      if (Number.isFinite(birthYear)) ward.endYear = birthYear + 15;
+    }
+    if (Number.isFinite(birthYear)) {
+      for (let index = remaining.length - 1; index >= 0; index -= 1) {
+        if (remaining[index].type === 'ward_age_required') remaining.splice(index, 1);
+      }
+    }
+  }
+
+  const timelineId = `${record.completionId}:event`;
+  character.campaign.familyTimeline = (character.campaign.familyTimeline || []).map(entry => entry.id === timelineId
+    ? { ...entry, memberId: target.id, narrative: `${familyEvent.summary} 대상: ${target.name}.` }
+    : entry);
+  if (!record.journalEntry.includes(`대상: ${target.name}`)) record.journalEntry = `${record.journalEntry} 대상: ${target.name}.`;
+  record.unresolvedChoice = remaining.length ? remaining : null;
+
+  if (remaining.length) {
+    record.status = 'awaiting_choice';
+    winter.records.family = record;
+    winter.unresolved.family = {
+      label: remaining.map(item => item.label).filter(Boolean).join('; '),
+      types: remaining.map(item => item.type).filter(Boolean),
+      required: true,
+      ruleId: step.ruleId
+    };
+    character.campaign.winter = winter;
+    return { character, record, applied: true, awaitingChoice: true };
+  }
+
+  record.status = 'resolved';
+  winter.steps.family = 'resolved';
+  winter.records.family = record;
+  winter.transactions.push(record);
+  winter.logs.push(record.journalEntry);
+  winter.currentStep = nextPendingStep(winter);
+  delete winter.unresolved.family;
+  markApplied(character, record.completionId, `${step.number}단계 ${step.label}`);
   pushChronicle(character, record);
   character.campaign.winter = winter;
   return { character, record, applied: true, awaitingChoice: false };
@@ -1387,12 +1512,16 @@ export const recordManualWinterResolution = (rawCharacter, { stepId, note, canon
     ...(character.campaign?.personalityMagic?.transactions || []),
     ...(character.campaign?.rulebookProcedures?.transactions || [])
   ].map(entry => String(entry.id || entry.transactionId || '')));
-  const unresolvedType = record.unresolvedChoice?.type || winter.unresolved?.[stepId]?.type || '';
+  const unresolvedTypes = [...new Set([
+    ...unresolvedItems(record).map(item => item.type),
+    ...(winter.unresolved?.[stepId]?.types || [])
+  ].filter(Boolean))];
   const narrativeOnly = new Set(['family_member_target', 'bastard_parent']);
-  if (!narrativeOnly.has(unresolvedType) && !ids.length) throw new RangeError('결정적 후속 결과는 먼저 canonical 하위 절차에서 처리하고 거래 ID를 연결해야 합니다.');
+  const gmOverride = unresolvedTypes.length > 0 && unresolvedTypes.every(type => narrativeOnly.has(type));
+  if (!gmOverride && !ids.length) throw new RangeError('결정적 후속 결과는 먼저 canonical 하위 절차에서 처리하고 거래 ID를 연결해야 합니다.');
   if (ids.some(id => !available.has(id))) throw new RangeError('저장된 canonical 거래에서 확인할 수 없는 ID가 있습니다.');
   record.status = 'resolved_manual';
-  record.manualResolution = { note: String(note).trim(), canonicalTransactionIds: ids, unresolvedType, recordedAt: new Date().toISOString(), gmOverride: narrativeOnly.has(unresolvedType) };
+  record.manualResolution = { note: String(note).trim(), canonicalTransactionIds: ids, unresolvedTypes, recordedAt: new Date().toISOString(), gmOverride };
   record.journalEntry = `${record.journalEntry} 수동 판정 기록: ${record.manualResolution.note}`;
   winter.steps[stepId] = 'resolved';
   winter.transactions.push(record);

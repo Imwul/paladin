@@ -106,7 +106,7 @@ export default function AppShell({
   const activeWar = character.campaign?.massBattle?.status === 'active'
     || character.campaign?.skirmish?.status === 'active'
     || character.campaign?.siege?.status === 'active';
-  const winterInProgress = winterDone > 0 && winterDone < 10;
+  const winterInProgress = winterDone > 0 && (winterDone < 10 || character.campaign?.winter?.currentStep === 'complete');
   const continuation = character.campaign?.combat?.status === 'active'
     ? { tab: 'combat', label: '진행 중인 전투로 돌아가기' }
     : activeWar
