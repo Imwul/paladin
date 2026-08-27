@@ -527,7 +527,7 @@ export const CHAPTER_19_SHORT_FORMS = Object.freeze([
   short('children_blue_heaven', 'Children of the Blue Heaven', 410, ['personality', 'combat', 'economy', 'chronicle']),
   short('devils_bridge', "The Devil's Bridge", 411, ['personality', 'combat', 'battle', 'glory', 'chronicle'], ['chapter_18']),
   short('faerie_castle', 'The Faerie Castle', 412, ['personality', 'tables', 'glory', 'chronicle'], ['chapter_10'],),
-  short('love_of_bayard', 'For the Love of Bayard', 413, ['skills', 'economy', 'chronicle'], ['chapter_18']),
+  short('love_of_bayard', 'For the Love of Bayard', 413, ['skills', 'combat', 'economy', 'chronicle'], ['chapter_18']),
   short('foreign_embassy', 'The Foreign Embassy', 414, ['skills', 'personality', 'combat', 'economy', 'standing', 'chronicle']),
   short('greedy_abbot', 'The Greedy Abbot', 415, ['skills', 'combat', 'economy', 'standing', 'chronicle'], ['chapter_18']),
   short('guarding_maugis', 'Guarding Maugis', 416, ['skills', 'combat', 'chronicle']),
@@ -620,7 +620,7 @@ export const CHAPTER_19_SOLOS = Object.freeze([
   solo('forest', 'The Forest', [429, 430], ['19-16', '19-17'], ['combat', 'economy', 'standing'], ['chapter_18']),
   {
     id: 'holy_lands', type: 'solo', title: 'The Holy Lands', sourcePage: 'p.430', sourcePages: [430],
-    classification: 'procedural', tableIds: ['19-18', '19-19'], integrations: ['economy', 'battle', 'glory', 'standing'], dependencies: ['chapter_10', 'chapter_18'],
+    classification: 'procedural', tableIds: ['19-18', '19-19'], integrations: ['economy', 'battle', 'glory', 'standing'], dependencies: ['chapter_10'],
     stages: [
       { id: 'setup', title: 'Pilgrim or Crusader', kind: 'player_choice', sourcePage: 430, options: ['pilgrim', 'crusader'] },
       { id: 'outbound_travel', title: 'Outbound Holy Lands Travel', kind: 'table', tableId: '19-18', sourcePage: 430 },
@@ -706,7 +706,7 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
   {
     id: 'humble_squires', type: 'long_form', title: 'The Adventure of the Humble Squires', sourcePage: 'pp.399-409', sourcePages: [399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409],
     sourcePremise: { year: 767, role: 'squire', label: '원문 전제 · 767년 종자 캐릭터' },
-    classification: 'fixed_adventure', integrations: ['skills', 'personality', 'hunt', 'combat', 'battle', 'economy', 'glory', 'standing', 'lifecycle', 'chronicle'], dependencies: ['chapter_18'],
+    classification: 'fixed_adventure', integrations: ['skills', 'personality', 'hunt', 'combat', 'battle', 'economy', 'glory', 'standing', 'lifecycle', 'chronicle'], dependencies: ['chapter_8', 'chapter_18'],
     stages: [
       { id: 'setup', title: 'The Frankish Host', kind: 'setup', sourcePage: 399 },
       { id: 'mountain_dangers', title: 'A Perilous Mountain Journey', kind: 'table', tableId: '19-1', sourcePage: 401, repeat: { mode: 'participants', label: '각 Player-squire가 한 번' } },
@@ -725,9 +725,9 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
       { id: 'knighting', title: 'The Knighting Ceremony', kind: 'subsystem', subsystem: 'knighthood', sourcePage: 406 },
       { id: 'paladins', title: 'The Order of Paladins', kind: 'narrative', sourcePage: 406 },
       { id: 'mount_bitter', title: 'The Battle of Mount Bitter', kind: 'table', tableId: '19-5', sourcePage: 406, repeat: { mode: 'count', count: 5, sequence: true, label: '원문 1~5라운드 고정 사건' }, optional: true },
-      { id: 'challenges', title: 'Chivalric Challenges', kind: 'subsystem', subsystem: 'combat', sourcePage: 406, dependency: 'chapter_18', optional: true },
+      { id: 'challenges', title: 'Chivalric Challenges', kind: 'subsystem', subsystem: 'combat', sourcePage: 406, dependency: 'chapter_18', chapter18Ids: ['ordinary_knight', 'notable_knight'], optional: true },
       { id: 'prophetic_dream', title: 'The Prophetic Dream', kind: 'subsystem', subsystem: 'personality_magic', action: 'humble_dream', sourcePage: 407, optional: true, procedure: { kind: 'dream', passionKey: 'loveGod', messageSource: 'source', sourcePrompt: '귀족의 연회에서 춤추다 검은 뱀을 밟고 발목을 물리는 꿈.' } },
-      { id: 'ambush', title: 'The Dishonorable Ambush', kind: 'subsystem', subsystem: 'combat', sourcePage: 408, dependency: 'chapter_18', optional: true },
+      { id: 'ambush', title: 'The Dishonorable Ambush', kind: 'subsystem', subsystem: 'battle', battleType: 'skirmish', sourcePage: 407, optional: true },
       { id: 'rescue_attempt', title: 'Aumont Tower Rescue Attempt', kind: 'player_choice', sourcePage: 407, options: ['volunteer', 'ordered', 'do_not_participate'], optional: true },
       { id: 'mount_bitter_climb_roll', title: 'Mount Bitter Climb Danger', kind: 'player_choice', sourcePage: 407, options: ['swimming', 'climbing', 'con', 'str', 'energetic', 'temperate'], optional: true },
       { id: 'mount_bitter_climb_test', title: 'Mount Bitter Climb Test', kind: 'test', sourcePage: 407, tests: ['swimming', 'climbing', 'con', 'str', 'energetic', 'temperate'], optional: true },
@@ -785,14 +785,28 @@ export const CHAPTER_19_OVERVIEWS = Object.freeze({
 });
 
 export const CHAPTER_19_EXTERNAL_DEPENDENCIES = Object.freeze([
-  { id: 'chapter_1_lifecycle', chapter: 1, rule: 'Knighthood ceremony and Frankish Birth Gift', current: 'canonical lifecycle/creation bridge', blocking: false },
-  { id: 'chapter_3', chapter: 3, rule: 'Passion shock, melancholy, madness', current: 'canonical Personality/Magic engine', blocking: false },
-  { id: 'chapter_3_9_amor', chapter: '3/9', rule: 'Amor and Love [Amor]', current: 'canonical long-term Amor state', blocking: false },
-  { id: 'chapter_9', chapter: 9, rule: 'Miracles, relics, and religious consequences', current: 'canonical prayer resolver plus explicit GM miracle decision', blocking: false },
-  { id: 'chapter_10', chapter: 10, rule: 'Aging and pregnancy', current: 'Winter engine hand-off', blocking: false },
-  { id: 'chapter_11', chapter: 11, rule: 'Missus dominicus office and duties', current: 'source reference plus GM confirmation', blocking: false },
-  { id: 'chapter_12', chapter: 12, rule: 'Economy, ransom, treasure, gifts', current: 'Economy v2', blocking: false },
-  { id: 'chapter_13', chapter: 13, rule: 'Hunting context and paladin society', current: 'Chapter 19 hunt plus source dependency record', blocking: false },
-  { id: 'chapter_18', chapter: 18, rule: 'Opponent and creature statistics and abilities', current: 'canonical registry, Chapter 7 adapter, special consequence and return', blocking: false },
-  { id: 'chases', chapter: 19, rule: 'Chases and pursuits', current: 'Chapter 19 procedure record', blocking: false }
+  { id: 'chapter_3', chapter: 3, label: 'Chapter 3 · 성격과 Passion', rule: 'Passion shock, melancholy, madness', current: 'Personality/Magic 공용 엔진으로 왕복', classification: 'canonical', blocking: false },
+  { id: 'chapter_7', chapter: 7, label: 'Chapter 7 · 개인전투', rule: 'Joust, melee, wounds, horses', current: 'Chapter 7 전투 엔진으로 왕복', classification: 'canonical', blocking: false },
+  { id: 'chapter_8', chapter: 8, label: 'Chapter 8 · 교전과 전투', rule: 'Skirmish, mass battle, siege', current: 'Chapter 8 엔진으로 왕복', classification: 'canonical', blocking: false },
+  { id: 'chapter_10', chapter: 10, label: 'Chapter 10 · 겨울과 노화', rule: 'Aging, annual time, pregnancy', current: 'Winter 엔진과 생애주기로 연결', classification: 'canonical', blocking: false },
+  { id: 'chapter_11', chapter: 11, label: 'Chapter 11 · 직위와 임무', rule: 'Missus dominicus office and duties', current: '직위 상태를 사용하고 원문상 임무 판단은 GM이 확인', classification: 'intentional_gm', blocking: false },
+  { id: 'chapter_12', chapter: 12, label: 'Chapter 12 · 경제', rule: 'Economy, ransom, treasure, gifts', current: 'Economy v2 거래로 연결', classification: 'canonical', blocking: false },
+  { id: 'chapter_13', chapter: 13, label: 'Chapter 13 · 사냥 맥락', rule: 'Hunting context and Frankish society', current: 'Chapter 19 Hunt 절차와 원문 맥락을 함께 사용', classification: 'canonical', blocking: false },
+  { id: 'chapter_18', chapter: 18, label: 'Chapter 18 · 상대와 생물', rule: 'Opponent and creature statistics and abilities', current: '원문 statblock을 Chapter 7에 전달하고 같은 장면으로 복귀', classification: 'canonical', blocking: false },
+  { id: 'chases', chapter: 19, label: 'Chapter 19 · 추격', rule: 'Chases and pursuits', current: '저장 가능한 Chase 절차로 연결', classification: 'canonical', blocking: false }
 ]);
+
+const CHAPTER_19_DEPENDENCY_BY_ID = Object.freeze(Object.fromEntries(
+  CHAPTER_19_EXTERNAL_DEPENDENCIES.map(item => [item.id, item])
+));
+
+export const getChapter19RuleConnections = value => (Array.isArray(value) ? value : value?.dependencies || []).map(id => (
+  CHAPTER_19_DEPENDENCY_BY_ID[id] || {
+    id,
+    label: id,
+    rule: '현재 빌드에서 연결 상태를 확인할 수 없는 원문 참조',
+    current: '플레이를 계속하기 전에 구현 또는 명시적 GM 경계를 확인해야 함',
+    classification: 'unresolved',
+    blocking: true
+  }
+));

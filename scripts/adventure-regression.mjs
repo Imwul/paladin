@@ -4,7 +4,8 @@ import {
   CHAPTER_19_LONG_ADVENTURES,
   CHAPTER_19_SHORT_FORMS,
   CHAPTER_19_SOLOS,
-  CHAPTER_19_TABLES
+  CHAPTER_19_TABLES,
+  getChapter19RuleConnections
 } from '../src/data/chapter19Data.js';
 import {
   acknowledgeAdventureConsequence,
@@ -392,6 +393,38 @@ assert.equal(CHAPTER_19_SHORT_FORMS.length, 18);
 assert.equal(CHAPTER_19_SOLOS.length, 14);
 assert.equal(CHAPTER_19_ADVENTURES.length, 34);
 assert.equal(Object.keys(CHAPTER_19_TABLES).length, 36);
+
+for (const definition of CHAPTER_19_ADVENTURES) {
+  const connections = getChapter19RuleConnections(definition);
+  assert.equal(connections.length, definition.dependencies.length, `${definition.id} dependency inventory`);
+  assert.equal(connections.some(item => item.blocking), false, `${definition.id} has no unresolved external dependency`);
+}
+
+const humbleDefinition = CHAPTER_19_LONG_ADVENTURES.find(item => item.id === 'humble_squires');
+const humbleChallenge = humbleDefinition.stages.find(stage => stage.id === 'challenges');
+const humbleAmbush = humbleDefinition.stages.find(stage => stage.id === 'ambush');
+assert.deepEqual(humbleChallenge.chapter18Ids, ['ordinary_knight', 'notable_knight']);
+assert.equal(humbleAmbush.subsystem, 'battle');
+assert.equal(humbleAmbush.battleType, 'skirmish');
+
+let humbleAmbushPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'humble_squires' }).character;
+humbleAmbushPath.campaign.adventures.active.stageIndex = humbleDefinition.stages.findIndex(stage => stage.id === 'ambush');
+humbleAmbushPath.campaign.adventures.active.currentStageId = 'ambush';
+humbleAmbushPath = beginAdventureBattle(humbleAmbushPath, {
+  battleType: 'skirmish',
+  setup: { enemy: 'Black knights and pagans', playerCommander: true, commanderSkill: 15, followerRound: 3 }
+}).character;
+assert.equal(humbleAmbushPath.campaign.adventures.active.pendingSubsystem.type, 'skirmish');
+assert.equal(humbleAmbushPath.campaign.skirmish.returnContext.stageId, 'ambush');
+
+const bayardDefinition = CHAPTER_19_SHORT_FORMS.find(item => item.id === 'love_of_bayard');
+assert.ok(bayardDefinition.integrations.includes('combat'));
+let bayardPath = startAdventure(makeCharacter(), { adventureId: 'love_of_bayard' }).character;
+bayardPath.campaign.adventures.active.stageIndex = bayardDefinition.stages.findIndex(stage => stage.id === 'actions');
+bayardPath.campaign.adventures.active.currentStageId = 'actions';
+bayardPath = beginAdventureCombat(bayardPath, { chapter18Id: 'bayard', attackId: 'bite_kick' }).character;
+assert.equal(bayardPath.campaign.combat.returnContext.stageId, 'actions');
+assert.equal(bayardPath.campaign.adventures.active.pendingSubsystem.type, 'combat');
 
 const jewelDefinition = CHAPTER_19_LONG_ADVENTURES.find(item => item.id === 'jewel');
 assert.throws(() => startAdventure(makeCharacter(), { adventureId: 'jewel' }), /원문 전제/);

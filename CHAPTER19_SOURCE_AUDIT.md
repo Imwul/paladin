@@ -2,6 +2,19 @@
 
 > **Current Phase 16 verdict:** **COMPLETE WITH INTENTIONAL GM/NARRATIVE AND SOURCE AMBIGUITIES**; deterministic Chapter 19 gaps are 0. The Phase 13 correction below is historical before-state evidence. The Phase 16 structured-consequence closure addendum at the end supersedes it.
 
+## First-Play Dependency Recheck - 2026-08-28
+
+The catalog's former `외부 의존성: chapter_*` banner conflated executable in-app hand-offs with missing implementation. Every dependency identifier currently emitted by the 34 Chapter 19 definitions now resolves through a shared connection registry. Canonical connections are described at the point of play; an unknown future identifier remains a blocking warning instead of being hidden.
+
+- Chapter 18 encounters use the canonical 74-statblock registry, pass the selected attack and special rules to Chapter 7, and return to the same Adventure stage.
+- Humble Squires p.406 Chivalric Challenges restricts the opponent picker to ordinary or notable knights before entering Chapter 7.
+- Humble Squires p.407 Dishonorable Ambush now enters Chapter 8 Skirmish as the printed three-way fight; its personal melee rounds remain Chapter 7 records.
+- For the Love of Bayard p.413 exposes the Chapter 18 Bayard encounter through Chapter 7 instead of leaving the statblock as catalog-only metadata.
+- The Holy Lands no longer advertises a Chapter 18 dependency because its printed runtime hand-offs are Chapter 10 aging/Winter and Chapter 8 battle/economy procedures.
+- The legacy `kind: dependency` renderer remains only for pre-existing saves and now requires a recorded migration basis. No current Chapter 19 definition emits that stage kind.
+
+Automated coverage rejects unknown dependency identifiers and verifies the Humble Squires Skirmish return plus the Bayard Chapter 18 -> Chapter 7 return. A production-like UI walkthrough started Humble Squires, saved at Table 19-1, reloaded, and resumed at stage 2/24 without redraw; 360 and 3440 px checks had no horizontal overflow and the browser console had no errors or warnings.
+
 ## Phase 13 Strict Completion Correction (2026-08-12)
 
 **Current status: PARTIAL**

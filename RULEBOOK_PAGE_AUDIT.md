@@ -4,6 +4,8 @@
 
 > **Current Phase 16 verdict:** deterministic implementation gaps are **0** across all 463 PDF pages. The Phase 15 summary immediately below is preserved as historical before-state evidence; the superseding counts and chapter verdicts are in the Phase 16 section at the end of this document and in `FINAL_GAP_CLOSURE_REPORT.md`.
 
+> **2026-08-28 Chapter 19 dependency correction:** current Adventure catalog dependencies are executable in-app connections, not unresolved external prerequisites. In particular, Humble Squires p.406 challenges use Chapter 18 opponents in Chapter 7, p.407 Dishonorable Ambush uses Chapter 8 Skirmish with Chapter 7 melee records, and For the Love of Bayard p.413 can launch Bayard through Chapter 18 -> Chapter 7. The Holy Lands' stale Chapter 18 marker was removed. Older `PARTIAL` page rows below remain historical and are superseded by the Phase 16 current-state section plus this correction.
+
 ## 기준
 
 - 권위 원본: paladin_core_rulebook.pdf, 463 PDF pages

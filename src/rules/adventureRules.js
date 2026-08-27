@@ -1740,7 +1740,7 @@ export const completeAdventureStage = (characterValue, input = {}, now) => {
       throw new RangeError(`현재 표 결과가 요구하는 Chapter ${requiredSubsystem === 'combat' ? '7' : '8'} 절차를 완료하고 결과를 반환하세요.`);
     }
   }
-  if (stage.kind === 'dependency' && state.pendingDependency?.status !== 'recorded') throw new RangeError('외부 장 의존성 처리 방법을 기록하세요.');
+  if (stage.kind === 'dependency' && state.pendingDependency?.status !== 'recorded') throw new RangeError('이전 저장에 남은 규칙 연결의 처리 근거를 기록하세요.');
   if (stage.kind === 'procedure' && stage.procedure) {
     const progress = state.procedureProgress?.[stage.id] || { completedItemIds: [] };
     const required = list(stage.procedure.items).filter(item => !item.optional).map(item => item.id);

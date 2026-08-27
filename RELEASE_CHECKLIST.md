@@ -1,5 +1,7 @@
 # Release Candidate Checklist
 
+> **First-play dependency recheck (2026-08-28):** all `chapter_*` identifiers emitted by the current Chapter 19 catalog resolve to an in-app canonical engine or an explicit source-required GM boundary. The catalog now explains those connections instead of presenting them as missing external dependencies. Humble Squires p.407 uses Chapter 8 Skirmish, its p.406 challenges and Bayard use Chapter 18 -> Chapter 7, save/reload resumes at the exact Adventure stage, and the dependency regression rejects unknown identifiers. The Phase 15 `Chapter 19 preview/partial support` statement below is retained only as superseded historical evidence.
+
 > **v1.1 Personal Rulebook (2026-08-13):** `feature/v1.1-personal-rulebook-transplant` preserves the v1.0.0 Golden Master and adds the 463-page integrated reader. Campaign schema remains v12. Source coverage, 163-table indexing, full CI, hostile saves, the 11-year campaign and all 37 production-browser gates pass. Current status: **PALADIN PERSONAL RULEBOOK TRANSPLANT COMPLETE**. See `PERSONAL_RULEBOOK_BROWSER_CERTIFICATION.md`.
 
 > **Current Phase 17 verdict (2026-08-12):** **PALADIN v1.0 RELEASE CANDIDATE - CERTIFIED**. The initial frozen-baseline run reproduced a keyboard focus blocker; after explicit remediation authorization, that defect and the remaining Hook runtime risks were fixed and all 40 gates passed. The blocked first-run section remains below as historical evidence. `FINAL_RULEBOOK_CERTIFICATION.md` is the current certification record.

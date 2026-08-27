@@ -23,7 +23,8 @@ import {
   CHAPTER_19_OVERVIEWS,
   CHAPTER_19_SHORT_FORMS,
   CHAPTER_19_SOLOS,
-  CHAPTER_19_TABLES
+  CHAPTER_19_TABLES,
+  getChapter19RuleConnections
 } from '../../data/chapter19Data';
 import { BIRTH_GIFTS, MELEE_WEAPON_SKILLS } from '../../rules/characterCreationData';
 import {
@@ -83,7 +84,7 @@ const GROUPS = [
 
 const KIND_LABELS = {
   setup: '설정', reference: '원문 참조', player_choice: '플레이어 선택', gm_decision: 'GM 판단', narrative: '서술',
-  test: '판정', table: '표', procedure: '절차', subsystem: '기존 엔진', dependency: '외부 의존성', consequence: '결과', aftermath: '후속 처리'
+  test: '판정', table: '표', procedure: '절차', subsystem: '기존 엔진', dependency: '이전 저장 연결', consequence: '결과', aftermath: '후속 처리'
 };
 
 const ADVENTURE_STATUS_LABELS = { active: '진행 중', deferred: '보류', complete: '완료', aborted: '중단' };
@@ -142,8 +143,8 @@ const STAGE_NOTES = {
     knighting: '서임식과 Frankish Birth Gift는 기존 생애주기/캐릭터 생성 절차에 넘깁니다.',
     paladins: '팔라딘 기사단 창설과 참가자의 지위는 플레이 결과에 맞게 서술합니다.',
     mount_bitter: 'Table 19-5의 1~5라운드 고정 사건을 순서대로 처리합니다. 화살, 돌격, 지휘관 교전과 패주 뒤 개인전은 Chapter 7 결과를 반환받습니다.',
-    challenges: 'Carahue 이후의 기사도 도전은 Chapter 7 마상시합/개인전투를 사용합니다.',
-    ambush: '불명예스러운 매복의 개인전투는 Chapter 7을 사용합니다.',
+    challenges: 'Carahue 이후의 기사도 도전은 원문상 Saracen 또는 Persian 기사와의 단일 대결입니다. Chapter 18의 일반·유명 기사를 골라 Chapter 7에서 사랑 또는 first blood 조건으로 처리합니다.',
+    ambush: '검은 기사, Franks, Danes·Saracens의 섬 전투는 p.407이 명시한 Chapter 8의 3자 Skirmish로 처리합니다. 각 melee round의 개인전 결과는 Chapter 7 기록을 사용합니다.',
     aftermath: 'p.405·408: 알프스 늑대 1, 흰 사슴 길 20(나이모에게 알리면 x2), 관련 소문 1, 투르팽 축복 20, 첫 전투 성공 라운드 50, 샤를마뉴 구출 100/말 구출 50/전마 전달 100, Joyeuse 회수 50, 약탈 £마다 1, 샤를마뉴 직접 서임 1,300. 선택 후속부는 Mount Bitter 성공 라운드 50, 섬 교전 20, 곰 10·표범 75, 그리핀 원조 100, Floripas 시련 25, 공성 저항 100만 적용합니다.'
   }
 };
@@ -166,6 +167,8 @@ const AdventureCatalog = ({ character, onStart }) => {
   const [premiseOverride, setPremiseOverride] = useState(false);
   const [premiseOverrideNote, setPremiseOverrideNote] = useState('');
   const definition = getAdventureDefinition(selected);
+  const ruleConnections = getChapter19RuleConnections(definition);
+  const blockingConnections = ruleConnections.filter(item => item.blocking);
   const sourcePremiseIssues = getAdventureSourcePremiseIssues(character, definition);
   const sourcePremiseMismatch = sourcePremiseIssues.length > 0;
   const group = GROUPS.find(([id]) => id === activeGroup) || GROUPS[0];
@@ -194,7 +197,7 @@ const AdventureCatalog = ({ character, onStart }) => {
         <p>{CHAPTER_19_OVERVIEWS[definition.id]}</p>
         <p>{definition.sourcePage} · {definition.stages.length}단계 · {definition.integrations.join(', ')}</p>
         {definition.sourcePremise && <div className={`adventure-premise${sourcePremiseMismatch ? ' adventure-premise--warning' : ''}`}><BookOpenCheck size={17} aria-hidden="true" /><div><strong>{definition.sourcePremise.label}</strong>{sourcePremiseMismatch && <><small>{sourcePremiseIssues.join(' ')}</small><label className="adventure-premise__override"><input type="checkbox" checked={premiseOverride} onChange={event => setPremiseOverride(event.target.checked)} />GM이 원문 전제 각색을 승인함</label>{premiseOverride && <input className="adventure-premise__note" aria-label="원문 전제 각색 사유" value={premiseOverrideNote} onChange={event => setPremiseOverrideNote(event.target.value)} placeholder="연도·신분을 바꾸는 이유와 적용 범위" />}</>}</div></div>}
-        {definition.dependencies.length > 0 && <div className="adventure-dependencies"><AlertTriangle size={17} aria-hidden="true" /><span>외부 의존성: {definition.dependencies.join(', ')}</span></div>}
+        {ruleConnections.length > 0 && <section className={`adventure-connections${blockingConnections.length ? ' adventure-connections--warning' : ''}`} aria-label="연결된 규칙"><div>{blockingConnections.length ? <AlertTriangle size={17} aria-hidden="true" /> : <BookOpenCheck size={17} aria-hidden="true" />}<strong>{blockingConnections.length ? '확인이 필요한 규칙 연결' : '앱 안에서 연결된 규칙'}</strong></div><ul>{ruleConnections.map(item => <li key={item.id}><span>{item.label}</span><small>{item.current}</small></li>)}</ul></section>}
         <Field label="추가 참가자 · 쉼표 구분"><input value={participants} onChange={event => setParticipants(event.target.value)} placeholder="다른 Player-knight 이름" /></Field>
         <button type="button" className="primary-command" disabled={sourcePremiseMismatch && (!premiseOverride || !premiseOverrideNote.trim())} onClick={() => onStart(selected, participants, sourcePremiseMismatch ? { approved: premiseOverride, note: premiseOverrideNote.trim() } : null)}><Play size={17} aria-hidden="true" />모험 시작</button>
       </aside>
@@ -425,7 +428,8 @@ const CombatLaunch = ({ active, stage, onLaunch, hunt = null, preset = null }) =
   const participantCount = Math.max(1, active.participants.length);
   const isBrigands = active.adventureId === 'jewel' && stage.id === 'brigands';
   const isEingar = active.adventureId === 'jewel' && stage.id === 'werewolf';
-  const defaultCreatureIds = getChapter18AdventureDefaults(active.adventureId);
+  const stageCreatureIds = stage.chapter18Ids || [];
+  const defaultCreatureIds = stageCreatureIds.length ? stageCreatureIds : getChapter18AdventureDefaults(active.adventureId);
   const presetCreatureId = preset?.result === 'Melancholic or Mad Paladin' ? 'paladin' : null;
   const chapter18Required = Boolean(hunt?.prey?.creatureId || stage.dependency === 'chapter_18' || defaultCreatureIds.length || presetCreatureId || preset?.result === 'Wild Animal');
   const restrictedIds = hunt?.prey?.creatureId
@@ -490,16 +494,19 @@ const CombatLaunch = ({ active, stage, onLaunch, hunt = null, preset = null }) =
 };
 
 const BattleLaunch = ({ stage, character, onLaunch }) => {
-  const [form, setForm] = useState({ duration: 5, playerArmySize: 600, enemyArmySize: 600, playerArmyBattle: 15, enemyArmyBattle: 15, scale: 'small' });
+  const [form, setForm] = useState({ duration: 5, playerArmySize: 600, enemyArmySize: 600, playerArmyBattle: character.skills?.battle || 15, enemyArmyBattle: 15, scale: 'small', enemySideName: '검은 기사와 이교도 기사', followerRound: 3 });
   const update = (key, value) => setForm(previous => ({ ...previous, [key]: value }));
   const battleType = stage.battleType || 'mass_battle';
-  return <section className="adventure-subsystem"><header><Shield size={19} aria-hidden="true" /><div><strong>Chapter 8 {battleType === 'siege' ? '공성' : '대전투'}</strong><p>원문이 정하지 않은 병력과 지휘 수치는 GM이 확정합니다.</p></div></header><div className="adventure-subsystem__grid">
-    <Field label="라운드"><input type="number" min="0" max="12" value={form.duration} onChange={event => update('duration', event.target.value)} /></Field><Field label="아군 병력"><input type="number" min="1" value={form.playerArmySize} onChange={event => update('playerArmySize', event.target.value)} /></Field>
-    <Field label="적군 병력"><input type="number" min="1" value={form.enemyArmySize} onChange={event => update('enemyArmySize', event.target.value)} /></Field><Field label="아군 Battle"><input type="number" value={form.playerArmyBattle} onChange={event => update('playerArmyBattle', event.target.value)} /></Field>
-    <Field label="적군 Battle"><input type="number" value={form.enemyArmyBattle} onChange={event => update('enemyArmyBattle', event.target.value)} /></Field>
+  const battleLabel = battleType === 'siege' ? '공성' : battleType === 'skirmish' ? '소규모 교전' : '대전투';
+  return <section className="adventure-subsystem"><header><Shield size={19} aria-hidden="true" /><div><strong>Chapter 8 {battleLabel}</strong><p>{battleType === 'skirmish' ? '지휘 판정 뒤 각 melee round의 개인전은 Chapter 7 결과로 기록합니다.' : '원문이 정하지 않은 병력과 지휘 수치는 GM이 확정합니다.'}</p></div></header><div className="adventure-subsystem__grid">
+    {battleType === 'skirmish' ? <><Field label="적대 세력"><input value={form.enemySideName || '검은 기사와 이교도 기사'} onChange={event => update('enemySideName', event.target.value)} /></Field><Field label="지휘 Battle"><input type="number" min="0" value={form.playerArmyBattle} onChange={event => update('playerArmyBattle', event.target.value)} /></Field><Field label="종자·수행원 판정 round"><input type="number" min="1" max="5" value={form.followerRound || 3} onChange={event => update('followerRound', event.target.value)} /></Field></> : <><Field label="라운드"><input type="number" min="0" max="12" value={form.duration} onChange={event => update('duration', event.target.value)} /></Field><Field label="아군 병력"><input type="number" min="1" value={form.playerArmySize} onChange={event => update('playerArmySize', event.target.value)} /></Field>
+      <Field label="적군 병력"><input type="number" min="1" value={form.enemyArmySize} onChange={event => update('enemyArmySize', event.target.value)} /></Field><Field label="아군 Battle"><input type="number" value={form.playerArmyBattle} onChange={event => update('playerArmyBattle', event.target.value)} /></Field>
+      <Field label="적군 Battle"><input type="number" value={form.enemyArmyBattle} onChange={event => update('enemyArmyBattle', event.target.value)} /></Field></>}
   </div><button type="button" className="primary-command" onClick={() => onLaunch({
     battleType,
-    setup: battleType === 'siege'
+    setup: battleType === 'skirmish'
+      ? { name: stage.title, enemy: form.enemySideName || '검은 기사와 이교도 기사', playerCommander: true, commanderSkill: Number(form.playerArmyBattle), followerRound: Number(form.followerRound || 3) }
+      : battleType === 'siege'
       ? { name: stage.title, fortress: 'Aumont’s Tower', mode: 'simple', playerSide: 'defender', dv: '10', attacker: { name: 'Sir Balan', siege: 26, troops: Number(form.enemyArmySize) }, defender: { name: 'Franks in Aumont’s Tower', siege: character.skills?.siege || 10, troops: Number(form.playerArmySize) } }
       : { ...form, name: stage.title, playerSideName: 'Franks', enemySideName: 'Saracens', battalionBattle: character.skills?.battle || 10, playerRole: 'unit', mounted: true, hasLance: true, armor: 10, shield: 6 }
   })}><Shield size={17} aria-hidden="true" />Chapter 8에서 계속</button></section>;
@@ -589,7 +596,7 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
         <p className="adventure-source-note">{stageNote}</p>
         {repeatStatus && <div className="adventure-repeat-status"><RotateCcw size={17} aria-hidden="true" /><div><strong>{repeatStatus.label}</strong><span>{repeatStatus.target ? `${repeatStatus.completed} / ${repeatStatus.target}` : `${repeatStatus.completed}회 완료`}</span>{repeatStatus.sourceAmbiguity && <small>Source ambiguity · {repeatStatus.sourceAmbiguity}</small>}</div></div>}
 
-        {active.status === 'deferred' ? <section className="adventure-deferred"><CirclePause size={24} aria-hidden="true" /><div><strong>{active.deferred?.requirement}</strong><p>{active.deferred?.gmNote || 'GM 판단 또는 외부 의존성을 기다립니다.'}</p><small>p.{active.deferred?.sourcePage}</small></div><button type="button" className="primary-command" onClick={() => update(previous => resumeAdventure(previous), '같은 장면에서 모험을 재개했습니다.')}><RotateCcw size={17} aria-hidden="true" />재개</button></section> : interruption ? <InterruptionWorkspace interruption={interruption} onResolve={input => update(previous => resolveAdventureInterruption(previous, input), '중단 상태와 참가자 연속성을 확인했습니다.')} /> : <>
+        {active.status === 'deferred' ? <section className="adventure-deferred"><CirclePause size={24} aria-hidden="true" /><div><strong>{active.deferred?.requirement}</strong><p>{active.deferred?.gmNote || 'GM 판단 또는 아직 끝나지 않은 하위 절차를 기다립니다.'}</p><small>p.{active.deferred?.sourcePage}</small></div><button type="button" className="primary-command" onClick={() => update(previous => resumeAdventure(previous), '같은 장면에서 모험을 재개했습니다.')}><RotateCcw size={17} aria-hidden="true" />재개</button></section> : interruption ? <InterruptionWorkspace interruption={interruption} onResolve={input => update(previous => resolveAdventureInterruption(previous, input), '중단 상태와 참가자 연속성을 확인했습니다.')} /> : <>
           {stage.kind === 'player_choice' && <section className="adventure-decision">{resolvedChoice ? <><div className="adventure-resolved adventure-resolved--decision"><Check size={17} aria-hidden="true" /><div><span>확정한 선택</span><strong>{OPTION_LABELS[resolvedChoice.value] || String(resolvedChoice.value || '').replaceAll('_', ' ')}</strong>{resolvedChoice.note && <p>{resolvedChoice.note}</p>}</div></div><button type="button" className="primary-command" onClick={() => next()}>다음 장면<ChevronRight size={17} aria-hidden="true" /></button></> : <><fieldset><legend>플레이어 선택</legend>{stage.options?.length ? stage.options.map(option => <label key={option}><input type="radio" name="adventure-choice" checked={decision.value === option} onChange={() => setDecision(previous => ({ ...previous, value: option }))} /><span>{OPTION_LABELS[option] || option.replaceAll('_', ' ')}</span></label>) : <Field label="선택"><input value={decision.value} onChange={event => setDecision(previous => ({ ...previous, value: event.target.value }))} /></Field>}</fieldset><Field label="선택 이유·장면 기록"><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} /></Field><button type="button" className="secondary-command" disabled={!decision.value.trim()} onClick={() => resolveDecision('player')}>선택 확정</button></>}</section>}
 
           {stage.kind === 'test' && <section className="adventure-test"><div><Field label="판정"><select value={selectedTestKey} onChange={event => setTest(previous => ({ ...previous, key: event.target.value }))}>{availableTestKeys.map(key => <option key={key} value={key}>{TEST_LABELS[key] || key}</option>)}</select></Field><Field label="d20 · 비우면 앱 굴림"><input type="number" min="1" max="20" value={test.roll} onChange={event => setTest(previous => ({ ...previous, roll: event.target.value }))} /></Field><Field label="원문 수정"><input type="number" value={test.modifier} onChange={event => setTest(previous => ({ ...previous, modifier: event.target.value }))} /></Field></div>{selectedTestSource && !active.pendingTest?.resolved && <><div className="adventure-test__target"><span>{TEST_LABELS[selectedTestKey] || selectedTestKey}</span><strong>{selectedTestSource.value}{Number(test.modifier) ? ` ${Number(test.modifier) > 0 ? '+' : '-'} ${Math.abs(Number(test.modifier))}` : ''}</strong><small>{selectedTestSource.group}의 현재 수치</small></div><p className="adventure-guidance">d20을 굴려 현재 수치와 원문 수정으로 판정합니다. 앱이 대성공·성공·실패·대실패를 구분하며, 이 장면의 구체적 의미는 위 원문 안내에 반영됩니다.</p></>}{(stage.testMode === 'all' || stage.repeat) && <p className="adventure-test__progress">판정 완료 {resolvedTestKeys.length} / {stage.testMode === 'all' ? stage.tests.length : repeatStatus?.target || 1}</p>}{stageTestResults.length > 0 && <div className="adventure-test__history" aria-label="이 장면의 판정 결과">{stageTestResults.map(result => <div key={result.id}><span>{TEST_LABELS[result.testKey] || result.testKey}</span><strong>{CHECK_LABELS[result.outcome] || result.outcome}</strong><small>d20 {result.roll} / 목표 {result.target}</small></div>)}</div>}{!active.pendingTest?.resolved ? <button type="button" className="secondary-command" disabled={!availableTestKeys.length} onClick={() => update(previous => resolveAdventureTest(previous, { testKey: selectedTestKey, roll: test.roll === '' ? undefined : Number(test.roll), modifier: Number(test.modifier) }), '판정 결과를 저장했습니다.')}><Dices size={17} aria-hidden="true" />판정</button> : <button type="button" className="primary-command" onClick={() => next()}>다음 {stage.repeat && repeatStatus?.completed < repeatStatus?.target ? '판정' : '장면'}<ChevronRight size={17} aria-hidden="true" /></button>}</section>}
@@ -611,7 +618,7 @@ export default function AdventureJournal({ character, setCharacter, onNavigate }
           {stage.kind === 'procedure' && stage.procedure && <ProcedureWorkspace stage={stage} progress={procedureProgress} onRecord={input => update(previous => recordAdventureProcedureItem(previous, input), '원문 절차 항목을 저장했습니다.')} onComplete={() => completeNoteStage('gm')} />}
           {['setup', 'reference', 'gm_decision', 'narrative', 'consequence', 'aftermath'].includes(stage.kind) || (stage.kind === 'procedure' && !stage.procedure) ? <section className="adventure-decision"><Field label={stage.kind === 'narrative' ? '서술 기록' : 'GM·절차 기록'}><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} placeholder="원문이 정하지 않은 내용은 결정하거나 서술한 주체와 함께 기록" /></Field><button type="button" className="primary-command" onClick={() => completeNoteStage(stage.kind === 'narrative' ? 'narrative' : 'gm')}><ScrollText size={17} aria-hidden="true" />기록하고 계속</button></section> : null}
 
-          {stage.kind === 'dependency' && <section className="adventure-dependency-work"><AlertTriangle size={20} aria-hidden="true" /><p>{stage.dependency}의 canonical 절차가 필요합니다. 처리 결과 또는 보류 사유를 구조적으로 남깁니다.</p><Field label="처리 기록"><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} /></Field>{!decisionRecorded ? <button type="button" className="secondary-command" onClick={() => resolveDecision('dependency')}>의존성 처리 기록</button> : <button type="button" className="primary-command" onClick={() => next()}>다음 장면</button>}</section>}
+          {stage.kind === 'dependency' && <section className="adventure-dependency-work"><AlertTriangle size={20} aria-hidden="true" /><p>이전 버전 저장에 남은 `{stage.dependency}` 연결 단계입니다. 현재 원문 장면과 처리 근거를 기록하거나 보류한 뒤, 최신 공용 엔진에서 결과를 확인하세요.</p><Field label="이전 저장 처리 근거"><textarea value={decision.note} onChange={event => setDecision(previous => ({ ...previous, note: event.target.value }))} /></Field>{!decisionRecorded ? <button type="button" className="secondary-command" disabled={!decision.note.trim()} onClick={() => resolveDecision('dependency')}>처리 근거 저장</button> : <button type="button" className="primary-command" onClick={() => next()}>다음 장면</button>}</section>}
         </>}
 
         {notice && <div className="adventure-message" role="status"><Check size={17} aria-hidden="true" />{notice}</div>}

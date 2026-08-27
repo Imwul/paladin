@@ -145,7 +145,7 @@
   line-height: 1.7;
 }
 
-.adventure-dependencies,
+.adventure-connections > div,
 .adventure-message,
 .adventure-deferred,
 .adventure-pending-subsystem {
@@ -154,10 +154,40 @@
   gap: 10px;
 }
 
-.adventure-dependencies {
+.adventure-connections {
   margin: 16px 0;
   padding: 12px 0;
-  border-block: 1px solid var(--color-warning);
+  border-block: 1px solid var(--adventure-rule);
+}
+
+.adventure-connections > div {
+  align-items: center;
+}
+
+.adventure-connections ul {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.adventure-connections li {
+  display: grid;
+  gap: 2px;
+  padding-left: 27px;
+}
+
+.adventure-connections li span {
+  font-weight: 700;
+}
+
+.adventure-connections li small {
+  color: var(--color-muted);
+}
+
+.adventure-connections--warning {
+  border-color: var(--color-warning);
   color: var(--color-warning);
 }
 
