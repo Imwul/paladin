@@ -677,20 +677,25 @@ export const CHAPTER_19_SOLOS = Object.freeze([
 export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
   {
     id: 'jewel', type: 'long_form', title: 'The Adventure of the Jewel', sourcePage: 'pp.394-399', sourcePages: [394, 395, 396, 397, 398, 399],
+    sourcePremise: { year: 766, role: 'squire', label: '원문 전제 · 766년 종자 캐릭터' },
     classification: 'fixed_adventure', integrations: ['skills', 'personality', 'combat', 'economy', 'glory', 'standing', 'chronicle'], dependencies: [],
     stages: [
       { id: 'setup', title: 'Lord Thierry\'s Charge', kind: 'setup', sourcePage: 394 },
       { id: 'information', title: 'Information and Route', kind: 'test', sourcePage: 394, tests: ['religion', 'intrigue'], testMode: 'all' },
       { id: 'pilgrim', title: 'The Strange Pilgrim', kind: 'player_choice', sourcePage: 395, options: ['give_alms', 'refuse_alms'] },
+      { id: 'pilgrim_selfish', title: 'Refusing Alms', kind: 'test', sourcePage: 395, tests: ['selfish'], repeat: { mode: 'participants', label: '자선을 베풀지 않은 모든 참가자' }, when: { stageId: 'pilgrim', value: 'refuse_alms' } },
       { id: 'brigands', title: 'The Brigands', kind: 'subsystem', subsystem: 'combat', sourcePage: 396 },
       { id: 'brigand_pursuit', title: 'Pursuit of the Fleeing Brigands', kind: 'subsystem', subsystem: 'chase', sourcePage: 396, optional: true },
       { id: 'route', title: 'The Route South', kind: 'player_choice', sourcePage: 396, options: ['island', 'esneux'] },
       { id: 'hermit', title: 'The Hermit', kind: 'gm_decision', sourcePage: 396 },
-      { id: 'relic_prayer', title: 'Prayer to Saint Marcian’s Relic', kind: 'subsystem', subsystem: 'personality_magic', action: 'jewel_relic_prayer', sourcePage: 395, optional: true, procedure: { kind: 'prayer', beneficiary: 'self_prayer', contextModifier: 5, contextNote: 'Saint Marcian relic against wild animals', sourceEffect: '성공하면 에인가르의 모든 행동에 -5.' } },
+      { id: 'hermit_prayer', title: 'The Hermit’s Prayer', kind: 'subsystem', subsystem: 'personality_magic', action: 'jewel_hermit_prayer', sourcePage: 396, optional: true, procedure: { kind: 'prayer', beneficiary: 'other_prayer', form: 'normal', place: 'ordinary', day: 'ordinary', sacredItem: 'none', sourceEffect: '은자가 대신 기도하므로 Love [God]로 기도의 이익을 판정합니다.' } },
+      { id: 'hermit_healing', title: 'The Hermit’s Healing', kind: 'subsystem', subsystem: 'healing', sourcePage: 396, optional: true, healingSkill: 15 },
+      { id: 'relic_prayer', title: 'Prayer to Saint Marcian’s Relic', kind: 'subsystem', subsystem: 'personality_magic', action: 'jewel_relic_prayer', sourcePage: 395, optional: true, procedure: { kind: 'prayer', beneficiary: 'self_prayer', form: 'normal', place: 'ordinary', day: 'ordinary', sacredItem: 'none', contextModifier: 5, contextNote: 'Saint Marcian’s relic against wild animals', sourceEffect: '성공하면 에인가르의 모든 행동에 -5.' } },
       { id: 'dream', title: 'The Dream', kind: 'subsystem', subsystem: 'personality_magic', action: 'jewel_dream', sourcePage: 396, optional: true, when: { stageId: 'route', value: 'island' }, procedure: { kind: 'dream', passionKey: 'loveCharlemagne', messageSource: 'source', sourcePrompt: '양 떼를 지키는 개들 사이에서 검은 개가 양을 공격하고, 목자는 늑대 떼와 싸우는 꿈.' } },
       { id: 'beaver_dam', title: 'The Beaver Dam', kind: 'test', sourcePage: 397, tests: ['siege'] },
       { id: 'beaver_result', title: 'Dam and Flood Consequence', kind: 'consequence', sourcePage: 397 },
       { id: 'esneux', title: 'Esneux and Its Rumors', kind: 'test', sourcePage: 397, tests: ['folkLore'] },
+      { id: 'special_mass', title: 'Saint Marcian’s Special Mass', kind: 'test', sourcePage: 397, tests: ['loveCharlemagne'], optional: true },
       { id: 'eingarstein', title: 'Eingarstein', kind: 'gm_decision', sourcePage: 398 },
       { id: 'werewolf', title: 'Sir Eingar at Night', kind: 'subsystem', subsystem: 'combat', sourcePage: 398 },
       { id: 'eingar_fate', title: 'Mercy and Sir Eingar’s Fate', kind: 'player_choice', sourcePage: 399, options: ['spare_and_monastery', 'killed_in_combat', 'captured_for_judgment'] },
@@ -700,6 +705,7 @@ export const CHAPTER_19_LONG_ADVENTURES = Object.freeze([
   },
   {
     id: 'humble_squires', type: 'long_form', title: 'The Adventure of the Humble Squires', sourcePage: 'pp.399-409', sourcePages: [399, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409],
+    sourcePremise: { year: 767, role: 'squire', label: '원문 전제 · 767년 종자 캐릭터' },
     classification: 'fixed_adventure', integrations: ['skills', 'personality', 'hunt', 'combat', 'battle', 'economy', 'glory', 'standing', 'lifecycle', 'chronicle'], dependencies: ['chapter_18'],
     stages: [
       { id: 'setup', title: 'The Frankish Host', kind: 'setup', sourcePage: 399 },

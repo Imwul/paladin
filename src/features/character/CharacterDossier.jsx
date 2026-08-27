@@ -37,6 +37,7 @@ const SCORE_LABELS = {
 
 export default function CharacterDossier({ character, setCharacter, initialCharacterState }) {
   const needsCreation = !String(character.personal?.name || '').trim();
+  const creationInProgress = Boolean(character.campaign?.characterCreationSession);
   const [view, setView] = useState(needsCreation ? 'record' : 'life');
   const [creationRequest, setCreationRequest] = useState(needsCreation ? 1 : 0);
   const lifecycleState = character.campaign?.lifecycle || {};
@@ -80,7 +81,7 @@ export default function CharacterDossier({ character, setCharacter, initialChara
       <nav className="dossier-view-tabs" aria-label="기사 기록 보기">
         <button type="button" className={view === 'life' ? 'active' : ''} onClick={() => setView('life')} aria-pressed={view === 'life'}><History size={17} aria-hidden="true" />생애 기록</button>
         <button type="button" className={view === 'record' ? 'active' : ''} onClick={openRecord} aria-pressed={view === 'record'}><BookOpen size={17} aria-hidden="true" />기사 원부</button>
-        {needsCreation && <button type="button" className="dossier-view-tabs__creation" onClick={openCreation}><Sparkles size={17} aria-hidden="true" />기사 생성 시작</button>}
+        {needsCreation && <button type="button" className="dossier-view-tabs__creation" onClick={openCreation}><Sparkles size={17} aria-hidden="true" />{creationInProgress ? '기사 생성 재개' : '기사 생성 시작'}</button>}
       </nav>
 
       {view === 'life' ? <>

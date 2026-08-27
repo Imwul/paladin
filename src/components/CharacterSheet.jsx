@@ -1952,7 +1952,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           </div>
 
           {genActiveTab === 'core' ? (
-            <CharacterCreationWizard character={character} setCharacter={setCharacter} />
+            <CharacterCreationWizard character={character} setCharacter={setCharacter} onComplete={() => setIsGenOpen(false)} />
           ) : genActiveTab === 'preset' ? (
             <div>
               <p className="cc-warning" style={{ marginBottom: '12px' }}>
@@ -2594,6 +2594,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
         </div>
       )}
 
+      {!isGenOpen && <>
       {/* ══════ PERSONAL DATA ══════ */}
       <section className="cs-section">
         <div className="sheet-ribbon"><h3>기사 인적 사항</h3></div>
@@ -3971,6 +3972,7 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
 
         </div>
       </section>
+      </>}
 
     </div>
   );

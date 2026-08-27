@@ -9,7 +9,7 @@ import {
   resolveChapter18Avoidance,
   startChapter18Encounter
 } from './chapter18Rules.js';
-import { applyCharacterDamage } from './combatRules.js';
+import { applyCharacterDamage, resolveFirstAid, resolveWeeklyRecovery } from './combatRules.js';
 import { resolveD20Roll, resolveOpposedD20 } from './coreRules.js';
 import { getEquippedMarketCombat, recordEconomyTransfer } from './economyRules.js';
 import { appendChronicleEvent, recordGloryAward, recordHonorChange, recordStandingChange } from './ledgerRules.js';
@@ -86,9 +86,10 @@ export const sanitizeAdventureState = value => {
   const definition = CHAPTER_19_ADVENTURE_BY_ID[value.adventureId];
   if (!definition) return null;
   const stageIds = new Set(definition.stages.map(stage => stage.id));
+  const currentStageIndex = definition.stages.findIndex(stage => stage.id === value.currentStageId);
   const stageIndex = Math.min(
     definition.stages.length - 1,
-    Math.max(0, asInt(value.stageIndex, definition.stages.findIndex(stage => stage.id === value.currentStageId)))
+    Math.max(0, currentStageIndex >= 0 ? currentStageIndex : asInt(value.stageIndex))
   );
   return {
     engineVersion: ADVENTURE_ENGINE_VERSION,
@@ -120,6 +121,13 @@ export const sanitizeAdventureState = value => {
     appliedTransactionIds: list(value.appliedTransactionIds).filter(item => typeof item === 'string').slice(-2000),
     completedStageIds: list(value.completedStageIds).filter(id => stageIds.has(id)).slice(-500),
     deferred: value.deferred && typeof value.deferred === 'object' ? clone(value.deferred) : null,
+    sourcePremiseOverride: value.sourcePremiseOverride && typeof value.sourcePremiseOverride === 'object'
+      ? {
+          approved: Boolean(value.sourcePremiseOverride.approved),
+          issues: list(value.sourcePremiseOverride.issues).map(String).slice(0, 10),
+          note: String(value.sourcePremiseOverride.note || '')
+        }
+      : null,
     gmNote: String(value.gmNote || ''),
     createdAt: typeof value.createdAt === 'string' ? value.createdAt : iso(),
     updatedAt: typeof value.updatedAt === 'string' ? value.updatedAt : iso(),
@@ -150,6 +158,24 @@ const requireActive = character => {
 };
 
 export const getAdventureDefinition = adventureId => CHAPTER_19_ADVENTURE_BY_ID[adventureId] || null;
+
+export const getAdventureSourcePremiseIssues = (characterValue, adventureValue) => {
+  const definition = typeof adventureValue === 'string'
+    ? CHAPTER_19_ADVENTURE_BY_ID[adventureValue]
+    : adventureValue;
+  const premise = definition?.sourcePremise;
+  if (!premise) return [];
+  const issues = [];
+  const campaignYear = asInt(characterValue?.personal?.campaignYear, 767);
+  const personalClass = String(characterValue?.personal?.personalClass || '');
+  if (premise.year && campaignYear !== premise.year) {
+    issues.push(`원문 연도는 ${premise.year}년이지만 현재 캠페인은 ${campaignYear}년입니다.`);
+  }
+  if (premise.role === 'squire' && !/squire|종자/i.test(personalClass)) {
+    issues.push(`원문 참가자는 종자이지만 현재 신분은 ${personalClass || '기록 없음'}입니다.`);
+  }
+  return issues;
+};
 
 export const getCurrentAdventureStage = state => {
   const definition = CHAPTER_19_ADVENTURE_BY_ID[state?.adventureId];
@@ -218,6 +244,7 @@ const pauseForContinuation = (character, state, pending, transactionId, now) => 
 };
 
 const PERSONALITY_MAGIC_RESULTS = Object.freeze({
+  jewel_hermit_prayer: ['prayer_resolved'],
   jewel_relic_prayer: ['prayer_resolved'],
   jewel_dream: ['dream_resolved'],
   humble_blessing: ['prayer_resolved'],
@@ -424,19 +451,37 @@ export const startAdventure = (characterValue, input = {}, now) => {
   if (ledger.active && ['active', 'deferred'].includes(ledger.active.status)) throw new RangeError('먼저 진행 중이거나 보류된 모험을 완료해야 합니다.');
   const definition = CHAPTER_19_ADVENTURE_BY_ID[input.adventureId];
   if (!definition) throw new RangeError('Chapter 19 원문 목록에서 모험을 선택하세요.');
+  const sourcePremiseIssues = getAdventureSourcePremiseIssues(character, definition);
+  const sourcePremiseOverride = input.sourcePremiseOverride && typeof input.sourcePremiseOverride === 'object'
+    ? input.sourcePremiseOverride
+    : null;
+  if (sourcePremiseIssues.length && !sourcePremiseOverride?.approved) {
+    throw new RangeError(`원문 전제를 먼저 확인하세요. ${sourcePremiseIssues.join(' ')}`);
+  }
+  if (sourcePremiseIssues.length && !String(sourcePremiseOverride?.note || '').trim()) {
+    throw new RangeError('원문 전제와 다른 시점·신분으로 진행하려면 GM 각색 사유를 기록하세요.');
+  }
   const lifecycle = character.campaign?.lifecycle?.status || character.campaign?.lifecycle?.careerStatus;
   if (['deceased', 'retired', 'historical', 'pending_successor'].includes(lifecycle)) throw new RangeError('현재 활성 기사가 모험에 참가할 수 없습니다.');
   const timestamp = iso(now);
   const activeIdentity = character.campaign?.lifecycle?.activeCharacterId || null;
   const defaultParticipants = [{ id: activeIdentity || 'active_character', characterId: activeIdentity, name: character.personal?.name || '이름 없는 기사', role: 'player_knight' }];
+  const premiseDecision = sourcePremiseIssues.length ? {
+    id: safeId(`adventure:${definition.id}:source_premise_override:${timestamp}`),
+    stageId: 'setup', kind: 'gm', value: 'source_premise_override',
+    note: String(sourcePremiseOverride.note).trim(),
+    sourcePage: definition.sourcePages?.[0] || asInt(definition.sourcePage), createdAt: timestamp
+  } : null;
   const state = sanitizeAdventureState({
     id: input.id || `adventure:${definition.id}:${character.personal?.campaignYear || 767}:${timestamp}`,
     adventureId: definition.id,
     campaignYear: character.personal?.campaignYear || 767,
     participants: list(input.participants).length ? input.participants : defaultParticipants,
     status: 'active', stageIndex: 0, currentStageId: definition.stages[0].id,
-    results: [], decisions: [], rewards: [], penalties: [], chronicleEntryIds: [],
-    appliedTransactionIds: [], completedStageIds: [], gmNote: input.gmNote, createdAt: timestamp, updatedAt: timestamp
+    results: [], decisions: premiseDecision ? [premiseDecision] : [], rewards: [], penalties: [], chronicleEntryIds: [],
+    appliedTransactionIds: [], completedStageIds: [],
+    sourcePremiseOverride: premiseDecision ? { approved: true, issues: sourcePremiseIssues, note: premiseDecision.note } : null,
+    gmNote: input.gmNote, createdAt: timestamp, updatedAt: timestamp
   });
   prepareStage(state);
   ledger.active = state;
@@ -1120,7 +1165,10 @@ export const beginAdventureCombat = (characterValue, input = {}, now) => {
   if (transactionApplied(state, `${transactionId}:return`)) throw new RangeError('이 장면의 개인전투 결과는 이미 모험에 반영되었습니다.');
   const returnContext = { type: 'adventure', adventureId: state.id, adventureKey: state.adventureId, stageId: stage.id, transactionId };
   const marcianPrayer = state.results.find(item => item.type === 'personality_magic_return' && item.action === 'jewel_relic_prayer');
-  const eingarPenalty = state.adventureId === 'jewel' && stage.id === 'werewolf' && ['critical', 'success'].includes(marcianPrayer?.canonicalOutcome) ? -5 : 0;
+  const marcianMass = state.results.find(item => item.type === 'test' && item.stageId === 'special_mass');
+  const marcianProtection = ['critical', 'success'].includes(marcianPrayer?.canonicalOutcome)
+    || ['critical', 'success'].includes(marcianMass?.outcome);
+  const eingarPenalty = state.adventureId === 'jewel' && stage.id === 'werewolf' && marcianProtection ? -5 : 0;
   const adjustedInput = eingarPenalty ? {
     ...input,
     opponents: list(input.opponents).map(opponent => ({ ...opponent, skill: asInt(opponent.skill) + eingarPenalty })),
@@ -1336,6 +1384,103 @@ export const beginAdventurePersonalityMagic = (characterValue, _input = {}, now)
   return { character, adventure: state, bridge: personalityMagic.adventureBridge };
 };
 
+export const resolveAdventureFirstAid = (characterValue, input = {}, now) => {
+  const character = clone(characterValue);
+  const state = requireActive(character);
+  const stage = getCurrentAdventureStage(state);
+  if (stage?.kind !== 'subsystem' || stage.subsystem !== 'healing') {
+    throw new RangeError('현재 장면은 원문 치유 절차가 아닙니다.');
+  }
+  const woundId = String(input.woundId || '');
+  const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:first_aid:${woundId}`);
+  const existing = state.results.find(item => item.id === transactionId);
+  if (transactionApplied(state, transactionId)) return { character, adventure: state, result: existing, applied: false };
+  const treated = resolveFirstAid(character, {
+    woundId,
+    skill: asInt(input.skill, stage.healingSkill || 15),
+    roll: input.roll,
+    healingRoll: input.healingRoll,
+    ageInHours: asInt(input.ageInHours),
+    year: state.campaignYear,
+    now
+  });
+  const treatedState = requireActive(treated.character);
+  const result = {
+    id: transactionId,
+    type: 'first_aid',
+    stageId: stage.id,
+    woundId,
+    skill: asInt(input.skill, stage.healingSkill || 15),
+    outcome: treated.treatment.check.outcome,
+    roll: treated.treatment.check.roll,
+    amount: treated.treatment.amount,
+    sourcePage: stage.sourcePage,
+    createdAt: iso(now)
+  };
+  appendAdventureResult(treatedState, result);
+  applyTransaction(treatedState, transactionId);
+  treatedState.updatedAt = iso(now);
+  return { character: treated.character, adventure: treatedState, result, applied: true };
+};
+
+export const resolveAdventureChirurgery = (characterValue, input = {}, now) => {
+  const character = clone(characterValue);
+  const state = requireActive(character);
+  const stage = getCurrentAdventureStage(state);
+  if (stage?.kind !== 'subsystem' || stage.subsystem !== 'healing') {
+    throw new RangeError('현재 장면은 원문 치유 절차가 아닙니다.');
+  }
+  const transactionId = safeId(input.transactionId || `${state.id}:${stage.id}:chirurgery`);
+  const existing = state.results.find(item => item.id === transactionId);
+  if (transactionApplied(state, transactionId)) return { character, adventure: state, result: existing, applied: false };
+  if (!character.campaign?.health?.surgeryNeeded) {
+    throw new RangeError('현재 건강 장부에는 Chirurgery가 필요한 불건강 상태가 없습니다.');
+  }
+  const treated = resolveWeeklyRecovery(character, {
+    activity: 'none',
+    skill: asInt(input.skill, stage.healingSkill || 15),
+    caregivers: 1,
+    conditionsModifier: asInt(input.conditionsModifier),
+    chirurgeryRoll: input.roll,
+    deteriorationRoll: input.deteriorationRoll,
+    fumbleLossRoll: input.fumbleLossRoll,
+    year: state.campaignYear,
+    now
+  });
+  const treatedState = requireActive(treated.character);
+  const result = {
+    id: transactionId,
+    type: 'chirurgery',
+    stageId: stage.id,
+    skill: asInt(input.skill, stage.healingSkill || 15),
+    outcome: treated.recovery.surgery.outcome,
+    roll: treated.recovery.surgery.roll,
+    healing: treated.recovery.healing,
+    deterioration: treated.recovery.deterioration,
+    currentHpBefore: treated.recovery.currentHpBefore,
+    currentHpAfter: treated.recovery.currentHpAfter,
+    sourcePage: stage.sourcePage,
+    createdAt: iso(now)
+  };
+  appendAdventureResult(treatedState, result);
+  applyTransaction(treatedState, transactionId);
+  treatedState.updatedAt = iso(now);
+  return { character: treated.character, adventure: treatedState, result, applied: true };
+};
+
+export const completeAdventureHealing = (characterValue, now) => {
+  const character = clone(characterValue);
+  const state = requireActive(character);
+  const stage = getCurrentAdventureStage(state);
+  if (stage?.kind !== 'subsystem' || stage.subsystem !== 'healing') {
+    throw new RangeError('현재 장면은 원문 치유 절차가 아닙니다.');
+  }
+  const untreated = list(character.campaign?.health?.wounds).filter(wound => !wound.treated);
+  if (untreated.length) throw new RangeError('남은 상처를 처치하거나 이 선택 장면을 건너뛰세요.');
+  const next = advance(character, state, now, { force: true });
+  return { character, adventure: character.campaign.adventures.active, nextStage: next };
+};
+
 const personalityMagicReady = (action, personalityMagic, result) => {
   const amor = personalityMagic.amor;
   if (action === 'love_conquers_all') return asInt(amor?.completedTasks) >= 3;
@@ -1369,6 +1514,12 @@ export const completeAdventurePersonalityMagic = (characterValue, input = {}, no
     : [...candidates].reverse().find(item => allowed.includes(item.type));
   if (!personalityMagicReady(pending.action, personalityMagic, result)) {
     throw new RangeError('현재 장면이 요구하는 canonical Personality/Magic 절차를 먼저 완료하세요.');
+  }
+  const unresolvedMadness = result?.conditionId
+    ? personalityMagic.conditions.find(item => item.id === result.conditionId && item.type === 'madness' && item.status === 'active' && item.onset === 'gm_pending')
+    : null;
+  if (unresolvedMadness) {
+    throw new RangeError('대실패로 시작된 Madness의 발현 시점을 GM이 먼저 정해야 합니다.');
   }
   const transactionId = `${pending.transactionId}:return`;
   if (transactionApplied(state, transactionId)) {

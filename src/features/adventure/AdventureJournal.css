@@ -336,6 +336,7 @@
 .adventure-decision,
 .adventure-test,
 .adventure-subsystem,
+.adventure-healing,
 .adventure-consequence,
 .adventure-dependency-work,
 .adventure-deferred,
@@ -393,9 +394,56 @@
 .adventure-test__history strong { color: var(--color-success); }
 .adventure-test__history small { grid-column: 1 / -1; color: var(--color-muted); }
 
+.adventure-guidance {
+  margin: 10px 0 0;
+  color: var(--color-muted);
+  line-height: 1.65;
+}
+
+.adventure-premise {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-left: 3px solid var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+
+.adventure-premise div { display: grid; gap: 3px; }
+.adventure-premise small { color: var(--color-muted); line-height: 1.5; }
+.adventure-premise--warning { border-left-color: var(--color-warning); }
+.adventure-premise__override { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: var(--text-caption); }
+.adventure-premise__override input { inline-size: 18px; block-size: 18px; }
+.adventure-premise__note { min-height: 44px; width: 100%; border: 1px solid var(--color-rule); background: var(--color-paper); color: var(--color-ink); padding: 8px 10px; font: inherit; }
+
+.adventure-healing > header,
+.adventure-healing__complete {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.adventure-healing > header p { margin: 3px 0 0; color: var(--color-muted); }
+.adventure-healing__wounds { display: grid; gap: 12px; margin-top: 16px; }
+.adventure-healing__wounds > div {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(150px, .65fr) minmax(150px, .65fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 12px 0;
+  border-top: 1px solid var(--adventure-rule);
+}
+.adventure-healing__wounds > div > div:first-child { display: grid; gap: 3px; align-self: center; }
+.adventure-healing__wounds span { color: var(--color-muted); }
+.adventure-healing__complete { justify-content: space-between; margin-top: 16px; }
+.adventure-healing__surgery { display: grid; grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(140px, .55fr)) auto; gap: 12px; align-items: end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--adventure-rule); }
+.adventure-healing__surgery > div:first-child { display: grid; gap: 3px; align-self: center; }
+.adventure-healing__surgery p { margin: 0; color: var(--color-muted); }
+
 .adventure-decision > button,
 .adventure-test > button,
 .adventure-subsystem > button,
+.adventure-healing > button,
 .adventure-dependency-work > button {
   margin-top: 16px;
 }
@@ -811,6 +859,11 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .adventure-healing__wounds > div,
+  .adventure-healing__surgery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .adventure-healing__wounds > div > div:first-child { grid-column: 1 / -1; }
+  .adventure-healing__surgery > div:first-child { grid-column: 1 / -1; }
+
   .adventure-procedure li > div {
     grid-column: 1 / -1;
   }
@@ -827,6 +880,8 @@
   .adventure-subsystem__grid,
   .adventure-consequence__form,
   .adventure-procedure li,
+  .adventure-healing__wounds > div,
+  .adventure-healing__surgery,
   .adventure-chase__ending,
   .adventure-status {
     grid-template-columns: 1fr;
@@ -854,6 +909,8 @@
     align-items: stretch;
     flex-direction: column;
   }
+
+  .adventure-healing__complete { align-items: flex-start; flex-wrap: wrap; }
 
   .adventure-controls summary {
     text-align: left;

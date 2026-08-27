@@ -11,25 +11,39 @@ const getPendingActions = character => {
   const combat = character.campaign?.combat;
   const activeWar = [character.campaign?.massBattle, character.campaign?.skirmish, character.campaign?.siege].find(item => item?.status === 'active');
   const adventure = character.campaign?.adventures?.active;
+  const personalityConditions = character.campaign?.personalityMagic?.conditions || [];
+  const pendingMadnessOnset = personalityConditions.find(item => item.type === 'madness' && item.status === 'active' && item.onset === 'gm_pending');
+  const activeMadness = personalityConditions.find(item => item.type === 'madness' && item.status === 'active' && item.onset !== 'gm_pending');
+  const adventureHistory = character.campaign?.adventures?.history || [];
   const needsCreation = !String(character.personal?.name || '').trim();
+  const creationInProgress = Boolean(character.campaign?.characterCreationSession);
+  const campaignYear = character.personal?.campaignYear || 767;
   const completeSteps = Object.values(winter.steps || {}).filter(value => ['resolved', 'skipped'].includes(value)).length;
   const winterReadyToClose = completeSteps === 10 && winter.currentStep === 'complete';
+  const adventureCompletedThisYear = adventureHistory.some(item => item.status === 'complete' && Number(item.campaignYear) === campaignYear);
   if (health.pendingDeath) actions.push({ tab: 'combat', title: '자정 전 생명 위기', detail: '생명력이 0 이하입니다. 응급처치로 양수까지 회복하거나 사망을 확정해야 합니다.', actionLabel: '생명 위기 처리', kind: 'danger' });
   else if (health.majorWoundCourage?.status === 'pending') actions.push({ tab: 'combat', title: '큰 부상 뒤 용기 판정', detail: '의식을 유지했지만 전투를 계속하려면 Valorous 판정이 필요합니다.', actionLabel: '판정하기', kind: 'danger' });
   else if (health.majorWoundCourage?.status === 'blocked') actions.push({ tab: 'combat', title: '전투 재진입 제한', detail: 'Valorous 판정 실패로, 외부 상황에 강제되지 않는 한 다시 교전할 수 없습니다.', actionLabel: '상태 확인', kind: 'danger' });
   else if (health.majorWoundCourage?.status === 'must_withdraw') actions.push({ tab: 'combat', title: '도주 또는 항복', detail: 'Valorous 대실패 결과를 전투 결말에 기록해야 합니다.', actionLabel: '결말 기록', kind: 'danger' });
+  else if (pendingMadnessOnset) actions.push({ tab: 'personality', title: 'Madness 발현 시점 결정', detail: 'Passion 대실패가 발생했습니다. GM은 광기가 즉시 또는 현재 행동 뒤에 발현하는지 정해야 합니다.', actionLabel: 'GM 결정', kind: 'danger' });
+  else if (activeMadness) actions.push({ tab: 'personality', title: '기사가 광기에 빠졌습니다', detail: '캐릭터 시트는 GM에게 넘어갑니다. Winter Phase의 Madness Solo에서 회복 여부를 처리합니다.', actionLabel: '광기 상태 확인', kind: 'danger' });
   else if (health.surgeryNeeded) actions.push({ tab: 'combat', title: '외과 치료 필요', detail: '불건강 상태입니다. 이번 주 외과 치료와 자연 회복을 처리해야 합니다.', actionLabel: '치료하기', kind: 'warning' });
   if (combat?.status === 'active') actions.push({ tab: 'combat', title: `${combat.opponents?.[0]?.name || combat.opponent?.name || '적'}와 교전 중`, detail: `${combat.round || 1}라운드의 현재 결정 단계부터 이어갑니다. 이미 끝난 공격 결과는 다시 적용되지 않습니다.`, actionLabel: '전투로 복귀', kind: 'combat' });
   else if (activeWar) actions.push({ tab: 'battle', title: activeWar.name || activeWar.fortress || '진행 중인 전쟁', detail: '마지막으로 저장된 소규모 교전·대전투·공성 절차부터 이어갑니다.', actionLabel: '전쟁으로 복귀', kind: 'battle' });
   else if (adventure && ['active', 'deferred'].includes(adventure.status)) actions.push({ tab: 'adventure', title: adventure.title || '진행 중인 모험', detail: `${adventure.currentStageId || '현재 장면'} · ${Number(adventure.stageIndex || 0) + 1}번째 장면에서 이어갑니다.`, actionLabel: '모험으로 복귀', kind: 'adventure' });
   else if (winterReadyToClose) actions.push({ tab: 'winter', title: `${character.personal?.campaignYear || 767}년 겨울 장부 마감`, detail: '원문 10단계가 끝났습니다. 장부를 봉인해 다음 연도로 진행합니다.', actionLabel: '연도 마감', kind: 'winter' });
-  else if (needsCreation) actions.push({ tab: 'character', title: '첫 기사를 완성하십시오', detail: '이름과 출신, 성향, 기술을 확정하면 이 기사의 연대가 시작됩니다.', actionLabel: '기사 생성', kind: 'creation' });
+  else if (needsCreation) actions.push(creationInProgress
+    ? { tab: 'character', title: '기사 생성을 계속하십시오', detail: '자동 저장된 생성 세션이 있습니다. 마지막으로 확정한 단계에서 이어갑니다.', actionLabel: '생성 재개', kind: 'creation' }
+    : { tab: 'character', title: '첫 기사를 완성하십시오', detail: '이름과 출신, 성향, 기술을 확정하면 이 기사의 연대가 시작됩니다.', actionLabel: '기사 생성', kind: 'creation' });
   if (lifecycle.status === 'pending_salvation') actions.push({ tab: 'character', title: '구원 판정', detail: '끝난 생애의 구원(Salvation) 판정이 남아 있습니다.', actionLabel: '판정하기' });
   if (lifecycle.status === 'pending_legacy') actions.push({ tab: 'character', title: '유산 선택', detail: '다음 기사에게 전할 점수와 유산(Legacy)을 선택해야 합니다.', actionLabel: '유산 선택' });
   if (lifecycle.status === 'pending_successor') actions.push({ tab: 'family', title: '계승자 선택', detail: '가문의 연대를 이을 후계자를 지정해야 합니다.', actionLabel: '계승자 선택' });
   if (character.campaign?.honorStatus?.pendingLordJudgment) actions.push({ tab: 'personality', title: '영주의 명예 심판', detail: `Honor ${character.campaign.honorStatus.honor}. 원문에 따라 추방 또는 기사 신분 박탈을 결정해야 합니다.`, actionLabel: '심판 기록' });
   const unresolvedWinter = Object.keys(winter.unresolved || {});
   if (unresolvedWinter.length) actions.push({ tab: 'winter', title: '겨울 미결 항목', detail: `${unresolvedWinter.length}건의 선택 또는 판정이 기록에 남아 있습니다.`, actionLabel: '미결 처리' });
+  if (!needsCreation && lifecycle.status === 'active' && !adventure && combat?.status !== 'active' && !activeWar && completeSteps === 0 && !adventureCompletedThisYear) {
+    actions.push({ tab: 'adventure', title: `${campaignYear}년 첫 모험을 선택하십시오`, detail: '현재 기사에게 맞는 모험을 선택해 사건과 판정을 진행한 뒤 겨울 정산으로 넘어갑니다.', actionLabel: '모험 선택', kind: 'adventure' });
+  }
   if (!needsCreation && completeSteps < 10) actions.push({ tab: 'winter', title: `${character.personal?.campaignYear || 767}년 겨울 정산`, detail: `원문 순서 10단계 중 ${completeSteps}단계가 처리되었습니다.`, actionLabel: completeSteps ? '정산 재개' : '정산 시작', kind: 'winter' });
   return actions;
 };

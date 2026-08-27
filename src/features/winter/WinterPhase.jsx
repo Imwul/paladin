@@ -20,6 +20,7 @@ import {
   MAINTENANCE_GRADES,
   PERSONAL_EVENT_TABLE,
   recordManualWinterResolution,
+  resolveWinterFamilyBattle,
   resolveWinterFamilyTarget,
   resolveWinterStep,
   WINTER_STEPS
@@ -91,8 +92,9 @@ function SelectField({ label, value, onChange, options, placeholder = '선택' }
   );
 }
 
-export default function WinterPhase({ character, setCharacter }) {
+export default function WinterPhase({ character, setCharacter, onNavigate }) {
   const winter = ensureWinterState(character);
+  const activeMadness = (character.campaign?.personalityMagic?.conditions || []).find(condition => condition.type === 'madness' && condition.status === 'active');
   const initialIndex = Math.max(0, WINTER_STEPS.findIndex(step => step.id === winter.currentStep));
   const [viewIndex, setViewIndex] = useState(initialIndex < 0 ? 9 : initialIndex);
   const [error, setError] = useState('');
@@ -101,7 +103,8 @@ export default function WinterPhase({ character, setCharacter }) {
   const [familyRelationRoll, setFamilyRelationRoll] = useState('');
   const [familySexRoll, setFamilySexRoll] = useState('');
   const [familyTargetId, setFamilyTargetId] = useState('');
-  const [soloChoice, setSoloChoice] = useState('not_applicable');
+  const [familyBattleRoll, setFamilyBattleRoll] = useState('');
+  const [soloChoice, setSoloChoice] = useState('');
   const [maintenanceGrade, setMaintenanceGrade] = useState(character.personal?.maintenance || 'ordinary');
   const [situationalModifier, setSituationalModifier] = useState(0);
   const [personalEventChoice, setPersonalEventChoice] = useState('');
@@ -127,6 +130,7 @@ export default function WinterPhase({ character, setCharacter }) {
   const status = winter.steps?.[step.id] || 'pending';
   const pendingChoices = Array.isArray(record?.unresolvedChoice) ? record.unresolvedChoice : record?.unresolvedChoice ? [record.unresolvedChoice] : [];
   const hasFamilyTargetChoice = step.id === 'family' && pendingChoices.some(item => ['family_target_choice', 'family_target_creation_or_reroll', 'family_target_required'].includes(item.type));
+  const hasFamilyBattleChoice = step.id === 'family' && pendingChoices.some(item => item.type === 'battle_roll');
   const familyTargetCandidates = record?.result?.relation?.candidates || [];
   const resolvedCount = WINTER_STEPS.filter(item => winter.steps?.[item.id] === 'resolved').length;
   const activeIndex = WINTER_STEPS.findIndex(item => item.id === winter.currentStep);
@@ -187,6 +191,18 @@ export default function WinterPhase({ character, setCharacter }) {
     }
   };
 
+  const resolveFamilyBattle = () => {
+    setError('');
+    try {
+      const result = resolveWinterFamilyBattle(character, { roll: Number(familyBattleRoll) });
+      setCharacter(result.character);
+      setFamilyBattleRoll('');
+      if (!result.awaitingChoice) moveToCurrent(result.character);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '가문 간 Battle 판정을 적용하지 못했습니다.');
+    }
+  };
+
   const sealWinter = () => {
     setError('');
     try {
@@ -210,11 +226,13 @@ export default function WinterPhase({ character, setCharacter }) {
     if (status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice') return null;
     if (step.id === 'soloScenario') return (
       <div className="choice-panel">
+        {activeMadness && <aside className="winter-guidance" role="status"><AlertTriangle size={17} aria-hidden="true" /><div><strong>이 기사는 Madness Solo 대상입니다.</strong><p>원문상 이번 Winter에 회복을 시도할 수 있습니다. 먼저 후유증 장부에서 Mad Act, Character Changes와 회복 d6를 처리한 뒤 이 단계에 완료 여부를 기록하세요.</p></div>{onNavigate && <button type="button" className="secondary-command" onClick={() => onNavigate('personality')}>Madness Solo 처리</button>}</aside>}
         <div className="segmented-control" role="group" aria-label="개인 모험 여부">
           <button type="button" className={soloChoice === 'not_applicable' ? 'active' : ''} onClick={() => setSoloChoice('not_applicable')} aria-pressed={soloChoice === 'not_applicable'}>해당 없음</button>
           <button type="button" className={soloChoice === 'completed' ? 'active' : ''} onClick={() => setSoloChoice('completed')} aria-pressed={soloChoice === 'completed'}>개인 모험 완료</button>
         </div>
-        <button type="button" className="primary-command" onClick={() => execute({ choice: soloChoice })}><Check size={17} aria-hidden="true" /> 1단계 기록</button>
+        {!soloChoice && <p className="winter-choice-hint">이번 겨울의 개인 모험 여부를 명시적으로 선택하세요.</p>}
+        <button type="button" className="primary-command" onClick={() => execute({ choice: soloChoice })} disabled={!soloChoice}><Check size={17} aria-hidden="true" /> 1단계 기록</button>
       </div>
     );
     if (step.id === 'aging') return <button type="button" className="primary-command" onClick={() => execute({})}><Dices size={17} aria-hidden="true" /> 기사·종자·탈것 노화 판정</button>;
@@ -378,7 +396,18 @@ export default function WinterPhase({ character, setCharacter }) {
               </div>
             </section>
           )}
-          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && (
+          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && hasFamilyBattleChoice && (
+            <section className="manual-resolution">
+              <Dices size={20} aria-hidden="true" />
+              <div>
+                <strong>곪은 불화 · Battle 판정</strong>
+                <p>두 가문의 교전에서 Battle {character.skills?.battle || 0}을 굴립니다. 대성공은 Battle·Honor·Love [family]·Standing [family] 체크, 성공은 Love [family] 체크, 실패는 후퇴, 대실패는 Love [family]와 Standing [family]가 각각 2 감소합니다.</p>
+                <label className="winter-field"><span>d20 · 목표 {character.skills?.battle || 0}</span><input type="number" min="1" max="20" value={familyBattleRoll} onChange={event => setFamilyBattleRoll(event.target.value)} /></label>
+                <button type="button" className="primary-command" onClick={resolveFamilyBattle} disabled={!familyBattleRoll}>Battle 결과 적용</button>
+              </div>
+            </section>
+          )}
+          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && !hasFamilyBattleChoice && (
             <section className="manual-resolution">
               <AlertTriangle size={20} aria-hidden="true" />
               <div>

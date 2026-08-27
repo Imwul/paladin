@@ -10,6 +10,7 @@ import {
   resolveFamilyRelation,
   resolveRandomMarriage,
   resolveSurvivalRoll,
+  resolveWinterFamilyBattle,
   resolveWinterFamilyTarget,
   resolveWinterStep,
   WINTER_STEPS
@@ -174,6 +175,30 @@ assert.throws(
   /No unresolved Winter family target/,
   'A resolved family target cannot be applied twice.'
 );
+
+let familyBattle = resolveWinterStep(familyStepStart, { stepId: 'family', input: {
+  familyEventRoll: 18, relationRoll: 3, sexRoll: 2,
+  marriageAction: 'skip', childbirthAction: 'skip'
+} });
+assert.equal(familyBattle.awaitingChoice, true, 'Festering Feud pauses for its printed Battle roll.');
+assert.deepEqual(familyBattle.character.campaign.winter.unresolved.family.types, ['battle_roll']);
+familyBattle = resolveWinterFamilyBattle(familyBattle.character, { roll: 10 });
+assert.equal(familyBattle.result.outcome, 'critical');
+assert.equal(familyBattle.character.skillsChecked.battle, true);
+assert.equal(familyBattle.character.passionsChecked.honor, true);
+assert.equal(familyBattle.character.passionsChecked.loveFamily, true);
+assert.equal(familyBattle.character.standingsChecked.family, true);
+assert.equal(familyBattle.character.campaign.winter.steps.family, 'resolved');
+assert.throws(() => resolveWinterFamilyBattle(familyBattle.character, { roll: 10 }), /No unresolved Winter family Battle roll/);
+
+let familyBattleFumble = resolveWinterStep(familyStepStart, { stepId: 'family', input: {
+  familyEventRoll: 18, relationRoll: 3, sexRoll: 2,
+  marriageAction: 'skip', childbirthAction: 'skip'
+} });
+familyBattleFumble = resolveWinterFamilyBattle(familyBattleFumble.character, { roll: 20 });
+assert.equal(familyBattleFumble.result.outcome, 'fumble');
+assert.equal(familyBattleFumble.character.passions.loveFamily, 13);
+assert.equal(familyBattleFumble.character.standings.family, 8);
 
 result = resolveWinterStep(character, { stepId: 'experience', input: {} }, constantRng(0.99));
 character = result.character;

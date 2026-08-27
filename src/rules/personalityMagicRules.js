@@ -479,6 +479,34 @@ export const triggerMadness = (characterValue, input = {}, now) => {
   return { character, condition, result: transaction };
 };
 
+export const resolveMadnessOnset = (characterValue, input = {}, now) => {
+  const character = clone(characterValue);
+  const state = ensureState(character);
+  const condition = state.conditions.find(item => item.id === input.conditionId && item.type === 'madness' && item.status === 'active');
+  if (!condition) throw new RangeError('발현 시점을 정할 Madness를 찾을 수 없습니다.');
+  const onset = ['immediate', 'after_action'].includes(input.onset) ? input.onset : '';
+  if (!onset) throw new RangeError('GM은 Madness가 즉시 또는 현재 행동 뒤에 발현하는지 정해야 합니다.');
+  const transactionId = safeId(input.transactionId || `${condition.id}:onset`);
+  const existing = state.transactions.find(item => item.id === transactionId);
+  if (existing) return { character, condition, result: existing, applied: false };
+  if (condition.onset !== 'gm_pending' && condition.onset !== onset) {
+    throw new RangeError('이미 확정한 Madness 발현 시점은 바꿀 수 없습니다.');
+  }
+  condition.onset = onset;
+  condition.onsetDecision = String(input.onsetDecision || (onset === 'immediate' ? 'GM: immediately' : 'GM: after the action'));
+  condition.onsetResolvedAt = iso(now);
+  const result = appendTransaction(state, {
+    id: transactionId,
+    type: 'madness_onset_decision',
+    conditionId: condition.id,
+    onset,
+    onsetDecision: condition.onsetDecision,
+    sourcePage: condition.sourcePage || 'Ch.3 p.79',
+    createdAt: iso(now)
+  }).entry;
+  return { character, condition, result, applied: true };
+};
+
 const createMelancholy = (character, state, input = {}, now) => appendCondition(state, {
   id: safeId(input.id || `melancholy:${input.passionKey}:${character.personal?.campaignYear || 767}:${iso(now)}`),
   type: 'melancholy', status: 'active', passionKey: input.passionKey,

@@ -768,6 +768,10 @@ a:focus-visible,
 .winter-step-sheet__workspace { max-width: 960px; padding-top: 28px; }
 
 .choice-panel { display: grid; gap: 16px; }
+.winter-guidance { max-width: 860px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 16px; border-left: 4px solid var(--seal); background: rgba(183, 55, 47, 0.07); }
+.winter-guidance > svg { color: var(--seal-dark); }
+.winter-guidance strong { display: block; }
+.winter-guidance p, .winter-choice-hint { margin: 4px 0 0; color: var(--ink-soft); font-size: var(--text-caption); }
 .family-winter-controls { gap: 20px; }
 .winter-subprocedure { min-width: 0; display: grid; gap: 12px; margin: 0; padding: 16px 0; border: 0; border-top: 1px solid var(--rule-dark); }
 .winter-subprocedure legend { padding: 0 12px 0 0; color: var(--seal-dark); font-family: var(--font-ui); font-size: var(--text-caption); font-weight: 800; }
@@ -781,6 +785,11 @@ a:focus-visible,
 .secondary-command { border: 1px solid var(--ink); background: var(--paper-bright); color: var(--ink); }
 .secondary-command:hover { background: var(--paper-grey); }
 .primary-command:disabled, .secondary-command:disabled { opacity: 0.45; cursor: not-allowed; }
+
+@media (max-width: 720px) {
+  .winter-guidance { grid-template-columns: auto minmax(0, 1fr); }
+  .winter-guidance .secondary-command { grid-column: 1 / -1; width: 100%; }
+}
 
 .winter-form-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)); align-items: end; }
 .winter-form-grid--four { grid-template-columns: repeat(4, minmax(150px, 1fr)); }

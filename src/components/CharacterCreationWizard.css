@@ -822,12 +822,16 @@
 
 .cc-requirements > div {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   min-height: 36px;
   color: var(--color-danger);
   font-size: var(--text-caption);
 }
+
+.cc-requirements > div > span { display: grid; gap: 2px; }
+.cc-requirements > div strong { color: currentColor; font: inherit; }
+.cc-requirements > div small { color: var(--color-grey); line-height: 1.35; }
 
 .cc-requirements > div.is-met {
   color: var(--color-success);

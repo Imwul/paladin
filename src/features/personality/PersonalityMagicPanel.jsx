@@ -41,6 +41,7 @@ import {
   resolveHonorLordJudgment,
   resolveIntrospection,
   resolveLoversTask,
+  resolveMadnessOnset,
   resolveMadnessYear,
   resolvePersonalityConflict,
   resolvePaganLadyAmor,
@@ -72,7 +73,8 @@ const TRAIT_LABELS = {
 };
 
 const BRIDGE_LABELS = {
-  jewel_relic_prayer: ['The Adventure of the Jewel · 기도', '성 마르키아누스 성유물의 원문 +5를 Prayer resolver에서 처리합니다.'],
+  jewel_hermit_prayer: ['The Adventure of the Jewel · 은자의 기도', '은자가 대신 기도하므로 Love [God]와 Table 9-1의 실제 현장 수정으로 처리합니다.'],
+  jewel_relic_prayer: ['The Adventure of the Jewel · 성유물 기도', 'Saint Marcian 성유물의 원문 +5를 더한 Love [Charlemagne] 판정으로 처리합니다.'],
   jewel_dream: ['The Adventure of the Jewel · 꿈', 'Love [Charlemagne] 판정과 원문 꿈의 발생을 기록합니다.'],
   humble_blessing: ['The Humble Squires · 축복', '투르핀의 기도에서 혜택을 받는 Love [God] 판정을 처리합니다.'],
   humble_passion_conflict: ['The Humble Squires · Passion 충돌', 'Honor와 Love [Charlemagne] 또는 원문상 적절한 항목의 충돌을 기록합니다.'],
@@ -104,11 +106,20 @@ const PASSION_MODES = [
   ['frivolous', '부적절한 상황에서 강행']
 ];
 
+const OUTCOME_LABELS = { critical: '대성공', success: '성공', failure: '실패', fumble: '대실패', gm_narrative: 'GM 판단' };
+
 const Field = ({ label, children }) => <label className="personality-field"><span>{label}</span>{children}</label>;
 const NumberInput = props => <input type="number" {...props} />;
 const toOptionalNumber = value => value === '' ? undefined : Number(value);
 const parseRolls = value => String(value || '').split(',').map(item => Number(item.trim())).filter(Number.isFinite);
 const passionOptions = character => Object.keys(character.passions || {});
+const describeMadnessChange = change => {
+  if (change.removed?.length) return `d20 ${change.roll}: 열정 제거 · ${change.removed.join(', ')}`;
+  if (change.replacement) return `d20 ${change.roll}: ${change.key} → ${change.replacement}`;
+  if (change.losses?.length) return `d20 ${change.roll}: 능력치 감소 · ${change.losses.map(item => `${item.key} ${item.before}→${item.after}`).join(', ')}`;
+  if (change.key) return `d20 ${change.roll}: ${change.group}.${change.key} ${change.before}→${change.after}`;
+  return `d20 ${change.roll}: 원문 변화 적용`;
+};
 
 function RuntimeSection({ icon: Icon, title, source, children, open = false }) {
   return <details className="personality-section" open={open}>
@@ -123,13 +134,14 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
   const bridgeAction = bridge?.type === 'personality_magic' ? bridge.action : null;
   const bridgeProcedure = bridge?.procedure || {};
   const bridgeCopy = BRIDGE_LABELS[bridgeAction];
-  const magicBridge = ['jewel_relic_prayer', 'jewel_dream', 'humble_blessing', 'humble_dream', 'adulterous_spouse_prayer', 'devils_bridge_prayer', 'devils_bridge_dream', 'miracle_truth', 'noble_hostage_miracle'].includes(bridgeAction);
+  const magicBridge = ['jewel_hermit_prayer', 'jewel_relic_prayer', 'jewel_dream', 'humble_blessing', 'humble_dream', 'adulterous_spouse_prayer', 'devils_bridge_prayer', 'devils_bridge_dream', 'miracle_truth', 'noble_hostage_miracle'].includes(bridgeAction);
   const forcedSection = bridgeAction?.startsWith('romance_') || ['love_conquers_all', 'pagan_lady', 'pagan_prison_amor', 'royal_court_amor'].includes(bridgeAction)
     ? 'amor'
     : magicBridge ? 'magic'
       : ['humble_passion_conflict', 'wrathful_lord_conflict'].includes(bridgeAction) ? 'personality'
         : bridgeAction ? 'conditions' : null;
-  const [section, setSection] = useState(forcedSection || mode);
+  const conditionRequiresAttention = state.conditions.some(item => item.status === 'active' && ['madness', 'melancholy'].includes(item.type));
+  const [section, setSection] = useState(forcedSection || (conditionRequiresAttention ? 'conditions' : mode));
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [directed, setDirected] = useState({ traitKey: 'suspicious', target: '', modifier: 5, origin: 'gm', gmAgreed: false });
@@ -152,7 +164,7 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
   const [paganAmor, setPaganAmor] = useState({ mode: 'passive', ladyName: '', ladyResistanceValue: 15, appRoll: '', ladyRoll: '', ladyAmorValue: 16, playerAmorValue: 16, playerAgreed: true, gmAgreed: true, secretName: '' });
   const [prayer, setPrayer] = useState({
     beneficiary: bridgeProcedure.beneficiary || 'self_prayer',
-    intention: '', form: 'normal', place: 'ordinary', faithful: 'none', day: 'ordinary', sacredItem: 'none',
+    intention: '', form: bridgeProcedure.form || 'normal', place: bridgeProcedure.place || 'ordinary', faithful: bridgeProcedure.faithful || 'none', day: bridgeProcedure.day || 'ordinary', sacredItem: bridgeProcedure.sacredItem || 'none',
     roll: '', eligible: true, gmUsesTable: true, onPilgrimage: false, pilgrimageModifier: 1,
     contextModifier: bridgeProcedure.contextModifier || 0,
     contextNote: bridgeProcedure.contextNote || ''
@@ -161,7 +173,21 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
   const [dream, setDream] = useState({ passionKey: bridgeProcedure.passionKey || 'loveGod', passionRoll: '', religionRoll: '', message: '', interpretation: '' });
   const [scenarioShock, setScenarioShock] = useState({ passionKey: 'honor', roll: '', agingRoll: '', attributeRolls: '' });
   const activeConditions = useMemo(() => state.conditions.filter(item => item.status === 'active'), [state.conditions]);
+  const pendingMadnessOnset = useMemo(
+    () => activeConditions.find(item => item.type === 'madness' && item.onset === 'gm_pending') || null,
+    [activeConditions]
+  );
   const activeResolution = state.activeResolution;
+  const latestPrayer = useMemo(() => {
+    const prayers = [...(state.prayers || [])].reverse();
+    return bridge?.transactionId
+      ? prayers.find(item => String(item.id || '').startsWith(bridge.transactionId)) || null
+      : prayers[0] || null;
+  }, [bridge?.transactionId, state.prayers]);
+  const latestMadnessYear = useMemo(
+    () => [...state.transactions].reverse().find(item => item.type === 'madness_year') || null,
+    [state.transactions]
+  );
   const amor = state.amor;
   const fearOptions = state.directedPassions.filter(item => item.kind === 'fear' && item.status === 'active');
 
@@ -325,16 +351,19 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
     </div>}
 
     {section === 'conditions' && <div className="personality-stack">
-      <section className="personality-condition-ledger"><SectionHeader numeral="I" title="현재 후유증" latin="Status Passionis" />{activeConditions.length ? activeConditions.map(condition => <article key={condition.id}><div><span>{condition.type}</span><p>{condition.passionKey || condition.note} · {condition.sourcePage}</p></div><StatusSeal tone="warning">{condition.status}</StatusSeal>{condition.type === 'melancholy' && <button type="button" className="secondary-command" onClick={() => run(() => advanceMelancholyRecovery(character, { conditionId: condition.id, weeks: Number(melancholy.weeks) }), '경과한 회복 시간을 기록했습니다.')}>주 단위 경과</button>}{condition.type === 'madness' && <button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessYear(character, { conditionId: condition.id, recoveryRoll: toOptionalNumber(madness.recoveryRoll), changes: parseRolls(madness.changes).map(roll => ({ roll })) }), 'Mad Acts, Character Changes와 회복을 적용했습니다.')}>광기의 해 처리</button>}</article>) : <p className="personality-empty">활성 Shock, Melancholy 또는 Madness가 없습니다.</p>}</section>
+      <section className="personality-condition-ledger"><SectionHeader numeral="I" title="현재 후유증" latin="Status Passionis" />{activeConditions.length ? activeConditions.map(condition => <article key={condition.id}><div><span>{condition.type}</span><p>{condition.passionKey || condition.note} · {condition.sourcePage}</p>{condition.type === 'madness' && condition.onset !== 'gm_pending' && <small>{condition.onset === 'immediate' ? '즉시 발현' : '현재 행동이 끝난 뒤 발현'} · Winter의 Madness Solo에서 회복 판정</small>}</div><StatusSeal tone="warning">{condition.onset === 'gm_pending' ? 'GM 결정 필요' : condition.status}</StatusSeal>{condition.type === 'melancholy' && <button type="button" className="secondary-command" onClick={() => run(() => advanceMelancholyRecovery(character, { conditionId: condition.id, weeks: Number(melancholy.weeks) }), '경과한 회복 시간을 기록했습니다.')}>주 단위 경과</button>}{condition.type === 'madness' && condition.onset === 'gm_pending' ? <div className="personality-actions"><button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessOnset(character, { conditionId: condition.id, onset: 'immediate' }), 'GM이 Madness의 즉시 발현을 확정했습니다.')}>즉시 발현</button><button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessOnset(character, { conditionId: condition.id, onset: 'after_action' }), 'GM이 현재 행동 뒤 발현을 확정했습니다.')}>행동 뒤 발현</button></div> : condition.type === 'madness' && <button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessYear(character, { conditionId: condition.id, recoveryRoll: toOptionalNumber(madness.recoveryRoll), changes: parseRolls(madness.changes).map(roll => ({ roll })) }), 'Mad Acts, Character Changes와 회복을 적용했습니다.')}>광기의 해 처리</button>}</article>) : <p className="personality-empty">활성 Shock, Melancholy 또는 Madness가 없습니다.</p>}</section>
+
+      {latestMadnessYear && <section className="personality-resolution" aria-label="최근 광기의 해 결과"><p><strong>최근 광기의 해 · {latestMadnessYear.madAct}</strong> · {latestMadnessYear.yearNumber}년차 · 회복 d6 {latestMadnessYear.recoveryRoll}</p><small>{latestMadnessYear.recovered ? '이성을 되찾았습니다.' : '광기가 다음 해까지 이어집니다.'}</small>{latestMadnessYear.changes?.length > 0 && <ul>{latestMadnessYear.changes.map((change, index) => <li key={`${latestMadnessYear.id}:change:${index}`}>{describeMadnessChange(change)}</li>)}</ul>}</section>}
 
       <RuntimeSection icon={AlertTriangle} title="Madness 시작과 연간 회복" source="Ch.3 pp.79–80 · Tables 19–20/21" open={bridgeAction === 'wild_hunt'}>
         <div className="personality-grid">
           <Field label="원인이 된 Passion"><select value={madness.passionKey} onChange={event => setMadness({ ...madness, passionKey: event.target.value, value: character.passions?.[event.target.value] || madness.value })}>{passionOptions(character).map(key => <option key={key} value={key}>{PASSION_LABELS[key] || key}</option>)}</select></Field>
           <Field label="Fumble 당시 값"><NumberInput min="1" value={madness.value} onChange={event => setMadness({ ...madness, value: event.target.value })} /></Field>
+          <Field label="GM이 정한 발현"><select value={madness.onset} onChange={event => setMadness({ ...madness, onset: event.target.value })}><option value="gm_pending">아직 결정하지 않음</option><option value="immediate">즉시</option><option value="after_action">현재 행동 뒤</option></select></Field>
           <Field label="회복 d6"><NumberInput min="1" max="6" value={madness.recoveryRoll} onChange={event => setMadness({ ...madness, recoveryRoll: event.target.value })} /></Field>
           <Field label="Table 19–21 d20 · 쉼표"><input value={madness.changes} onChange={event => setMadness({ ...madness, changes: event.target.value })} placeholder="예: 3, 12" /></Field>
         </div>
-        <button type="button" className="secondary-command" onClick={() => run(() => triggerMadness(character, { passionKey: madness.passionKey, fumbledPassionValue: Number(madness.value), sourcePage: bridgeAction === 'wild_hunt' ? 'Ch.19 p.431' : 'Ch.3 pp.79–80' }), 'Madness 조건을 canonical 상태로 시작했습니다.')}>Madness 시작</button>
+        <button type="button" className="secondary-command" onClick={() => run(() => triggerMadness(character, { passionKey: madness.passionKey, fumbledPassionValue: Number(madness.value), onset: madness.onset, sourcePage: bridgeAction === 'wild_hunt' ? 'Ch.19 p.431' : 'Ch.3 pp.79–80' }), 'Madness 조건을 canonical 상태로 시작했습니다.')}>Madness 시작</button>
       </RuntimeSection>
 
       <RuntimeSection icon={HeartHandshake} title="Snap Out of It" source="Ch.3 p.79" open={['melancholic_paladin', 'angry_merchant_melancholy'].includes(bridgeAction)}>
@@ -438,7 +467,7 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
           <label className="personality-check"><input type="checkbox" checked={prayer.gmUsesTable} onChange={event => setPrayer({ ...prayer, gmUsesTable: event.target.checked })} />GM이 Table 9–2 사용</label>
           <Field label="d20"><NumberInput min="1" max="20" value={prayer.roll} onChange={event => setPrayer({ ...prayer, roll: event.target.value })} /></Field>
         </div>
-        {!activeResolution ? <button type="button" className="primary-command" onClick={() => run(() => beginPrayerResolution(character, { ...prayer, roll: toOptionalNumber(prayer.roll), transactionId: bridge ? `${bridge.transactionId}:prayer` : undefined, sourcePage: bridge ? `Ch.19 p.${bridge.sourcePage}` : undefined }), '기도 수정치와 Passion 결과를 확정했습니다.')}><Sparkles size={17} aria-hidden="true" />기도 판정</button> : activeResolution.type === 'prayer' && <div className="personality-resolution"><p>{activeResolution.outcome} · 행동 수정 {activeResolution.skillModifier >= 0 ? '+' : ''}{activeResolution.skillModifier}</p><button type="button" className="primary-command" onClick={completePassion}>후속 행동 성공으로 완료</button></div>}
+        {!activeResolution ? <><button type="button" className="primary-command" onClick={() => run(() => beginPrayerResolution(character, { ...prayer, roll: toOptionalNumber(prayer.roll), transactionId: bridge ? `${bridge.transactionId}:prayer` : undefined, sourcePage: bridge ? `Ch.19 p.${bridge.sourcePage}` : undefined }), '기도 수정치와 Passion 결과를 확정했습니다.')}><Sparkles size={17} aria-hidden="true" />기도 판정</button>{latestPrayer && <div className="personality-resolution" role="status"><p><strong>기도 결과 · {OUTCOME_LABELS[latestPrayer.outcome] || latestPrayer.outcome}</strong>{latestPrayer.roll ? ` · d20 ${latestPrayer.roll} / 목표 ${latestPrayer.target}` : ''} · 총 수정 {latestPrayer.modifiers?.total >= 0 ? '+' : ''}{latestPrayer.modifiers?.total || 0}</p>{latestPrayer.outcome === 'fumble' && <small>대실패로 관련 Passion이 1 감소하고 Madness 상태가 시작되었습니다. GM은 발현 시점을 정해야 합니다.</small>}{latestPrayer.outcome === 'gm_narrative' && <small>Table 9-2를 사용하지 않아 정확한 도움은 GM 판단으로 남습니다.</small>}</div>}{latestPrayer?.outcome === 'fumble' && pendingMadnessOnset && <div className="personality-source-warning"><strong>다음 단계 전 필수 결정</strong><p>원문에 따라 GM이 광기가 즉시 또는 현재 행동이 끝난 뒤 발현하는지 정합니다.</p><div className="personality-actions"><button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessOnset(character, { conditionId: pendingMadnessOnset.id, onset: 'immediate' }), 'GM이 Madness의 즉시 발현을 확정했습니다.')}>즉시 발현</button><button type="button" className="secondary-command" onClick={() => run(() => resolveMadnessOnset(character, { conditionId: pendingMadnessOnset.id, onset: 'after_action' }), 'GM이 현재 행동 뒤 발현을 확정했습니다.')}>행동 뒤 발현</button></div></div>}</> : activeResolution.type === 'prayer' && <div className="personality-resolution"><p>{OUTCOME_LABELS[activeResolution.outcome] || activeResolution.outcome} · d20 {activeResolution.roll} / 목표 {activeResolution.target} · 행동 수정 {activeResolution.skillModifier >= 0 ? '+' : ''}{activeResolution.skillModifier}</p><Field label="후속 행동 결과"><select value={passion.actionOutcome} onChange={event => setPassion({ ...passion, actionOutcome: event.target.value })}><option value="successful">후속 행동 성공</option><option value="failed">후속 행동 실패</option></select></Field><button type="button" className="primary-command" onClick={completePassion}>후속 행동 결과 적용</button></div>}
       </RuntimeSection>
 
       <RuntimeSection icon={Sparkles} title="기적의 정확한 성격" source="Ch.9 p.166" open={['miracle_truth', 'noble_hostage_miracle'].includes(bridgeAction)}>
@@ -454,7 +483,7 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
       </RuntimeSection>
     </div>}
 
-    {bridge && <section className="personality-return"><div><Check size={19} aria-hidden="true" /><span>필요한 canonical 거래가 완료되면 원래 모험 장면으로 돌아갑니다.</span></div><button type="button" className="primary-command" onClick={finishBridge}>모험으로 결과 반환<ChevronRight size={17} aria-hidden="true" /></button></section>}
+    {bridge && <section className="personality-return"><div><Check size={19} aria-hidden="true" /><span>{pendingMadnessOnset ? 'Madness 발현 시점을 먼저 확정해야 합니다.' : '필요한 canonical 거래가 완료되면 원래 모험 장면으로 돌아갑니다.'}</span></div><button type="button" className="primary-command" onClick={finishBridge} disabled={Boolean(pendingMadnessOnset)}>모험으로 결과 반환<ChevronRight size={17} aria-hidden="true" /></button></section>}
     {notice && <div className="personality-message" role="status"><Check size={17} aria-hidden="true" />{notice}</div>}
     {error && <div className="personality-message personality-message--error" role="alert"><AlertTriangle size={17} aria-hidden="true" />{error}</div>}
   </article>;

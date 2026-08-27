@@ -270,6 +270,16 @@ test('CHAR-SKILL-ORDER-001', 'skill cap order is base/father/page/homeland, cap 
 });
 
 test('CHAR-KNIGHT-QUAL-001', 'squire-year benefits are two distinct types and stop immediately on qualification', () => {
+  const fresh = createCharacterCreationSession({ seed: 'squire-draft-defaults', now: '2026-08-01T00:00:00.000Z' });
+  assert.deepEqual(fresh.choices.squireYearDraft, {
+    categories: [], attributeKey: '', scoreGroup: 'traits', scoreKey: '',
+    skills: { common: '', courtly: '', combat: '', free: '' }
+  });
+  const partial = sanitizeCharacterCreationSession({
+    ...fresh,
+    choices: { ...fresh.choices, squireYearDraft: { categories: ['score', 'skills'] } }
+  });
+  assert.deepEqual(partial.choices.squireYearDraft.skills, { common: '', courtly: '', combat: '', free: '' });
   const qualified = makeHappySession();
   assert.equal(qualified.draftCharacter.qualification.qualified, true);
   assert.equal(addCharacterCreationSquireYear(qualified, { categories: ['attribute', 'score'], attributeKey: 'str', scoreGroup: 'passions', scoreKey: 'honor' }).added, false);

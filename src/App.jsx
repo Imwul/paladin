@@ -548,7 +548,7 @@ export default function App() {
     if (activeTab === 'chronicle') return <ChronicleLedger character={character} />;
     if (activeTab === 'character') return <CharacterDossier character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />;
     if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
-    if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'adventure') return <AdventureJournal character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;

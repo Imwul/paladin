@@ -1492,6 +1492,70 @@ export const resolveWinterFamilyTarget = (rawCharacter, input = {}, rng = Math.r
   return { character, record, applied: true, awaitingChoice: false };
 };
 
+export const resolveWinterFamilyBattle = (rawCharacter, input = {}, rng = Math.random) => {
+  const character = clone(rawCharacter);
+  const winter = ensureWinterState(character);
+  const step = WINTER_STEPS.find(item => item.id === 'family');
+  const record = winter.records.family;
+  const currentUnresolved = unresolvedItems(record);
+  if (!record || winter.steps.family !== 'awaiting_choice' || !currentUnresolved.some(item => item.type === 'battle_roll')) {
+    throw new RangeError('No unresolved Winter family Battle roll exists.');
+  }
+  const roll = input.roll === undefined ? rollDie(20, rng) : asInt(input.roll);
+  if (roll < 1 || roll > 20) throw new RangeError('곪은 불화의 Battle 판정은 d20 1-20을 사용합니다.');
+  const target = asInt(character.skills?.battle);
+  const check = resolveD20Roll(roll, target);
+  const outcome = check.outcome;
+  const context = {
+    id: `${record.completionId}:festering-feud`,
+    year: record.year,
+    title: '곪은 불화',
+    narrative: '두 가문 사이의 소규모 교전 결과',
+    sourceRuleId: 'WINTER-FAMILY-001',
+    sourcePage: 'Ch.10 p.180'
+  };
+  if (outcome === 'critical') {
+    record.stateChanges.push(addCheck(character, 'skills', 'battle'));
+    record.stateChanges.push(addCheck(character, 'passions', 'honor'));
+    record.stateChanges.push(addCheck(character, 'passions', 'loveFamily'));
+    record.stateChanges.push(addCheck(character, 'standings', 'family'));
+  } else if (outcome === 'success') {
+    record.stateChanges.push(addCheck(character, 'passions', 'loveFamily'));
+  } else if (outcome === 'fumble') {
+    record.stateChanges.push(applyScore(character, 'passions', 'loveFamily', -2, context));
+    record.stateChanges.push(applyScore(character, 'standings', 'family', -2, context));
+  }
+  const outcomeLabel = { critical: '대성공', success: '성공', failure: '실패', fumble: '대실패' }[outcome] || outcome;
+  record.roll = { ...record.roll, familyBattle: roll };
+  record.result = { ...record.result, familyBattle: { roll, target, outcome, check } };
+  record.journalEntry = `${record.journalEntry} Battle ${outcomeLabel}(d20 ${roll} / 목표 ${target}).`;
+  const remaining = currentUnresolved.filter(item => item.type !== 'battle_roll');
+  record.unresolvedChoice = remaining.length ? remaining : null;
+  if (remaining.length) {
+    record.status = 'awaiting_choice';
+    winter.records.family = record;
+    winter.unresolved.family = {
+      label: remaining.map(item => item.label).filter(Boolean).join('; '),
+      types: remaining.map(item => item.type).filter(Boolean),
+      required: true,
+      ruleId: step.ruleId
+    };
+    character.campaign.winter = winter;
+    return { character, record, result: record.result.familyBattle, applied: true, awaitingChoice: true };
+  }
+  record.status = 'resolved';
+  winter.steps.family = 'resolved';
+  winter.records.family = record;
+  winter.transactions.push(record);
+  winter.logs.push(record.journalEntry);
+  winter.currentStep = nextPendingStep(winter);
+  delete winter.unresolved.family;
+  markApplied(character, record.completionId, `${step.number}단계 ${step.label}`);
+  pushChronicle(character, record);
+  character.campaign.winter = winter;
+  return { character, record, result: record.result.familyBattle, applied: true, awaitingChoice: false };
+};
+
 export const recordManualWinterResolution = (rawCharacter, { stepId, note, canonicalTransactionIds = [] }) => {
   if (!String(note || '').trim()) throw new RangeError('A manual resolution note is required.');
   const character = clone(rawCharacter);

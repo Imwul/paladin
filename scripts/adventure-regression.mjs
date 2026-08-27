@@ -17,6 +17,7 @@ import {
   completeAdventureBattleReturn,
   completeAdventureChase,
   completeAdventureCombat,
+  completeAdventureHealing,
   completeAdventureHunt,
   completeAdventurePersonalityMagic,
   completeAdventureStage,
@@ -36,6 +37,8 @@ import {
   resolveAdventureHuntDiscovery,
   resolveAdventureHuntObstacle,
   resolveAdventureHuntPrey,
+  resolveAdventureChirurgery,
+  resolveAdventureFirstAid,
   resolveAdventureInterruption,
   resumeAdventure,
   sanitizeAdventureLedger,
@@ -111,6 +114,18 @@ const reloadAdventure = character => {
   return reloaded;
 };
 
+const withSourcePremise = (characterValue, definition) => {
+  const character = structuredClone(characterValue);
+  if (definition.sourcePremise?.year) character.personal.campaignYear = definition.sourcePremise.year;
+  if (definition.sourcePremise?.role === 'squire') character.personal.personalClass = '종자';
+  return character;
+};
+
+const startCanonicalAdventure = (character, input) => startAdventure(
+  withSourcePremise(character, CHAPTER_19_ADVENTURES.find(item => item.id === input.adventureId)),
+  input
+);
+
 const confirmStage = character => {
   const stage = getCurrentAdventureStage(character.campaign.adventures.active);
   const prepared = stage.requiresCanonicalConsequence
@@ -138,12 +153,12 @@ const resolvePersonalityMagicStage = characterValue => {
   let character = beginAdventurePersonalityMagic(characterValue).character;
   const pending = character.campaign.adventures.active.pendingSubsystem;
   const action = pending.action;
-  if (['jewel_relic_prayer', 'humble_blessing', 'adulterous_spouse_prayer', 'devils_bridge_prayer'].includes(action)) {
+  if (['jewel_hermit_prayer', 'jewel_relic_prayer', 'humble_blessing', 'adulterous_spouse_prayer', 'devils_bridge_prayer'].includes(action)) {
     character = beginPrayerResolution(character, {
       eligible: true,
       beneficiary: pending.procedure?.beneficiary || 'self_prayer',
       intention: action,
-      form: 'normal', place: 'ordinary', faithful: 'none', day: 'ordinary', sacredItem: 'none',
+      form: pending.procedure?.form || 'normal', place: pending.procedure?.place || 'ordinary', faithful: pending.procedure?.faithful || 'none', day: pending.procedure?.day || 'ordinary', sacredItem: pending.procedure?.sacredItem || 'none',
       contextModifier: pending.procedure?.contextModifier || 0,
       contextNote: pending.procedure?.contextNote || '',
       gmUsesTable: false,
@@ -229,7 +244,7 @@ const resolvePersonalityMagicStage = characterValue => {
 };
 
 const runDefinition = (definition, options = {}) => {
-  let character = startAdventure(options.character || makeCharacter(), {
+  let character = startCanonicalAdventure(options.character || makeCharacter(), {
     adventureId: definition.id,
     participants: [{ id: 'self', characterId: 'self', name: '검증 기사' }, { id: 'guest', name: '동료 기사' }]
   }).character;
@@ -338,6 +353,12 @@ const runDefinition = (definition, options = {}) => {
       character = resolvePersonalityMagicStage(character);
       continue;
     }
+    if (stage.kind === 'subsystem' && stage.subsystem === 'healing') {
+      const untreated = character.campaign.health.wounds.filter(wound => !wound.treated);
+      for (const wound of untreated) character = resolveAdventureFirstAid(character, { woundId: wound.id, roll: 1, healingRoll: 3 }).character;
+      character = completeAdventureHealing(character).character;
+      continue;
+    }
     if (stage.kind === 'subsystem' && stage.subsystem === 'knighthood') {
       const beforeGlory = character.gear.gloryThisGame;
       character = resolveAdventureKnighthood(character, { roll: 4 }).character;
@@ -371,6 +392,69 @@ assert.equal(CHAPTER_19_SHORT_FORMS.length, 18);
 assert.equal(CHAPTER_19_SOLOS.length, 14);
 assert.equal(CHAPTER_19_ADVENTURES.length, 34);
 assert.equal(Object.keys(CHAPTER_19_TABLES).length, 36);
+
+const jewelDefinition = CHAPTER_19_LONG_ADVENTURES.find(item => item.id === 'jewel');
+assert.throws(() => startAdventure(makeCharacter(), { adventureId: 'jewel' }), /원문 전제/);
+const premiseOverride = startAdventure(makeCharacter(), {
+  adventureId: 'jewel',
+  sourcePremiseOverride: { approved: true, note: 'Regression verifies an explicit GM adaptation record.' }
+}).character.campaign.adventures.active;
+assert.equal(premiseOverride.sourcePremiseOverride.approved, true);
+assert.equal(premiseOverride.decisions[0].value, 'source_premise_override');
+const shiftedState = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character.campaign.adventures.active;
+shiftedState.stageIndex = 0;
+shiftedState.currentStageId = 'hermit';
+const shiftedLedger = sanitizeAdventureLedger({ engineVersion: 1, active: shiftedState, history: [] });
+assert.equal(shiftedLedger.active.stageIndex, jewelDefinition.stages.findIndex(stage => stage.id === 'hermit'));
+
+let selfishPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+selfishPath = confirmStage(selfishPath);
+selfishPath = resolveAdventureTest(selfishPath, { testKey: 'religion', roll: 1 }).character;
+selfishPath = resolveAdventureTest(selfishPath, { testKey: 'intrigue', roll: 1 }).character;
+selfishPath = completeAdventureStage(selfishPath).character;
+selfishPath = recordAdventureDecision(selfishPath, { kind: 'player', value: 'refuse_alms' }).character;
+selfishPath = completeAdventureStage(selfishPath).character;
+assert.equal(getCurrentAdventureStage(selfishPath.campaign.adventures.active).id, 'pilgrim_selfish');
+selfishPath = resolveAdventureTest(selfishPath, { testKey: 'selfish', roll: 20 }).character;
+assert.equal(selfishPath.campaign.adventures.active.results.at(-1).outcome, 'fumble');
+
+let healingPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+healingPath.campaign.adventures.active.stageIndex = jewelDefinition.stages.findIndex(stage => stage.id === 'hermit_healing');
+healingPath.campaign.adventures.active.currentStageId = 'hermit_healing';
+healingPath.attributes.currentHp = 23;
+healingPath.campaign.health.wounds = [{ id: 'jewel-wound', year: 767, source: 'Brigand club', rolledDamage: 10, actualDamage: 5, classification: 'minor', treated: false, firstAid: null }];
+healingPath = resolveAdventureFirstAid(healingPath, { woundId: 'jewel-wound', roll: 1, healingRoll: 3 }).character;
+assert.equal(healingPath.attributes.currentHp, 26);
+assert.equal(healingPath.campaign.health.wounds[0].firstAid.target, 15);
+assert.equal(resolveAdventureFirstAid(healingPath, { woundId: 'jewel-wound', roll: 1, healingRoll: 3 }).applied, false);
+healingPath = completeAdventureHealing(healingPath).character;
+assert.notEqual(healingPath.campaign.adventures.active.currentStageId, 'hermit_healing');
+
+let surgeryPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+surgeryPath.campaign.adventures.active.stageIndex = jewelDefinition.stages.findIndex(stage => stage.id === 'hermit_healing');
+surgeryPath.campaign.adventures.active.currentStageId = 'hermit_healing';
+surgeryPath.attributes.currentHp = 10;
+surgeryPath.campaign.health.surgeryNeeded = true;
+const hermitSurgery = resolveAdventureChirurgery(surgeryPath, { roll: 15 });
+assert.equal(hermitSurgery.result.outcome, 'critical');
+assert.equal(hermitSurgery.character.campaign.health.weeklyCare.at(-1).surgery.check.target, 15);
+assert.ok(hermitSurgery.character.attributes.currentHp > 10);
+assert.equal(resolveAdventureChirurgery(hermitSurgery.character, { roll: 20 }).applied, false);
+
+const eingarOpponent = { id: 'sir_eingar', name: 'Sir Eingar', skill: 14, damageDice: 5, armor: 8, shield: 0, dex: 8, str: 13, siz: 17, con: 11, weaponId: 'axe', distance: 1 };
+let relicProtectionPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+relicProtectionPath.campaign.adventures.active.stageIndex = jewelDefinition.stages.findIndex(stage => stage.id === 'werewolf');
+relicProtectionPath.campaign.adventures.active.currentStageId = 'werewolf';
+relicProtectionPath.campaign.adventures.active.results.push({ type: 'personality_magic_return', action: 'jewel_relic_prayer', canonicalOutcome: 'success' });
+relicProtectionPath = beginAdventureCombat(relicProtectionPath, { opponents: [eingarOpponent] }).character;
+assert.equal(relicProtectionPath.campaign.combat.opponents[0].skill, 9);
+
+let massProtectionPath = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+massProtectionPath.campaign.adventures.active.stageIndex = jewelDefinition.stages.findIndex(stage => stage.id === 'werewolf');
+massProtectionPath.campaign.adventures.active.currentStageId = 'werewolf';
+massProtectionPath.campaign.adventures.active.results.push({ type: 'test', stageId: 'special_mass', outcome: 'critical' });
+massProtectionPath = beginAdventureCombat(massProtectionPath, { opponents: [eingarOpponent] }).character;
+assert.equal(massProtectionPath.campaign.combat.opponents[0].skill, 9);
 
 const runtimeTableIds = new Set(CHAPTER_19_ADVENTURES.flatMap(definition => [
   ...(definition.tableIds || []),
@@ -530,9 +614,9 @@ capturedFeud = resolveAdventureInterruption(reloadAdventure(capturedFeud), { act
 capturedFeud = completeAdventureStage(capturedFeud).character;
 assert.equal(capturedFeud.campaign.adventures.active.currentStageId, 'resolution');
 
-assert.throws(() => completeAdventureStage(startAdventure(makeCharacter(), { adventureId: 'jewel' }).character), /기록/);
+assert.throws(() => completeAdventureStage(startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character), /기록/);
 
-let deferred = startAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+let deferred = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
 deferred = deferAdventure(deferred, { requirement: 'Chapter 18 confirmation', gmNote: 'retain exact scene' }).character;
 const savedDeferred = reloadAdventure(deferred);
 assert.equal(savedDeferred.campaign.adventures.active.status, 'deferred');
@@ -540,7 +624,7 @@ assert.equal(savedDeferred.campaign.adventures.active.deferred.stageId, 'setup')
 deferred = resumeAdventure(savedDeferred).character;
 assert.equal(deferred.campaign.adventures.active.currentStageId, 'setup');
 
-let reward = startAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
+let reward = startCanonicalAdventure(makeCharacter(), { adventureId: 'jewel' }).character;
 reward = applyAdventureConsequence(reward, { transactionId: 'jewel:fixed-glory', type: 'glory', amount: 50, reason: 'Defeated Sir Eingar' }).character;
 const duplicated = applyAdventureConsequence(reward, { transactionId: 'jewel:fixed-glory', type: 'glory', amount: 50, reason: 'Defeated Sir Eingar' });
 assert.equal(duplicated.applied, false);

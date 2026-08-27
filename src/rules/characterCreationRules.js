@@ -633,19 +633,25 @@ const applySameFamilyValorousBonus = (session, draft, traits) => {
 };
 
 const getQualification = draft => {
-  const courtlyAtTen = SKILL_CATEGORIES.courtly.filter(key => Number(draft.skills[key] || 0) >= 10);
-  const meleeAtThirteen = MELEE_WEAPON_SKILLS.filter(key => Number(draft.skills[key] || 0) >= 13);
+  const rankedCourtly = SKILL_CATEGORIES.courtly
+    .map(key => ({ key, value: Number(draft.skills[key] || 0) }))
+    .sort((left, right) => right.value - left.value);
+  const rankedMelee = MELEE_WEAPON_SKILLS
+    .map(key => ({ key, value: Number(draft.skills[key] || 0) }))
+    .sort((left, right) => right.value - left.value);
+  const courtlyAtTen = rankedCourtly.filter(item => item.value >= 10).map(item => item.key);
+  const meleeAtThirteen = rankedMelee.filter(item => item.value >= 13).map(item => item.key);
   const requiresLance = Number(draft.personal.campaignYear || 767) >= 768;
   const requirements = [
-    { key: 'valorous', label: 'Valorous 13', met: Number(draft.traits.valorous || 0) >= 13 },
-    { key: 'honor', label: 'Honor 10', met: Number(draft.passions.honor || 0) >= 10 },
-    { key: 'lordStanding', label: 'Standing [lord] 10', met: Number(draft.standings.liegeLord || 0) >= 10 },
-    { key: 'firstAid', label: 'First Aid 10', met: Number(draft.skills.firstAid || 0) >= 10 },
-    { key: 'horsemanship', label: 'Horsemanship 10', met: Number(draft.skills.horsemanship || 0) >= 10 },
-    { key: 'courtly', label: 'Two courtly skills 10', met: courtlyAtTen.length >= 2, matches: courtlyAtTen },
-    { key: 'battle', label: 'Battle 10', met: Number(draft.skills.battle || 0) >= 10 },
-    { key: 'melee', label: 'Two melee weapon skills 13', met: meleeAtThirteen.length >= 2, matches: meleeAtThirteen },
-    { key: 'lance', label: 'Phase 1+: Lance 10', met: !requiresLance || Number(draft.skills.lance || 0) >= 10, applies: requiresLance }
+    { key: 'valorous', label: 'Valorous 13', current: Number(draft.traits.valorous || 0), target: 13, met: Number(draft.traits.valorous || 0) >= 13 },
+    { key: 'honor', label: 'Honor 10', current: Number(draft.passions.honor || 0), target: 10, met: Number(draft.passions.honor || 0) >= 10 },
+    { key: 'lordStanding', label: 'Standing [lord] 10', current: Number(draft.standings.liegeLord || 0), target: 10, met: Number(draft.standings.liegeLord || 0) >= 10 },
+    { key: 'firstAid', label: 'First Aid 10', current: Number(draft.skills.firstAid || 0), target: 10, met: Number(draft.skills.firstAid || 0) >= 10 },
+    { key: 'horsemanship', label: 'Horsemanship 10', current: Number(draft.skills.horsemanship || 0), target: 10, met: Number(draft.skills.horsemanship || 0) >= 10 },
+    { key: 'courtly', label: 'Two courtly skills 10', current: courtlyAtTen.length, target: 2, met: courtlyAtTen.length >= 2, matches: courtlyAtTen, leaders: rankedCourtly.slice(0, 2) },
+    { key: 'battle', label: 'Battle 10', current: Number(draft.skills.battle || 0), target: 10, met: Number(draft.skills.battle || 0) >= 10 },
+    { key: 'melee', label: 'Two melee weapon skills 13', current: meleeAtThirteen.length, target: 2, met: meleeAtThirteen.length >= 2, matches: meleeAtThirteen, leaders: rankedMelee.slice(0, 2) },
+    { key: 'lance', label: 'Phase 1+: Lance 10', current: Number(draft.skills.lance || 0), target: 10, met: !requiresLance || Number(draft.skills.lance || 0) >= 10, applies: requiresLance }
   ];
   return { qualified: requirements.every(item => item.met), requirements, courtlyAtTen, meleeAtThirteen };
 };
@@ -1307,6 +1313,13 @@ export const createCharacterCreationSession = ({ seed, mode = 'core', existingFa
       featureCategory: '',
       featureText: '',
       skillTraining: {},
+      squireYearDraft: {
+        categories: [],
+        attributeKey: '',
+        scoreGroup: 'traits',
+        scoreKey: '',
+        skills: { common: '', courtly: '', combat: '', free: '' }
+      },
       selectedIdeals: [],
       romanticPassionValue: 0,
       glorySource: 'fatherClass',
@@ -1917,6 +1930,14 @@ export const sanitizeCharacterCreationSession = value => {
       family: { ...defaults.choices.family, ...(source.choices.family || {}) },
       attributeBonuses: { ...defaults.choices.attributeBonuses, ...(source.choices.attributeBonuses || {}) },
       skillTraining: { ...defaults.choices.skillTraining, ...(source.choices.skillTraining || {}) },
+      squireYearDraft: {
+        ...defaults.choices.squireYearDraft,
+        ...(source.choices.squireYearDraft || {}),
+        skills: {
+          ...defaults.choices.squireYearDraft.skills,
+          ...(source.choices.squireYearDraft?.skills || {})
+        }
+      },
       foreignFamilyStandings: { ...defaults.choices.foreignFamilyStandings, ...(source.choices.foreignFamilyStandings || {}) },
       foreignFamilyMuster: { ...defaults.choices.foreignFamilyMuster, ...(source.choices.foreignFamilyMuster || {}) },
       foreignTraits: { ...defaults.choices.foreignTraits, ...(source.choices.foreignTraits || {}) },

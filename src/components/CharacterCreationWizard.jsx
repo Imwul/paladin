@@ -56,6 +56,50 @@ const STANDING_LABELS = { charlemagne: 'Charlemagne', liegeLord: 'Liege lord', f
 const SCORE_GROUP_LABELS = { traits: 'Trait', passions: 'Passion', standings: 'Standing' };
 const displayValue = value => value === null || value === undefined || value === '' ? '-' : value;
 const marketLabel = id => MARKET_CATALOG.find(entry => entry.id === id)?.label || id;
+const FAMILY_FIELD_LABELS = {
+  name: '가문 이름',
+  motto: '가문 표어',
+  battleCry: '전투 함성',
+  ancestor: '공통 조상',
+  greatNoble: '백작 또는 공작 가문원'
+};
+
+const formatCreationEffects = effects => {
+  const entries = Object.entries(effects || {}).flatMap(([group, values]) => Object.entries(values || {}).map(([key, amount]) => {
+    const label = SOURCE_SKILL_LABELS[key] || SOURCE_TRAIT_LABELS[key] || PASSION_LABELS[key] || key;
+    return `${label} ${Number(amount) >= 0 ? '+' : ''}${amount}`;
+  }));
+  return entries.join(' · ') || '추가 수치 효과 없음';
+};
+
+const formatCreationIssue = (issue, session, stepId) => {
+  const rollMatch = issue.match(/^Roll (.+)\.$/);
+  if (rollMatch) {
+    const request = getCreationRollRequests(session, stepId).find(entry => entry.key === rollMatch[1]);
+    return `${request?.label || rollMatch[1]} 주사위를 굴리십시오.`;
+  }
+  const familyMatch = issue.match(/^Enter family (.+)\.$/);
+  if (familyMatch) return `${FAMILY_FIELD_LABELS[familyMatch[1]] || familyMatch[1]}을(를) 입력하십시오.`;
+  const exact = {
+    'Enter one Frankish name.': '프랑크식 이름 하나를 입력하십시오.',
+    'Choose the mercenary father bonus melee weapon.': '용병 기사 부친에게서 배울 추가 근접 무기를 선택하십시오.',
+    'Allocate exactly 5 attribute points.': '추가 능력치 5점을 정확히 배분하십시오.',
+    'Add one squire year at a time until every knighthood requirement is met.': '서로 다른 혜택 두 가지를 고른 뒤 한 해씩 적용하여 모든 기사 자격을 충족하십시오.',
+    'Record the character story before completion.': '생성을 마치기 전에 연대기 첫 기록을 작성하십시오.',
+    'Resolve traits and passions first.': '성향과 열정 단계를 먼저 완료하십시오.',
+    'Resolve father class and son number first.': '부친 신분과 출생 순서를 먼저 완료하십시오.',
+    'Choose inherited equipment or Table 1-14 outfit.': '상속 장비와 Table 1-14 시작 장비 중 하나를 선택하십시오.',
+    'Resolve every required Birth Gift roll and reroll.': '필요한 탄생 선물 굴림과 재굴림을 모두 완료하십시오.'
+  };
+  if (exact[issue]) return exact[issue];
+  const allocationMatch = issue.match(/^Allocate exactly (\d+) father-class skill points\.$/);
+  if (allocationMatch) return `부친 신분 기술 점수 ${allocationMatch[1]}점을 정확히 배분하십시오.`;
+  const trainingZeroMatch = issue.match(/^Training cannot raise (.+) from 0\.$/);
+  if (trainingZeroMatch) return `기본값이 0인 ${SOURCE_SKILL_LABELS[trainingZeroMatch[1]] || trainingZeroMatch[1]} 기술은 이 점수로 올릴 수 없습니다.`;
+  const trainingCapMatch = issue.match(/^Training allocation for (.+) exceeds the creation cap of 15\.$/);
+  if (trainingCapMatch) return `${SOURCE_SKILL_LABELS[trainingCapMatch[1]] || trainingCapMatch[1]} 기술이 생성 상한 15를 넘습니다.`;
+  return issue;
+};
 
 function SegmentedControl({ label, value, options, onChange }) {
   return (
@@ -253,7 +297,7 @@ function CreationReview({ session }) {
   );
 }
 
-export default function CharacterCreationWizard({ character, setCharacter }) {
+export default function CharacterCreationWizard({ character, setCharacter, onComplete }) {
   const session = character.campaign?.characterCreationSession || null;
   const [seed, setSeed] = useState('paladin-767');
   const [startFamilyMode, setStartFamilyMode] = useState('new');
@@ -417,7 +461,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
     if (step.id === 'familyCharacteristic') return (
       <div className="cc-step-stack">
         {stepRollPanel}
-        {draft.family.characteristic && <p className="cc-result-line"><strong>{draft.family.characteristic.label}</strong><span>{JSON.stringify(draft.family.characteristic.effects || {})}</span></p>}
+        {draft.family.characteristic && <p className="cc-result-line"><strong>{draft.family.characteristic.label}</strong><span>{formatCreationEffects(draft.family.characteristic.effects)}</span></p>}
         {session.rolls['family.characteristic']?.modifiedResult === 19 && (
           <label className="cc-control"><span>Master tacticians</span><select value={session.choices.familyCharacteristicBattleSkill || ''} onChange={event => choice('familyCharacteristicBattleSkill', event.target.value)}><option value="">선택</option><option value="battle">Battle +5</option><option value="siege">Siege +5</option></select></label>
         )}
@@ -430,7 +474,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
     if (step.id === 'saint') return (
       <div className="cc-step-stack">
         {stepRollPanel}
-        {draft.family.patronSaint && <p className="cc-result-line"><strong>{draft.family.patronSaint.label}</strong><span>{draft.family.patronSaint.patronage} · {JSON.stringify(draft.family.patronSaint.effects || {})}</span></p>}
+        {draft.family.patronSaint && <p className="cc-result-line"><strong>{draft.family.patronSaint.label}</strong><span>{draft.family.patronSaint.patronage} · {formatCreationEffects(draft.family.patronSaint.effects)}</span></p>}
         {session.rolls['family.saint']?.modifiedResult === 20 && (
           <label className="cc-control"><span>Player&apos;s choice</span><select value={session.choices.saintChoice || ''} onChange={event => choice('saintChoice', event.target.value)}><option value="">성인 선택</option>{PATRON_SAINTS.filter(item => !item.choice).map(item => <option key={item.key} value={item.key}>{item.label}</option>)}</select></label>
         )}
@@ -538,7 +582,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
             <label key={key}>
               <span>{ATTRIBUTE_LABELS[key]}</span>
               <em>{session.rolls[`attribute.${key}`]?.modifiedResult ?? '-'}</em>
-              <input type="number" min="0" max="3" value={session.choices.attributeBonuses?.[key] || 0} onChange={event => choice(`attributeBonuses.${key}`, Number(event.target.value))} />
+              <input aria-label={`${ATTRIBUTE_LABELS[key]} 추가 점수`} type="number" min="0" max="3" value={session.choices.attributeBonuses?.[key] || 0} onChange={event => choice(`attributeBonuses.${key}`, Number(event.target.value))} />
               <strong>{draft.attributes[key]}</strong>
             </label>
           ))}
@@ -597,7 +641,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
               {keys.map(key => (
                 <label key={key}>
                   <span>{SOURCE_SKILL_LABELS[key]}</span>
-                  {frankish ? <><em>{draft.skillsBeforeTraining[key]}</em><input type="number" min="0" max={Math.max(0, 15 - Number(draft.skillsBeforeTraining[key] || 0))} value={session.choices.skillTraining?.[key] || 0} onChange={event => choice(`skillTraining.${key}`, Number(event.target.value))} disabled={draft.skillsBeforeTraining[key] === 0} /><strong>{draft.skills[key]}</strong></> : <><em>GM</em><input type="number" min="0" max="20" value={session.choices.foreignSkills?.[key] || 0} onChange={event => choice(`foreignSkills.${key}`, Number(event.target.value))} /><strong>{draft.skills[key]}</strong></>}
+                  {frankish ? <><em>{draft.skillsBeforeTraining[key]}</em><input aria-label={`${SOURCE_SKILL_LABELS[key]} 부친 신분 기술 점수`} type="number" min="0" max={Math.max(0, 15 - Number(draft.skillsBeforeTraining[key] || 0))} value={session.choices.skillTraining?.[key] || 0} onChange={event => choice(`skillTraining.${key}`, Number(event.target.value))} disabled={draft.skillsBeforeTraining[key] === 0} /><strong>{draft.skills[key]}</strong></> : <><em>GM</em><input aria-label={`${SOURCE_SKILL_LABELS[key]} 시작 수치`} type="number" min="0" max="20" value={session.choices.foreignSkills?.[key] || 0} onChange={event => choice(`foreignSkills.${key}`, Number(event.target.value))} /><strong>{draft.skills[key]}</strong></>}
                 </label>
               ))}
             </div>
@@ -617,17 +661,33 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
           <p className="cc-result-line"><strong>{culture.statusPolicy.replaceAll('_', ' ')}</strong><span>{draft.qualification.note}</span></p>
         </div>
       );
-      const plan = session.choices.squireYearDraft || { categories: [], attributeKey: '', scoreGroup: 'traits', scoreKey: '', skills: { common: '', courtly: '', combat: '', free: '' } };
+      const savedPlan = session.choices.squireYearDraft || {};
+      const plan = {
+        categories: Array.isArray(savedPlan.categories) ? savedPlan.categories : [],
+        attributeKey: savedPlan.attributeKey || '',
+        scoreGroup: savedPlan.scoreGroup || 'traits',
+        scoreKey: savedPlan.scoreKey || '',
+        skills: { common: '', courtly: '', combat: '', free: '', ...(savedPlan.skills || {}) }
+      };
       const toggleCategory = key => choice('squireYearDraft.categories', plan.categories.includes(key) ? plan.categories.filter(item => item !== key) : [...plan.categories, key]);
       const addYear = () => {
         const result = addCharacterCreationSquireYear(session, plan);
         setActionError(result.error || '');
         if (result.added) persist(updateCharacterCreationChoice(result.session, 'squireYearDraft', { categories: [], attributeKey: '', scoreGroup: 'traits', scoreKey: '', skills: { common: '', courtly: '', combat: '', free: '' } }, 'squireYears'));
       };
+      const qualificationProgress = item => {
+        if (item.key === 'lance' && !item.applies) return '현재 연도에는 적용되지 않음';
+        if (['courtly', 'melee'].includes(item.key)) {
+          const leaders = (item.leaders || []).map(entry => `${SOURCE_SKILL_LABELS[entry.key]} ${entry.value}`).join(' · ');
+          return `충족 ${item.current}/${item.target}${leaders ? ` · 현재 상위 ${leaders}` : ''}`;
+        }
+        const remaining = Math.max(0, Number(item.target || 0) - Number(item.current || 0));
+        return `현재 ${item.current} / 필요 ${item.target}${remaining ? ` · ${remaining} 부족` : ''}`;
+      };
       return (
         <div className="cc-step-stack">
           <div className={`cc-qualification ${draft.qualification.qualified ? 'is-qualified' : ''}`}><ShieldCheck size={22} /><div><strong>{draft.qualification.qualified ? `${draft.personal.age}세 기사 자격 충족` : `${draft.personal.age}세, 아직 종자`}</strong><span>조건을 충족하는 즉시 기사 서임 절차가 멈춥니다.</span></div></div>
-          <div className="cc-requirements">{draft.qualification.requirements.map(item => <div key={item.key} className={item.met ? 'is-met' : ''}>{item.met ? <CircleCheck size={15} /> : <CircleDashed size={15} />}<span>{item.label}</span></div>)}</div>
+          <div className="cc-requirements">{draft.qualification.requirements.map(item => <div key={item.key} className={item.met ? 'is-met' : ''}>{item.met ? <CircleCheck size={15} /> : <CircleDashed size={15} />}<span><strong>{item.label}</strong><small>{qualificationProgress(item)}</small></span></div>)}</div>
           {!draft.qualification.qualified && (
             <section className="cc-squire-form">
               <h4>다음 한 해의 서로 다른 혜택 2개</h4>
@@ -716,7 +776,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
       return;
     }
     setCharacter(result.character);
-    setNotice('캐릭터 시트, 가계도, 저널, 캠페인 상태가 함께 갱신되었습니다.');
+    onComplete?.(result.character);
   };
 
   const completedSteps = CHARACTER_CREATION_STEPS.filter(item => session.stepStates[item.id]?.resolved).length;
@@ -752,7 +812,7 @@ export default function CharacterCreationWizard({ character, setCharacter }) {
           {renderStep()}
           <RuleDisclosure step={step} session={session} />
           {!state.canAdvance && state.issues.length > 0 && (
-            <div className="cc-issues" role="status"><AlertTriangle size={17} /><div><strong>다음 단계 전 확인</strong>{state.issues.slice(0, 5).map(issue => <p key={issue}>{issue}</p>)}</div></div>
+            <div className="cc-issues" role="status"><AlertTriangle size={17} /><div><strong>다음 단계 전 확인</strong>{state.issues.slice(0, 5).map(issue => <p key={issue}>{formatCreationIssue(issue, session, step.id)}</p>)}</div></div>
           )}
           {notice && <p className="cc-notice"><CircleCheck size={16} /> {notice}</p>}
         </main>

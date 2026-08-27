@@ -26,6 +26,7 @@ import {
   resolveHonorLordJudgment,
   resolveIntrospection,
   resolveLoversTask,
+  resolveMadnessOnset,
   resolveMadnessYear,
   resolvePersonalityConflict,
   resolvePaganLadyAmor,
@@ -166,10 +167,18 @@ const recoveredMelancholy = advanceMelancholyRecovery(failed.character, { condit
 assert.equal(recoveredMelancholy.condition.status, 'resolved');
 
 let fumble = beginPassionResolution(recoveredMelancholy.character, {
-  passionKey: 'loveGod', mode: 'ordinary', gmApproved: true, roll: 20, onset: 'after_action'
+  passionKey: 'loveGod', mode: 'ordinary', gmApproved: true, roll: 20
 });
 assert.equal(fumble.character.passions.loveGod, 15);
 const madness = fumble.character.campaign.personalityMagic.conditions.find(item => item.type === 'madness' && item.status === 'active');
+assert.equal(madness.onset, 'gm_pending');
+const onset = resolveMadnessOnset(fumble.character, { conditionId: madness.id, onset: 'after_action' });
+assert.equal(onset.condition.onset, 'after_action');
+assert.equal(onset.result.type, 'madness_onset_decision');
+const duplicateOnset = resolveMadnessOnset(onset.character, { conditionId: madness.id, onset: 'after_action' });
+assert.equal(duplicateOnset.applied, false);
+assert.throws(() => resolveMadnessOnset(onset.character, { conditionId: madness.id, onset: 'immediate', transactionId: `${madness.id}:changed` }), /바꿀 수 없습니다/);
+fumble = onset;
 fumble = resolveMadnessYear(fumble.character, {
   conditionId: madness.id,
   changes: [{ roll: 1, key: 'chaste' }, { roll: 12, key: 'awareness' }, { roll: 13, key: 'gaming' }, { roll: 14, key: 'sword' }],
