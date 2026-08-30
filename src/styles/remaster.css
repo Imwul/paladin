@@ -1056,6 +1056,8 @@ a:focus-visible,
   }
 
   .remaster-app .folio-main .cs-num-ctrl {
+    width: 124px;
+    min-width: 124px;
     height: 40px;
     gap: 4px;
     padding: 3px 4px;
@@ -1066,25 +1068,27 @@ a:focus-visible,
     min-height: 32px !important;
     font-size: 0.9rem;
   }
-  .remaster-app .folio-main .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-trait-val .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-skill-val .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-passion-row .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-companion-field .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-hp-main .cs-num-ctrl input,
-  .remaster-app .folio-main .cs-glory-item .cs-num-ctrl input {
+  .remaster-app .folio-main .cs-num-ctrl input:not([type='checkbox']):not([type='radio']):not([type='range']) {
     width: 42px !important;
+    min-width: 42px !important;
+    flex: 0 0 42px !important;
     height: 32px !important;
     min-height: 32px !important;
     padding: 0 !important;
     font-size: 0.95rem !important;
     line-height: 1 !important;
   }
-  .remaster-app .folio-main .cs-num-ctrl.mini { height: 36px; padding: 3px; }
+  .remaster-app .folio-main .cs-num-ctrl.mini {
+    width: 104px;
+    min-width: 104px;
+    height: 36px;
+    padding: 3px;
+  }
   .remaster-app .folio-main .cs-num-ctrl.mini .cs-ctrl-btn { width: 28px; height: 28px; min-height: 28px !important; }
-  .remaster-app .folio-main .cs-num-ctrl.mini input,
-  .remaster-app .folio-main .cs-trait-val .cs-num-ctrl.mini input {
+  .remaster-app .folio-main .cs-num-ctrl.mini input:not([type='checkbox']):not([type='radio']):not([type='range']) {
     width: 38px !important;
+    min-width: 38px !important;
+    flex: 0 0 38px !important;
     height: 28px !important;
     min-height: 28px !important;
     font-size: 0.88rem !important;
@@ -1188,7 +1192,19 @@ a:focus-visible,
   .campaign-strip { min-height: 64px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-inline: 8px; overflow: hidden; }
   .campaign-strip span { min-width: 0; min-height: 32px; overflow: hidden; padding-inline: 8px; font-size: var(--text-micro); text-overflow: ellipsis; }
   .campaign-strip span:nth-child(4) { padding-left: 8px; border-left: 0; }
-  .campaign-strip__continue { grid-column: 1 / -1; width: 100%; min-height: 40px; justify-content: center; border-top: 1px solid #555; border-left: 0; }
+  .campaign-strip__continue {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    padding: 6px 12px;
+    border-top: 1px solid #555;
+    border-left: 0;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
   .folio-breadcrumb { padding-inline: 14px; }
   .folio-breadcrumb .rulebook-context-button span { display: none; }
   .folio-page, .cs-page, .journal-container, .oracles-container, .lore-container, .rulebook-procedures { padding: 18px 14px 28px; }
