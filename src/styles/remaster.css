@@ -707,6 +707,18 @@ a:focus-visible,
 .form-input,
 .ft-input { min-height: 44px; border: 1px solid var(--rule-dark) !important; border-radius: 0 !important; background: var(--paper-bright) !important; color: var(--ink) !important; }
 
+.legacy-surface .exp-checkbox {
+  min-height: 18px;
+  padding: 0 !important;
+  border: 1.5px solid var(--seal) !important;
+  border-radius: 2px !important;
+  background: transparent !important;
+}
+
+.legacy-surface .exp-checkbox:checked {
+  background: var(--seal) !important;
+}
+
 .family-lineage-bands { border-top: 2px solid var(--ink); }
 .family-register-row { min-height: 76px; display: grid; grid-template-columns: 50px minmax(170px, 1fr) auto minmax(220px, 2fr); gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .family-register-row__generation { color: var(--seal); font-family: var(--font-data); font-size: 1rem; }
@@ -1103,6 +1115,23 @@ a:focus-visible,
     padding: 0 !important;
     line-height: 1 !important;
   }
+
+  .remaster-app .folio-main .cs-row { gap: 40px; }
+  .remaster-app .folio-main .cs-section { margin-bottom: 40px; }
+  .remaster-app .folio-main .cs-section-inner { padding: 20px 18px 26px; }
+  .remaster-app .folio-main .cs-skill-row,
+  .remaster-app .folio-main .cs-passion-row {
+    grid-template-columns: minmax(0, 1fr) max-content 92px;
+    gap: 18px;
+    min-height: 62px;
+    padding: 10px 14px;
+  }
+  .remaster-app .folio-main .cs-row-annotation {
+    width: 92px;
+    font-size: 0.72rem;
+  }
+  .remaster-app .folio-main .cs-experience-check { min-height: 38px; gap: 8px; }
+  .remaster-app .folio-main .cs-experience-check .exp-checkbox { width: 20px; height: 20px; }
 
   .adventure-catalog__layout { gap: 48px !important; margin-top: 32px !important; padding-block: 32px !important; }
   .adventure-catalog__groups { gap: 32px !important; }

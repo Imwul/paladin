@@ -792,7 +792,7 @@ body {
 .cs-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
 }
 
@@ -812,11 +812,11 @@ body {
   position: relative;
   box-shadow: none !important;
   overflow: visible;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
 .cs-section-inner {
-  padding: 10px 0;
+  padding: 14px 12px 18px;
 }
 
 /* ─── Attribute Stat Blocks ─── */
@@ -1281,11 +1281,12 @@ input[type="number"] {
 }
 
 .cs-skill-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content 78px;
   align-items: center;
-  gap: 6px;
-  min-height: 40px;
-  padding: 4px 0;
+  gap: 12px;
+  min-height: 48px;
+  padding: 7px 10px;
   border-bottom: 1px solid rgba(195, 161, 101, 0.12);
 }
 
@@ -1324,17 +1325,49 @@ input[type="number"] {
 
 /* ─── Passion Row ─── */
 .cs-passion-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content 78px;
   align-items: center;
-  gap: 8px;
-  padding: 5px 0;
+  gap: 12px;
+  min-height: 48px;
+  padding: 7px 10px;
   border-bottom: 1px solid rgba(195, 161, 101, 0.12);
 }
 
 .cs-passion-name {
-  flex: 1;
+  min-width: 0;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.cs-row-annotation {
+  width: 78px;
+  color: var(--color-grey);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cs-experience-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 32px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cs-experience-check:hover {
+  color: var(--color-crimson);
+}
+
+.cs-experience-check .exp-checkbox {
+  width: 18px;
+  height: 18px;
 }
 
 /* ─── Companion Cards ─── */

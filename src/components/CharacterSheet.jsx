@@ -22,6 +22,19 @@ const applyTraitAdjustment = (character, trait, amount, maximum = 20) => {
   character.traits = adjustOpposedTrait(character.traits, trait, amount, maximum);
 };
 
+const ExperienceCheck = ({ label, checked, onChange }) => (
+  <label className="cs-row-annotation cs-experience-check" title={`${label} 경험치 체크`}>
+    <input
+      type="checkbox"
+      className="exp-checkbox"
+      aria-label={`${label} 경험치 체크`}
+      checked={checked}
+      onChange={(event) => onChange(event.target.checked)}
+    />
+    <span>경험</span>
+  </label>
+);
+
 const SkillRow = ({ skill, value, checked, onValueChange, onCheckedChange }) => (
   <div className="cs-skill-row">
     <span className="cs-skill-name">{skill.label}</span>
@@ -32,12 +45,10 @@ const SkillRow = ({ skill, value, checked, onValueChange, onCheckedChange }) => 
         <button type="button" className="cs-ctrl-btn" aria-label={`${skill.label} 증가`} onClick={() => onValueChange(value + 1)}>+</button>
       </span>
     </span>
-    <input
-      type="checkbox"
-      className="exp-checkbox"
-      aria-label={`${skill.label} 경험치 체크`}
+    <ExperienceCheck
+      label={skill.label}
       checked={checked}
-      onChange={(event) => onCheckedChange(event.target.checked)}
+      onChange={onCheckedChange}
     />
   </div>
 );
@@ -3123,10 +3134,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="cs-section-inner">
             {passions.map(p => (
               <div className="cs-passion-row" key={p.key}>
-                <input type="checkbox" className="exp-checkbox"
-                  aria-label={`${p.label} 경험치 체크`}
-                  checked={character?.passionsChecked?.[p.key] || false}
-                  onChange={e => handleInputChange('passionsChecked', p.key, e.target.checked)} />
                 <span className="cs-passion-name">{p.label}</span>
                 <span className="cs-skill-val">
                   <div className="cs-num-ctrl">
@@ -3144,6 +3151,11 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                     }}>+</button>
                   </div>
                 </span>
+                <ExperienceCheck
+                  label={p.label}
+                  checked={character?.passionsChecked?.[p.key] || false}
+                  onChange={checked => handleInputChange('passionsChecked', p.key, checked)}
+                />
               </div>
             ))}
             {/* Dynamic Hates/Passions inherited from lineage */}
@@ -3155,10 +3167,6 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                           : key;
               return (
                 <div className="cs-passion-row" key={key}>
-                  <input type="checkbox" className="exp-checkbox"
-                    aria-label={`${label} 경험치 체크`}
-                    checked={character?.passionsChecked?.[key] || false}
-                    onChange={e => handleInputChange('passionsChecked', key, e.target.checked)} />
                   <span className="cs-passion-name">{label}</span>
                   <span className="cs-skill-val">
                     <div className="cs-num-ctrl">
@@ -3176,6 +3184,11 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
                       }}>+</button>
                     </div>
                   </span>
+                  <ExperienceCheck
+                    label={label}
+                    checked={character?.passionsChecked?.[key] || false}
+                    onChange={checked => handleInputChange('passionsChecked', key, checked)}
+                  />
                 </div>
               );
             })}
@@ -3187,31 +3200,25 @@ export default function CharacterSheet({ character, setCharacter, initialCharact
           <div className="sheet-ribbon"><h3>사회적 명망 &amp; 신분 (Standings)</h3></div>
           <div className="cs-section-inner">
             {standingsList.map(s => (
-              <div className="cs-passion-row" key={s.key}>
-                <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                    <span className="cs-passion-name" style={{ fontWeight: 'bold' }}>{s.label}</span>
-                    <span className="cs-skill-val">
-                      <div className="cs-num-ctrl">
-                        <button type="button" className="cs-ctrl-btn" onClick={() => {
-                          const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
-                          handleInputChange('standings', s.key, Math.max(0, val - 1));
-                        }}>−</button>
-                        <input type="number"
-                          aria-label={`${s.label} 수치`}
-                          value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
-                          onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
-                        <button type="button" className="cs-ctrl-btn" onClick={() => {
-                          const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
-                          handleInputChange('standings', s.key, val + 1);
-                        }}>+</button>
-                      </div>
-                    </span>
+              <div className="cs-passion-row cs-standing-row" key={s.key}>
+                <span className="cs-passion-name">{s.label}</span>
+                <span className="cs-skill-val">
+                  <div className="cs-num-ctrl">
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
+                      handleInputChange('standings', s.key, Math.max(0, val - 1));
+                    }}>−</button>
+                    <input type="number"
+                      aria-label={`${s.label} 수치`}
+                      value={character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base}
+                      onChange={e => handleInputChange('standings', s.key, parseInt(e.target.value) || 0)} />
+                    <button type="button" className="cs-ctrl-btn" onClick={() => {
+                      const val = character?.standings?.[s.key] !== undefined ? character?.standings?.[s.key] : s.base;
+                      handleInputChange('standings', s.key, val + 1);
+                    }}>+</button>
                   </div>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--color-grey)', textAlign: 'right', marginTop: '4px' }}>
-                    공식 산출 기준: {s.base}
-                  </span>
-                </div>
+                </span>
+                <span className="cs-row-annotation" title={`공식 산출 기준: ${s.base}`}>기준 {s.base}</span>
               </div>
             ))}
           </div>
