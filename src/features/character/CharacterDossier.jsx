@@ -99,8 +99,8 @@ export default function CharacterDossier({ character, setCharacter, initialChara
           <section>
             <SectionHeader index="II" title="두드러진 성향" meta="Traits · Passions" action={<button type="button" className="text-command" onClick={openRecord}>전체 원부</button>} />
             <div className="character-defining-scores">
-              {prominentPassions.map(([key, value]) => <div key={`passion:${key}`}><span>{SCORE_LABELS[key] || key}</span><strong>{value}</strong><small>Passion</small></div>)}
-              {prominentTraits.map(([key, value]) => <div key={`trait:${key}`}><span>{SCORE_LABELS[key] || key}</span><strong>{value}</strong><small>Trait</small></div>)}
+              {prominentPassions.map(([key, value]) => <div className="character-score character-score--passion" key={`passion:${key}`}><span>{SCORE_LABELS[key] || key}</span><strong>{value}</strong><small>Passion</small></div>)}
+              {prominentTraits.map(([key, value]) => <div className="character-score character-score--trait" key={`trait:${key}`}><span>{SCORE_LABELS[key] || key}</span><strong>{value}</strong><small>Trait</small></div>)}
             </div>
           </section>
         </div>

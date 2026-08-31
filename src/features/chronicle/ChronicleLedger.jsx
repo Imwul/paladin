@@ -89,7 +89,7 @@ export default function ChronicleLedger({ character }) {
           <header><strong>{year}</strong><span lang="la">Anno Domini</span><small>{yearEvents.length}건</small></header>
           <div>
             {yearEvents.map(event => (
-              <article className="chronicle-entry" key={event.id}>
+              <article className="chronicle-entry" data-chronicle-type={event.type} key={event.id}>
                 <div className="chronicle-entry__meta">
                   <StatusSeal tone={event.type === 'death' ? 'danger' : event.type === 'winter' ? 'active' : 'neutral'}>{getChronicleTypeLabel(event.type)}</StatusSeal>
                   {event.age !== undefined && <span lang="en">Age {event.age}</span>}
