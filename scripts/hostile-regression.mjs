@@ -6,9 +6,13 @@ import {
   validateCampaignImport
 } from '../src/utils/campaignState.js';
 import {
+  createPaladinCloudSaveDocument,
+  firebaseConfig,
   getCloudSaveRevision,
-  getFirebaseServices,
+  getPaladinCloudSavePath,
+  googleSignInErrorMessage,
   hasCloudWriteConflict,
+  isFirebaseConfigured,
   normalizeCloudSaveDocument
 } from '../src/firebase.js';
 import { getFamilyCharacteristicIndexFromRoll } from '../src/utils/rulebookTables.js';
@@ -254,19 +258,24 @@ assert.equal(hasCloudWriteConflict(currentCloudSave, 9, {
 assert.equal(hasCloudWriteConflict(currentCloudSave, 7), true);
 assert.equal(hasCloudWriteConflict(currentCloudSave, 7, { force: true }), false);
 
-globalThis.localStorage = {
-  getItem: () => null
-};
-assert.equal((await getFirebaseServices()).isMock, true);
-
-globalThis.localStorage = {
-  getItem: () => JSON.stringify({
-    apiKey: 'YOUR_API_KEY',
-    authDomain: 'example.firebaseapp.com',
-    projectId: 'example',
-    appId: 'example'
-  })
-};
-assert.equal((await getFirebaseServices()).isMock, true);
+assert.equal(isFirebaseConfigured, true);
+assert.equal(firebaseConfig.projectId, 'skogsduvasbookshop');
+assert.deepEqual(getPaladinCloudSavePath('user-a'), ['saves', 'uid_user-a', 'payloads', 'paladin_companion']);
+assert.throws(() => getPaladinCloudSavePath(''), /사용자 계정/);
+assert.deepEqual(createPaladinCloudSaveDocument('user-a', {
+  campaign: { saveRevision: 12 },
+  personal: { name: '롤랑' }
+}, '2026-08-31T00:00:00.000Z'), {
+  ownerUid: 'user-a',
+  app: 'paladin',
+  characterData: {
+    campaign: { saveRevision: 12 },
+    personal: { name: '롤랑' }
+  },
+  revision: 12,
+  updatedAt: '2026-08-31T00:00:00.000Z'
+});
+assert.match(googleSignInErrorMessage({ code: 'auth/popup-blocked' }), /팝업/);
+assert.match(googleSignInErrorMessage({ code: 'auth/unauthorized-domain' }), /허용 도메인/);
 
 console.log('hostile regression passed');

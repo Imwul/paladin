@@ -3,7 +3,12 @@ import Dashboard from './components/Dashboard';
 import AppShell from './app/AppShell';
 import { LoadingState } from './components/ui/LedgerUI';
 import SaveConflictDialog from './components/SaveConflictDialog';
-import { getCloudSaveRevision, getFirebaseServices } from './firebase';
+import {
+  getCloudSaveRevision,
+  getFirebaseServices,
+  googleSignInErrorMessage,
+  isFirebaseConfigured
+} from './firebase';
 import { deepClone, sanitizeCampaignState } from './utils/campaignState';
 import { createEconomyState, toDeniers } from './rules/economyRules';
 import { createPersonalityMagicState } from './rules/personalityMagicRules';
@@ -245,16 +250,7 @@ initialCharacterState.campaign.economy = createEconomyState(initialCharacterStat
 
 const mergeWithDefault = (data) => sanitizeCampaignState(data, createInitialCharacterState());
 
-const getInitialFirebaseStatus = () => {
-  try {
-    const savedConfig = localStorage.getItem('paladin_firebase_config');
-    if (!savedConfig) return 'UNCONFIGURED';
-    const parsed = JSON.parse(savedConfig);
-    return parsed.apiKey && parsed.apiKey !== 'YOUR_API_KEY' ? 'CONFIGURED_OFFLINE' : 'UNCONFIGURED';
-  } catch {
-    return 'UNCONFIGURED';
-  }
-};
+const getInitialFirebaseStatus = () => isFirebaseConfigured ? 'CONFIGURED_OFFLINE' : 'UNCONFIGURED';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -308,6 +304,9 @@ export default function App() {
     let active = true;
     getFirebaseServices().then(services => {
       if (!active || services.isMock || !services.auth) return;
+      services.completeRedirectLogin().catch(error => {
+        if (active) alert(googleSignInErrorMessage(error));
+      });
       unsubscribe = services.auth.onAuthStateChanged(usr => {
         if (usr) {
           setUser(usr);
@@ -338,6 +337,7 @@ export default function App() {
             }
           }).catch(error => {
             console.error('Cloud comparison failed:', error);
+            if (active) setSaveActivity('error');
           });
         } else {
           setUser(null);
@@ -366,17 +366,19 @@ export default function App() {
   const handleGoogleLogin = async () => {
     const services = await getFirebaseServices();
     if (services.isMock) {
-      alert("파이어베이스가 연결되어 있지 않습니다. 우측의 톱니바퀴 아이콘을 눌러 연동 설정을 완료해 주세요!");
+      alert('구글 클라우드 연결을 초기화하지 못했습니다. 네트워크 상태를 확인한 뒤 다시 시도해 주세요.');
       setIsSettingsOpen(true);
       return;
     }
 
     try {
       const usr = await services.loginWithGoogle();
-      setUser(usr);
-      setFirebaseStatus('LOGGED_IN');
+      if (usr) {
+        setUser(usr);
+        setFirebaseStatus('LOGGED_IN');
+      }
     } catch (error) {
-      alert(`로그인 실패: ${error.message}`);
+      alert(googleSignInErrorMessage(error));
     }
   };
 
@@ -388,13 +390,15 @@ export default function App() {
       setCloudMeta(null);
       setSaveConflict(null);
       setSaveActivity('saved');
+      sessionStorage.removeItem('paladin_cloud_prompted');
       setFirebaseStatus('CONFIGURED_OFFLINE');
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleCloudSave = async () => {
+  const handleCloudSave = useCallback(async (options = {}) => {
+    const silent = options?.silent === true;
     if (!user || saveActivity === 'saving' || saveActivity === 'loading') return;
     const services = await getFirebaseServices();
     try {
@@ -458,9 +462,9 @@ export default function App() {
         return;
       }
       setSaveActivity('error');
-      alert(`클라우드 백업 실패: ${error.message}`);
+      if (!silent) alert(`클라우드 백업 실패: ${error.message}`);
     }
-  };
+  }, [character, cloudMeta, saveActivity, user]);
 
   const handleCloudLoad = async () => {
     if (!user || saveActivity === 'saving' || saveActivity === 'loading') return;
@@ -529,6 +533,17 @@ export default function App() {
     setSaveActivity('synced');
   };
 
+  useEffect(() => {
+    if (!user || firebaseStatus !== 'LOGGED_IN' || saveConflict || !cloudMeta) return undefined;
+    if (!['saved', 'uploaded', 'synced'].includes(saveActivity)) return undefined;
+    const localRevision = getCloudSaveRevision(character);
+    if (cloudMeta.localRevision === localRevision) return undefined;
+    const timer = window.setTimeout(() => {
+      handleCloudSave({ silent: true });
+    }, 1500);
+    return () => window.clearTimeout(timer);
+  }, [character, cloudMeta, firebaseStatus, handleCloudSave, saveActivity, saveConflict, user]);
+
   const cloudState = useMemo(() => {
     if (saveActivity === 'saving') return { label: '올리는 중', tone: 'pending' };
     if (saveActivity === 'loading') return { label: '불러오는 중', tone: 'pending' };
@@ -577,7 +592,7 @@ export default function App() {
           isLoggedIn: firebaseStatus === 'LOGGED_IN',
           onLogin: handleGoogleLogin,
           onLogout: handleLogout,
-          onSave: handleCloudSave,
+          onSave: () => handleCloudSave(),
           onLoad: handleCloudLoad,
           isBusy: saveActivity === 'saving' || saveActivity === 'loading'
         }}
@@ -600,7 +615,7 @@ export default function App() {
               isLoggedIn: firebaseStatus === 'LOGGED_IN',
               onLogin: handleGoogleLogin,
               onLogout: handleLogout,
-              onSave: handleCloudSave,
+              onSave: () => handleCloudSave(),
               onLoad: handleCloudLoad,
               isBusy: saveActivity === 'saving' || saveActivity === 'loading'
             }}
