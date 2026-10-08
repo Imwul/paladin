@@ -24,6 +24,7 @@ import {
   updateCharacterCreationChoice
 } from '../src/rules/index.js';
 import { sanitizeCampaignState } from '../src/utils/campaignState.js';
+import { getEquippedMarketCombat } from '../src/rules/economyRules.js';
 
 const test = (ruleId, name, assertion) => {
   assertion();
@@ -360,13 +361,21 @@ test('CHAR-STORY-001/SAVE-MIG-001', 'in-progress sessions survive schema migrati
   assert.equal(first.character.journal[766].text, 'Legacy record');
   assert.equal(first.character.journal[767].text.includes('earned his spurs'), true);
   assert.equal(first.character.campaign.schemaVersion, 12);
+  assert.equal(first.character.campaign.chronicleEvents.some(event => event.type === 'succession'), false, 'A qualified first knight is not a successor.');
+  assert.equal(first.character.campaign.lifecycle.events.find(event => event.cause === 'character_creation').triggeringEvent, 'character_creation');
+  const protection = getEquippedMarketCombat(first.character);
+  assert.equal(protection.armor, 7, 'Table 1-14 Ring mail must reach combat, not its default 10');
+  assert.equal(protection.shield, 6);
+  assert.equal(first.character.campaign.economy.equipment.filter(item => item.marketItemId === 'shield').length, 2);
   const duplicate = completeCharacterCreation(first.character, first.session, '2026-08-01T12:01:00.000Z');
   assert.equal(duplicate.completed, false);
   assert.equal(duplicate.duplicate, true);
   assert.equal(duplicate.character.campaign.completedCreationIds.length, 1);
+  assert.deepEqual(duplicate.character.campaign.economy.equipment, first.character.campaign.economy.equipment);
   const migrated = sanitizeCampaignState(first.character, defaults);
   assert.equal(migrated.campaign.schemaVersion, 12);
   assert.equal(migrated.campaign.characterCreationSession.status, 'completed');
+  assert.equal(getEquippedMarketCombat(migrated).armor, 7);
   const repaired = sanitizeCampaignState({
     ...first.character,
     family: { ...first.character.family, patronSaintBenefit: { traits: { chaste: 3 } } }

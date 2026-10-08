@@ -48,13 +48,13 @@ export default function CombatEncounterRemaster({ character, setCharacter, onNav
   const untreatedWounds = useMemo(() => (healthState.wounds || []).filter(wound => !wound.treated), [healthState.wounds]);
   const run = action => { try { setError(''); action(); } catch (caught) { setError(caught.message || '규칙 처리를 완료하지 못했습니다.'); } };
 
-  const resolveCourage = () => run(() => setCharacter(previous => resolveMajorWoundCourage(previous, { roll: rollMode === 'manual' && courageRoll !== '' ? Number(courageRoll) : undefined }).character));
-  const treatWound = woundId => run(() => setCharacter(previous => resolveFirstAid(previous, { woundId, ageInHours: Number(firstAid.ageInHours), roll: rollMode === 'manual' && firstAid.roll !== '' ? Number(firstAid.roll) : undefined }).character));
-  const recoverWeek = () => run(() => setCharacter(previous => resolveWeeklyRecovery(previous, { activity: recovery.activity, conditionsModifier: Number(recovery.conditionsModifier), caregivers: Number(recovery.caregivers), chirurgeryRoll: rollMode === 'manual' && recovery.roll !== '' ? Number(recovery.roll) : undefined, aggravationDamage: Number(recovery.aggravationDamage) }).character));
-  const applyHazard = () => run(() => setCharacter(previous => resolveHazard(previous, { ...hazard, distanceFeet: Number(hazard.distanceFeet), weightPounds: Number(hazard.weightPounds), armor: Number(hazard.armor), rounds: Number(hazard.rounds), intensityDice: Number(hazard.intensityDice), potencyDice: Number(hazard.potencyDice), damage: Number(hazard.damage), conRolls: String(hazard.conRolls).split(',').map(value => Number(value.trim())).filter(value => value >= 1 && value <= 20) }).character));
+  const resolveCourage = () => run(() => setCharacter(resolveMajorWoundCourage(character, { roll: rollMode === 'manual' && courageRoll !== '' ? Number(courageRoll) : undefined }).character));
+  const treatWound = woundId => run(() => setCharacter(resolveFirstAid(character, { woundId, ageInHours: Number(firstAid.ageInHours), roll: rollMode === 'manual' && firstAid.roll !== '' ? Number(firstAid.roll) : undefined }).character));
+  const recoverWeek = () => run(() => setCharacter(resolveWeeklyRecovery(character, { activity: recovery.activity, conditionsModifier: Number(recovery.conditionsModifier), caregivers: Number(recovery.caregivers), chirurgeryRoll: rollMode === 'manual' && recovery.roll !== '' ? Number(recovery.roll) : undefined, aggravationDamage: Number(recovery.aggravationDamage) }).character));
+  const applyHazard = () => run(() => setCharacter(resolveHazard(character, { ...hazard, distanceFeet: Number(hazard.distanceFeet), weightPounds: Number(hazard.weightPounds), armor: Number(hazard.armor), rounds: Number(hazard.rounds), intensityDice: Number(hazard.intensityDice), potencyDice: Number(hazard.potencyDice), damage: Number(hazard.damage), conRolls: String(hazard.conRolls).split(',').map(value => Number(value.trim())).filter(value => value >= 1 && value <= 20) }).character));
   const confirmDeath = () => {
     if (!window.confirm('자정까지 생명력을 양수로 회복하지 못한 사망을 확정합니다. 계승 절차로 이어집니다.')) return;
-    run(() => setCharacter(previous => confirmHealthDeath(previous).character));
+    run(() => setCharacter(confirmHealthDeath(character).character));
   };
 
   return <article className={`folio-page combat-ledger ${activeCombat ? 'combat-ledger--active' : ''} view-animate`}>

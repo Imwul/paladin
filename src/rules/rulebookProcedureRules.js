@@ -1,9 +1,10 @@
 import { getCampaignPhase, getChronologyHarvestModifier } from './campaignRules.js';
 import { resolveD20Roll, resolveFeatRoll } from './coreRules.js';
-import { grantMarketItems, recordEconomyTransfer, toDeniers } from './economyRules.js';
+import { grantMarketItems, MARKET_CATALOG, recordEconomyTransfer, toDeniers } from './economyRules.js';
 import { appendChronicleEvent, recordGloryAward, recordHonorChange, recordStandingChange } from './ledgerRules.js';
 import { prepareCareerEnd, resolveCareerEnd } from './lifecycleRules.js';
-import { getTravelDistance, resolveForcedMarch, resolveUnknownRoute } from './travelRules.js';
+import { calculateMovementRate, getTravelDistance, resolveForcedMarch, resolveUnknownRoute } from './travelRules.js';
+import { applyCharacterDamage } from './combatRules.js';
 
 const clone = value => JSON.parse(JSON.stringify(value));
 const list = value => Array.isArray(value) ? value : [];
@@ -128,17 +129,22 @@ export const resolveSkillProcedure = (characterValue, input = {}, now) => {
     consequence = check.success === opponent.success ? 'compare_roll_difference' : check.success ? 'win' : 'lose';
   }
   if (skillId === 'readingWriting') {
-    if (input.languageRoll === undefined || input.languageValue === undefined) throw new RangeError('비라틴어 독해에는 Languages 판정을 함께 기록해야 합니다.');
-    secondaryCheck = resolveD20Roll(asInt(input.languageRoll), asInt(input.languageValue));
-    consequence = check.success && secondaryCheck.success ? 'read_or_write' : 'not_understood';
+    const otherLanguage = input.readingLanguage === 'other' || (input.readingLanguage === undefined && input.languageRoll !== undefined);
+    if (otherLanguage) {
+      if (input.languageRoll === undefined || input.languageValue === undefined) throw new RangeError('비라틴어 독해에는 Languages 판정을 함께 기록해야 합니다.');
+      secondaryCheck = resolveD20Roll(asInt(input.languageRoll), asInt(input.languageValue));
+    }
+    consequence = check.fumble ? 'misinterpreted' : !check.success || (secondaryCheck && !secondaryCheck.success) ? 'not_understood' : check.critical ? 'read_quickly' : 'read_or_write';
+    sourcePage = 'Ch.5 p.101';
   }
 
   const id = safeId(input.transactionId || `skill:${skillId}:${character.personal?.campaignYear || 767}:${state.skillResults.length + 1}`);
   const transaction = appendTransaction(state, { id, type: 'skill_procedure', skillId, sourcePage, createdAt: iso(now) });
   if (!transaction.applied) return { character, result: state.skillResults.find(item => item.id === id), applied: false };
-  const result = { id, skillId, roll, target, modifier, outcome: outcomeText(check), check, secondaryCheck, consequence, sourcePage, note: String(input.note || ''), createdAt: transaction.entry.createdAt };
+  const experienceApproved = input.experienceApproved === true;
+  const result = { id, skillId, roll, target, modifier, outcome: outcomeText(check), check, secondaryCheck, consequence, experienceApproved, sourcePage, note: String(input.note || ''), createdAt: transaction.entry.createdAt };
   state.skillResults = addRecord(state.skillResults, result);
-  if (check.success) character.skillsChecked = { ...(character.skillsChecked || {}), [skillId]: true };
+  if (check.success && experienceApproved) character.skillsChecked = { ...(character.skillsChecked || {}), [skillId]: true };
   return { character, result, applied: true };
 };
 
@@ -148,11 +154,37 @@ export const resolveFeatProcedure = (characterValue, input = {}, now) => {
   const statistic = asInt(input.statistic);
   const check = resolveFeatRoll(asInt(input.roll), statistic);
   const id = safeId(input.transactionId || `feat:${character.personal?.campaignYear || 767}:${state.featResults.length + 1}`);
-  const transaction = appendTransaction(state, { id, type: 'feat', sourcePage: 'Ch.6 p.108', createdAt: iso(now) });
+  const transaction = appendTransaction(state, { id, type: 'feat', sourcePage: 'Ch.6 p.109', createdAt: iso(now) });
   if (!transaction.applied) return { character, result: state.featResults.find(item => item.id === id), applied: false };
-  const result = { id, statistic, featTarget: Math.round(statistic / 2), roll: asInt(input.roll), outcome: check.success ? 'critical' : 'fumble', sourcePage: 'Ch.6 p.108', note: String(input.note || ''), createdAt: transaction.entry.createdAt };
+  const result = { id, statistic, featTarget: Math.round(statistic / 2), roll: asInt(input.roll), outcome: check.success ? 'critical' : 'fumble', sourcePage: 'Ch.6 p.109', note: String(input.note || ''), createdAt: transaction.entry.createdAt };
   state.featResults = addRecord(state.featResults, result, 250);
   return { character, result, applied: true };
+};
+
+export const getJourneyTravelers = character => {
+  const travelers = [{ id: 'human', kind: 'human', label: '도보 · 기사', con: character.attributes?.con, movementRate: calculateMovementRate({ str: character.attributes?.str || 0, dex: character.attributes?.dex || 0 }) }];
+  Object.entries(character.horses || {}).forEach(([key, mount]) => {
+    if (['inventory', 'canonicalMountIds'].includes(key) || !mount || Array.isArray(mount)) return;
+    if (typeof mount !== 'string' && (typeof mount !== 'object' || !mount.type || ['사망', 'dead'].includes(mount.status))) return;
+    if (typeof mount === 'string' && !mount.trim()) return;
+    travelers.push({ id: `horse-slot:${key}`, kind: 'horse', label: typeof mount === 'string' ? mount : mount.type, con: mount.con, movementRate: mount.move ?? mount.movementRate, condition: mount.travelCondition });
+  });
+  list(character.campaign?.economy?.equipment).filter(item => item && item.category === 'mount' && !item.disposed && asInt(item.quantity, 1) > 0 && !['dead', '사망'].includes(item.status)).forEach(item => {
+    const profile = MARKET_CATALOG.find(entry => entry.id === item.marketItemId)?.combat;
+    travelers.push({ id: `inventory:${item.id}`, kind: 'horse', label: item.label, con: profile?.con, movementRate: profile?.move, condition: item.travelCondition });
+  });
+  return travelers;
+};
+
+const journeyTraveler = (character, input = {}) => {
+  const traveler = getJourneyTravelers(character).find(item => item.id === (input.travelerId || 'human'));
+  if (!traveler) throw new RangeError('현재 보유한 이동 주체를 선택하세요.');
+  return traveler;
+};
+
+const validateJourneyPace = (character, traveler, pace) => {
+  if (traveler.kind === 'human' && pace === 'hurried') throw new RangeError('도보는 Hurried를 사용할 수 없습니다. Normal 또는 별도 CON 판정의 강행군을 선택하세요. (p.111)');
+  if (character.campaign?.health?.surgeryNeeded && !['cautious', 'leisurely'].includes(pace)) throw new RangeError('Chirurgery가 필요한 중상자는 Leisurely 이하 속도로만 여행할 수 있습니다. (p.111)');
 };
 
 export const startJourney = (characterValue, input = {}, now) => {
@@ -161,9 +193,12 @@ export const startJourney = (characterValue, input = {}, now) => {
   const existing = state.journeys.find(item => item.id === id);
   if (existing) return { character, journey: existing, applied: false };
   if (!input.destination || asInt(input.distance) < 1) throw new RangeError('목적지와 이동 거리를 입력하세요.');
+  const traveler = journeyTraveler(character, input);
+  validateJourneyPace(character, traveler, input.pace || 'normal');
   const journey = {
     id, destination: String(input.destination), totalDistance: asInt(input.distance), remainingDistance: asInt(input.distance),
     roadType: input.roadType || 'localRoad', pace: input.pace || 'normal', routeKnown: input.routeKnown !== false,
+    travelerId: traveler.id,
     days: [], status: input.routeKnown === false ? 'awaiting_route_check' : 'active', sourcePage: 'Ch.6 pp.111-114', createdAt: iso(now)
   };
   state.journeys = addRecord(state.journeys, journey, 250);
@@ -173,8 +208,14 @@ export const startJourney = (characterValue, input = {}, now) => {
 
 export const resolveJourneyDay = (characterValue, input = {}, now) => {
   const { character, state } = ensureState(characterValue);
-  const journey = state.journeys.find(item => item.id === input.journeyId && item.status !== 'complete');
+  const journey = state.journeys.find(item => item.id === input.journeyId);
   if (!journey) throw new RangeError('진행 중인 여행을 선택하세요.');
+  const existingDay = journey.days.find(item => item.id === safeId(input.transactionId));
+  if (existingDay) return { character, journey, day: existingDay, applied: false };
+  if (journey.status === 'complete') throw new RangeError('이미 도착한 여행입니다.');
+  if (journey.pendingDecision || ['lost', 'delayed'].includes(journey.status)) throw new RangeError('길 상실·지연 또는 휴식에 대한 GM 결정을 먼저 기록하세요.');
+  const traveler = journeyTraveler(character, { travelerId: journey.travelerId });
+  validateJourneyPace(character, traveler, journey.pace);
   const dayNumber = journey.days.length + 1;
   const id = safeId(input.transactionId || `${journey.id}:day:${dayNumber}`);
   const transaction = appendTransaction(state, { id, type: 'journey_day', sourcePage: journey.sourcePage, createdAt: iso(now) });
@@ -189,18 +230,72 @@ export const resolveJourneyDay = (characterValue, input = {}, now) => {
     else if (route.delayDays) journey.status = 'delayed';
     else {
       journey.status = 'active';
-      journey.pace = route.pace;
-      distance = getTravelDistance(journey.roadType, route.pace);
+      journey.pace = character.campaign?.health?.surgeryNeeded && route.pace === 'normal' ? 'leisurely' : route.pace;
+      distance = getTravelDistance(journey.roadType, journey.pace);
     }
   } else if (journey.pace === 'forcedMarch') {
-    forced = resolveForcedMarch({ roll: asInt(input.conRoll), con: asInt(input.con, character.attributes?.con), movementRate: asInt(input.movementRate), roadType: journey.roadType, traveler: input.traveler || 'human' }, input.rng);
+    const priorProfile = journey.travelerProfileDecision?.travelerId === traveler.id ? journey.travelerProfileDecision : null;
+    const con = traveler.con ?? priorProfile?.con ?? input.con;
+    const baseMovement = traveler.movementRate ?? priorProfile?.movementRate ?? input.movementRate;
+    const unknownProfile = (traveler.con == null || traveler.movementRate == null) && !priorProfile;
+    if (unknownProfile && (!input.gmProfileConfirmed || !String(input.profileNote || '').trim() || !(Number(con) > 0) || !Number.isFinite(Number(baseMovement)) || !(Number(baseMovement) >= 0))) throw new RangeError('이전 탈것 기록에는 CON 또는 Movement Rate가 없습니다. GM이 실제 개체의 수치와 근거를 확인하세요.');
+    const movementRate = asInt(traveler.kind === 'human' ? input.movementRate ?? baseMovement : baseMovement) + (input.unencumbered ? 2 : 0);
+    forced = { ...resolveForcedMarch({ roll: asInt(input.conRoll), con: asInt(con), movementRate, roadType: journey.roadType, traveler: traveler.kind, rng: input.rng }), movementRate, unencumbered: Boolean(input.unencumbered) };
+    if (unknownProfile) {
+      journey.travelerProfileDecision = { travelerId: traveler.id, note: input.profileNote.trim(), con: Number(con), movementRate: Number(baseMovement), sourcePage: 'Ch.6 pp.111-112' };
+      forced.profileDecision = journey.travelerProfileDecision;
+    }
     distance = forced.distance;
   } else distance = getTravelDistance(journey.roadType, journey.pace);
   journey.remainingDistance = Math.max(0, journey.remainingDistance - distance);
   if (journey.remainingDistance === 0) journey.status = 'complete';
-  const day = { id, dayNumber, distance, route, forced, remainingDistance: journey.remainingDistance, status: journey.status, createdAt: transaction.entry.createdAt };
+  if (route?.lost || route?.delayDays) journey.pendingDecision = { kind: 'route', sourcePage: 'Ch.6 p.112' };
+  if (forced?.mustRest) journey.pendingDecision = { kind: 'rest', sourcePage: 'Ch.6 p.112' };
+  if (forced?.lamed) {
+    const condition = { kind: 'lamed', transactionId: id, sourcePage: 'Ch.6 p.112', recordedAt: transaction.entry.createdAt };
+    if (traveler.id.startsWith('horse-slot:')) {
+      const key = traveler.id.slice('horse-slot:'.length);
+      const mount = character.horses[key];
+      character.horses[key] = { ...(typeof mount === 'string' ? { type: mount } : mount), travelCondition: condition };
+    } else {
+      const equipment = character.campaign.economy.equipment;
+      const mount = equipment.find(item => `inventory:${item.id}` === traveler.id);
+      if (asInt(mount.quantity, 1) > 1) {
+        const individual = { ...mount, id: `${mount.id}:travel:${id}`, quantity: 1, travelCondition: condition };
+        mount.quantity -= 1;
+        mount.equipped = false;
+        equipment.push(individual);
+        journey.travelerId = `inventory:${individual.id}`;
+      } else mount.travelCondition = condition;
+    }
+  }
+  const day = { id, dayNumber, traveler: { id: journey.travelerId || traveler.id, kind: traveler.kind, label: traveler.label }, distance, route, forced, remainingDistance: journey.remainingDistance, status: journey.status, createdAt: transaction.entry.createdAt };
   journey.days.push(day);
+  if (forced?.damage) {
+    const applied = applyCharacterDamage(character, { rolledDamage: forced.damage, direct: true, woundId: `${id}:injury`, source: '강행군 대실패', sourceRuleId: 'TRAVEL-FORCED-001', sourcePage: 'Ch.6 p.112' }, input.rng);
+    const savedJourney = applied.character.campaign.rulebookProcedures.journeys.find(item => item.id === journey.id);
+    return { character: applied.character, journey: savedJourney, day: savedJourney.days.at(-1), applied: true };
+  }
   return { character, journey, day, applied: true };
+};
+
+export const recordJourneyDecision = (characterValue, input = {}, now) => {
+  const { character, state } = ensureState(characterValue);
+  const journey = state.journeys.find(item => item.id === input.journeyId);
+  if (!journey) throw new RangeError('여행 기록을 선택하세요.');
+  const id = safeId(input.transactionId || `${journey.id}:decision:${journey.days.length}`);
+  if (state.transactions.some(item => item.id === id)) return { character, journey, applied: false };
+  const kind = journey.pendingDecision?.kind || (['lost', 'delayed'].includes(journey.status) ? 'route' : null);
+  if (!kind || !String(input.note || '').trim() || input.gmConfirmed !== true) throw new RangeError('GM이 길 재탐색 또는 필요한 휴식을 허가하고 그 근거를 기록해야 합니다.');
+  const traveler = journeyTraveler(character, { travelerId: input.travelerId || journey.travelerId });
+  const pace = input.pace || journey.pace;
+  validateJourneyPace(character, traveler, pace);
+  appendTransaction(state, { id, type: 'journey_gm_decision', kind, note: String(input.note).trim(), sourcePage: 'Ch.6 p.112', createdAt: iso(now) });
+  journey.pendingDecision = null;
+  journey.travelerId = traveler.id;
+  journey.pace = pace;
+  journey.status = kind === 'route' ? 'awaiting_route_check' : journey.remainingDistance === 0 ? 'complete' : 'active';
+  return { character, journey, applied: true };
 };
 
 const topCountAtLeast = (values, count, target) => values.filter(value => asInt(value) >= target).length >= count;

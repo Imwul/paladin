@@ -59,6 +59,21 @@ const resolve = (character, input = {}) => resolveChapter7Action(character, { ..
 const apply = character => applyChapter7Consequences(character, { now: '2026-08-09T00:03:00.000Z' }).character;
 const move = character => completeChapter7Movement(character, {}, '2026-08-09T00:04:00.000Z').character;
 
+// Chapter 18 IDs must not retain the UI's obsolete default target or consume its manual dice.
+let customTarget = start({ opponents: [enemy('chapter18:bandit')] });
+customTarget = declare(customTarget, { action: 'attack', targetIds: ['enemy:1', 'chapter18:bandit'] });
+assert.deepEqual(customTarget.campaign.combat.declaration.targetIds, ['chapter18:bandit']);
+const legacyTarget = structuredClone(customTarget);
+legacyTarget.campaign.combat.declaration.targetIds.unshift('enemy:1');
+for (const candidate of [customTarget, legacyTarget]) {
+  const resolved = resolve(candidate, { actorRoll: 1, opponentRoll: 20, actorDamageTotal: 24 });
+  const exchange = resolved.campaign.combat.pending.exchanges[0];
+  assert.equal(exchange.actorCheck.roll, 1);
+  assert.equal(exchange.opponentCheck.roll, 20);
+  assert.equal(exchange.actorCheck.target, 16);
+  assert.equal(resolved.campaign.combat.pending.exchanges.length, 1);
+}
+
 // Movement is a persisted fifth phase, and initiative follows Movement Rate then DEX.
 let movement = start({ opponents: [enemy('enemy:1', { distance: 8, movementRate: 2 })] });
 movement = declare(movement, { action: 'move', movement: { targetId: 'enemy:1', direction: 'toward', speed: 'walk', yards: 3 } });

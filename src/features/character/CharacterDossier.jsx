@@ -37,7 +37,6 @@ const SCORE_LABELS = {
 
 export default function CharacterDossier({ character, setCharacter, initialCharacterState }) {
   const needsCreation = !String(character.personal?.name || '').trim();
-  const creationInProgress = Boolean(character.campaign?.characterCreationSession);
   const [view, setView] = useState(needsCreation ? 'record' : 'life');
   const [creationRequest, setCreationRequest] = useState(needsCreation ? 1 : 0);
   const lifecycleState = character.campaign?.lifecycle || {};
@@ -65,26 +64,25 @@ export default function CharacterDossier({ character, setCharacter, initialChara
 
   return (
     <article className="folio-page character-dossier view-animate">
-      <FolioHeading eyebrow={activeCharacter.active ? 'Dossier Militis · Persona Activa' : 'Dossier Militis · Vita Conclusa'} title={character.personal?.name || '이름 없는 기사'} year={character.personal?.campaignYear || 767}>
-        {character.personal?.personalClass} · {character.personal?.homeland} · {character.personal?.age}세
+      <FolioHeading eyebrow={needsCreation ? 'Dossier Militis · Nova Vita' : activeCharacter.active ? 'Dossier Militis · Persona Activa' : 'Dossier Militis · Vita Conclusa'} title={needsCreation ? '새 기사 생성' : character.personal.name} year={character.personal?.campaignYear || 767}>
+        {needsCreation ? '가문과 인물의 출발점을 정합니다.' : `${character.personal?.personalClass} · ${character.personal?.homeland} · ${character.personal?.age}세`}
       </FolioHeading>
 
-      <section className="dossier-register" aria-label="기사 핵심 기록">
+      {!needsCreation && <section className="dossier-register" aria-label="기사 핵심 기록">
         <div className="dossier-monogram" aria-hidden="true">{String(character.personal?.name || 'P').trim().charAt(0)}</div>
         <div><UserRound size={15} aria-hidden="true" /><span>생애 상태</span><strong><StatusSeal tone={lifecycleTone(lifecycle)}>{lifecycleLabel}</StatusSeal></strong></div>
         <div><Activity size={15} aria-hidden="true" /><span>생명력</span><strong>{character.attributes?.currentHp || 0}/{(character.attributes?.siz || 0) + (character.attributes?.con || 0)}</strong></div>
         <div><Shield size={15} aria-hidden="true" /><span>명예</span><strong>{character.passions?.honor || 0}</strong></div>
         <div><Heart size={15} aria-hidden="true" /><span>가문애</span><strong>{character.passions?.loveFamily || 0}</strong></div>
         <div><Sparkles size={15} aria-hidden="true" /><span>누적 영광</span><strong>{(character.gear?.gloryTotal || 0).toLocaleString()}</strong></div>
-      </section>
+      </section>}
 
-      <nav className="dossier-view-tabs" aria-label="기사 기록 보기">
+      {!needsCreation && <nav className="dossier-view-tabs" aria-label="기사 기록 보기">
         <button type="button" className={view === 'life' ? 'active' : ''} onClick={() => setView('life')} aria-pressed={view === 'life'}><History size={17} aria-hidden="true" />생애 기록</button>
         <button type="button" className={view === 'record' ? 'active' : ''} onClick={openRecord} aria-pressed={view === 'record'}><BookOpen size={17} aria-hidden="true" />기사 원부</button>
-        {needsCreation && <button type="button" className="dossier-view-tabs__creation" onClick={openCreation}><Sparkles size={17} aria-hidden="true" />{creationInProgress ? '기사 생성 재개' : '기사 생성 시작'}</button>}
-      </nav>
+      </nav>}
 
-      {view === 'life' ? <>
+      {view === 'life' && !needsCreation ? <>
         <div className="character-life-workspace">
           <section>
             <SectionHeader index="I" title="현재의 기사" meta="Persona Praesens" />
@@ -115,7 +113,7 @@ export default function CharacterDossier({ character, setCharacter, initialChara
           <div><LifecyclePanel character={character} setCharacter={setCharacter} onOpenCreation={openCreation} /></div>
         </details>
       </> : <>
-        <SectionHeader index="I" title={needsCreation ? '첫 기사 생성' : '기사 원부'} meta="Attributes · Traits · Skills · Passions" action={<RulebookButton page={31} reason="Character records" />} />
+        <SectionHeader index="I" title={needsCreation ? '첫 기사 생성' : '기사 원부'} meta="Attributes · Traits · Skills · Passions" action={<RulebookButton page={needsCreation ? 25 : 31} reason="Character records" />} />
         <div className="legacy-surface legacy-surface--character">
           <CharacterSheet key={`character-sheet:${creationRequest}`} character={character} setCharacter={setCharacter} initialCharacterState={initialCharacterState} creationRequest={creationRequest} />
         </div>

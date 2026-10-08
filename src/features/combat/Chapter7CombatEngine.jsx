@@ -52,6 +52,12 @@ const checkLabels = { critical: '대성공', success: '성공', failure: '실패
 const combatStatusLabels = { active: '교전 가능', defeated: '전투 불능', surrendered: '항복', fled: '도주' };
 const horseStatusLabels = { healthy: '건강', wounded: '부상', broken: '중상', unconscious: '의식 불명', dead: '사망', fallen: '쓰러짐' };
 
+const CheckReadout = ({ label, check }) => check ? <p className="combat-check-readout">
+  <strong>{label} · {checkLabels[check.outcome] || check.outcome}</strong>
+  <span>d20 {check.roll} / 최종 목표 {check.target}{check.effectiveRoll !== undefined && check.effectiveRoll !== check.roll ? ` · 유효 굴림 ${check.effectiveRoll}` : ''}</span>
+  {check.reasons?.length > 0 && <small>{check.reasons.map(reason => `${reason.label} ${reason.value >= 0 ? '+' : ''}${reason.value}`).join(' · ')}</small>}
+</p> : null;
+
 const blankOpponent = index => ({
   id: `enemy:${index + 1}`, name: `상대 ${index + 1}`, skill: 12, unarmed: 10, rangedSkill: 12, horsemanship: 10,
   dex: 10, siz: 12, con: 12, str: 12, damageDice: 4, weaponId: 'axe', missileWeaponId: 'bow',
@@ -90,12 +96,12 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
     };
   });
   const [declaration, setDeclaration] = useState({
-    action: 'attack', targetIds: ['enemy:1'], allocations: {}, allyEngagedIds: [], gmModifier: 0, gmNote: '',
+    action: 'attack', targetIds: [], allocations: {}, allyEngagedIds: [], gmModifier: 0, gmNote: '',
     enemyPlans: {}, fireMode: 'normal', weather: 'clear', shieldUse: 'passive', playerShieldUse: 'passive', uncontrolledDefense: 'free_attack', nonlethal: 'full', twoHandedStrike: false,
     awarenessSkill: 'awareness', rearmWeaponId: 'sword', rearmShield: 0, squireRequest: 'weapon',
     grappleRearmStat: 'unarmed', joustFumbleChoice: 'lance_broke', joustFumbleNote: '',
     gmMountedTwoHandedApproved: false, gmShieldTacticApproved: false, experienceApproved: false, gmMaximumRange: 30,
-    movement: { targetId: 'enemy:1', direction: 'toward', speed: 'walk', yards: 3, gmFastMovementApproved: false, gmMultipleApproved: false },
+    movement: { targetId: '', direction: 'toward', speed: 'walk', yards: 3, gmFastMovementApproved: false, gmMultipleApproved: false },
     dexAction: { type: 'balance', modifier: 0, aid: 'none', awarenessTarget: 10, heightFeet: 30, extended: false }
   });
   const [rolls, setRolls] = useState({ actorRoll: '', opponentRoll: '', feintRoll: '', actorDamageTotal: '', opponentDamageTotal: '', actorDamageRolls: '', opponentDamageRolls: '', dexRoll: '', awarenessRoll: '', strRoll: '', horseDexRoll: '', horsemanshipRoll: '', squireRoll: '', siegeLadderRoll: '' });
@@ -148,7 +154,8 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
     return { ...previous, targetIds, movement: { ...previous.movement, targetId: id } };
   });
   const toggleSupport = id => setDeclaration(previous => ({ ...previous, allyEngagedIds: previous.allyEngagedIds.includes(id) ? previous.allyEngagedIds.filter(value => value !== id) : [...previous.allyEngagedIds, id] }));
-  const allocationIds = ['defend', 'dodge', 'evade'].includes(declaration.action) ? engagedOpponents.map(opponent => opponent.id) : declaration.targetIds;
+  const selectedTargetIds = declaration.targetIds.filter(id => activeOpponents.some(opponent => opponent.id === id));
+  const allocationIds = ['defend', 'dodge', 'evade'].includes(declaration.action) ? engagedOpponents.map(opponent => opponent.id) : selectedTargetIds;
   const normalizedAllocations = () => {
     if (declaration.action === 'dodge' || allocationIds.length <= 1) return declaration.allocations;
     const entered = allocationIds.reduce((sum, id) => sum + Number(declaration.allocations[id] || 0), 0);
@@ -157,7 +164,7 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
     return allocationIds.reduce((values, id, index) => ({ ...values, [id]: base + (index === 0 ? skillBase - base * allocationIds.length : 0) }), {});
   };
 
-  const declare = () => commitCharacter(previous => declareChapter7Action(previous, { ...declaration, action: legalActions.includes(declaration.action) ? declaration.action : legalActions[0], allocations: normalizedAllocations() }).character);
+  const declare = () => commitCharacter(previous => declareChapter7Action(previous, { ...declaration, targetIds: selectedTargetIds, action: legalActions.includes(declaration.action) ? declaration.action : legalActions[0], allocations: normalizedAllocations() }).character);
   const resolve = () => run(() => {
     const values = Object.fromEntries(Object.entries(rolls).map(([key, value]) => {
       if (rollMode !== 'manual' || value === '') return [key, undefined];
@@ -265,7 +272,7 @@ export default function Chapter7CombatEngine({ character, setCharacter, onNaviga
 
       {combat.phase === 'resolution' && <div className="chapter7-resolution"><p><strong>{CHAPTER_7_ACTIONS[combat.declaration.action]?.label}</strong>을 선언했습니다. 판정 결과는 적용 전 별도로 저장됩니다.</p><div className="segmented-control" aria-label="주사위 방식"><button type="button" className={rollMode === 'automatic' ? 'active' : ''} onClick={() => setRollMode('automatic')}>앱 굴림</button><button type="button" className={rollMode === 'manual' ? 'active' : ''} onClick={() => setRollMode('manual')}>직접 굴림</button></div>{rollMode === 'manual' && <div className="chapter7-roll-grid"><NumberField label="기사 d20" value={rolls.actorRoll} min={1} max={20} onChange={value => updateRoll('actorRoll', value)} /><NumberField label="상대 d20" value={rolls.opponentRoll} min={1} max={20} onChange={value => updateRoll('opponentRoll', value)} /><NumberField label="기사 피해 합계" value={rolls.actorDamageTotal} max={999} onChange={value => updateRoll('actorDamageTotal', value)} /><NumberField label="상대 피해 합계" value={rolls.opponentDamageTotal} max={999} onChange={value => updateRoll('opponentDamageTotal', value)} /><label className="combat-field"><span>기사 피해 d6 · 쉼표</span><input value={rolls.actorDamageRolls} onChange={event => updateRoll('actorDamageRolls', event.target.value)} placeholder="6, 6, 3" /></label><label className="combat-field"><span>상대 피해 d6 · 쉼표</span><input value={rolls.opponentDamageRolls} onChange={event => updateRoll('opponentDamageRolls', event.target.value)} placeholder="6, 4, 2" /></label>{combat.declaration.action === 'double_feint' && <NumberField label="이중 페인트 DEX" value={rolls.feintRoll} min={1} max={20} onChange={value => updateRoll('feintRoll', value)} />}{combat.declaration.action === 'dex' && <><NumberField label="DEX d20" value={rolls.dexRoll} min={1} max={20} onChange={value => updateRoll('dexRoll', value)} /><NumberField label="STR d20" value={rolls.strRoll} min={1} max={20} onChange={value => updateRoll('strRoll', value)} /><NumberField label="Horsemanship d20" value={rolls.horsemanshipRoll} min={1} max={20} onChange={value => updateRoll('horsemanshipRoll', value)} /><NumberField label="공성 사다리 d6" value={rolls.siegeLadderRoll} min={1} max={6} onChange={value => updateRoll('siegeLadderRoll', value)} /></>}{combat.declaration.action === 'awareness' && <NumberField label="관찰 d20" value={rolls.awarenessRoll} min={1} max={20} onChange={value => updateRoll('awarenessRoll', value)} />}{combat.declaration.action === 'squire' && <NumberField label="종자 d20" value={rolls.squireRoll} min={1} max={20} onChange={value => updateRoll('squireRoll', value)} />}</div>}<button type="button" className="primary-command" onClick={resolve}><Dices size={17} aria-hidden="true" />판정 굴리기</button></div>}
 
-      {combat.phase === 'winner' && pending && <div className="chapter7-pending"><header><div><span className="serial-label">판정 완료 · 아직 미적용</span><h3>승자와 피해 확인</h3></div><StatusSeal tone={pending.packets.length ? 'warning' : 'neutral'}>{pending.packets.length}건 피해</StatusSeal></header><div className="chapter7-exchanges">{pending.exchanges.map((exchange, index) => <div data-outcome={exchange.actorCheck?.outcome || exchange.check?.outcome || exchange.opposed?.actorOutcome} key={`${exchange.type}:${index}`}><strong>{exchange.type}</strong><span>{exchange.opposed ? ` · ${exchange.opposed.winner}` : ''}{exchange.actorCheck ? ` · 기사 ${checkLabels[exchange.actorCheck.outcome]}` : ''}{exchange.check ? ` · ${checkLabels[exchange.check.outcome]}` : ''}</span></div>)}</div>{pending.packets.map((packet, index) => <p key={`${packet.targetType}:${index}`}><HeartCrack size={15} aria-hidden="true" />{packet.targetType} · 굴림 피해 {packet.rolledDamage} · 갑옷 {packet.armor}{packet.shieldApplies ? ` · 방패 ${packet.shield}` : ''}</p>)}<button type="button" className="primary-command" onClick={apply}><Shield size={17} aria-hidden="true" />피해와 장비 결과 적용</button></div>}
+      {combat.phase === 'winner' && pending && <div className="chapter7-pending"><header><div><span className="serial-label">판정 완료 · 아직 미적용</span><h3>승자와 피해 확인</h3></div><StatusSeal tone={pending.packets.length ? 'warning' : 'neutral'}>{pending.packets.length}건 피해</StatusSeal></header><div className="chapter7-exchanges">{pending.exchanges.map((exchange, index) => <div data-outcome={exchange.actorCheck?.outcome || exchange.check?.outcome || exchange.opposed?.actorOutcome} key={`${exchange.type}:${index}`}><strong>{exchange.type === 'opposed' ? '대결 판정' : exchange.type}</strong><span>{exchange.opposed ? ` · ${{ actor: '기사 우세', opponent: '상대 우세', tie: '비김', bothFail: '양측 실패', noCombat: '교전 없음' }[exchange.opposed.winner] || exchange.opposed.winner}` : ''}</span><CheckReadout label="기사" check={exchange.actorCheck} /><CheckReadout label="상대" check={exchange.opponentCheck} /><CheckReadout label="판정" check={exchange.check} /></div>)}</div>{pending.packets.map((packet, index) => <p key={`${packet.targetType}:${index}`}><HeartCrack size={15} aria-hidden="true" />{packet.targetType === 'player' ? '기사' : '상대'} · 굴림 피해 {packet.rolledDamage} · 갑옷 {packet.armor}{packet.shieldApplies ? ` · 방패 ${packet.shield}` : ''}</p>)}<button type="button" className="primary-command" onClick={apply}><Shield size={17} aria-hidden="true" />피해와 장비 결과 적용</button></div>}
 
       {combat.phase === 'movement' && pending && <div className="chapter7-movement"><p>승자와 패자 처리가 끝났습니다. 이동, 재장전, 승하마 또는 돌격 후 직진을 완료하면 다음 라운드가 시작됩니다.</p><button type="button" className="primary-command" onClick={completeMovement}><Footprints size={17} aria-hidden="true" />이동 단계 완료</button></div>}
 

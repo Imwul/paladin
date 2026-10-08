@@ -187,6 +187,11 @@ export const FRANKISH_SKILL_FORMULAS = {
 const ironWeapons = ['Iron sword x1', 'Spear x1', 'Dagger x1', 'Axe, flail, or hammer x1', 'Bow x1', 'Arrows x12', 'Lances x3'];
 const steelWeapons = ['Steel sword x1', 'Spears x2', 'Daggers x2', 'Axe, flail, or hammer x1', 'Light crossbow x1', 'Bolts x12', 'Lances x5'];
 
+export const STARTING_ARMOR_ITEM_IDS = Object.freeze({
+  Cuirbouilli: 'cuirbouilli', 'Ring mail': 'ring_mail', 'Chain mail': 'chain_mail',
+  'Reinforced chain mail': 'reinforced_chain', 'Partial plate': 'partial_plate', 'Full plate': 'full_plate'
+});
+
 export const STARTING_OUTFITS = {
   1: { horses: { rouncy: 1 }, squires: 0, armorByPhase: ['Cuirbouilli', 'Cuirbouilli', 'Cuirbouilli', 'Chain mail', 'Chain mail'], shields: 1, weapons: ironWeapons, clothes: '90d', cash: 0 },
   2: { horses: { rouncy: 2 }, squires: 1, armorByPhase: ['Cuirbouilli', 'Cuirbouilli', 'Cuirbouilli', 'Chain mail', 'Chain mail'], shields: 2, weapons: ironWeapons, clothes: '120d', cash: 0 },

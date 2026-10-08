@@ -615,7 +615,7 @@ export const collectSurvivalTargets = character => {
       });
     });
   Object.entries(character.horses || {})
-    .filter(([key, mount]) => key !== 'warhorse' && mount && (typeof mount === 'string' ? mount.trim() : mount.status !== '사망'))
+    .filter(([key, mount]) => !['warhorse', 'inventory', 'canonicalMountIds'].includes(key) && mount && !Array.isArray(mount) && (typeof mount === 'string' ? mount.trim() : typeof mount === 'object' && mount.type && mount.status !== '사망'))
     .forEach(([key, mount]) => targets.push({
       targetId: `horse-slot:${key}`,
       type: 'special_mount',
@@ -1554,6 +1554,41 @@ export const resolveWinterFamilyBattle = (rawCharacter, input = {}, rng = Math.r
   pushChronicle(character, record);
   character.campaign.winter = winter;
   return { character, record, result: record.result.familyBattle, applied: true, awaitingChoice: false };
+};
+
+export const resolveWinterFamilyChallenge = (rawCharacter, input = {}) => {
+  const character = clone(rawCharacter);
+  const winter = ensureWinterState(character);
+  const record = winter.records.family;
+  if (record?.result?.familyChallenge) return { character, record, applied: false };
+  const remaining = unresolvedItems(record);
+  if (winter.steps.family !== 'awaiting_choice' || !remaining.some(item => item.type === 'optional_challenge')) throw new RangeError('실패한 혼인의 도전 선택이 대기 중이 아닙니다.');
+  if (remaining.some(item => FAMILY_TARGET_CHOICE_TYPES.has(item.type))) throw new RangeError('가족 사건 대상을 먼저 확정하세요.');
+  if (typeof input.challenged !== 'boolean') throw new RangeError('도전 여부를 명시적으로 선택하세요.');
+  if (input.challenged && (!input.challengeDeclared || !String(input.note || '').trim())) throw new RangeError('부당한 기사에게 실제로 도전했는지 확인하고 상황을 기록하세요.');
+  if (input.challenged) {
+    record.stateChanges.push(addCheck(character, 'passions', 'loveFamily'));
+    record.stateChanges.push(addCheck(character, 'standings', 'family'));
+  }
+  record.result.familyChallenge = { challenged: input.challenged, note: String(input.note || '').trim(), sourcePage: 'Ch.10 p.180', transactionId: `${record.completionId}:challenge` };
+  record.journalEntry += input.challenged ? ' 부당한 기사에게 도전하여 Love [family]와 Standing [family] 체크를 기록했습니다.' : ' 플레이어는 부당한 기사에게 도전하지 않기로 했습니다. 추가 수치 효과는 없습니다.';
+  record.unresolvedChoice = remaining.filter(item => item.type !== 'optional_challenge');
+  if (record.unresolvedChoice.length) {
+    winter.unresolved.family = { ...winter.unresolved.family, types: record.unresolvedChoice.map(item => item.type), label: record.unresolvedChoice.map(item => item.label).join('; ') };
+    character.campaign.winter = winter;
+    return { character, record, applied: true, awaitingChoice: true };
+  }
+  record.unresolvedChoice = null;
+  record.status = 'resolved';
+  winter.steps.family = 'resolved';
+  winter.transactions.push(record);
+  winter.logs.push(record.journalEntry);
+  winter.currentStep = nextPendingStep(winter);
+  delete winter.unresolved.family;
+  markApplied(character, record.completionId, '6단계 가족');
+  pushChronicle(character, record);
+  character.campaign.winter = winter;
+  return { character, record, applied: true, awaitingChoice: false };
 };
 
 export const recordManualWinterResolution = (rawCharacter, { stepId, note, canonicalTransactionIds = [] }) => {

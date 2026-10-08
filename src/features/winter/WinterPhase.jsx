@@ -21,6 +21,7 @@ import {
   PERSONAL_EVENT_TABLE,
   recordManualWinterResolution,
   resolveWinterFamilyBattle,
+  resolveWinterFamilyChallenge,
   resolveWinterFamilyTarget,
   resolveWinterStep,
   WINTER_STEPS
@@ -81,7 +82,7 @@ function SelectField({ label, value, onChange, options, placeholder = '선택' }
   return (
     <label className="winter-field">
       <span>{label}</span>
-      <select value={value} onChange={event => onChange(event.target.value)}>
+      <select aria-label={label} value={value} onChange={event => onChange(event.target.value)}>
         <option value="">{placeholder}</option>
         {options.map(option => {
           const item = typeof option === 'string' ? { value: option, label: SCORE_LABELS[option] || option } : option;
@@ -131,6 +132,8 @@ export default function WinterPhase({ character, setCharacter, onNavigate }) {
   const pendingChoices = Array.isArray(record?.unresolvedChoice) ? record.unresolvedChoice : record?.unresolvedChoice ? [record.unresolvedChoice] : [];
   const hasFamilyTargetChoice = step.id === 'family' && pendingChoices.some(item => ['family_target_choice', 'family_target_creation_or_reroll', 'family_target_required'].includes(item.type));
   const hasFamilyBattleChoice = step.id === 'family' && pendingChoices.some(item => item.type === 'battle_roll');
+  const hasFamilyChallengeChoice = step.id === 'family' && pendingChoices.some(item => item.type === 'optional_challenge');
+  const [familyChallengeDeclared, setFamilyChallengeDeclared] = useState(false);
   const familyTargetCandidates = record?.result?.relation?.candidates || [];
   const resolvedCount = WINTER_STEPS.filter(item => winter.steps?.[item.id] === 'resolved').length;
   const activeIndex = WINTER_STEPS.findIndex(item => item.id === winter.currentStep);
@@ -212,6 +215,17 @@ export default function WinterPhase({ character, setCharacter, onNavigate }) {
       setAllocations([]);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : '겨울 장부를 마감하지 못했습니다.');
+    }
+  };
+
+  const resolveFamilyChallenge = challenged => {
+    setError('');
+    try {
+      const result = resolveWinterFamilyChallenge(character, { challenged, challengeDeclared: familyChallengeDeclared, note: manualNote });
+      setCharacter(result.character);
+      if (!result.awaitingChoice) moveToCurrent(result.character);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : '도전 선택을 기록하지 못했습니다.');
     }
   };
 
@@ -407,7 +421,19 @@ export default function WinterPhase({ character, setCharacter, onNavigate }) {
               </div>
             </section>
           )}
-          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && !hasFamilyBattleChoice && (
+          {status === 'awaiting_choice' && !hasFamilyTargetChoice && hasFamilyChallengeChoice && (
+            <section className="manual-resolution">
+              <div>
+                <strong>실패한 혼인 · 도전 여부 선택</strong>
+                <p>Table 10-12 (p.180)은 도전을 강제하지 않습니다. 부당한 기사에게 도전하면 Love [family]와 Standing [family] 체크를 얻습니다. 전투 승리나 별도 영광을 자동으로 가정하지 않습니다.</p>
+                <button type="button" className="secondary-command" onClick={() => resolveFamilyChallenge(false)}>도전하지 않음 · 가족 단계 완료</button>
+                <label className="winter-field"><span>도전한 상황</span><textarea value={manualNote} onChange={event => setManualNote(event.target.value)} rows={3} /></label>
+                <label><input type="checkbox" checked={familyChallengeDeclared} onChange={event => setFamilyChallengeDeclared(event.target.checked)} /> 부당한 기사에게 실제로 도전했음을 확인함</label>
+                <button type="button" className="primary-command" disabled={!familyChallengeDeclared || !manualNote.trim()} onClick={() => resolveFamilyChallenge(true)}>도전 기록 · 두 체크 적용</button>
+              </div>
+            </section>
+          )}
+          {status === 'awaiting_choice' && record?.status !== 'awaiting_event_choice' && !hasFamilyTargetChoice && !hasFamilyBattleChoice && !hasFamilyChallengeChoice && (
             <section className="manual-resolution">
               <AlertTriangle size={20} aria-hidden="true" />
               <div>

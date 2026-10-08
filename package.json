@@ -21,7 +21,9 @@
     "test:personality-magic": "node scripts/personality-magic-regression.mjs",
     "test:final-gaps": "node scripts/final-gap-regression.mjs",
     "test:rulebook-transplant": "node scripts/rulebook-transplant-regression.mjs",
-    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:battle && npm run test:economy && npm run test:chapter17 && npm run test:chapter18 && npm run test:personality-magic && npm run test:adventure && npm run test:final-gaps && npm run test:rulebook-transplant && npm run test:campaign && node scripts/hostile-regression.mjs",
+    "test:play-workspace": "node scripts/play-workspace-regression.mjs",
+    "test:play-continuity": "node scripts/play-continuity-regression.mjs",
+    "ci:temporary": "npm run build && npm run test:rules && npm run test:character-creation && npm run test:lifecycle && npm run test:winter && npm run test:combat && npm run test:battle && npm run test:economy && npm run test:chapter17 && npm run test:chapter18 && npm run test:personality-magic && npm run test:adventure && npm run test:final-gaps && npm run test:rulebook-transplant && npm run test:campaign && node scripts/hostile-regression.mjs && npm run test:play-workspace && npm run test:play-continuity",
     "preview": "vite preview"
   },
   "dependencies": {

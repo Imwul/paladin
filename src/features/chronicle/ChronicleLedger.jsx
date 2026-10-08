@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Filter, ScrollText } from 'lucide-react';
 import { EmptyState, FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
 import RulebookButton from '../rulebook/RulebookButton';
-import { formatStandingChange, getChronicleTypeLabel, getLifecycleLabel } from '../../utils/chronicleLabels';
+import { formatStandingChange, getChronicleEventPresentation, getChronicleTypeLabel, getLifecycleLabel } from '../../utils/chronicleLabels';
 
 const FILTERS = [
   ['all', '전체'],
@@ -36,9 +36,7 @@ const normalizeEvents = character => {
     id: event.id || `chronicle-${index}`,
     year: Number(event.year || character.personal?.campaignYear || 767),
     age: event.age,
-    type: String(event.type || event.category || 'character').toLowerCase(),
-    title: event.title || event.label || '연대기 사건',
-    narrative: event.narrative || event.summary || event.note || '',
+    ...getChronicleEventPresentation(event),
     ruleId: event.sourceRuleId || event.ruleId || '',
     source: event.sourcePage || event.source || '',
     glory: event.glory,

@@ -33,6 +33,17 @@ export const CHRONICLE_TYPE_LABELS = Object.freeze({
 
 export const getChronicleTypeLabel = type => CHRONICLE_TYPE_LABELS[String(type || '').toLowerCase()] || '기타 사건';
 
+export const getChronicleEventPresentation = event => {
+  const type = String(event.type || event.category || 'character').toLowerCase();
+  const title = event.title || event.label || '연대기 사건';
+  const narrative = event.narrative || event.summary || event.note || '';
+  // Older first-knight saves used a successor trigger despite the explicit creation cause.
+  if (event.sourceRuleId === 'CHAR-STORY-001' && event.cause === 'character_creation' && event.triggeringEvent === 'successor_creation_and_knighting') {
+    return { type: 'character', title: title.replace(/의 계승$/, '의 활동 시작'), narrative: '첫 기사의 활성 캐릭터 전환을 기록했습니다.' };
+  }
+  return { type, title, narrative };
+};
+
 const LIFECYCLE_LABELS = Object.freeze({
   active: '활동 복귀',
   bedridden: '병상',

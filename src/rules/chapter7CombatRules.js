@@ -387,6 +387,7 @@ export const declareChapter7Action = (characterValue, input = {}, now) => {
   let targetIds = [...new Set((Array.isArray(input.targetIds) ? input.targetIds : input.targetId ? [input.targetId] : []).map(String))];
   if (action.startsWith('grapple_')) targetIds = [state.player.grapple?.heldBy || state.player.grapple?.holding].filter(Boolean);
   const targets = targetIds.map(id => opponentById(state, id)).filter(Boolean);
+  targetIds = targets.map(target => target.id);
   if (['attack', 'double_feint', 'grapple', 'uncontrolled', 'ranged', 'lance_charge', 'joust'].includes(action) && !targets.length) {
     throw new RangeError('행동의 대상을 선택하세요.');
   }
@@ -1203,7 +1204,7 @@ export const resolveChapter7Action = (characterValue, input = {}, rng = Math.ran
   if (['attack', 'defend', 'dodge', 'double_feint', 'lance_charge'].includes(action)) {
     const ids = ['defend', 'dodge'].includes(action)
       ? livingOpponents(state).filter(opponent => isEngaged(opponent) || declaration.enemyPlans?.[opponent.id] === 'lance_charge').map(opponent => opponent.id)
-      : declaration.targetIds;
+      : declaration.targetIds.filter(id => opponentById(state, id));
     const base = action === 'dodge' ? player.dex : action === 'lance_charge' ? asInt(character.skills?.lance) : player.skill;
     validateAllocations(declaration, base, ids, action);
     let dodgeKnockedDown = Boolean(state.player.prone);
@@ -1654,17 +1655,23 @@ export const concludeChapter7Combat = (characterValue, input = {}, now) => {
   if (state.phase === 'winner') throw new RangeError('이미 판정한 공격의 피해를 먼저 적용하세요.');
   const result = ['victory', 'capture', 'defeat', 'surrender', 'flight', 'truce'].includes(input.result) ? input.result : 'truce';
   const timestamp = iso(now);
+  // A decisive applied round can end before movement; preserve it without reapplying effects.
+  if (state.pending && state.appliedResolutionIds.includes(state.pending.id) && !state.rounds.some(round => round.id === state.pending.id)) {
+    state.rounds.push({ ...state.pending, initiativeOrder: [...state.initiativeOrder], endedAtConclusion: true, completedAt: timestamp });
+    state.rounds = state.rounds.slice(-250);
+  }
+  const roundCount = state.rounds.reduce((count, round) => Math.max(count, asInt(round.round)), 0);
   state.status = 'concluded';
-  state.outcome = { result, note: String(input.note || ''), rounds: state.rounds.length, concludedAt: timestamp };
+  state.outcome = { result, note: String(input.note || ''), rounds: roundCount, concludedAt: timestamp };
   state.updatedAt = timestamp;
   character.campaign.combat = state;
   character.campaign.combatHistory = [...(character.campaign.combatHistory || []), {
-    id: state.id, year: state.year, result, rounds: state.rounds.length, opponents: state.opponents.map(opponent => opponent.name),
+    id: state.id, year: state.year, result, rounds: roundCount, opponents: state.opponents.map(opponent => opponent.name),
     source: state.source, returnContext: state.returnContext, concludedAt: timestamp
   }].slice(-250);
   appendChronicleEvent(character, {
     id: `${state.id}:conclusion`, year: state.year, type: 'combat', title: `개인 전투 ${result === 'victory' ? '승리' : result === 'capture' ? '생포' : result === 'defeat' ? '패배' : result === 'surrender' ? '항복' : result === 'flight' ? '이탈' : '종결'}`,
-    narrative: `${state.opponents.map(opponent => opponent.name).join(', ')}와의 전투가 ${state.rounds.length}라운드 만에 끝났습니다.${input.note ? ` ${input.note}` : ''}`,
+    narrative: `${state.opponents.map(opponent => opponent.name).join(', ')}와의 전투가 ${roundCount}라운드 만에 끝났습니다.${input.note ? ` ${input.note}` : ''}`,
     sourceRuleId: 'COMBAT-SEQUENCE-001', sourcePage: 'Ch.7 pp.115-128', createdAt: timestamp
   });
   character.campaign.schemaVersion = 12;

@@ -1,6 +1,7 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import Dashboard from './components/Dashboard';
 import AppShell from './app/AppShell';
+import { readPlayView, rememberPlayView } from './app/playWorkspace';
 import { LoadingState } from './components/ui/LedgerUI';
 import SaveConflictDialog from './components/SaveConflictDialog';
 import {
@@ -15,6 +16,8 @@ import { createPersonalityMagicState } from './rules/personalityMagicRules';
 import { RulebookProvider } from './features/rulebook/RulebookContext';
 import './components/SettingsModal.css';
 import './styles/remaster.css';
+import './styles/play-workspace.css';
+import './styles/book-identity.css';
 
 const CharacterDossier = lazy(() => import('./features/character/CharacterDossier'));
 const FamilyRegister = lazy(() => import('./features/family/FamilyRegister'));
@@ -253,7 +256,12 @@ const mergeWithDefault = (data) => sanitizeCampaignState(data, createInitialChar
 const getInitialFirebaseStatus = () => isFirebaseConfigured ? 'CONFIGURED_OFFLINE' : 'UNCONFIGURED';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState(() => {
+    try { return readPlayView(window.sessionStorage); } catch { return 'dashboard'; }
+  });
+  useEffect(() => {
+    try { rememberPlayView(window.sessionStorage, activeTab); } catch { /* Storage is optional for navigation. */ }
+  }, [activeTab]);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [firebaseStatus, setFirebaseStatus] = useState(getInitialFirebaseStatus);
   const [saveActivity, setSaveActivity] = useState('saved');
@@ -561,15 +569,15 @@ export default function App() {
   const renderActiveScreen = () => {
     if (activeTab === 'dashboard') return <Dashboard character={character} setActiveTab={setActiveTab} />;
     if (activeTab === 'chronicle') return <ChronicleLedger character={character} />;
-    if (activeTab === 'character') return <CharacterDossier character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />;
+    if (activeTab === 'character') return <CharacterDossier key={String(character.personal?.name || '').trim() ? 'recorded' : 'creation'} character={character} setCharacter={setCharacter} initialCharacterState={createInitialCharacterState()} />;
     if (activeTab === 'family') return <FamilyRegister character={character} setCharacter={setCharacter} />;
     if (activeTab === 'winter') return <WinterPhase character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'adventure') return <AdventureJournal character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'combat') return <CombatEncounter character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'battle') return <BattleSiege character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'economy') return <EconomyLedger character={character} setCharacter={setCharacter} />;
-    if (activeTab === 'personality') return <PersonalityMagicPanel character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
-    if (activeTab === 'procedures') return <RulebookProcedures character={character} setCharacter={setCharacter} />;
+    if (activeTab === 'personality') return <PersonalityMagicPanel character={character} setCharacter={setCharacter} onNavigate={setActiveTab} adventureMode={character.campaign?.adventures?.active?.pendingSubsystem?.type === 'personality_magic'} />;
+    if (activeTab === 'procedures') return <RulebookProcedures character={character} setCharacter={setCharacter} onNavigate={setActiveTab} />;
     if (activeTab === 'standing') return <StandingLedger character={character} />;
     if (activeTab === 'glory') return <GloryLedger character={character} />;
     if (activeTab === 'oracles' && character.campaign?.adventures?.active?.pendingSubsystem?.type === 'personality_magic') {

@@ -21,6 +21,7 @@ import {
   PATRON_SAINTS,
   RELIC_TYPES,
   SKILL_CATEGORIES,
+  STARTING_ARMOR_ITEM_IDS,
   STARTING_OUTFITS
 } from './characterCreationData.js';
 import { SAINT_BLESSINGS } from './lifecycleRules.js';
@@ -1748,7 +1749,7 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
     year: completionYear,
     age: draft.personal.age,
     sourcePage: isSuccessor ? 'Chapter 1 pp. 41-43' : 'Chapter 1 p. 40',
-    triggeringEvent: draft.qualification?.qualified ? 'successor_creation_and_knighting' : 'character_creation',
+    triggeringEvent: isSuccessor ? (draft.qualification?.qualified ? 'successor_creation_and_knighting' : 'successor_creation') : 'character_creation',
     unresolvedChoices: [],
     appliedEffectIds: [completionId, transitionEventId],
     journalEntryId: `journal:${transitionEventId}`,
@@ -1893,6 +1894,14 @@ export const completeCharacterCreation = (currentCharacter, rawSession, now = ne
       label: `${draft.personal.culture} · ${outfit.profileLabel} 시작 장비`,
       note: outfit.sourceText,
       sourcePage: outfit.sourcePage,
+      now: completedAt
+    });
+    Object.assign(next, granted.character);
+  } else if (STARTING_ARMOR_ITEM_IDS[outfit?.armor] && !draft.usesInheritedEquipment) {
+    const granted = grantStartingMarketItems(next, {
+      transactionId: `starting-protection:${completionId}`,
+      itemIds: [STARTING_ARMOR_ITEM_IDS[outfit.armor], ...Array(outfit.shields).fill('shield')],
+      label: 'Table 1-14 시작 방어구', sourcePage: 'Ch.1 pp.38-39; Ch.12 p.200',
       now: completedAt
     });
     Object.assign(next, granted.character);

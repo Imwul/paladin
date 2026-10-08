@@ -19,6 +19,7 @@ import {
   LogOut,
   ScrollText,
   Scale,
+  Search,
   Settings,
   Shield,
   Swords,
@@ -31,30 +32,33 @@ import { getCampaignPhase } from '../rules/campaignRules';
 import { getActiveCharacterIdentity } from '../rules/lifecycleRules';
 import knightInvestiture from '../assets/knight-investiture.jpg';
 import RulebookButton from '../features/rulebook/RulebookButton';
+import { useRulebook } from '../features/rulebook/RulebookContext';
+import { getPlayActions } from './playWorkspace';
 
 export const NAV_ITEMS = [
-  { id: 'dashboard', label: '표지', meta: 'Index', icon: BookOpen, group: 'campaign' },
-  { id: 'character', label: '기사', meta: 'Dossier', icon: UserRound, group: 'campaign' },
-  { id: 'family', label: '가문', meta: 'Lineage', icon: UsersRound, group: 'campaign' },
-  { id: 'chronicle', label: '연대기', meta: 'Chronicle', icon: ScrollText, group: 'campaign' },
+  { id: 'dashboard', label: '지금 플레이', meta: 'Play', icon: BookOpen, group: 'campaign' },
+  { id: 'character', label: '기사', meta: 'Dossier', icon: UserRound, group: 'records' },
+  { id: 'family', label: '가문', meta: 'Lineage', icon: UsersRound, group: 'records' },
+  { id: 'chronicle', label: '연대기', meta: 'Chronicle', icon: ScrollText, group: 'records' },
   { id: 'adventure', label: '모험', meta: 'Adventure', icon: Compass, group: 'campaign' },
   { id: 'combat', label: '전투와 회복', meta: 'Combat and Health', icon: Swords, group: 'campaign' },
   { id: 'battle', label: '대전투와 공성', meta: 'Battle and Siege', icon: Shield, group: 'campaign' },
-  { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake, group: 'campaign' },
+  { id: 'winter', label: '겨울 정산', meta: 'Winter', icon: Snowflake, group: 'ledger' },
   { id: 'economy', label: '재산과 보물', meta: 'Wealth and Treasure', icon: Coins, group: 'ledger' },
-  { id: 'personality', label: '성격과 신앙', meta: 'Personality and Faith', icon: HeartHandshake, group: 'ledger' },
-  { id: 'standing', label: '지위', meta: 'Standing', icon: Crown, group: 'ledger' },
-  { id: 'glory', label: '영광', meta: 'Glory', icon: Award, group: 'ledger' },
-  { id: 'procedures', label: '원문 절차', meta: 'Canonical Procedures', icon: Scale, group: 'reference' },
-  { id: 'oracles', label: '신탁', meta: 'Oracles', icon: Dices, group: 'reference' },
+  { id: 'personality', label: '성격과 신앙', meta: 'Personality and Faith', icon: HeartHandshake, group: 'campaign' },
+  { id: 'standing', label: '지위', meta: 'Standing', icon: Crown, group: 'records' },
+  { id: 'glory', label: '영광', meta: 'Glory', icon: Award, group: 'records' },
+  { id: 'procedures', label: '판정과 여행', meta: 'Procedures', icon: Scale, group: 'campaign' },
+  { id: 'oracles', label: '주사위와 신탁', meta: 'Oracles', icon: Dices, group: 'reference' },
   { id: 'reference', label: '참조', meta: 'Reference', icon: BookText, group: 'reference' },
   { id: 'rulebook', label: '개인 룰북', meta: 'Personal Rulebook', icon: BookOpenText, group: 'reference' }
 ];
 
 const NAV_GROUPS = [
-  { id: 'campaign', label: '기사의 연대' },
-  { id: 'ledger', label: '상태 장부' },
-  { id: 'reference', label: '참조 도구', compact: true }
+  { id: 'campaign', label: '플레이', order: ['dashboard', 'adventure', 'procedures', 'combat', 'battle', 'personality'] },
+  { id: 'ledger', label: '연간 관리', order: ['economy', 'winter'] },
+  { id: 'records', label: '기사와 기록', order: ['character', 'family', 'chronicle', 'standing', 'glory'] },
+  { id: 'reference', label: '자료와 보조 도구', order: ['rulebook', 'reference', 'oracles'] }
 ];
 
 const getLifecycleLabel = (status) => ({
@@ -80,6 +84,8 @@ export default function AppShell({
   onOpenSettings
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [ruleQuery, setRuleQuery] = useState('');
+  const { openRulebook } = useRulebook();
   const menuButtonRef = useRef(null);
   const navigationRef = useRef(null);
   const year = character.personal?.campaignYear || 767;
@@ -103,19 +109,7 @@ export default function AppShell({
   const activeCharacter = getActiveCharacterIdentity(character);
   const captive = ['active', 'awaiting_ransom'].includes(character.campaign?.captivity?.status);
   const blockedWhileCaptive = new Set(['winter', 'adventure', 'combat', 'oracles']);
-  const activeWar = character.campaign?.massBattle?.status === 'active'
-    || character.campaign?.skirmish?.status === 'active'
-    || character.campaign?.siege?.status === 'active';
-  const winterInProgress = winterDone > 0 && (winterDone < 10 || character.campaign?.winter?.currentStep === 'complete');
-  const continuation = character.campaign?.combat?.status === 'active'
-    ? { tab: 'combat', label: '진행 중인 전투로 돌아가기' }
-    : activeWar
-      ? { tab: 'battle', label: '진행 중인 전쟁으로 돌아가기' }
-      : adventurePending && ['active', 'deferred'].includes(adventurePending.status)
-        ? { tab: 'adventure', label: adventurePending.title ? `${adventurePending.title}로 돌아가기` : '진행 중인 모험으로 돌아가기' }
-        : winterInProgress
-          ? { tab: 'winter', label: `${year}년 겨울 정산으로 돌아가기` }
-          : null;
+  const continuation = getPlayActions(character)[0];
 
   useEffect(() => {
     if (!mobileOpen) return undefined;
@@ -160,11 +154,10 @@ export default function AppShell({
 
       <header className="royal-header">
         <div className="royal-header__identity">
-          <span className="serial-label" lang="la">Codex Regius</span>
           <div className="royal-wordmark" aria-label="Paladin">
             <span lang="en">Paladin</span>
           </div>
-          <p>샤를마뉴 대제의 기사 생애 기록부</p>
+          <p>{character.personal?.name || '새 기사의 기록'} · 생애와 연대기</p>
         </div>
 
         <div className="royal-header__registry" aria-label="현재 캠페인 기록">
@@ -203,12 +196,12 @@ export default function AppShell({
 
       <div className="campaign-strip" aria-label="캠페인 현재 상태">
         <span><UserRound size={14} aria-hidden="true" /> {activeCharacter.name}</span>
-        <span>{healthLabel}</span>
+        <span>{character.personal?.name ? healthLabel : '기사 생성 전'}</span>
         <span><Snowflake size={14} aria-hidden="true" /> 겨울 {winterDone}/10</span>
-        <span className={unresolvedCount || adventurePending ? 'campaign-strip__warning' : ''}>미결 {unresolvedCount + (adventurePending ? 1 : 0)}</span>
+        <span className={unresolvedCount ? 'campaign-strip__warning' : ''}>{unresolvedCount ? `미결 ${unresolvedCount}` : adventurePending ? '모험 진행 중' : '미결 없음'}</span>
         {continuation && activeTab !== continuation.tab && (
           <button type="button" className="campaign-strip__continue" onClick={() => navigate(continuation.tab)}>
-            <ArrowLeft size={14} aria-hidden="true" /> {continuation.label}
+            <ArrowLeft size={14} aria-hidden="true" /> {continuation.actionLabel} · {continuation.title}
           </button>
         )}
       </div>
@@ -221,17 +214,15 @@ export default function AppShell({
           aria-label="왕실 장부 목차"
         >
           <div className="folio-navigation__heading">
-            <span lang="la">Index Generalis</span>
-            <strong>장부 목차</strong>
+            <strong>캠페인</strong>
           </div>
           {NAV_GROUPS.map(group => (
             <section className={`folio-navigation__group ${group.compact ? 'folio-navigation__group--compact' : ''}`} key={group.id} aria-labelledby={`navigation-${group.id}`}>
               <h2 id={`navigation-${group.id}`}>{group.label}</h2>
               <ol>
-                {NAV_ITEMS.filter(item => item.group === group.id).map(item => {
+                {group.order.map(id => NAV_ITEMS.find(item => item.id === id)).map(item => {
                   const Icon = item.icon;
                   const active = item.id === activeTab;
-                  const index = NAV_ITEMS.findIndex(entry => entry.id === item.id);
                   return (
                     <li key={item.id}>
                       <button
@@ -242,7 +233,6 @@ export default function AppShell({
                         disabled={captive && blockedWhileCaptive.has(item.id)}
                         title={captive && blockedWhileCaptive.has(item.id) ? '포로 상태를 먼저 해결해야 합니다.' : item.meta}
                       >
-                        <span className="folio-navigation__number">{String(index + 1).padStart(2, '0')}</span>
                         <Icon size={17} aria-hidden="true" />
                         <span className="folio-navigation__label"><b>{item.label}</b></span>
                         <ChevronRight size={15} aria-hidden="true" />
@@ -268,9 +258,15 @@ export default function AppShell({
 
         <main id="main-content" className="folio-main" tabIndex="-1">
           <div className="folio-breadcrumb" aria-label="현재 위치">
-            <span lang="la">Palatinum</span><ChevronRight size={12} aria-hidden="true" /><strong>{activeItem.label}</strong>
+            <strong>{activeItem.label}</strong>
+            <div className="play-toolbar">
+              {activeTab !== 'procedures' && <button type="button" className="secondary-command" onClick={() => navigate('procedures')}><Dices size={16} aria-hidden="true" />판정</button>}
             <RulebookButton reason={activeItem.meta} label="현재 원문" />
-            <span lang="en">{activeItem.meta}</span>
+            <form className="play-rule-search" role="search" onSubmit={event => { event.preventDefault(); if (ruleQuery.trim()) openRulebook({ query: ruleQuery.trim(), reason: '규칙 검색' }); }}>
+              <input type="search" value={ruleQuery} onChange={event => setRuleQuery(event.target.value)} aria-label="규칙 검색어" placeholder="규칙 검색" />
+              <button type="submit" className="icon-command" disabled={!ruleQuery.trim()} aria-label="규칙 검색" title="규칙 검색"><Search size={17} aria-hidden="true" /></button>
+            </form>
+            </div>
           </div>
           {children}
         </main>

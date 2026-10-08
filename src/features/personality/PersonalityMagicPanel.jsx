@@ -146,7 +146,7 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
   const [error, setError] = useState('');
   const [directed, setDirected] = useState({ traitKey: 'suspicious', target: '', modifier: 5, origin: 'gm', gmAgreed: false });
   const [directedPassion, setDirectedPassion] = useState({ kind: 'fear', target: '', value: '', playerAgreed: true, gmAgreed: true, agreementNote: '' });
-  const [trait, setTrait] = useState({ traitKey: 'just', roll: '', oppositeRoll: '', modifier: 0, significantAction: true });
+  const [trait, setTrait] = useState({ traitKey: 'just', roll: '', oppositeRoll: '', modifier: 0, significantAction: false, actedOpposite: false });
   const [conflict, setConflict] = useState({ actorGroup: 'passions', actorKey: 'honor', actorRoll: '', opponentGroup: 'traits', opponentKey: 'merciful', opponentRoll: '' });
   const [passion, setPassion] = useState({ passionKey: 'honor', mode: 'ordinary', roll: '', modifier: 0, gmApproved: true, ideal: '', actionOutcome: 'successful', agingRoll: '', attributeRolls: '' });
   const [passionChange, setPassionChange] = useState({ passionKey: 'honor', action: '', gmDirected: true, duringWinter: false });
@@ -178,12 +178,13 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
     [activeConditions]
   );
   const activeResolution = state.activeResolution;
+  const latestTrait = [...state.transactions].reverse().find(item => item.type === 'trait_test');
   const latestPrayer = useMemo(() => {
     const prayers = [...(state.prayers || [])].reverse();
     return bridge?.transactionId
       ? prayers.find(item => String(item.id || '').startsWith(bridge.transactionId)) || null
       : prayers[0] || null;
-  }, [bridge?.transactionId, state.prayers]);
+  }, [bridge, state.prayers]);
   const latestMadnessYear = useMemo(
     () => [...state.transactions].reverse().find(item => item.type === 'madness_year') || null,
     [state.transactions]
@@ -302,13 +303,25 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
       </RuntimeSection>
 
       <RuntimeSection icon={Dices} title="Trait 판정" source="Table 3–1 · pp.70–71">
+        <p>첫 Trait 실패는 반대 Trait을 한 번 더 판정합니다. 양쪽 모두 실패하면 행동은 플레이어가 정합니다. 대성공은 첫 Trait, 대실패는 반대 Trait에 경험 체크를 남깁니다.</p>
         <div className="personality-grid">
           <Field label="첫 Trait"><select value={trait.traitKey} onChange={event => setTrait({ ...trait, traitKey: event.target.value })}>{TRAIT_KEYS.map(key => <option key={key} value={key}>{TRAIT_LABELS[key] || key} · {character.traits?.[key] ?? 0}</option>)}</select></Field>
           <Field label="d20"><NumberInput min="1" max="20" value={trait.roll} onChange={event => setTrait({ ...trait, roll: event.target.value })} /></Field>
           <Field label="첫 실패 시 반대 Trait d20"><NumberInput min="1" max="20" value={trait.oppositeRoll} onChange={event => setTrait({ ...trait, oppositeRoll: event.target.value })} /></Field>
           <Field label="원문 수정치"><NumberInput value={trait.modifier} onChange={event => setTrait({ ...trait, modifier: event.target.value })} /></Field>
         </div>
-        <button type="button" className="secondary-command" onClick={() => run(() => resolveStandardTraitTest(character, { ...trait, roll: Number(trait.roll), oppositeRoll: toOptionalNumber(trait.oppositeRoll), modifier: Number(trait.modifier) }), 'Table 3–1 결과와 경험 체크를 적용했습니다.')}><Dices size={17} aria-hidden="true" />Trait 판정</button>
+        <div className="personality-actions">
+          <label className="personality-check"><input type="checkbox" checked={trait.significantAction} onChange={event => setTrait({ ...trait, significantAction: event.target.checked })} />적절하고 중요한 후속 행동에 대한 경험 체크 승인</label>
+          <label className="personality-check"><input type="checkbox" checked={trait.actedOpposite} onChange={event => setTrait({ ...trait, actedOpposite: event.target.checked })} />보통 성공일 때 반대로 행동하기 · 반대 Trait 체크</label>
+          <button type="button" className="secondary-command" onClick={() => run(() => resolveStandardTraitTest(character, { ...trait, roll: Number(trait.roll), oppositeRoll: toOptionalNumber(trait.oppositeRoll), modifier: Number(trait.modifier) }), 'Table 3–1의 판정과 승인된 경험 체크를 기록했습니다.')}><Dices size={17} aria-hidden="true" />Trait 판정</button>
+        </div>
+        {latestTrait?.primary && <div className="procedure-result" data-outcome={latestTrait.primary.outcome} role="status">
+          <strong>{TRAIT_LABELS[latestTrait.traitKey] || latestTrait.traitKey} · {OUTCOME_LABELS[latestTrait.primary.outcome]}</strong>
+          <p>d20 {latestTrait.primary.roll} / 최종 목표 {latestTrait.primary.target} · 수정 {latestTrait.modifier >= 0 ? '+' : ''}{latestTrait.modifier}</p>
+          {latestTrait.opposite && <p>{TRAIT_LABELS[latestTrait.oppositeKey]} · {OUTCOME_LABELS[latestTrait.opposite.outcome]} · d20 {latestTrait.opposite.roll} / 최종 목표 {latestTrait.opposite.target}</p>}
+          <p>{latestTrait.freeChoice ? '양쪽 모두 실패했습니다. 행동은 플레이어가 자유롭게 정합니다.' : latestTrait.primary.outcome === 'success' ? '보통 성공: 해당 Trait에 따른 행동을 정합니다. 반대로 행동하면 반대 Trait에 체크를 남깁니다.' : `${TRAIT_LABELS[latestTrait.forcedTrait] || latestTrait.forcedTrait}에 따른 행동이 요구됩니다. 구체적인 장면은 플레이어와 GM이 정합니다.`}</p>
+          <small>{latestTrait.sourcePage}</small>
+        </div>}
       </RuntimeSection>
 
       <RuntimeSection icon={HeartHandshake} title="Passion 사용" source="Table 3–4 · pp.77–79" open>
@@ -318,7 +331,7 @@ export default function PersonalityMagicPanel({ character, setCharacter, onNavig
           <Field label="d20"><NumberInput min="1" max="20" value={passion.roll} onChange={event => setPassion({ ...passion, roll: event.target.value })} /></Field>
           <Field label="원문 수정치"><NumberInput value={passion.modifier} onChange={event => setPassion({ ...passion, modifier: event.target.value })} /></Field>
         </div>
-        {!activeResolution ? <button type="button" className="primary-command" onClick={beginPassion}><Dices size={17} aria-hidden="true" />Passion 판정</button> : <div className="personality-resolution"><div><span>{activeResolution.passionKey}</span><strong>{activeResolution.outcome}</strong><small>행동 수정 {activeResolution.skillModifier >= 0 ? '+' : ''}{activeResolution.skillModifier}</small></div><div className="personality-grid"><Field label="후속 행동"><select value={passion.actionOutcome} onChange={event => setPassion({ ...passion, actionOutcome: event.target.value })}><option value="successful">성공</option><option value="failed">실패</option></select></Field><Field label="Shock Aging d20"><NumberInput min="1" max="20" value={passion.agingRoll} onChange={event => setPassion({ ...passion, agingRoll: event.target.value })} /></Field><Field label="능력치 d6 · 쉼표 구분"><input value={passion.attributeRolls} onChange={event => setPassion({ ...passion, attributeRolls: event.target.value })} /></Field></div><button type="button" className="primary-command" onClick={completePassion}>행동 결과 적용</button></div>}
+        {!activeResolution ? <button type="button" className="primary-command" onClick={beginPassion}><Dices size={17} aria-hidden="true" />Passion 판정</button> : <div className="personality-resolution"><div><span>{PASSION_LABELS[activeResolution.passionKey] || activeResolution.passionKey}</span><strong>{OUTCOME_LABELS[activeResolution.outcome] || activeResolution.outcome}</strong><small>d20 {activeResolution.roll} / 목표 {activeResolution.target} · 행동 수정 {activeResolution.skillModifier >= 0 ? '+' : ''}{activeResolution.skillModifier}</small></div><div className="personality-grid"><Field label="후속 행동"><select value={passion.actionOutcome} onChange={event => setPassion({ ...passion, actionOutcome: event.target.value })}><option value="successful">성공</option><option value="failed">실패</option></select></Field><Field label="Shock Aging d20"><NumberInput min="1" max="20" value={passion.agingRoll} onChange={event => setPassion({ ...passion, agingRoll: event.target.value })} /></Field><Field label="능력치 d6 · 쉼표 구분"><input value={passion.attributeRolls} onChange={event => setPassion({ ...passion, attributeRolls: event.target.value })} /></Field></div><button type="button" className="primary-command" onClick={completePassion}>행동 결과 적용</button></div>}
       </RuntimeSection>
 
       <RuntimeSection icon={Dices} title="Trait / Passion 충돌" source="Ch.3 pp.71–72">

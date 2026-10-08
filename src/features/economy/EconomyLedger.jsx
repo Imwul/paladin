@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { cloneElement, useMemo, useState } from 'react';
 import { Coins, Landmark, PackageCheck, ScrollText, ShieldCheck, Sparkles, UsersRound } from 'lucide-react';
 import { EmptyState, FolioHeading, SectionHeader, StatusSeal } from '../../components/ui/LedgerUI';
+import { getJourneyTravelers } from '../../rules/rulebookProcedureRules';
 import {
   BUILDING_CATALOG,
   MAGIC_ITEM_CATALOG,
@@ -44,7 +45,7 @@ import './EconomyLedger.css';
 const TABS = [
   ['ledger','장부'],['market','시장'],['ransom','몸값'],['estate','토지와 건설'],['retinue','수행원'],['finance','금융과 원조'],['magic','마법 물품']
 ];
-const Field = ({ label, children }) => <label className="economy-field"><span>{label}</span>{children}</label>;
+const Field = ({ label, children }) => <label className="economy-field"><span>{label}</span>{cloneElement(children, { 'aria-label': label })}</label>;
 const Coin = ({ value }) => <span className="economy-coin">{formatCoin(value)}</span>;
 
 export default function EconomyLedger({ character, setCharacter }) {
@@ -70,7 +71,8 @@ export default function EconomyLedger({ character, setCharacter }) {
   const execute = (operation, message) => {
     try {
       setError('');
-      setCharacter(previous => operation(previous).character);
+      const result = operation(character);
+      setCharacter(result.character);
       setNotice(message);
     } catch (caught) {
       setNotice('');
@@ -100,7 +102,8 @@ export default function EconomyLedger({ character, setCharacter }) {
       {(economy?.transactions || []).length ? <div className="economy-table-wrap"><table><thead><tr><th>연도</th><th>거래</th><th>근거</th><th>변화</th></tr></thead><tbody>{[...(economy.transactions || [])].reverse().slice(0,30).map(entry=><tr key={entry.id}><td>{entry.year}</td><td><strong>{entry.label}</strong>{entry.note&&<small>{entry.note}</small>}</td><td>{entry.sourcePage}</td><td className={entry.amountDeniers<0?'negative':entry.amountDeniers>0?'positive':''}>{entry.amountDeniers>0?'+':''}<Coin value={Math.abs(entry.amountDeniers)} /></td></tr>)}</tbody></table></div> : <EmptyState title="아직 거래가 없습니다">시장·몸값·겨울 정산의 모든 금전 이동이 이곳에 남습니다.</EmptyState>}
     </section>
     <section className="economy-section"><SectionHeader index="II" title="보유 물품" meta="Bona Mobilia" />
-      {[...(economy?.equipment||[]),...(economy?.treasure||[])].filter(item=>!item.disposed&&Number(item.quantity)>0).length ? <div className="economy-table-wrap"><table><thead><tr><th>물품</th><th>수량</th><th>단가</th><th>처리</th></tr></thead><tbody>{['equipment','treasure'].flatMap(collection=>(economy?.[collection]||[]).filter(item=>!item.disposed&&Number(item.quantity)>0).map(item=><tr key={item.id}><td><strong>{item.label}</strong>{item.equipped&&<StatusSeal tone="active">장착</StatusSeal>}{item.attackTrained&&<StatusSeal tone="neutral">전투 훈련</StatusSeal>}</td><td>{item.quantity}</td><td><Coin value={item.unitValueDeniers}/></td><td><div className="economy-inline-actions">{collection==='equipment'&&<button type="button" className="text-command" onClick={()=>execute(value=>equipMarketEquipment(value,{inventoryId:item.id,equipped:!item.equipped}),item.equipped?'장착을 해제했습니다.':'전투 장비에 연결했습니다.')}>{item.equipped?'해제':'장착'}</button>}{item.category==='mount'&&!item.attackTrained&&<button type="button" className="text-command" onClick={()=>execute(value=>trainMountForAttack(value,{inventoryId:item.id}), '말값만큼을 추가 지불해 Phase 4 전투 훈련을 기록했습니다.')}>전투 훈련</button>}<button type="button" className="text-command" onClick={()=>execute(value=>sellMarketItem(value,{inventoryId:item.id,collection,quantity:1,merchantSkill:marketFilter.merchantSkill||undefined,merchantRoll:marketFilter.merchantRoll||undefined}), marketFilter.merchantRoll?'상인 Trade 판정 결과로 매각했습니다.':'시장 정가의 절반으로 매각했습니다.')}>시장 매각</button><button type="button" className="text-command" onClick={()=>execute(value=>sellMarketItem(value,{inventoryId:item.id,collection,quantity:1,tradeWithOwnLord:true}), '주군과 정가로 거래했습니다.')}>주군 거래</button></div></td></tr>))}</tbody></table></div> : <EmptyState title="기록된 소유 물품이 없습니다" />}
+      {getJourneyTravelers(character).filter(item => item.condition?.kind === 'lamed').map(item => <p className="economy-rule-line" key={item.id}><StatusSeal tone="warning">절름</StatusSeal> {item.label} · 강행군 대실패 (Ch.6 p.112). 이동 가능 여부와 회복은 GM이 판단하며, 겨울 생존 판정으로 자동 회복하지 않습니다.</p>)}
+      {[...(economy?.equipment||[]),...(economy?.treasure||[])].filter(item=>!item.disposed&&Number(item.quantity)>0).length ? <div className="economy-table-wrap"><table><thead><tr><th>물품</th><th>수량</th><th>단가</th><th>처리</th></tr></thead><tbody>{['equipment','treasure'].flatMap(collection=>(economy?.[collection]||[]).filter(item=>!item.disposed&&Number(item.quantity)>0).map(item=><tr key={item.id}><td><strong>{item.label}</strong>{item.travelCondition?.kind === 'lamed' && <StatusSeal tone="warning">절름</StatusSeal>}{item.equipped&&<StatusSeal tone="active">장착</StatusSeal>}{item.attackTrained&&<StatusSeal tone="neutral">전투 훈련</StatusSeal>}</td><td>{item.quantity}</td><td><Coin value={item.unitValueDeniers}/></td><td><div className="economy-inline-actions">{collection==='equipment'&&<button type="button" className="text-command" onClick={()=>execute(value=>equipMarketEquipment(value,{inventoryId:item.id,equipped:!item.equipped}),item.equipped?'장착을 해제했습니다.':'전투 장비에 연결했습니다.')}>{item.equipped?'해제':'장착'}</button>}{item.category==='mount'&&!item.attackTrained&&<button type="button" className="text-command" onClick={()=>execute(value=>trainMountForAttack(value,{inventoryId:item.id}), '말값만큼을 추가 지불해 Phase 4 전투 훈련을 기록했습니다.')}>전투 훈련</button>}<button type="button" className="text-command" onClick={()=>execute(value=>sellMarketItem(value,{inventoryId:item.id,collection,quantity:1,merchantSkill:marketFilter.merchantSkill||undefined,merchantRoll:marketFilter.merchantRoll||undefined}), marketFilter.merchantRoll?'상인 Trade 판정 결과로 매각했습니다.':'시장 정가의 절반으로 매각했습니다.')}>시장 매각</button><button type="button" className="text-command" onClick={()=>execute(value=>sellMarketItem(value,{inventoryId:item.id,collection,quantity:1,tradeWithOwnLord:true}), '주군과 정가로 거래했습니다.')}>주군 거래</button></div></td></tr>))}</tbody></table></div> : <EmptyState title="기록된 소유 물품이 없습니다" />}
     </section>
   </>;
 
